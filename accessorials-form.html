@@ -3778,8 +3778,9 @@
     if (type === 'skip-rec') {
       const tile = picker.querySelector(`.loc-option[data-type="${type}"]`);
       summaryIcon.innerHTML = tile ? tile.querySelector('.loc-option-icon').innerHTML : '';
-      if (summaryLabel) summaryLabel.hidden = true;
-      summaryName.textContent = isZH ? '不推荐' : 'Not recommended';
+      if (summaryLabel) summaryLabel.hidden = false;
+      summaryName.textContent = isZH ? '跳过推荐' : 'Skip recommendations';
+      if (summaryDetail) { summaryDetail.textContent = isZH ? '不推荐' : 'Not recommended'; summaryDetail.hidden = false; }
     } else if (type) {
       const tile = picker.querySelector(`.loc-option[data-type="${type}"]`);
       summaryIcon.innerHTML = tile ? tile.querySelector('.loc-option-icon').innerHTML : '';
@@ -3790,7 +3791,7 @@
       summaryIcon.innerHTML = '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 11v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M8 9c0-1.5 2-1.5 2-3a2 2 0 1 0-4 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
       summaryName.textContent = isZH ? '未指定' : 'Not specified';
     }
-    if (summaryDetail) {
+    if (summaryDetail && type !== 'skip-rec') {
       const dockAns = dockAnswers[section];
       if (dockAns !== null) {
         summaryDetail.textContent = dockAns === 'yes' ? 'Has loading dock' : dockAns === 'no' ? 'No loading dock' : 'Loading dock unknown';
