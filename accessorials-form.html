@@ -173,13 +173,13 @@
   }
   .loc-help-answers { display: flex; gap: 16px; }
   .loc-help-yes, .loc-help-no, .loc-help-skip {
-    flex: 1; min-height: 32px; padding: 0 12px; border-radius: var(--radius-base);
+    flex: 0 0 auto; min-height: 32px; padding: 0 12px; border-radius: var(--radius-base);
     font-size: 14px; font-weight: 600; cursor: pointer;
     font-family: 'Inter', sans-serif; color: var(--color-label-primary);
     border: 1px solid rgba(9,10,12,0.3); background: rgba(9,10,12,0.05);
     box-shadow: inset 0px 1px 0px rgba(255,255,255,0.3), inset 0px -2px 0px rgba(9,10,12,0.05);
     overflow: hidden; transition: background 0.12s, border-color 0.12s;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
+    display: flex; align-items: center; justify-content: flex-start; gap: 8px;
   }
   .loc-help-yes:hover, .loc-help-no:hover, .loc-help-skip:hover { background: rgba(9,10,12,0.08); }
   .loc-help-dots { display: flex; gap: 5px; }
@@ -291,13 +291,13 @@
   }
   .dock-options { display: flex; gap: 16px; }
   .dock-option {
-    flex: 1; min-height: 32px; padding: 0 12px; border-radius: var(--radius-base);
+    flex: 0 0 auto; min-height: 32px; padding: 0 12px; border-radius: var(--radius-base);
     font-size: 14px; font-weight: 600; cursor: pointer;
     font-family: 'Inter', sans-serif; color: var(--color-label-primary);
     border: 1px solid rgba(9,10,12,0.3); background: rgba(9,10,12,0.05);
     box-shadow: inset 0px 1px 0px rgba(255,255,255,0.3), inset 0px -2px 0px rgba(9,10,12,0.05);
     overflow: hidden; transition: background 0.12s, border-color 0.12s;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
+    display: flex; align-items: center; justify-content: flex-start; gap: 8px;
   }
   .dock-option:hover { background: rgba(9,10,12,0.08); }
   .dock-option.selected { border: 2px solid rgba(9,10,12,0.9); background: #ffffff; padding: 0 11px; }
@@ -1794,7 +1794,7 @@
       <div class="loc-picker-body-wrap">
       <div class="loc-picker-body">
       <p class="loc-picker-question">What type of location is this?<span class="req" style="margin-left:2px;">*</span></p>
-      <p class="loc-picker-question-sub">This helps us identify which services will be <strong style="color:#16a34a;font-weight:600;">recommended</strong> to avoid delays or adjustment charges.</p>
+      <p class="loc-picker-question-sub">This helps us identify which services will be <strong style="color:#16a34a;font-weight:400;">recommended</strong> to avoid delays or adjustment charges.</p>
       <div class="loc-picker-grid">
         <button class="loc-help-btn" id="pickup-help-btn" type="button">
           <div class="loc-option-icon"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 11v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M8 9c0-1.5 2-1.5 2-3a2 2 0 1 0-4 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
@@ -2382,7 +2382,7 @@
       <div class="loc-picker-body-wrap">
       <div class="loc-picker-body">
       <p class="loc-picker-question">What type of location is this?<span class="req" style="margin-left:2px;">*</span></p>
-      <p class="loc-picker-question-sub">This helps us identify which services will be <strong style="color:#16a34a;font-weight:600;">recommended</strong> to avoid delays or adjustment charges.</p>
+      <p class="loc-picker-question-sub">This helps us identify which services will be <strong style="color:#16a34a;font-weight:400;">recommended</strong> to avoid delays or adjustment charges.</p>
       <div class="loc-picker-grid">
         <button class="loc-help-btn" id="deliver-help-btn" type="button">
           <div class="loc-option-icon"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 11v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M8 9c0-1.5 2-1.5 2-3a2 2 0 1 0-4 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
@@ -3836,6 +3836,10 @@
       if (iconEl) iconEl.innerHTML = opt.querySelector('.loc-option-icon') ? opt.querySelector('.loc-option-icon').innerHTML : '';
     }
     dq.hidden = false;
+    const dockBtns = dq.querySelectorAll('.dock-option');
+    dockBtns.forEach(b => { b.style.width = ''; });
+    const maxW = Math.max(...[...dockBtns].map(b => b.offsetWidth));
+    dockBtns.forEach(b => { b.style.width = maxW + 'px'; });
   }
 
   function hideDockQuestion(section) {
@@ -5219,6 +5223,13 @@
       backWrap.style.display = history.length > 0 ? 'flex' : 'none';
     }
 
+    function equalizeHelpBtns() {
+      const helpBtns = answersEl.querySelectorAll('.loc-help-yes, .loc-help-no, .loc-help-skip');
+      helpBtns.forEach(b => { b.style.width = ''; });
+      const maxHelpW = Math.max(...[...helpBtns].map(b => b.offsetWidth));
+      helpBtns.forEach(b => { b.style.width = maxHelpW + 'px'; });
+    }
+
     function showUnknown() {
       history.push({ node: currentNode, answer: 'skip' });
       progressEl.innerHTML = '';
@@ -5336,6 +5347,7 @@
       qEl.hidden = false;
       showQuestion(LOC_TREE[0]);
       panel.hidden = false;
+      requestAnimationFrame(equalizeHelpBtns);
       triggerBtn.classList.add('active');
       const picker = document.getElementById(`${section}-loc-picker`);
       if (picker) picker.querySelectorAll('.loc-option.selected').forEach(t => t.classList.remove('selected'));
