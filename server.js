@@ -17,7 +17,8 @@ const MIME = {
 };
 
 http.createServer((req, res) => {
-  const file = path.join(ROOT, req.url === '/' ? 'accessorials-form.html' : req.url);
+  const pathname = req.url.split('?')[0];
+  const file = path.join(ROOT, pathname === '/' ? 'accessorials-form.html' : pathname);
   const ext  = path.extname(file);
   fs.readFile(file, (err, data) => {
     if (err) { res.writeHead(404); return res.end('Not found'); }

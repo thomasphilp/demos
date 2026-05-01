@@ -54,7 +54,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 40px;
+    padding: 80px 40px 40px;
     box-sizing: border-box;
   }
 
@@ -1693,9 +1693,31 @@
   .agree-check.checked { background: var(--color-tint); border-color: var(--color-tint); }
   .agree-check svg { width: 10px; height: 10px; color: white; display: none; }
   .agree-check.checked svg { display: block; }
+
+  /* Demo bar */
+  .demo-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 24px; background: #f5f5f7;
+    border-bottom: 1px solid rgba(9,10,12,0.08);
+    font-family: 'Inter', sans-serif; font-size: 12px;
+  }
+  .demo-bar-label { color: var(--color-label-secondary); font-weight: 500; margin-right: 4px; }
+  .demo-bar a {
+    padding: 4px 12px; border-radius: 20px; text-decoration: none;
+    font-weight: 500; font-size: 12px; border: 1px solid rgba(9,10,12,0.2);
+    color: var(--color-label-primary); background: white; transition: background 0.12s;
+  }
+  .demo-bar a:hover { background: rgba(9,10,12,0.05); }
+  .demo-bar a.active { background: var(--color-tint); color: white; border-color: var(--color-tint); }
 </style>
 </head>
 <body>
+<div class="demo-bar">
+  <span class="demo-bar-label">Demo state:</span>
+  <a href="?loc=none" id="demo-link-none">No location selected</a>
+  <a href="?loc=residential" id="demo-link-residential">Location pre-selected</a>
+</div>
 <div id="loc-tile-tooltip-global"></div>
 <div class="form-wrapper">
   <div class="section">
@@ -5700,6 +5722,31 @@
       });
     });
     domObserver.observe(document.body, { childList: true, subtree: true });
+  })();
+
+  // ── Demo bar: apply state from URL param (must run after isZH is declared) ──
+  (function() {
+    const param = new URLSearchParams(location.search).get('loc');
+    const linkNone = document.getElementById('demo-link-none');
+    const linkRes  = document.getElementById('demo-link-residential');
+    if (param === 'residential') {
+      linkRes.classList.add('active');
+      ['pickup', 'deliver'].forEach(section => {
+        const picker = document.getElementById(`${section}-loc-picker`);
+        if (!picker) return;
+        const opt = picker.querySelector('.loc-option[data-type="residential"]');
+        if (opt) {
+          picker.querySelectorAll('.loc-option').forEach(o => o.classList.remove('selected'));
+          opt.classList.add('selected');
+        }
+        collapseLocPicker(section, 'residential');
+        hideDockQuestion(section);
+        const gated = document.getElementById(`loc-gated-${section}`);
+        if (gated) { gated.classList.remove('loc-gated'); gated.removeAttribute('inert'); }
+      });
+    } else {
+      linkNone.classList.add('active');
+    }
   })();
 </script>
 </body>
