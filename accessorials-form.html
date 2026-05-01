@@ -5430,6 +5430,7 @@
     picker.addEventListener('click', (e) => {
       const bodyWrap = picker.querySelector('.loc-picker-body-wrap');
       if (!bodyWrap.classList.contains('collapsed')) return;
+      if (bodyWrap.contains(e.target)) return; // tile click just triggered the collapse — don't re-expand
       expandLocPicker(section);
     });
   });
