@@ -94,11 +94,13 @@
   .loc-picker-summary-label { font-size: 11px; font-weight: 400; color: var(--color-label-secondary); white-space: nowrap; }
   .loc-picker-summary-name { font-size: 14px; font-weight: 600; color: var(--color-label-primary); }
   .loc-picker-change {
-    font-size: 12px; font-weight: 400; color: var(--color-label-primary);
+    font-size: 12px; font-weight: 400;
     background: none; border: none; padding: 0; cursor: pointer;
     font-family: 'Inter', sans-serif; flex-shrink: 0;
   }
-  .loc-picker-change:hover { opacity: 0.75; }
+  .loc-picker-change-q { color: var(--color-label-primary); }
+  .loc-picker-change-link { color: var(--color-tint); font-weight: 600; }
+  .loc-picker-change:hover .loc-picker-change-link { opacity: 0.75; }
 
   /* Help me choose */
   .addr-loc-btn {
@@ -1791,7 +1793,7 @@
             <span class="loc-picker-summary-detail" hidden></span>
           </div>
         </div>
-        <button class="loc-picker-change" type="button">Is this incorrect? Change now</button>
+        <button class="loc-picker-change" type="button"><span class="loc-picker-change-q">Is this incorrect?</span> <span class="loc-picker-change-link">Change now</span></button>
       </div>
       <div class="loc-picker-body-wrap">
       <div class="loc-picker-body">
@@ -2379,7 +2381,7 @@
             <span class="loc-picker-summary-detail" hidden></span>
           </div>
         </div>
-        <button class="loc-picker-change" type="button">Is this incorrect? Change now</button>
+        <button class="loc-picker-change" type="button"><span class="loc-picker-change-q">Is this incorrect?</span> <span class="loc-picker-change-link">Change now</span></button>
       </div>
       <div class="loc-picker-body-wrap">
       <div class="loc-picker-body">
