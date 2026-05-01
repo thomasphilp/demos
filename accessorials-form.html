@@ -3772,13 +3772,21 @@
     const bodyWrap = picker.querySelector('.loc-picker-body-wrap');
     const summary  = picker.querySelector('.loc-picker-summary');
     const summaryIcon = picker.querySelector('.loc-picker-summary-icon');
+    const summaryLabel = picker.querySelector('.loc-picker-summary-label');
     const summaryName = picker.querySelector('.loc-picker-summary-name');
     const summaryDetail = picker.querySelector('.loc-picker-summary-detail');
-    if (type) {
+    if (type === 'skip-rec') {
       const tile = picker.querySelector(`.loc-option[data-type="${type}"]`);
       summaryIcon.innerHTML = tile ? tile.querySelector('.loc-option-icon').innerHTML : '';
+      if (summaryLabel) summaryLabel.hidden = true;
+      summaryName.textContent = isZH ? '不推荐' : 'Not recommended';
+    } else if (type) {
+      const tile = picker.querySelector(`.loc-option[data-type="${type}"]`);
+      summaryIcon.innerHTML = tile ? tile.querySelector('.loc-option-icon').innerHTML : '';
+      if (summaryLabel) summaryLabel.hidden = false;
       summaryName.textContent = (isZH && ZH_LOC_TYPE_LABELS[type]) ? ZH_LOC_TYPE_LABELS[type] : (LOC_TYPE_LABELS[type] || type);
     } else {
+      if (summaryLabel) summaryLabel.hidden = false;
       summaryIcon.innerHTML = '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 11v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M8 9c0-1.5 2-1.5 2-3a2 2 0 1 0-4 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
       summaryName.textContent = isZH ? '未指定' : 'Not specified';
     }
@@ -3801,6 +3809,8 @@
     const picker = document.getElementById(`${section}-loc-picker`);
     if (!picker) return;
     picker.querySelector('.loc-picker-body-wrap').classList.remove('collapsed');
+    const summaryLabel = picker.querySelector('.loc-picker-summary-label');
+    if (summaryLabel) summaryLabel.hidden = false;
     picker.querySelector('.loc-picker-summary').hidden = true;
     // Restore dock question if the selected tile requires it
     const selectedOpt = picker.querySelector('.loc-option.selected');
