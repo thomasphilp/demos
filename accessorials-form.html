@@ -154,21 +154,25 @@
   .loc-help-back-wrap { display: none; align-items: center; gap: 4px; }
   .loc-help-divider-v { width: 1px; height: 10px; background: var(--color-control-border); flex-shrink: 0; }
   .loc-help-back {
-    width: 16px; height: 16px; display: flex; align-items: center; justify-content: center;
-    background: var(--color-control-bg); border: var(--border-1) solid var(--color-alt-control-border);
+    width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;
+    background: transparent; border: none;
     border-radius: var(--radius-base); cursor: pointer; color: var(--color-label-secondary);
     flex-shrink: 0; box-sizing: border-box; padding: 0;
+    transition: background 0.1s, box-shadow 0.1s;
   }
-  .loc-help-back:hover { background: rgba(9,10,12,0.06); }
-  .loc-help-back svg { width: 7px; height: 7px; }
+  .loc-help-back:hover { background: rgba(9,10,12,0.10); }
+  .loc-help-back:active { background: rgba(9,10,12,0.20); box-shadow: inset 0px 0px 0px 1px rgba(9,10,12,0.5), inset 0px 3px 8px rgba(9,10,12,0.5); }
+  .loc-help-back svg { width: 10px; height: 10px; }
   .loc-help-close {
-    width: 16px; height: 16px; display: flex; align-items: center; justify-content: center;
-    background: var(--color-control-bg); border: var(--border-1) solid var(--color-alt-control-border);
+    width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;
+    background: transparent; border: none;
     border-radius: var(--radius-base); cursor: pointer; color: var(--color-label-secondary);
     flex-shrink: 0; box-sizing: border-box; padding: 0;
+    transition: background 0.1s, box-shadow 0.1s;
   }
-  .loc-help-close:hover { background: rgba(9,10,12,0.06); }
-  .loc-help-close svg { width: 7px; height: 7px; }
+  .loc-help-close:hover { background: rgba(9,10,12,0.10); }
+  .loc-help-close:active { background: rgba(9,10,12,0.20); box-shadow: inset 0px 0px 0px 1px rgba(9,10,12,0.5), inset 0px 3px 8px rgba(9,10,12,0.5); }
+  .loc-help-close svg { width: 10px; height: 10px; }
   .loc-help-q-icon {
     display: flex; justify-content: center; align-items: center;
     width: 32px; height: 32px; border-radius: 8px;
@@ -1091,8 +1095,8 @@
   }
   .loc-help-back:focus-visible,
   .loc-help-close:focus-visible {
-    outline: 2px solid var(--color-focus);
-    outline-offset: 1px;
+    outline: none;
+    box-shadow: 0px 0px 0px 1px white, 0px 0px 0px 4px #1d4ed8;
   }
   .loc-help-result-back:focus-visible {
     outline: 2px solid var(--color-focus);
@@ -5522,7 +5526,8 @@
     { id:'q1', text:'Is this a home, apartment, condo, or other residential address?',                                        yes:'residential',    no:'q2' },
     { id:'q2', text:'Does this location have restricted access or special entry requirements — like a military base, government facility, school, church, or farm?', yes:'limited-access', no:'q3' },
     { id:'q3', text:'Is this an airport, seaport, rail yard, or other port or cargo facility?',                               yes:'port',           no:'q4' },
-    { id:'q4', text:'Is this a convention center, trade show, stadium, hotel, or event venue?',                               yes:'convention',     no:'commercial' },
+    { id:'q4', text:'Is this a convention center, trade show, stadium, hotel, or event venue?',                               yes:'convention',     no:'q5' },
+    { id:'q5', text:'Is this a commercial business — like an office, store, restaurant, warehouse, or distribution center?',  yes:'commercial',     no:'commercial' },
   ];
   const LOC_TYPE_LABELS = {
     'commercial':       'Commercial',
@@ -5538,6 +5543,7 @@
     'q2': `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.516 2.17a.75.75 0 0 0-1.032 0 11.209 11.209 0 0 1-7.877 3.08.75.75 0 0 0-.722.515A12.74 12.74 0 0 0 2.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 0 0 .374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 0 0-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.704-3.08Zm3.094 8.016a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd"/></svg>`,
     'q3': `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M11.644 1.59a.75.75 0 0 1 .712 0l9.75 5.25a.75.75 0 0 1 0 1.32l-9.75 5.25a.75.75 0 0 1-.712 0l-9.75-5.25a.75.75 0 0 1 0-1.32l9.75-5.25Z"/><path d="m3.265 10.602 7.668 4.129a2.25 2.25 0 0 0 2.134 0l7.668-4.13 1.37.739a.75.75 0 0 1 0 1.32l-9.75 5.25a.75.75 0 0 1-.71 0l-9.75-5.25a.75.75 0 0 1 0-1.32l1.37-.738Z"/><path d="m10.933 19.231-7.668-4.13-1.37.739a.75.75 0 0 0 0 1.32l9.75 5.25c.221.12.489.12.71 0l9.75-5.25a.75.75 0 0 0 0-1.32l-1.37-.738-7.668 4.13a2.25 2.25 0 0 1-2.134 0Z"/></svg>`,
     'q4': `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M11.584 2.376a.75.75 0 0 1 .832 0l9 6a.75.75 0 1 1-.832 1.248L12 3.901 3.416 9.624a.75.75 0 0 1-.832-1.248l9-6Z"/><path fill-rule="evenodd" d="M20.25 10.332v9.918H21a.75.75 0 0 1 0 1.5H3a.75.75 0 0 1 0-1.5h.75v-9.918a.75.75 0 0 1 .634-.74A49.109 49.109 0 0 1 12 9c2.59 0 5.134.202 7.616.592a.75.75 0 0 1 .634.74Zm-7.5 2.418a.75.75 0 0 0-1.5 0v6.75a.75.75 0 0 0 1.5 0v-6.75Zm3-.75a.75.75 0 0 1 .75.75v6.75a.75.75 0 0 1-1.5 0v-6.75a.75.75 0 0 1 .75-.75ZM9 12.75a.75.75 0 0 0-1.5 0v6.75a.75.75 0 0 0 1.5 0v-6.75Z" clip-rule="evenodd"/><path d="M12 7.875a1.125 1.125 0 1 0 0-2.25 1.125 1.125 0 0 0 0 2.25Z"/></svg>`,
+    'q5': `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.5 2.25a.75.75 0 0 0 0 1.5v16.5h-.75a.75.75 0 0 0 0 1.5h16.5a.75.75 0 0 0 0-1.5h-.75V3.75a.75.75 0 0 0 0-1.5h-15ZM9 6a.75.75 0 0 0 0 1.5h1.5a.75.75 0 0 0 0-1.5H9Zm-.75 3.75A.75.75 0 0 1 9 9h1.5a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75ZM9 12a.75.75 0 0 0 0 1.5h1.5a.75.75 0 0 0 0-1.5H9Zm3.75-5.25A.75.75 0 0 1 13.5 6H15a.75.75 0 0 1 0 1.5h-1.5a.75.75 0 0 1-.75-.75ZM13.5 9a.75.75 0 0 0 0 1.5H15A.75.75 0 0 0 15 9h-1.5Zm-.75 3.75a.75.75 0 0 1 .75-.75H15a.75.75 0 0 1 0 1.5h-1.5a.75.75 0 0 1-.75-.75ZM9 19.5v-2.25a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 .75.75V19.5H9Z" clip-rule="evenodd"/></svg>`,
   };
 
   function initLocHelp(section) {
@@ -5935,6 +5941,7 @@
     '该地点是否有门禁限制或特殊进入要求——例如军事基地、政府设施、学校、教堂或农场？',
     '这是机场、海港、铁路货场或其他港口或货运设施吗？',
     '这是会展中心、贸易展览会、体育馆、酒店或活动场馆吗？',
+    '这是商业场所——例如办公室、商店、餐厅、仓库或配送中心吗？',
   ];
   const ZH_LOC_TYPE_LABELS = {
     'commercial': '商业', 'residential': '住宅',
