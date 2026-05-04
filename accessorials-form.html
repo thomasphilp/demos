@@ -215,11 +215,18 @@
     font-size: 14px; font-weight: 500; color: var(--color-label-primary);
   }
   .loc-help-select {
-    padding: 7px 14px; background: var(--color-label-primary); color: white;
-    border: none; border-radius: 6px; font-size: 14px; font-weight: 500;
-    cursor: pointer; font-family: 'Inter', sans-serif; align-self: flex-start;
+    display: inline-flex; align-items: center;
+    height: 48px; padding: 0 24px;
+    background: var(--color-tint); color: #fff;
+    border: none; border-radius: var(--radius-base);
+    font-size: 14px; font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    box-shadow: var(--shadow-inset-dense);
+    cursor: pointer; transition: filter 0.15s;
+    align-self: flex-start;
   }
-  .loc-help-select:hover { opacity: 0.88; }
+  .loc-help-select:hover { filter: brightness(0.9); }
+  .loc-help-select:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
   .loc-help-confirm-skip {
     width: 100%; min-height: 32px; padding: 0 14px;
     background: #090a0c; color: white;
@@ -5656,7 +5663,7 @@
       backWrap.style.display = 'flex';
       const typeName = (isZH && ZH_LOC_TYPE_LABELS[type]) ? ZH_LOC_TYPE_LABELS[type] : (LOC_TYPE_LABELS[type] || type);
       resultName.textContent = typeName;
-      selectBtn.textContent = `Select "${typeName}"`;
+      selectBtn.textContent = `Select ${typeName}`;
       const descEl = resultEl.querySelector('.loc-help-result-desc');
       if (descEl) descEl.textContent = (isZH && ZH_LOC_TYPE_DESC[type]) ? ZH_LOC_TYPE_DESC[type] : (LOC_TYPE_DESC[type] || '');
       const picker = document.getElementById(`${section}-loc-picker`);
