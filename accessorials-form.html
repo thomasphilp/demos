@@ -177,7 +177,8 @@
   }
   .loc-help-q-icon svg { width: 16px; height: 16px; }
   .loc-help-q {
-    font-size: 14px; font-weight: 600; color: var(--color-label-primary); line-height: 1.2; margin-top: 6px; margin-bottom: 6px; text-align: center;
+    font-size: 14px; font-weight: 600; color: var(--color-label-primary); line-height: 1.3; margin-top: 6px; margin-bottom: 6px; text-align: center;
+    max-width: 26ch; align-self: center;
   }
   .loc-help-q.is-label {
     font-size: 14px; font-weight: 600; line-height: 1.2;
@@ -1982,7 +1983,6 @@
         <div class="loc-help-dots-row"></div>
         <div class="loc-help-result" hidden>
           <div class="loc-help-result-row">
-            <div class="loc-help-result-icon"></div>
             <div class="loc-help-result-type">
               <span class="loc-help-result-title">Best match</span>
               <span class="loc-help-result-name"></span>
@@ -2564,7 +2564,6 @@
         <div class="loc-help-dots-row"></div>
         <div class="loc-help-result" hidden>
           <div class="loc-help-result-row">
-            <div class="loc-help-result-icon"></div>
             <div class="loc-help-result-type">
               <span class="loc-help-result-title">Best match</span>
               <span class="loc-help-result-name"></span>
@@ -5542,13 +5541,13 @@
     if (!triggerBtn || !panel) return;
 
     const progressEl  = panel.querySelector('.loc-help-dots-row');
+    const dotsRuleEl  = panel.querySelector('.loc-help-dots-rule');
     const qIconEl     = panel.querySelector('.loc-help-q-icon');
     const qEl         = panel.querySelector('.loc-help-q');
     const answersEl   = panel.querySelector('.loc-help-answers');
     const yesBtn      = panel.querySelector('.loc-help-yes');
     const noBtn       = panel.querySelector('.loc-help-no');
     const resultEl    = panel.querySelector('.loc-help-result');
-    const resultIcon  = panel.querySelector('.loc-help-result-icon');
     const resultName  = panel.querySelector('.loc-help-result-name');
     const selectBtn   = panel.querySelector('.loc-help-select');
     const closeBtn       = panel.querySelector('.loc-help-close');
@@ -5570,6 +5569,7 @@
       progressEl.innerHTML = `<span class="loc-help-dots">${LOC_TREE.map((_, i) =>
         `<span class="loc-help-dot${i === step ? ' active' : ''}"></span>`).join('')}</span>`;
       progressEl.hidden = false;
+      if (dotsRuleEl) dotsRuleEl.hidden = false;
       const idx = LOC_TREE.indexOf(node);
       qEl.textContent = (isZH && idx !== -1 && ZH_LOC_TREE[idx]) ? ZH_LOC_TREE[idx] : node.text;
       qEl.hidden = false;
@@ -5675,7 +5675,9 @@
       currentResult = type;
       progressEl.innerHTML = '';
       progressEl.hidden = true;
+      if (dotsRuleEl) dotsRuleEl.hidden = true;
       qEl.hidden = true;
+      if (qIconEl) qIconEl.hidden = true;
       answersEl.hidden = true;
       resultEl.hidden = false;
       confirmSkipBtn.hidden = true;
@@ -5687,7 +5689,6 @@
       if (descEl) descEl.textContent = (isZH && ZH_LOC_TYPE_DESC[type]) ? ZH_LOC_TYPE_DESC[type] : (LOC_TYPE_DESC[type] || '');
       const picker = document.getElementById(`${section}-loc-picker`);
       const matchTile = picker ? picker.querySelector(`.loc-option[data-type="${type}"]`) : null;
-      resultIcon.innerHTML = matchTile ? matchTile.querySelector('.loc-option-icon').innerHTML : '';
       clearPulse();
       if (matchTile) matchTile.classList.add('pulsing');
     }
