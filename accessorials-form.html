@@ -434,12 +434,12 @@
   .dock-option:active { background: rgba(9,10,12,0.20); box-shadow: inset 0px 0px 0px 1px rgba(9,10,12,0.5), inset 0px 3px 8px rgba(9,10,12,0.5); }
   .dock-option:focus-visible { outline: none; box-shadow: 0px 0px 0px 1px white, 0px 0px 0px 4px #1d4ed8; }
   .dock-option.selected { border: 2px solid rgba(9,10,12,0.9); background: #ffffff; padding: 0 11px; }
-  @keyframes dock-pulse {
-    0%, 100% { border-color: rgba(9,10,12,0.20); box-shadow: 0 0 0 0 rgba(9,10,12,0), inset 0 1px 0 rgba(255,255,255,0.30), inset 0 -2px 0 rgba(9,10,12,0.05); }
-    50%       { border-color: rgba(9,10,12,0.45); box-shadow: 0 0 0 3px rgba(9,10,12,0.05), inset 0 1px 0 rgba(255,255,255,0.30), inset 0 -2px 0 rgba(9,10,12,0.05); }
+  @keyframes dock-panel-pulse {
+    0%, 100% { border-color: rgba(131,235,185,0.5); box-shadow: 0 0 0 0.4px rgba(131,235,185,0.3); }
+    50%       { border-color: #83ebb9;              box-shadow: 0 0 0 3px rgba(131,235,185,0.25); }
   }
-  .dock-option.pulsing {
-    animation: dock-pulse 1.4s ease-in-out infinite;
+  .dock-question.pulsing {
+    animation: dock-panel-pulse 2.7s ease-in-out infinite;
   }
 
   /* Radio circle inside ghost buttons */
@@ -4229,24 +4229,27 @@
       if (iconEl) iconEl.innerHTML = opt.querySelector('.loc-option-icon') ? opt.querySelector('.loc-option-icon').innerHTML : '';
     }
     dq.hidden = false;
+    dq.classList.add('pulsing');
     const dockBtns = dq.querySelectorAll('.dock-option');
     dockBtns.forEach(b => { b.style.width = ''; });
     const maxW = Math.max(...[...dockBtns].map(b => b.offsetWidth));
-    dockBtns.forEach(b => { b.style.width = maxW + 'px'; b.classList.add('pulsing'); });
+    dockBtns.forEach(b => { b.style.width = maxW + 'px'; });
   }
 
   function hideDockQuestion(section) {
     const picker = document.getElementById(`${section}-loc-picker`);
     const dq = picker.querySelector('.dock-question');
     dq.hidden = true;
-    dq.querySelectorAll('.dock-option').forEach(o => { o.classList.remove('selected'); o.classList.remove('pulsing'); });
+    dq.classList.remove('pulsing');
+    dq.querySelectorAll('.dock-option').forEach(o => o.classList.remove('selected'));
     dockAnswers[section] = null;
   }
 
   // Dock Yes/No handlers
   document.querySelectorAll('#pickup-dock-question .dock-option').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('#pickup-dock-question .dock-option').forEach(o => { o.classList.remove('selected'); o.classList.remove('pulsing'); });
+      document.querySelectorAll('#pickup-dock-question .dock-option').forEach(o => o.classList.remove('selected'));
+      document.getElementById('pickup-dock-question').classList.remove('pulsing');
       btn.classList.add('selected');
       dockAnswers.pickup = btn.dataset.dock;
       const selected = document.querySelector('#pickup-loc-picker .loc-option.selected');
@@ -4267,7 +4270,8 @@
 
   document.querySelectorAll('#deliver-dock-question .dock-option').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('#deliver-dock-question .dock-option').forEach(o => { o.classList.remove('selected'); o.classList.remove('pulsing'); });
+      document.querySelectorAll('#deliver-dock-question .dock-option').forEach(o => o.classList.remove('selected'));
+      document.getElementById('deliver-dock-question').classList.remove('pulsing');
       btn.classList.add('selected');
       dockAnswers.deliver = btn.dataset.dock;
       const selected = document.querySelector('#deliver-loc-picker .loc-option.selected');
