@@ -68,6 +68,7 @@
     flex-direction: column;
     gap: 10px;
     z-index: 200;
+    width: min(134px, calc(50vw - 36px));
   }
   .page-nav-item {
     display: flex;
@@ -75,8 +76,10 @@
     gap: 8px;
     background: none;
     border: none;
+    width: 100%;
+    box-sizing: border-box;
     padding: 5px 8px 5px 6px;
-    margin: -5px -8px -5px -6px;
+    margin: -5px 0 -5px -6px;
     cursor: pointer;
     border-radius: 6px;
     transition: background 0.15s ease;
@@ -784,7 +787,9 @@
     white-space: nowrap;
   }
   #extra-svc-panel .acc-panel-title,
-  #d-extra-svc-panel .acc-panel-title { color: var(--color-label-secondary); }
+  #d-extra-svc-panel .acc-panel-title,
+  #acc-panel .acc-panel-title,
+  #d-acc-panel .acc-panel-title { color: var(--color-label-secondary); }
 
   /* ── Descriptions toggle bar ── */
   .acc-desc-bar {
