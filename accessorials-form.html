@@ -135,7 +135,7 @@
     display: flex; flex-direction: column; gap: 0;
   }
   .loc-picker-body { display: flex; flex-direction: column; gap: 12px; transition: opacity 0.1s ease; }
-  .loc-picker-body-wrap { overflow: hidden; max-height: 700px; transition: max-height 0.4s ease; padding: 0 4px; margin: 0 -4px; }
+  .loc-picker-body-wrap { overflow: hidden; max-height: 700px; transition: max-height 0.4s ease; padding: 4px; margin: -4px; }
   .loc-picker-body-wrap.collapsed { max-height: 0; }
   .loc-picker-block:has(.loc-picker-body-wrap.collapsed) { padding: 12px 16px; cursor: pointer; }
   .loc-picker-block:has(.loc-picker-body-wrap.collapsed):hover { background: rgba(9,10,12,0.04); }
@@ -310,6 +310,21 @@
     display: flex; align-items: center; justify-content: center; gap: 6px;
   }
   .loc-help-confirm-skip:hover { background: #23262a; }
+  .loc-help-confirm-skip:active { background: #090a0c; box-shadow: inset 0px 0px 0px 1px rgba(9,10,12,0.5), inset 0px 3px 8px rgba(9,10,12,0.5); }
+  .loc-help-skip-actions { display: flex; gap: 8px; }
+  .loc-help-start-again {
+    flex: 1; min-height: 32px; padding: 0 14px;
+    background: transparent;
+    border: 1px solid rgba(9,10,12,0.3); border-radius: var(--radius-base);
+    font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;
+    color: var(--color-label-primary);
+    box-shadow: inset 0px 1px 0px rgba(255,255,255,0.3), inset 0px -2px 0px rgba(9,10,12,0.05);
+    overflow: hidden; transition: background 0.15s, box-shadow 0.15s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .loc-help-start-again:hover { background: rgba(9,10,12,0.06); }
+  .loc-help-start-again:active { background: rgba(9,10,12,0.12); box-shadow: inset 0px 0px 0px 1px rgba(9,10,12,0.5), inset 0px 3px 8px rgba(9,10,12,0.5); }
+  .loc-help-start-again:focus-visible { outline: none; box-shadow: 0px 0px 0px 1px white, 0px 0px 0px 4px #1d4ed8; }
   .loc-picker-question {
     font-size: 14px; font-weight: 600; color: var(--color-label-primary);
     display: flex; align-items: center; gap: 4px;
@@ -2085,7 +2100,10 @@
           </div>
           <button class="loc-help-select" type="button">Select this type</button>
         </div>
-        <button class="loc-help-confirm-skip" type="button" hidden>Continue</button>
+        <div class="loc-help-skip-actions" hidden>
+          <button class="loc-help-start-again" type="button">Start again</button>
+          <button class="loc-help-confirm-skip" type="button">Continue</button>
+        </div>
       </div>
       </div><!-- /loc-picker-body -->
       </div><!-- /loc-picker-body-wrap -->
@@ -2697,7 +2715,10 @@
           </div>
           <button class="loc-help-select" type="button">Select this type</button>
         </div>
-        <button class="loc-help-confirm-skip" type="button" hidden>Continue</button>
+        <div class="loc-help-skip-actions" hidden>
+          <button class="loc-help-start-again" type="button">Start again</button>
+          <button class="loc-help-confirm-skip" type="button">Continue</button>
+        </div>
       </div>
       </div><!-- /loc-picker-body -->
       </div><!-- /loc-picker-body-wrap -->
@@ -5889,7 +5910,9 @@
     const backBtn        = panel.querySelector('.loc-help-back');
     const backWrap       = panel.querySelector('.loc-help-back-wrap');
     const skipBtn        = panel.querySelector('.loc-help-skip');
+    const skipActionsEl  = panel.querySelector('.loc-help-skip-actions');
     const confirmSkipBtn = panel.querySelector('.loc-help-confirm-skip');
+    const startAgainBtn  = panel.querySelector('.loc-help-start-again');
 
     let history = []; // each entry: { node, answer } where answer is 'yes'|'no'|'skip'|null
     let currentNode = null;
@@ -5911,7 +5934,7 @@
       if (qIconEl) { qIconEl.innerHTML = LOC_Q_ICONS[node.id] || ''; qIconEl.hidden = !LOC_Q_ICONS[node.id]; }
       answersEl.hidden = false;
       resultEl.hidden = true;
-      confirmSkipBtn.hidden = true;
+      skipActionsEl.hidden = true;
       backWrap.style.display = history.length > 0 ? 'flex' : 'none';
     }
 
@@ -5930,7 +5953,7 @@
       qEl.hidden = false;
       answersEl.hidden = true;
       resultEl.hidden = true;
-      confirmSkipBtn.hidden = false;
+      skipActionsEl.hidden = false;
       backWrap.style.display = 'flex';
     }
 
@@ -6015,7 +6038,7 @@
       if (qIconEl) qIconEl.hidden = true;
       answersEl.hidden = true;
       resultEl.hidden = false;
-      confirmSkipBtn.hidden = true;
+      skipActionsEl.hidden = true;
       backWrap.style.display = 'flex';
       const typeName = (isZH && ZH_LOC_TYPE_LABELS[type]) ? ZH_LOC_TYPE_LABELS[type] : (LOC_TYPE_LABELS[type] || type);
       resultName.textContent = typeName;
@@ -6096,6 +6119,7 @@
     yesBtn.addEventListener('click',  () => navigate('yes'));
     noBtn.addEventListener('click',   () => navigate('no'));
     skipBtn.addEventListener('click', () => showUnknown());
+    startAgainBtn.addEventListener('click', () => open());
     confirmSkipBtn.addEventListener('click', () => {
       const gated = document.getElementById(`loc-gated-${section}`);
       if (gated) { gated.classList.remove('loc-gated'); gated.removeAttribute('inert'); }
