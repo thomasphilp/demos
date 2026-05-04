@@ -763,6 +763,11 @@
   }
 
   .acc-list { padding: 8px; display: flex; flex-direction: column; gap: 4px; }
+  .acc-list-divider {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--color-label-secondary); padding: 6px 6px 2px 6px; user-select: none;
+  }
+  .acc-list-divider:first-child { padding-top: 2px; }
 
   .acc-item {
     display: flex; gap: 8px; align-items: flex-start;
@@ -2128,6 +2133,31 @@
 
         </div>
 
+        <!-- Extra Services dropdown (pickup) -->
+        <div class="field" style="flex:1; min-width:0;">
+          <div class="field-label"><span>Extra services</span></div>
+          <div class="dropdown-field" id="extra-svc-dropdown-field">
+            <button class="dropdown-btn" id="extra-svc-btn" type="button" aria-expanded="false">
+              <div class="dropdown-btn-left">
+                <span class="btn-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clip-rule="evenodd"/>
+                  </svg>
+                </span>
+                <span class="dropdown-btn-text" id="extra-svc-label">None</span>
+              </div>
+              <div class="dropdown-caret">
+                <svg viewBox="-1 -1 12 8" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 0L10 0L5 6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+                </svg>
+              </div>
+            </button>
+            <div class="acc-panel" id="extra-svc-panel">
+              <div class="acc-list" id="extra-svc-list"></div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <!-- First + Last name -->
@@ -2699,6 +2729,31 @@
                 </button>
               </div>
               <div class="acc-list" id="d-acc-list"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Extra Services dropdown (deliver) -->
+        <div class="field" style="flex:1; min-width:0;">
+          <div class="field-label"><span>Extra services</span></div>
+          <div class="dropdown-field" id="d-extra-svc-dropdown-field">
+            <button class="dropdown-btn" id="d-extra-svc-btn" type="button" aria-expanded="false">
+              <div class="dropdown-btn-left">
+                <span class="btn-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clip-rule="evenodd"/>
+                  </svg>
+                </span>
+                <span class="dropdown-btn-text" id="d-extra-svc-label">None</span>
+              </div>
+              <div class="dropdown-caret">
+                <svg viewBox="-1 -1 12 8" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 0L10 0L5 6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+                </svg>
+              </div>
+            </button>
+            <div class="acc-panel" id="d-extra-svc-panel">
+              <div class="acc-list" id="d-extra-svc-list"></div>
             </div>
           </div>
         </div>
@@ -3866,7 +3921,24 @@
     const list = document.getElementById('acc-list');
     list.innerHTML = '';
     const sorted = [...ACC_ITEMS].sort((a, b) => (b.warn ? 1 : 0) - (a.warn ? 1 : 0));
+    const hasRec = sorted.some(i => i.warn);
+    const hasOther = sorted.some(i => !i.warn);
+    let recDividerAdded = false, otherDividerAdded = false;
     sorted.forEach(item => {
+      if (hasRec && item.warn && !recDividerAdded) {
+        const d = document.createElement('div');
+        d.className = 'acc-list-divider';
+        d.textContent = 'Recommended services';
+        list.appendChild(d);
+        recDividerAdded = true;
+      }
+      if (hasOther && !item.warn && !otherDividerAdded) {
+        const d = document.createElement('div');
+        d.className = 'acc-list-divider';
+        d.textContent = 'Services';
+        list.appendChild(d);
+        otherDividerAdded = true;
+      }
       const el = document.createElement('div');
       el.className = 'acc-item' + (item.selected ? ' selected' : '');
       el.dataset.id = item.id;
@@ -3877,7 +3949,6 @@
             <p class="acc-item-label">${item.label}</p>
             <p class="acc-item-desc">${showDesc ? item.desc : item.shortDesc}</p>
           </div>
-          ${item.warn ? `<span class="tooltip-tag" style="align-self:flex-start;margin-top:2px;">Recommended</span>` : ''}
         </div>
       `;
       el.addEventListener('click', (e) => {
@@ -4569,7 +4640,24 @@
     const list = document.getElementById('d-acc-list');
     list.innerHTML = '';
     const sorted = [...DELIVER_ACC_ITEMS].sort((a, b) => (b.warn ? 1 : 0) - (a.warn ? 1 : 0));
+    const dHasRec = sorted.some(i => i.warn);
+    const dHasOther = sorted.some(i => !i.warn);
+    let dRecDividerAdded = false, dOtherDividerAdded = false;
     sorted.forEach(item => {
+      if (dHasRec && item.warn && !dRecDividerAdded) {
+        const d = document.createElement('div');
+        d.className = 'acc-list-divider';
+        d.textContent = 'Recommended services';
+        list.appendChild(d);
+        dRecDividerAdded = true;
+      }
+      if (dHasOther && !item.warn && !dOtherDividerAdded) {
+        const d = document.createElement('div');
+        d.className = 'acc-list-divider';
+        d.textContent = 'Services';
+        list.appendChild(d);
+        dOtherDividerAdded = true;
+      }
       const el = document.createElement('div');
       el.className = 'acc-item' + (item.selected ? ' selected' : '');
       el.dataset.id = item.id;
@@ -4580,7 +4668,6 @@
             <p class="acc-item-label">${item.label}</p>
             <p class="acc-item-desc">${dShowDesc ? item.desc : item.shortDesc}</p>
           </div>
-          ${item.warn ? `<span class="tooltip-tag" style="align-self:flex-start;margin-top:2px;">Recommended</span>` : ''}
         </div>
       `;
       el.addEventListener('click', (e) => {
@@ -4742,6 +4829,122 @@
 
   dRenderList();
   dUpdateBtnLabel();
+
+  // ── Extra Services (pickup) ──
+  const EXTRA_SVC_ITEMS = [
+    { id: 'appointment',     label: 'Appointment',     desc: 'Carrier will contact you or the location to schedule a pickup or delivery window.', selected: false },
+    { id: 'inside-pickup',   label: 'Inside pickup',   desc: 'Carrier will pick up freight from inside the building, beyond the threshold or dock.', selected: false },
+    { id: 'inside-delivery', label: 'Inside delivery', desc: 'Carrier will bring freight inside the building, beyond the threshold or dock.', selected: false },
+  ];
+
+  function renderExtraSvcList() {
+    const list = document.getElementById('extra-svc-list');
+    list.innerHTML = '';
+    EXTRA_SVC_ITEMS.forEach(item => {
+      const el = document.createElement('div');
+      el.className = 'acc-item' + (item.selected ? ' selected' : '');
+      el.innerHTML = `
+        <div class="acc-checkbox">${item.selected ? checkSVG : ''}</div>
+        <div class="acc-item-content">
+          <p class="acc-item-label">${item.label}</p>
+          <p class="acc-item-desc">${item.desc}</p>
+        </div>
+      `;
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        item.selected = !item.selected;
+        renderExtraSvcList();
+        updateExtraSvcLabel();
+      });
+      list.appendChild(el);
+    });
+  }
+
+  function updateExtraSvcLabel() {
+    const selected = EXTRA_SVC_ITEMS.filter(i => i.selected);
+    document.getElementById('extra-svc-label').textContent =
+      selected.length === 0 ? 'None' :
+      selected.length === 1 ? selected[0].label :
+      `${selected.length} selected`;
+  }
+
+  const extraSvcBtn   = document.getElementById('extra-svc-btn');
+  const extraSvcPanel = document.getElementById('extra-svc-panel');
+
+  extraSvcBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const open = extraSvcPanel.classList.toggle('open');
+    extraSvcBtn.classList.toggle('open', open);
+    extraSvcBtn.setAttribute('aria-expanded', open);
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!document.getElementById('extra-svc-dropdown-field').contains(e.target)) {
+      extraSvcPanel.classList.remove('open');
+      extraSvcBtn.classList.remove('open');
+      extraSvcBtn.setAttribute('aria-expanded', false);
+    }
+  });
+
+  renderExtraSvcList();
+
+  // ── Extra Services (deliver) ──
+  const D_EXTRA_SVC_ITEMS = [
+    { id: 'd-appointment',     label: 'Appointment',     desc: 'Carrier will contact you or the location to schedule a pickup or delivery window.', selected: false },
+    { id: 'd-inside-pickup',   label: 'Inside pickup',   desc: 'Carrier will pick up freight from inside the building, beyond the threshold or dock.', selected: false },
+    { id: 'd-inside-delivery', label: 'Inside delivery', desc: 'Carrier will bring freight inside the building, beyond the threshold or dock.', selected: false },
+  ];
+
+  function dRenderExtraSvcList() {
+    const list = document.getElementById('d-extra-svc-list');
+    list.innerHTML = '';
+    D_EXTRA_SVC_ITEMS.forEach(item => {
+      const el = document.createElement('div');
+      el.className = 'acc-item' + (item.selected ? ' selected' : '');
+      el.innerHTML = `
+        <div class="acc-checkbox">${item.selected ? checkSVG : ''}</div>
+        <div class="acc-item-content">
+          <p class="acc-item-label">${item.label}</p>
+          <p class="acc-item-desc">${item.desc}</p>
+        </div>
+      `;
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        item.selected = !item.selected;
+        dRenderExtraSvcList();
+        dUpdateExtraSvcLabel();
+      });
+      list.appendChild(el);
+    });
+  }
+
+  function dUpdateExtraSvcLabel() {
+    const selected = D_EXTRA_SVC_ITEMS.filter(i => i.selected);
+    document.getElementById('d-extra-svc-label').textContent =
+      selected.length === 0 ? 'None' :
+      selected.length === 1 ? selected[0].label :
+      `${selected.length} selected`;
+  }
+
+  const dExtraSvcBtn   = document.getElementById('d-extra-svc-btn');
+  const dExtraSvcPanel = document.getElementById('d-extra-svc-panel');
+
+  dExtraSvcBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const open = dExtraSvcPanel.classList.toggle('open');
+    dExtraSvcBtn.classList.toggle('open', open);
+    dExtraSvcBtn.setAttribute('aria-expanded', open);
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!document.getElementById('d-extra-svc-dropdown-field').contains(e.target)) {
+      dExtraSvcPanel.classList.remove('open');
+      dExtraSvcBtn.classList.remove('open');
+      dExtraSvcBtn.setAttribute('aria-expanded', false);
+    }
+  });
+
+  dRenderExtraSvcList();
 
   // ── FBA appointment checkbox toggle ──
   document.getElementById('deliver-fba-appointment').addEventListener('change', function() {
