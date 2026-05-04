@@ -4004,7 +4004,7 @@
     } else {
       if (summaryLabel) summaryLabel.hidden = false;
       summaryIcon.innerHTML = '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 11v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M8 9c0-1.5 2-1.5 2-3a2 2 0 1 0-4 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
-      summaryName.textContent = isZH ? '未指定' : 'Not specified';
+      summaryName.textContent = isZH ? '未指定' : 'Not selected';
     }
     if (summaryDetail && type !== 'skip-rec') {
       const dockAns = dockAnswers[section];
@@ -6012,7 +6012,7 @@
       const selected = picker.querySelector('.loc-option.selected');
       const type = selected ? selected.dataset.type : null;
       if (type) summaryName.textContent = (isZH && ZH_LOC_TYPE_LABELS[type]) ? ZH_LOC_TYPE_LABELS[type] : (LOC_TYPE_LABELS[type] || type);
-      else summaryName.textContent = isZH ? '未指定' : 'Not specified';
+      else summaryName.textContent = isZH ? '未指定' : 'Not selected';
     });
 
     // Update tile info tooltips
