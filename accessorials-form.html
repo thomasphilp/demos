@@ -170,7 +170,7 @@
   .loc-help-close:hover { background: rgba(9,10,12,0.06); }
   .loc-help-close svg { width: 7px; height: 7px; }
   .loc-help-q {
-    font-size: 14px; font-weight: 600; color: var(--color-label-primary); line-height: 1.2;
+    font-size: 14px; font-weight: 600; color: var(--color-label-primary); line-height: 1.2; margin-top: 6px;
   }
   .loc-help-q.is-label {
     font-size: 14px; font-weight: 600; line-height: 1.2;
@@ -189,6 +189,7 @@
   .loc-help-dots { display: flex; gap: 5px; }
   .loc-help-dots-row { display: flex; justify-content: center; padding: 10px 0 0; }
   .loc-help-rule { border: none; border-top: 1px solid var(--color-control-border); margin: 0 -16px 0 -20px; }
+  .loc-help-dots-rule { margin-top: 6px; }
   .loc-help-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--color-control-border); flex-shrink: 0; }
   .loc-help-dot.active { background: var(--color-label-secondary); }
   .loc-help-result { display: flex; flex-direction: column; gap: 10px; }
@@ -1969,7 +1970,7 @@
           <button class="loc-help-no" type="button">No</button>
           <button class="loc-help-skip" type="button">I don't know</button>
         </div>
-        <hr class="loc-help-rule">
+        <hr class="loc-help-rule loc-help-dots-rule">
         <div class="loc-help-dots-row"></div>
         <div class="loc-help-result" hidden>
           <div class="loc-help-result-row">
@@ -2550,7 +2551,7 @@
           <button class="loc-help-no" type="button">No</button>
           <button class="loc-help-skip" type="button">I don't know</button>
         </div>
-        <hr class="loc-help-rule">
+        <hr class="loc-help-rule loc-help-dots-rule">
         <div class="loc-help-dots-row"></div>
         <div class="loc-help-result" hidden>
           <div class="loc-help-result-row">
