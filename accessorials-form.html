@@ -58,6 +58,58 @@
     box-sizing: border-box;
   }
 
+  /* ── Page section paginator ── */
+  .page-nav {
+    position: fixed;
+    left: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 200;
+  }
+  .page-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  .page-nav-line {
+    width: 14px;
+    height: 2px;
+    border-radius: 2px;
+    background: rgba(9,10,12,0.18);
+    flex-shrink: 0;
+    transition: width 0.15s ease, background 0.15s ease;
+  }
+  .page-nav-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(9,10,12,0.35);
+    white-space: nowrap;
+    font-family: 'Inter', sans-serif;
+    transition: color 0.15s ease, font-weight 0.15s ease;
+  }
+  .page-nav-item:hover .page-nav-line {
+    width: 20px;
+    background: rgba(9,10,12,0.35);
+  }
+  .page-nav-item:hover .page-nav-label {
+    color: rgba(9,10,12,0.65);
+  }
+  .page-nav-item.active .page-nav-line {
+    width: 22px;
+    background: var(--color-tint);
+  }
+  .page-nav-item.active .page-nav-label {
+    color: rgba(9,10,12,0.9);
+    font-weight: 600;
+  }
+
   .form-wrapper {
     max-width: 720px;
     width: 100%;
@@ -1796,8 +1848,23 @@
   <a href="?loc=residential" id="demo-link-residential">Location pre-selected</a>
 </div>
 <div id="loc-tile-tooltip-global"></div>
+<nav class="page-nav" id="page-nav" aria-label="Form sections">
+  <button class="page-nav-item active" data-target="section-pickup" type="button">
+    <span class="page-nav-line"></span>
+    <span class="page-nav-label">Pickup from</span>
+  </button>
+  <button class="page-nav-item" data-target="section-deliver" type="button">
+    <span class="page-nav-line"></span>
+    <span class="page-nav-label">Deliver to</span>
+  </button>
+  <button class="page-nav-item" data-target="section-cargo" type="button">
+    <span class="page-nav-line"></span>
+    <span class="page-nav-label">Cargo</span>
+  </button>
+</nav>
+
 <div class="form-wrapper">
-  <div class="section">
+  <div class="section" id="section-pickup">
 
     <!-- Section heading -->
     <div class="section-heading">
@@ -6293,6 +6360,33 @@
     } else {
       linkNone.classList.add('active');
     }
+  })();
+
+  // ── Section paginator ──────────────────────────────────────────────────────
+  (function() {
+    const navItems = document.querySelectorAll('.page-nav-item');
+    const sections = ['section-pickup', 'section-deliver', 'section-cargo'].map(id => document.getElementById(id));
+
+    function setActive(id) {
+      navItems.forEach(item => item.classList.toggle('active', item.dataset.target === id));
+    }
+
+    // Click → scroll to section
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const target = document.getElementById(item.dataset.target);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    // IntersectionObserver → update active on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) setActive(entry.target.id);
+      });
+    }, { threshold: 0.25 });
+
+    sections.forEach(s => { if (s) observer.observe(s); });
   })();
 </script>
 </body>
