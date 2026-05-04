@@ -435,6 +435,13 @@
   .dock-option:active { background: rgba(9,10,12,0.20); box-shadow: inset 0px 0px 0px 1px rgba(9,10,12,0.5), inset 0px 3px 8px rgba(9,10,12,0.5); }
   .dock-option:focus-visible { outline: none; box-shadow: 0px 0px 0px 1px white, 0px 0px 0px 4px #1d4ed8; }
   .dock-option.selected { border: 2px solid rgba(9,10,12,0.9); background: #ffffff; padding: 0 11px; }
+  @keyframes dock-pulse {
+    0%, 100% { border-color: rgba(9,10,12,0.20); box-shadow: 0 0 0 0 rgba(9,10,12,0), inset 0 1px 0 rgba(255,255,255,0.30), inset 0 -2px 0 rgba(9,10,12,0.05); }
+    50%       { border-color: rgba(9,10,12,0.45); box-shadow: 0 0 0 3px rgba(9,10,12,0.05), inset 0 1px 0 rgba(255,255,255,0.30), inset 0 -2px 0 rgba(9,10,12,0.05); }
+  }
+  .dock-option.pulsing {
+    animation: dock-pulse 1.4s ease-in-out infinite;
+  }
 
   /* Radio circle inside ghost buttons */
   .btn-radio {
@@ -4220,21 +4227,21 @@
     const dockBtns = dq.querySelectorAll('.dock-option');
     dockBtns.forEach(b => { b.style.width = ''; });
     const maxW = Math.max(...[...dockBtns].map(b => b.offsetWidth));
-    dockBtns.forEach(b => { b.style.width = maxW + 'px'; });
+    dockBtns.forEach(b => { b.style.width = maxW + 'px'; b.classList.add('pulsing'); });
   }
 
   function hideDockQuestion(section) {
     const picker = document.getElementById(`${section}-loc-picker`);
     const dq = picker.querySelector('.dock-question');
     dq.hidden = true;
-    dq.querySelectorAll('.dock-option').forEach(o => o.classList.remove('selected'));
+    dq.querySelectorAll('.dock-option').forEach(o => { o.classList.remove('selected'); o.classList.remove('pulsing'); });
     dockAnswers[section] = null;
   }
 
   // Dock Yes/No handlers
   document.querySelectorAll('#pickup-dock-question .dock-option').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('#pickup-dock-question .dock-option').forEach(o => o.classList.remove('selected'));
+      document.querySelectorAll('#pickup-dock-question .dock-option').forEach(o => { o.classList.remove('selected'); o.classList.remove('pulsing'); });
       btn.classList.add('selected');
       dockAnswers.pickup = btn.dataset.dock;
       const selected = document.querySelector('#pickup-loc-picker .loc-option.selected');
@@ -4255,7 +4262,7 @@
 
   document.querySelectorAll('#deliver-dock-question .dock-option').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('#deliver-dock-question .dock-option').forEach(o => o.classList.remove('selected'));
+      document.querySelectorAll('#deliver-dock-question .dock-option').forEach(o => { o.classList.remove('selected'); o.classList.remove('pulsing'); });
       btn.classList.add('selected');
       dockAnswers.deliver = btn.dataset.dock;
       const selected = document.querySelector('#deliver-loc-picker .loc-option.selected');
@@ -4350,24 +4357,26 @@
     });
   });
 
-  // ── Close all dropdowns helper ──
-  const ALL_DROPDOWNS = [
-    { btnId: 'acc-dropdown-btn',     panelId: 'acc-panel' },
-    { btnId: 'd-acc-dropdown-btn',   panelId: 'd-acc-panel' },
-    { btnId: 'extra-svc-btn',        panelId: 'extra-svc-panel' },
-    { btnId: 'd-extra-svc-btn',      panelId: 'd-extra-svc-panel' },
-  ];
-  function closeAllDropdowns(exceptPanelId) {
-    ALL_DROPDOWNS.forEach(({ btnId, panelId }) => {
-      if (panelId === exceptPanelId) return;
-      const btn   = document.getElementById(btnId);
-      const panel = document.getElementById(panelId);
-      if (!btn || !panel) return;
+  // ── Global dropdown exclusivity (mousedown capture fires before stopPropagation) ──
+  document.addEventListener('mousedown', function(e) {
+    // Close all standard .acc-panel.open elements whose field doesn't contain the click
+    document.querySelectorAll('.acc-panel.open').forEach(panel => {
+      const field = panel.closest('.dropdown-field');
+      if (field && field.contains(e.target)) return;
       panel.classList.remove('open');
-      btn.classList.remove('open');
-      btn.setAttribute('aria-expanded', false);
+      const btn = field ? field.querySelector('.dropdown-btn, .pc-type-btn') : null;
+      if (btn) { btn.classList.remove('open'); btn.setAttribute('aria-expanded', false); }
     });
-  }
+    // Close commodity fc panels (use style.display instead of .open class)
+    document.querySelectorAll('.acc-panel').forEach(panel => {
+      if (panel.style.display !== 'flex') return;
+      const field = panel.closest('.dropdown-field');
+      if (field && field.contains(e.target)) return;
+      panel.style.display = 'none';
+      const btn = field ? field.querySelector('.dropdown-btn') : null;
+      if (btn) btn.classList.remove('open');
+    });
+  }, true);
 
   // ── Dropdown toggle ──
   const accBtn = document.getElementById('acc-dropdown-btn');
@@ -4376,9 +4385,7 @@
   accBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     closeAllTooltips();
-    const willOpen = !accPanel.classList.contains('open');
-    closeAllDropdowns('acc-panel');
-    const open = willOpen ? (accPanel.classList.add('open'), true) : (accPanel.classList.remove('open'), false);
+    const open = accPanel.classList.toggle('open');
     accBtn.classList.toggle('open', open);
     accBtn.setAttribute('aria-expanded', open);
   });
@@ -4905,9 +4912,7 @@
   dAccBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     closeAllTooltips();
-    const willOpen = !dAccPanel.classList.contains('open');
-    closeAllDropdowns('d-acc-panel');
-    const open = willOpen ? (dAccPanel.classList.add('open'), true) : (dAccPanel.classList.remove('open'), false);
+    const open = dAccPanel.classList.toggle('open');
     dAccBtn.classList.toggle('open', open);
     dAccBtn.setAttribute('aria-expanded', open);
   });
@@ -4978,9 +4983,7 @@
 
   extraSvcBtn.addEventListener('click', (e) => {
     e.stopPropagation();
-    const willOpen = !extraSvcPanel.classList.contains('open');
-    closeAllDropdowns('extra-svc-panel');
-    const open = willOpen ? (extraSvcPanel.classList.add('open'), true) : (extraSvcPanel.classList.remove('open'), false);
+    const open = extraSvcPanel.classList.toggle('open');
     extraSvcBtn.classList.toggle('open', open);
     extraSvcBtn.setAttribute('aria-expanded', open);
   });
@@ -5040,9 +5043,7 @@
 
   dExtraSvcBtn.addEventListener('click', (e) => {
     e.stopPropagation();
-    const willOpen = !dExtraSvcPanel.classList.contains('open');
-    closeAllDropdowns('d-extra-svc-panel');
-    const open = willOpen ? (dExtraSvcPanel.classList.add('open'), true) : (dExtraSvcPanel.classList.remove('open'), false);
+    const open = dExtraSvcPanel.classList.toggle('open');
     dExtraSvcBtn.classList.toggle('open', open);
     dExtraSvcBtn.setAttribute('aria-expanded', open);
   });
