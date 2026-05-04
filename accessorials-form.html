@@ -301,7 +301,7 @@
   .loc-help-select:active { background: #002b16; box-shadow: inset 0px 2px 4px rgba(0,0,0,0.3), inset 0px 1px 0px rgba(255,255,255,0.15), inset 0px -1px 0px rgba(9,10,12,0.12); }
   .loc-help-select:focus-visible { outline: none; box-shadow: 0px 0px 0px 1px white, 0px 0px 0px 4px #1d4ed8; }
   .loc-help-confirm-skip {
-    width: 100%; min-height: 32px; padding: 0 14px;
+    min-height: 32px; padding: 0 14px;
     background: #090a0c; color: white;
     border: none; border-radius: var(--radius-base);
     font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;
@@ -311,9 +311,9 @@
   }
   .loc-help-confirm-skip:hover { background: #23262a; }
   .loc-help-confirm-skip:active { background: #090a0c; box-shadow: inset 0px 0px 0px 1px rgba(9,10,12,0.5), inset 0px 3px 8px rgba(9,10,12,0.5); }
-  .loc-help-skip-actions { display: flex; gap: 8px; }
+  .loc-help-skip-actions { display: flex; gap: 8px; width: fit-content; }
   .loc-help-start-again {
-    flex: 1; min-height: 32px; padding: 0 14px;
+    min-height: 32px; padding: 0 14px;
     background: transparent;
     border: 1px solid rgba(9,10,12,0.3); border-radius: var(--radius-base);
     font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;
