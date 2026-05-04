@@ -216,10 +216,10 @@
   }
   .loc-help-select {
     display: inline-flex; align-items: center;
-    height: 48px; padding: 0 24px;
+    height: 36px; padding: 0 16px;
     background: var(--color-tint); color: #fff;
     border: none; border-radius: var(--radius-base);
-    font-size: 14px; font-weight: 600;
+    font-size: 12px; font-weight: 600;
     font-family: 'Inter', sans-serif;
     box-shadow: var(--shadow-inset-dense);
     cursor: pointer; transition: filter 0.15s;
@@ -5503,10 +5503,10 @@
 
   // ── Location type decision tree ──────────────────────────────────────────
   const LOC_TREE = [
-    { id:'q1', text:'Is this a home, apartment, or residential address?',                                                     yes:'residential',    no:'q2' },
-    { id:'q2', text:'Does entry require special access — like a military base, government building, school, or farm?',        yes:'limited-access', no:'q3' },
-    { id:'q3', text:'Is this a port, airport, freight terminal, or customs facility?',                                        yes:'port',           no:'q4' },
-    { id:'q4', text:'Is this a convention center, trade show venue, hotel, or event space?',                                  yes:'convention',     no:'commercial' },
+    { id:'q1', text:'Is this a home, apartment, condo, or other residential address?',                                        yes:'residential',    no:'q2' },
+    { id:'q2', text:'Does this location have restricted access or special entry requirements — like a military base, government facility, school, church, or farm?', yes:'limited-access', no:'q3' },
+    { id:'q3', text:'Is this an airport, seaport, rail yard, or other port or cargo facility?',                               yes:'port',           no:'q4' },
+    { id:'q4', text:'Is this a convention center, trade show, stadium, hotel, or event venue?',                               yes:'convention',     no:'commercial' },
   ];
   const LOC_TYPE_LABELS = {
     'commercial':       'Commercial',
@@ -5894,11 +5894,10 @@
     'Search address': '搜索地址',
   };
   const ZH_LOC_TREE = [
-    '该建筑是否有供卡车使用的高台装卸台？',
-    '这是住宅、公寓或住宅地址吗？',
-    '进入是否需要特殊许可——例如医院、学校或军事基地？',
-    '这是港口、货运仓库或海关设施吗？',
-    '这是会展中心、贸易展览会或活动场馆吗？',
+    '这是住宅、公寓、共管公寓或其他住宅地址吗？',
+    '该地点是否有门禁限制或特殊进入要求——例如军事基地、政府设施、学校、教堂或农场？',
+    '这是机场、海港、铁路货场或其他港口或货运设施吗？',
+    '这是会展中心、贸易展览会、体育馆、酒店或活动场馆吗？',
   ];
   const ZH_LOC_TYPE_LABELS = {
     'commercial': '商业', 'residential': '住宅',
