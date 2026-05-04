@@ -429,11 +429,11 @@
     animation: loc-pulse 1.4s ease-in-out infinite;
   }
   @keyframes panel-pulse {
-    0%, 100% { border-color: #b794f4; box-shadow: 0 0 0 0 rgba(183,148,244,0); }
-    50%       { border-color: #a855f7; box-shadow: 0 0 0 3px rgba(183,148,244,0.18); }
+    0%, 100% { border-color: #b794f4; box-shadow: 0 0 0 0 rgba(167,139,250,0); }
+    50%       { border-color: #7c3aed; box-shadow: 0 0 0 5px rgba(167,139,250,0.28); }
   }
   .loc-help-panel.pulsing {
-    animation: panel-pulse 1.4s ease-in-out infinite;
+    animation: panel-pulse 1.4s ease-in-out infinite !important;
   }
   .loc-option-icon { width: 16px; height: 16px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 14px; line-height: 1; color: rgba(9,10,12,0.2); transition: color 0.15s; }
   .loc-option.selected .loc-option-icon { color: rgba(9,10,12,0.9); }
@@ -5697,6 +5697,8 @@
       const matchTile = picker ? picker.querySelector(`.loc-option[data-type="${type}"]`) : null;
       clearPulse();
       if (matchTile) matchTile.classList.add('pulsing');
+      panel.classList.remove('pulsing');
+      void panel.offsetWidth; // force reflow so animation restarts
       panel.classList.add('pulsing');
     }
 
