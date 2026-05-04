@@ -311,7 +311,7 @@
   }
   .loc-help-confirm-skip:hover { background: #23262a; }
   .loc-help-confirm-skip:active { background: #090a0c; box-shadow: inset 0px 0px 0px 1px rgba(9,10,12,0.5), inset 0px 3px 8px rgba(9,10,12,0.5); }
-  .loc-help-skip-actions { display: flex; gap: 8px; width: fit-content; }
+  .loc-help-skip-actions { display: flex; gap: 8px; justify-content: center; }
   .loc-help-start-again {
     min-height: 32px; padding: 0 14px;
     background: transparent;
@@ -5954,6 +5954,10 @@
       answersEl.hidden = true;
       resultEl.hidden = true;
       skipActionsEl.hidden = false;
+      const skipBtns = [startAgainBtn, confirmSkipBtn];
+      skipBtns.forEach(b => b.style.width = '');
+      const maxSkipW = Math.max(...skipBtns.map(b => b.offsetWidth));
+      skipBtns.forEach(b => b.style.width = maxSkipW + 'px');
       backWrap.style.display = 'flex';
     }
 
