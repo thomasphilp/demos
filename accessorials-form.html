@@ -259,32 +259,48 @@
   /* ── Dock question ── */
   /* ── FBA details section ── */
   .fba-details-block {
-    background: #fffbeb;
-    border: 1px solid rgba(217,119,6,0.25);
-    border-radius: 10px;
-    padding: 16px;
+    background: var(--color-bg);
+    border: var(--border-1) solid var(--color-control-border);
+    border-radius: 8px;
+    padding: 20px;
     margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
   .fba-details-header {
-    font-weight: 600; font-size: 13px;
+    font-weight: 600; font-size: 14px;
     color: var(--color-label-primary);
-    margin-bottom: 14px;
+    margin: 0;
   }
-  .fba-appointment-row { margin: 14px 0 12px; }
-  .fba-checkbox-label {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 13px; cursor: pointer;
+  .fba-appointment-row { display: flex; flex-direction: column; gap: 0; }
+  .fba-appointment-toggle {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
     color: var(--color-label-primary);
+    padding: 14px 0;
+    border-top: var(--border-1) solid var(--color-control-border);
   }
-  .fba-checkbox-label input[type="checkbox"] { width: 14px; height: 14px; cursor: pointer; }
+  .fba-appointment-toggle input[type="checkbox"] {
+    width: 18px; height: 18px; cursor: pointer; flex-shrink: 0;
+    accent-color: var(--color-gray-950);
+  }
+  .fba-appointment-sub {
+    padding: 16px 0 4px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .fba-footer {
+    display: flex; flex-direction: column; gap: 10px;
+    padding-top: 4px;
+    border-top: var(--border-1) solid var(--color-control-border);
+  }
   .fba-terms-link {
-    display: inline-block; margin-bottom: 12px;
     color: var(--color-tint); font-size: 13px; font-weight: 600; text-decoration: none;
   }
   .fba-terms-link:hover { opacity: 0.75; }
   .fba-notes {
-    margin: 4px 0 0; padding-left: 16px;
-    font-size: 12px; color: var(--color-label-secondary); line-height: 1.7;
+    margin: 0; padding-left: 16px;
+    font-size: 12px; color: var(--color-label-secondary); line-height: 1.8;
   }
   .fba-notes strong { color: var(--color-label-primary); font-weight: 600; }
 
@@ -2668,31 +2684,104 @@
       <div id="deliver-fba-details" hidden>
         <div class="fba-details-block">
           <p class="fba-details-header">Enter your Fulfillment by Amazon (FBA) number</p>
+
+          <!-- FBA + PO row -->
           <div class="row" style="gap:12px;">
-            <div class="field" style="flex:1;">
+            <div class="field">
               <div class="field-label"><span>FBA number</span></div>
               <div class="input-control">
                 <input type="text" placeholder="Enter FBA number" id="deliver-fba-number" />
               </div>
             </div>
-            <div class="field" style="flex:1;">
+            <div class="field">
               <div class="field-label"><span>Purchase order number</span></div>
               <div class="input-control">
                 <input type="text" placeholder="Enter purchase order number" id="deliver-fba-po" />
               </div>
             </div>
           </div>
+
+          <!-- Appointment toggle -->
           <div class="fba-appointment-row">
-            <label class="fba-checkbox-label">
+            <label class="fba-appointment-toggle">
               <input type="checkbox" id="deliver-fba-appointment" />
               <span>Do you have an appointment already? <span style="color:var(--color-label-secondary);font-weight:400;">(optional)</span></span>
             </label>
+            <div id="deliver-fba-appointment-sub" class="fba-appointment-sub" hidden>
+              <div class="field">
+                <div class="field-label"><span>ISA number</span></div>
+                <div class="input-control">
+                  <input type="text" placeholder="Enter ISA number" id="deliver-fba-isa" />
+                </div>
+              </div>
+              <div class="row" style="gap:12px; align-items:flex-start;">
+                <div class="field dropdown-sm" style="flex:0 1 232px;">
+                  <div class="field-label">
+                    <span>Appointment date</span>
+                    <span class="info-icon" title="The date your carrier is scheduled to arrive at the Amazon facility.">
+                      <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="6" r="5.5" stroke="currentColor"/><path d="M6 5.5V8.5" stroke="currentColor" stroke-linecap="round"/><circle cx="6" cy="3.75" r="0.5" fill="currentColor"/></svg>
+                    </span>
+                  </div>
+                  <div class="dropdown-btn" id="fba-appt-date-btn" tabindex="0" role="button" aria-expanded="false" aria-haspopup="dialog">
+                    <div class="dropdown-btn-left">
+                      <span class="btn-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.70005 0.300049C6.1971 0.300049 6.60005 0.702993 6.60005 1.20005V3.00005H17.4V1.20005C17.4 0.702993 17.803 0.300049 18.3 0.300049C18.7971 0.300049 19.2 0.702993 19.2 1.20005V3.00005H20.1C22.0883 3.00005 23.7 4.61182 23.7 6.60005V20.1C23.7 22.0883 22.0883 23.7 20.1 23.7H3.90005C1.91182 23.7 0.300049 22.0883 0.300049 20.1V6.60005C0.300049 4.61182 1.91182 3.00005 3.90005 3.00005H4.80005V1.20005C4.80005 0.702993 5.20299 0.300049 5.70005 0.300049ZM21.9 11.1C21.9 10.1059 21.0942 9.30005 20.1 9.30005H3.90005C2.90594 9.30005 2.10005 10.1059 2.10005 11.1V20.1C2.10005 21.0942 2.90594 21.9 3.90005 21.9H20.1C21.0942 21.9 21.9 21.0942 21.9 20.1V11.1Z" fill="currentColor"/></svg>
+                      </span>
+                      <span class="dropdown-btn-text">Select date</span>
+                    </div>
+                    <div class="dropdown-right">
+                      <div class="dropdown-caret">
+                        <svg viewBox="-1 -1 12 8" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M0 0L10 0L5 6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="picker-panel cal-panel" id="fba-appt-date-panel">
+                    <div class="cal-header">
+                      <button class="cal-nav-btn" id="fba-cal-prev" type="button" aria-label="Previous month">
+                        <svg viewBox="0 0 8 12" fill="none" width="8" height="12"><path d="M7 1L1 6L7 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      </button>
+                      <span class="cal-month-label" id="fba-cal-month-label">May 2026</span>
+                      <button class="cal-nav-btn" id="fba-cal-next" type="button" aria-label="Next month">
+                        <svg viewBox="0 0 8 12" fill="none" width="8" height="12"><path d="M1 1L7 6L1 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      </button>
+                    </div>
+                    <div class="cal-weekdays">
+                      <div class="cal-weekday">Su</div><div class="cal-weekday">Mo</div><div class="cal-weekday">Tu</div>
+                      <div class="cal-weekday">We</div><div class="cal-weekday">Th</div><div class="cal-weekday">Fr</div><div class="cal-weekday">Sa</div>
+                    </div>
+                    <div class="cal-days" id="fba-cal-days"></div>
+                  </div>
+                </div>
+                <div class="field dropdown-sm" style="flex:0 1 160px;">
+                  <div class="field-label"><span>Appointment time</span></div>
+                  <div class="dropdown-btn" id="fba-appt-time-btn" tabindex="0" role="button" aria-expanded="false" aria-haspopup="listbox">
+                    <div class="dropdown-btn-left">
+                      <span class="btn-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.79995V12L17 16M22.8 12C22.8 17.9646 17.9646 22.8 12 22.8C6.03528 22.8 1.19995 17.9646 1.19995 12C1.19995 6.03528 6.03528 1.19995 12 1.19995C17.9646 1.19995 22.8 6.03528 22.8 12Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      </span>
+                      <span class="dropdown-btn-text">Select time</span>
+                    </div>
+                    <div class="dropdown-right">
+                      <span class="tz-label" id="fba-tz-label">PDT</span>
+                      <div class="dropdown-caret">
+                        <svg viewBox="-1 -1 12 8" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M0 0L10 0L5 6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="picker-panel time-panel" id="fba-appt-time-panel"></div>
+                </div>
+              </div>
+            </div>
           </div>
-          <a href="#" class="fba-terms-link">Fulfillment by Amazon (FBA) terms</a>
-          <ul class="fba-notes">
-            <li>Your FBA number will be included in your Bill of lading</li>
-            <li>You must <strong>enter your piece count</strong> in the cargo form below</li>
-          </ul>
+
+          <!-- Footer: terms + notes -->
+          <div class="fba-footer">
+            <a href="https://help.mothership.com/en/articles/8844292-amazon-fba-appointments-terms-of-service" target="_blank" rel="noopener" class="fba-terms-link">Fulfillment by Amazon (FBA) terms</a>
+            <ul class="fba-notes">
+              <li>Your FBA number will be included in your Bill of lading</li>
+              <li>You must <strong>enter your piece count</strong> in the cargo form below</li>
+            </ul>
+          </div>
         </div>
       </div>
 
@@ -3768,12 +3857,44 @@
       `;
       el.addEventListener('click', (e) => {
         e.stopPropagation();
+        const wasSelected = item.selected;
         item.selected = !item.selected;
         renderList();
         updateBtnLabel();
+        // If a recommended item was just unchecked, show the re-bill warning
+        if (item.warn && wasSelected && !item.selected) {
+          updatePickupWarning('rebill', item.label);
+        } else {
+          updatePickupWarning();
+        }
       });
       list.appendChild(el);
     });
+  }
+
+  function updatePickupWarning(mode, serviceLabel) {
+    const warnItems = ACC_ITEMS.filter(i => i.warn);
+    const allSelected = warnItems.length > 0 && warnItems.every(i => i.selected);
+    const avoidTag = document.getElementById('avoid-tag');
+    const alert = document.getElementById('acc-panel-alert');
+    const title = alert.querySelector('.acc-panel-alert-title');
+    const body  = alert.querySelector('.acc-panel-alert-body');
+    if (allSelected) {
+      avoidTag.style.display = 'none';
+      alert.style.display = 'none';
+    } else if (mode === 'rebill' && serviceLabel) {
+      avoidTag.style.display = '';
+      alert.style.display = '';
+      alert.classList.add('acc-panel-alert--warn');
+      title.textContent = 'Are you sure?';
+      body.textContent = `Carriers typically charge for ${serviceLabel} at this type of location. If you skip it now, the carrier may add the charge after pick-up as a re-bill.`;
+    } else if (warnItems.length > 0) {
+      avoidTag.style.display = '';
+      alert.style.display = '';
+      alert.classList.add('acc-panel-alert--warn');
+      title.textContent = 'Add to avoid adjustment charges';
+      body.textContent = 'Services highlighted below should be added to prevent pick-up issues and avoid adjustment charges after pick-up.';
+    }
   }
 
   function updateBtnLabel() {
@@ -4237,7 +4358,7 @@
     btn.setAttribute('aria-expanded', 'false');
   }
 
-  const ALL_PICKER_IDS = ['ready-date', 'ready-time', 'opens-at', 'closes-at', 'd-opens-at', 'd-closes-at', 'd-appt-date', 'd-appt-time'];
+  const ALL_PICKER_IDS = ['ready-date', 'ready-time', 'opens-at', 'closes-at', 'd-opens-at', 'd-closes-at', 'd-appt-date', 'd-appt-time', 'fba-appt-date', 'fba-appt-time'];
 
   function closeAllPickers() {
     ALL_PICKER_IDS.forEach(id => closePicker(`${id}-btn`, `${id}-panel`));
@@ -4262,6 +4383,8 @@
           renderCalendar();
         } else if (id === 'd-appt-date') {
           renderDeliveryCalendar();
+        } else if (id === 'fba-appt-date') {
+          renderFbaCalendar();
         } else {
           const currentTime = btn.querySelector('.dropdown-btn-text').textContent;
           renderTimePanel(`${id}-panel`, currentTime);
@@ -4340,6 +4463,69 @@
     renderDeliveryCalendar();
   });
 
+  // ── FBA appointment calendar ──
+  let fbaCalSelected = null;
+  let fbaCalView = { year: new Date().getFullYear(), month: new Date().getMonth() };
+
+  function renderFbaCalendar() {
+    const { year, month } = fbaCalView;
+    document.getElementById('fba-cal-month-label').textContent = `${MONTH_NAMES[month]} ${year}`;
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const daysInPrev = new Date(year, month, 0).getDate();
+    const grid = document.getElementById('fba-cal-days');
+    grid.innerHTML = '';
+    for (let i = firstDay - 1; i >= 0; i--) {
+      const btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'cal-day other-month';
+      btn.textContent = daysInPrev - i; btn.tabIndex = -1;
+      grid.appendChild(btn);
+    }
+    for (let d = 1; d <= daysInMonth; d++) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'cal-day' + (fbaCalSelected && d === fbaCalSelected.day && month === fbaCalSelected.month && year === fbaCalSelected.year ? ' selected' : '');
+      btn.textContent = d;
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        fbaCalSelected = { year, month, day: d };
+        document.querySelector('#fba-appt-date-btn .dropdown-btn-text').textContent = `${MONTH_SHORT[month]} ${d}, ${year}`;
+        closePicker('fba-appt-date-btn', 'fba-appt-date-panel');
+        renderFbaCalendar();
+      });
+      grid.appendChild(btn);
+    }
+    const trailing = (firstDay + daysInMonth) % 7;
+    if (trailing > 0) {
+      for (let d = 1; d <= 7 - trailing; d++) {
+        const btn = document.createElement('button');
+        btn.type = 'button'; btn.className = 'cal-day other-month';
+        btn.textContent = d; btn.tabIndex = -1;
+        grid.appendChild(btn);
+      }
+    }
+  }
+
+  document.getElementById('fba-cal-prev').addEventListener('click', (e) => {
+    e.stopPropagation();
+    fbaCalView.month--; if (fbaCalView.month < 0) { fbaCalView.month = 11; fbaCalView.year--; }
+    renderFbaCalendar();
+  });
+  document.getElementById('fba-cal-next').addEventListener('click', (e) => {
+    e.stopPropagation();
+    fbaCalView.month++; if (fbaCalView.month > 11) { fbaCalView.month = 0; fbaCalView.year++; }
+    renderFbaCalendar();
+  });
+
+  // Set FBA timezone label dynamically
+  (function() {
+    try {
+      const abbr = new Date().toLocaleTimeString('en-US', { timeZoneName: 'short' }).split(' ').pop();
+      const el = document.getElementById('fba-tz-label');
+      if (el) el.textContent = abbr;
+    } catch(e) {}
+  })();
+
   // ── Deliver-to services ──
   const DELIVER_ACC_ITEMS = [
     { id: 'd-ltl-inside',     warn: false, label: 'LTL Inside Service', shortDesc: 'Moving freight past the dock or curbside into a room or hallway.', desc: 'Driver moves freight past the dock or curbside — through a door, down a hallway, or into a room. Adds cost due to extra labor and time on site.', selected: false },
@@ -4374,6 +4560,7 @@
       `;
       el.addEventListener('click', (e) => {
         e.stopPropagation();
+        const wasSelected = item.selected;
         item.selected = !item.selected;
         dRenderList();
         dUpdateBtnLabel();
@@ -4381,6 +4568,11 @@
         if (item.id === 'd-fba') {
           const fbaSection = document.getElementById('deliver-fba-details');
           fbaSection.hidden = !item.selected;
+        }
+        if (item.warn && wasSelected && !item.selected) {
+          updateDeliverWarning('rebill', item.label);
+        } else {
+          updateDeliverWarning();
         }
       });
       list.appendChild(el);
@@ -4390,6 +4582,31 @@
   function dUpdateBtnLabel() {
     const count = DELIVER_ACC_ITEMS.filter(i => i.selected).length;
     document.getElementById('d-acc-btn-label').textContent = count === 0 ? 'Select' : `${count} selected`;
+  }
+
+  function updateDeliverWarning(mode, serviceLabel) {
+    const warnItems = DELIVER_ACC_ITEMS.filter(i => i.warn);
+    const allSelected = warnItems.length > 0 && warnItems.every(i => i.selected);
+    const avoidTag = document.getElementById('d-avoid-tag');
+    const alert = document.getElementById('d-acc-panel-alert');
+    const title = alert.querySelector('.acc-panel-alert-title');
+    const body  = alert.querySelector('.acc-panel-alert-body');
+    if (allSelected) {
+      avoidTag.style.display = 'none';
+      alert.style.display = 'none';
+    } else if (mode === 'rebill' && serviceLabel) {
+      avoidTag.style.display = '';
+      alert.style.display = '';
+      alert.classList.add('acc-panel-alert--warn');
+      title.textContent = 'Are you sure?';
+      body.textContent = `Carriers typically charge for ${serviceLabel} at this type of location. If you skip it now, the carrier may add the charge after delivery as a re-bill.`;
+    } else if (warnItems.length > 0) {
+      avoidTag.style.display = '';
+      alert.style.display = '';
+      alert.classList.add('acc-panel-alert--warn');
+      title.textContent = 'Add to avoid adjustment charges';
+      body.textContent = 'Services highlighted below should be added to prevent delivery issues and avoid adjustment charges after delivery.';
+    }
   }
 
   // ── Deliver-to tooltip toggle ──
@@ -4500,6 +4717,11 @@
 
   dRenderList();
   dUpdateBtnLabel();
+
+  // ── FBA appointment checkbox toggle ──
+  document.getElementById('deliver-fba-appointment').addEventListener('change', function() {
+    document.getElementById('deliver-fba-appointment-sub').hidden = !this.checked;
+  });
 
   // ── Handling unit dropdown ──
   const huBtn = document.getElementById('hu-dropdown-btn');
@@ -5432,7 +5654,9 @@
       resultEl.hidden = false;
       confirmSkipBtn.hidden = true;
       backWrap.style.display = 'flex';
-      resultName.textContent = (isZH && ZH_LOC_TYPE_LABELS[type]) ? ZH_LOC_TYPE_LABELS[type] : (LOC_TYPE_LABELS[type] || type);
+      const typeName = (isZH && ZH_LOC_TYPE_LABELS[type]) ? ZH_LOC_TYPE_LABELS[type] : (LOC_TYPE_LABELS[type] || type);
+      resultName.textContent = typeName;
+      selectBtn.textContent = `Select "${typeName}"`;
       const descEl = resultEl.querySelector('.loc-help-result-desc');
       if (descEl) descEl.textContent = (isZH && ZH_LOC_TYPE_DESC[type]) ? ZH_LOC_TYPE_DESC[type] : (LOC_TYPE_DESC[type] || '');
       const picker = document.getElementById(`${section}-loc-picker`);
