@@ -75,11 +75,17 @@
     gap: 8px;
     background: none;
     border: none;
-    padding: 0;
+    padding: 5px 8px 5px 6px;
+    margin: -5px -8px -5px -6px;
     cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.15s ease;
+  }
+  .page-nav-item:hover {
+    background: rgba(9,10,12,0.06);
   }
   .page-nav-line {
-    width: 14px;
+    width: 7px;
     height: 2px;
     border-radius: 2px;
     background: rgba(9,10,12,0.18);
@@ -95,14 +101,14 @@
     transition: color 0.15s ease, font-weight 0.15s ease;
   }
   .page-nav-item:hover .page-nav-line {
-    width: 20px;
+    width: 10px;
     background: rgba(9,10,12,0.35);
   }
   .page-nav-item:hover .page-nav-label {
     color: rgba(9,10,12,0.65);
   }
   .page-nav-item.active .page-nav-line {
-    width: 22px;
+    width: 11px;
     background: rgba(9,10,12,0.9);
   }
   .page-nav-item.active .page-nav-label {
@@ -1852,11 +1858,11 @@
 <nav class="page-nav" id="page-nav" aria-label="Form sections">
   <button class="page-nav-item active" data-target="section-pickup" type="button">
     <span class="page-nav-line"></span>
-    <span class="page-nav-label">Pickup from</span>
+    <span class="page-nav-label">Pickup</span>
   </button>
   <button class="page-nav-item" data-target="section-deliver" type="button">
     <span class="page-nav-line"></span>
-    <span class="page-nav-label">Deliver to</span>
+    <span class="page-nav-label">Delivery</span>
   </button>
   <button class="page-nav-item" data-target="section-cargo" type="button">
     <span class="page-nav-line"></span>
@@ -4914,8 +4920,10 @@
       el.innerHTML = `
         <div class="acc-checkbox">${item.selected ? checkSVG : ''}</div>
         <div class="acc-item-content">
-          <p class="acc-item-label">${item.label}</p>
-          <p class="acc-item-desc">${item.desc}</p>
+          <div>
+            <p class="acc-item-label">${item.label}</p>
+            <p class="acc-item-desc">${item.desc}</p>
+          </div>
         </div>
       `;
       el.addEventListener('click', (e) => {
@@ -4972,8 +4980,10 @@
       el.innerHTML = `
         <div class="acc-checkbox">${item.selected ? checkSVG : ''}</div>
         <div class="acc-item-content">
-          <p class="acc-item-label">${item.label}</p>
-          <p class="acc-item-desc">${item.desc}</p>
+          <div>
+            <p class="acc-item-label">${item.label}</p>
+            <p class="acc-item-desc">${item.desc}</p>
+          </div>
         </div>
       `;
       el.addEventListener('click', (e) => {
