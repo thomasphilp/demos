@@ -257,6 +257,37 @@
   .loc-tile-info:hover svg { color: rgba(9,10,12,0.55); }
 
   /* ── Dock question ── */
+  /* ── FBA details section ── */
+  .fba-details-block {
+    background: #fffbeb;
+    border: 1px solid rgba(217,119,6,0.25);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 8px;
+  }
+  .fba-details-header {
+    font-weight: 600; font-size: 13px;
+    color: var(--color-label-primary);
+    margin-bottom: 14px;
+  }
+  .fba-appointment-row { margin: 14px 0 12px; }
+  .fba-checkbox-label {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; cursor: pointer;
+    color: var(--color-label-primary);
+  }
+  .fba-checkbox-label input[type="checkbox"] { width: 14px; height: 14px; cursor: pointer; }
+  .fba-terms-link {
+    display: inline-block; margin-bottom: 12px;
+    color: var(--color-tint); font-size: 13px; font-weight: 600; text-decoration: none;
+  }
+  .fba-terms-link:hover { opacity: 0.75; }
+  .fba-notes {
+    margin: 4px 0 0; padding-left: 16px;
+    font-size: 12px; color: var(--color-label-secondary); line-height: 1.7;
+  }
+  .fba-notes strong { color: var(--color-label-primary); font-weight: 600; }
+
   .dock-question {
     margin-top: 8px;
     padding: 14px 16px 14px 20px;
@@ -1844,7 +1875,7 @@
         </button>
         <button class="loc-option" data-type="limited-access" data-section="pickup" type="button">
           <div class="loc-option-icon"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.516 2.17a.75.75 0 0 0-1.032 0 11.209 11.209 0 0 1-7.877 3.08.75.75 0 0 0-.722.515A12.74 12.74 0 0 0 2.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 0 0 .374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 0 0-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.704-3.08Zm3.094 8.016a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd"/></svg></div>
-          <span class="loc-option-label">Limited access<br><span style="font-weight:400;color:var(--color-label-secondary);font-size:10px;line-height:12px;margin-top:2px;display:block;">Includes military bases, government facilities, schools, churches, farms, Amazon FBA, and auctions</span></span>
+          <span class="loc-option-label">Limited access<br><span style="font-weight:400;color:var(--color-label-secondary);font-size:10px;line-height:12px;margin-top:2px;display:block;">Includes military bases, government facilities, schools, churches, and farms</span></span>
           <div class="loc-rec-wrap">
             <span class="loc-rec-label">Recommended services</span>
             <div class="loc-rec-badges"><span class="loc-rec-badge">Liftgate</span><span class="loc-rec-badge">Limited Access</span></div>
@@ -2631,6 +2662,38 @@
           </div>
         </div>
 
+      </div>
+
+      <!-- FBA details (conditional — shown when FBA service is selected) -->
+      <div id="deliver-fba-details" hidden>
+        <div class="fba-details-block">
+          <p class="fba-details-header">Enter your Fulfillment by Amazon (FBA) number</p>
+          <div class="row" style="gap:12px;">
+            <div class="field" style="flex:1;">
+              <div class="field-label"><span>FBA number</span></div>
+              <div class="input-control">
+                <input type="text" placeholder="Enter FBA number" id="deliver-fba-number" />
+              </div>
+            </div>
+            <div class="field" style="flex:1;">
+              <div class="field-label"><span>Purchase order number</span></div>
+              <div class="input-control">
+                <input type="text" placeholder="Enter purchase order number" id="deliver-fba-po" />
+              </div>
+            </div>
+          </div>
+          <div class="fba-appointment-row">
+            <label class="fba-checkbox-label">
+              <input type="checkbox" id="deliver-fba-appointment" />
+              <span>Do you have an appointment already? <span style="color:var(--color-label-secondary);font-weight:400;">(optional)</span></span>
+            </label>
+          </div>
+          <a href="#" class="fba-terms-link">Fulfillment by Amazon (FBA) terms</a>
+          <ul class="fba-notes">
+            <li>Your FBA number will be included in your Bill of lading</li>
+            <li>You must <strong>enter your piece count</strong> in the cargo form below</li>
+          </ul>
+        </div>
       </div>
 
       <!-- First + Last name -->
@@ -4279,14 +4342,14 @@
 
   // ── Deliver-to services ──
   const DELIVER_ACC_ITEMS = [
-    { id: 'd-ltl-inside', warn: false, label: 'LTL Inside Service', shortDesc: 'Moving freight past the dock or curbside into a room or hallway.', desc: 'Driver moves freight past the dock or curbside — through a door, down a hallway, or into a room. Adds cost due to extra labor and time on site.', selected: false },
-    { id: 'd-liftgate',   warn: false, label: 'Liftgate', shortDesc: 'Requires a hydraulic lift to load or unload freight from the truck.', desc: 'A hydraulic platform lowers or raises freight to ground level. Required at any location without a raised loading dock — homes, retail stores, or street-level deliveries.', selected: false },
-    { id: 'd-cfs',        warn: false, label: 'CFS', shortDesc: 'Pickup or delivery at a warehouse for ocean or air freight consolidation.', desc: 'Container Freight Station — a warehouse where ocean or air shipments are consolidated or broken down. Common for international freight moving through a port or airport.', selected: false },
-    { id: 'd-limited-access', warn: false, label: 'Limited Access', shortDesc: 'Location is hard for a 53-ft trailer — schools, job sites, military bases.', desc: 'Applies when a standard 53-ft truck can\'t easily access or enter the site. Common examples: schools, job sites, churches, military bases, and storage facilities. Carriers charge extra for the added difficulty.', selected: false },
-    { id: 'd-residential', warn: false, label: 'Residential', shortDesc: 'Pickup or delivery at a home or business in a residential area.', desc: 'Homes, apartments, or businesses in a residential neighborhood. Carriers typically send smaller trucks and require a liftgate — both add to the cost.', selected: false },
-    { id: 'd-tradeshow',  warn: false, label: 'Tradeshow', shortDesc: 'Shipping to/from a convention center with precise timing requirements.', desc: 'Trade shows require tight scheduling and coordination with an on-site decorator (drayage). Missing the delivery window can mean a missed show.', selected: false },
-    { id: 'd-twic',       warn: false, label: 'TWIC', shortDesc: 'Driver needs a TWIC card to access a secure port or maritime facility.', desc: 'Transportation Worker Identification Credential. Required at secure ports, marine terminals, and some chemical plants. Without a valid TWIC card, the driver will be turned away at the gate.', selected: false },
-    { id: 'd-cfs',        warn: false, label: 'CFS',  shortDesc: 'Pickup or delivery at a warehouse for ocean or air freight consolidation.', desc: 'Container Freight Station — a warehouse where ocean or air shipments are consolidated or broken down. Common for international freight moving through a port or airport.', selected: false }
+    { id: 'd-ltl-inside',     warn: false, label: 'LTL Inside Service', shortDesc: 'Moving freight past the dock or curbside into a room or hallway.', desc: 'Driver moves freight past the dock or curbside — through a door, down a hallway, or into a room. Adds cost due to extra labor and time on site.', selected: false },
+    { id: 'd-liftgate',       warn: false, label: 'Liftgate', shortDesc: 'Requires a hydraulic lift to load or unload freight from the truck.', desc: 'A hydraulic platform lowers or raises freight to ground level. Required at any location without a raised loading dock — homes, retail stores, or street-level deliveries.', selected: false },
+    { id: 'd-cfs',            warn: false, label: 'CFS', shortDesc: 'Delivery at a warehouse for ocean or air freight consolidation.', desc: 'Container Freight Station — a warehouse where ocean or air shipments are consolidated or broken down. Common for international freight moving through a port or airport.', selected: false },
+    { id: 'd-limited-access', warn: false, label: 'Limited Access', shortDesc: 'Location is hard for a 53-ft trailer — schools, military bases, govt buildings.', desc: 'Applies when a standard 53-ft truck can\'t easily access or enter the site. Common examples: schools, churches, military bases, government facilities, and storage facilities. Carriers charge extra for the added difficulty.', selected: false },
+    { id: 'd-fba',            warn: false, label: 'FBA', shortDesc: 'Delivery to an Amazon Fulfillment Center (FBA/FFC).', desc: 'Fulfillment by Amazon — requires specific BOL format, FBA reference number, and compliance with Amazon\'s carrier requirements. Appointment may be needed.', selected: false },
+    { id: 'd-tradeshow',      warn: false, label: 'Tradeshow', shortDesc: 'Shipping to a convention center with precise timing requirements.', desc: 'Trade shows require tight scheduling and coordination with an on-site decorator (drayage). Missing the delivery window can mean a missed show.', selected: false },
+    { id: 'd-twic',           warn: false, label: 'TWIC', shortDesc: 'Driver needs a TWIC card to access a secure port or maritime facility.', desc: 'Transportation Worker Identification Credential. Required at secure ports, marine terminals, and some chemical plants. Without a valid TWIC card, the driver will be turned away at the gate.', selected: false },
+    { id: 'd-residential',    warn: false, label: 'Residential', shortDesc: 'Delivery to a home or business in a residential area.', desc: 'Homes, apartments, or businesses in a residential neighborhood. Carriers typically send smaller trucks and require a liftgate — both add to the cost.', selected: false },
   ];
 
   let dShowDesc = false;
@@ -4314,6 +4377,11 @@
         item.selected = !item.selected;
         dRenderList();
         dUpdateBtnLabel();
+        // Show/hide FBA details section
+        if (item.id === 'd-fba') {
+          const fbaSection = document.getElementById('deliver-fba-details');
+          fbaSection.hidden = !item.selected;
+        }
       });
       list.appendChild(el);
     });
