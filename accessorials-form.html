@@ -5527,7 +5527,7 @@
     { id:'q2', text:'Does this location have restricted access or special entry requirements — like a military base, government facility, school, church, or farm?', yes:'limited-access', no:'q3' },
     { id:'q3', text:'Is this an airport, seaport, rail yard, or other port or cargo facility?',                               yes:'port',           no:'q4' },
     { id:'q4', text:'Is this a convention center, trade show, stadium, hotel, or event venue?',                               yes:'convention',     no:'q5' },
-    { id:'q5', text:'Is this a commercial business — like an office, store, restaurant, warehouse, or distribution center?',  yes:'commercial',     no:'commercial' },
+    { id:'q5', text:'If none of the above apply, your location is most likely a commercial business — like an office, store, warehouse, or distribution center. Does that sound right?',  yes:'commercial',     no:'location-unknown' },
   ];
   const LOC_TYPE_LABELS = {
     'commercial':       'Commercial',
@@ -5707,6 +5707,7 @@
     function navigate(answer) {
       history.push({ node: currentNode, answer });
       const next = answer === 'yes' ? currentNode.yes : currentNode.no;
+      if (next === 'location-unknown') { showUnknown(); return; }
       const nextNode = LOC_TREE.find(q => q.id === next);
       nextNode ? showQuestion(nextNode) : showResult(next);
     }
@@ -5941,7 +5942,7 @@
     '该地点是否有门禁限制或特殊进入要求——例如军事基地、政府设施、学校、教堂或农场？',
     '这是机场、海港、铁路货场或其他港口或货运设施吗？',
     '这是会展中心、贸易展览会、体育馆、酒店或活动场馆吗？',
-    '这是商业场所——例如办公室、商店、餐厅、仓库或配送中心吗？',
+    '如果以上均不适用，您的地点很可能是商业场所——例如办公室、商店、仓库或配送中心。听起来对吗？',
   ];
   const ZH_LOC_TYPE_LABELS = {
     'commercial': '商业', 'residential': '住宅',
