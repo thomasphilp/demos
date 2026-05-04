@@ -2227,6 +2227,9 @@
               </div>
             </button>
             <div class="acc-panel" id="extra-svc-panel">
+              <div class="acc-panel-header">
+                <p class="acc-panel-title">Select extra services</p>
+              </div>
               <div class="acc-list" id="extra-svc-list"></div>
             </div>
           </div>
@@ -2827,6 +2830,9 @@
               </div>
             </button>
             <div class="acc-panel" id="d-extra-svc-panel">
+              <div class="acc-panel-header">
+                <p class="acc-panel-title">Select extra services</p>
+              </div>
               <div class="acc-list" id="d-extra-svc-list"></div>
             </div>
           </div>
@@ -4344,6 +4350,25 @@
     });
   });
 
+  // ── Close all dropdowns helper ──
+  const ALL_DROPDOWNS = [
+    { btnId: 'acc-dropdown-btn',     panelId: 'acc-panel' },
+    { btnId: 'd-acc-dropdown-btn',   panelId: 'd-acc-panel' },
+    { btnId: 'extra-svc-btn',        panelId: 'extra-svc-panel' },
+    { btnId: 'd-extra-svc-btn',      panelId: 'd-extra-svc-panel' },
+  ];
+  function closeAllDropdowns(exceptPanelId) {
+    ALL_DROPDOWNS.forEach(({ btnId, panelId }) => {
+      if (panelId === exceptPanelId) return;
+      const btn   = document.getElementById(btnId);
+      const panel = document.getElementById(panelId);
+      if (!btn || !panel) return;
+      panel.classList.remove('open');
+      btn.classList.remove('open');
+      btn.setAttribute('aria-expanded', false);
+    });
+  }
+
   // ── Dropdown toggle ──
   const accBtn = document.getElementById('acc-dropdown-btn');
   const accPanel = document.getElementById('acc-panel');
@@ -4351,7 +4376,9 @@
   accBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     closeAllTooltips();
-    const open = accPanel.classList.toggle('open');
+    const willOpen = !accPanel.classList.contains('open');
+    closeAllDropdowns('acc-panel');
+    const open = willOpen ? (accPanel.classList.add('open'), true) : (accPanel.classList.remove('open'), false);
     accBtn.classList.toggle('open', open);
     accBtn.setAttribute('aria-expanded', open);
   });
@@ -4878,7 +4905,9 @@
   dAccBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     closeAllTooltips();
-    const open = dAccPanel.classList.toggle('open');
+    const willOpen = !dAccPanel.classList.contains('open');
+    closeAllDropdowns('d-acc-panel');
+    const open = willOpen ? (dAccPanel.classList.add('open'), true) : (dAccPanel.classList.remove('open'), false);
     dAccBtn.classList.toggle('open', open);
     dAccBtn.setAttribute('aria-expanded', open);
   });
@@ -4949,7 +4978,9 @@
 
   extraSvcBtn.addEventListener('click', (e) => {
     e.stopPropagation();
-    const open = extraSvcPanel.classList.toggle('open');
+    const willOpen = !extraSvcPanel.classList.contains('open');
+    closeAllDropdowns('extra-svc-panel');
+    const open = willOpen ? (extraSvcPanel.classList.add('open'), true) : (extraSvcPanel.classList.remove('open'), false);
     extraSvcBtn.classList.toggle('open', open);
     extraSvcBtn.setAttribute('aria-expanded', open);
   });
@@ -5009,7 +5040,9 @@
 
   dExtraSvcBtn.addEventListener('click', (e) => {
     e.stopPropagation();
-    const open = dExtraSvcPanel.classList.toggle('open');
+    const willOpen = !dExtraSvcPanel.classList.contains('open');
+    closeAllDropdowns('d-extra-svc-panel');
+    const open = willOpen ? (dExtraSvcPanel.classList.add('open'), true) : (dExtraSvcPanel.classList.remove('open'), false);
     dExtraSvcBtn.classList.toggle('open', open);
     dExtraSvcBtn.setAttribute('aria-expanded', open);
   });
