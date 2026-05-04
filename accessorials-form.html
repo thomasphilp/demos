@@ -224,15 +224,15 @@
     font-size: 14px; font-weight: 500; color: var(--color-label-primary);
   }
   .loc-help-select {
-    display: inline-flex; align-items: center;
-    height: 36px; padding: 0 16px;
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 32px; padding: 0 12px;
     background: var(--color-tint); color: #fff;
     border: none; border-radius: var(--radius-base);
-    font-size: 12px; font-weight: 600;
+    font-size: 14px; font-weight: 600;
     font-family: 'Inter', sans-serif;
     box-shadow: var(--shadow-inset-dense);
     cursor: pointer; transition: filter 0.15s;
-    align-self: flex-start;
+    align-self: flex-start; overflow: hidden;
   }
   .loc-help-select:hover { filter: brightness(0.9); }
   .loc-help-select:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
