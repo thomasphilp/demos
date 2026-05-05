@@ -4158,7 +4158,7 @@
       el.dataset.id = item.id;
       const rebillPct = REBILL_MODE && item.warn && !item.selected ? REBILL_DATA[item.id] : null;
       const rebillBadge = rebillPct != null
-        ? `<div class="acc-item-rebill">${rebillIconSVG}<span class="acc-item-rebill-text">${rebillPct}% re-billed</span></div>`
+        ? `<div class="acc-item-rebill"><span class="acc-item-rebill-text">60% re-bill chance</span></div>`
         : '';
       el.innerHTML = `
         <div class="acc-checkbox">${item.selected ? checkSVG : ''}</div>
@@ -4952,7 +4952,7 @@
       el.dataset.id = item.id;
       const dRebillPct = REBILL_MODE && item.warn && !item.selected ? REBILL_DATA[item.id] : null;
       const dRebillBadge = dRebillPct != null
-        ? `<div class="acc-item-rebill">${rebillIconSVG}<span class="acc-item-rebill-text">${dRebillPct}% re-billed</span></div>`
+        ? `<div class="acc-item-rebill"><span class="acc-item-rebill-text">60% re-bill chance</span></div>`
         : '';
       el.innerHTML = `
         <div class="acc-checkbox">${item.selected ? checkSVG : ''}</div>
