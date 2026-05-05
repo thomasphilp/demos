@@ -6330,18 +6330,12 @@
       if (section === 'pickup') {
         ACC_ITEMS.forEach(item => { item.warn = false; item.selected = false; });
         document.getElementById('avoid-tag').style.display = 'none';
-        const a = document.getElementById('acc-panel-alert');
-        a.style.display = '';
-        a.querySelector('.acc-panel-alert-title').textContent = '';
-        a.querySelector('.acc-panel-alert-body').textContent = 'Add services as needed for this location to avoid adjustment charges.';
+        document.getElementById('acc-panel-alert').style.display = 'none';
         renderList();
       } else {
         DELIVER_ACC_ITEMS.forEach(item => { item.warn = false; item.selected = false; });
         document.getElementById('d-avoid-tag').style.display = 'none';
-        const a = document.getElementById('d-acc-panel-alert');
-        a.style.display = '';
-        a.querySelector('.acc-panel-alert-title').textContent = '';
-        a.querySelector('.acc-panel-alert-body').textContent = 'Add services as needed for this location to avoid adjustment charges.';
+        document.getElementById('d-acc-panel-alert').style.display = 'none';
         dRenderList();
       }
     }
