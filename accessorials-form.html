@@ -4219,9 +4219,11 @@
   }
 
   function updateBtnLabel() {
-    const count = ACC_ITEMS.filter(i => i.selected).length;
+    const selected = ACC_ITEMS.filter(i => i.selected);
     const label = document.getElementById('acc-btn-label');
-    label.textContent = count === 0 ? 'Select' : `${count} selected`;
+    label.textContent = selected.length === 0 ? 'Select'
+      : selected.length === 1 ? selected[0].label
+      : `${selected.length} selected`;
   }
 
 
@@ -4994,8 +4996,10 @@
   }
 
   function dUpdateBtnLabel() {
-    const count = DELIVER_ACC_ITEMS.filter(i => i.selected).length;
-    document.getElementById('d-acc-btn-label').textContent = count === 0 ? 'Select' : `${count} selected`;
+    const selected = DELIVER_ACC_ITEMS.filter(i => i.selected);
+    document.getElementById('d-acc-btn-label').textContent = selected.length === 0 ? 'Select'
+      : selected.length === 1 ? selected[0].label
+      : `${selected.length} selected`;
   }
 
   function updateDeliverWarning(mode) {
