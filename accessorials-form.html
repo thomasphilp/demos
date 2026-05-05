@@ -4215,6 +4215,8 @@
       alert.classList.add('acc-panel-alert--warn');
       title.textContent = 'Add to avoid adjustment charges';
       body.textContent = 'The recommended services below should be added to prevent pick-up issues and avoid adjustment charges after pick-up.';
+    } else {
+      alert.style.display = 'none';
     }
   }
 
@@ -4496,17 +4498,17 @@
       document.getElementById('avoid-tag').style.display = recs.length > 0 ? '' : 'none';
       const pa = document.getElementById('acc-panel-alert');
       if (opt.dataset.type === 'skip-rec') {
+        pa.style.display = '';
         pa.classList.remove('acc-panel-alert--warn');
         pa.querySelector('.acc-panel-alert-title').textContent = '';
         pa.querySelector('.acc-panel-alert-body').textContent = 'Add services as needed for this location to avoid adjustment charges.';
       } else if (recs.length > 0) {
+        pa.style.display = '';
         pa.classList.add('acc-panel-alert--warn');
         pa.querySelector('.acc-panel-alert-title').textContent = 'Add to avoid adjustment charges';
         pa.querySelector('.acc-panel-alert-body').textContent = 'The recommended services below should be added to prevent pick-up/delivery issues and avoid adjustment charges after pick-up/delivery.';
       } else {
-        pa.classList.remove('acc-panel-alert--warn');
-        pa.querySelector('.acc-panel-alert-title').textContent = 'Add to avoid adjustment charges';
-        pa.querySelector('.acc-panel-alert-body').textContent = 'The recommended services below should be added to prevent pick-up/delivery issues and avoid adjustment charges after pick-up/delivery.';
+        pa.style.display = 'none';
       }
       renderTooltipTags('tooltip-tags', recs, ACC_ITEMS);
       updateTooltipState('pickup', opt.dataset.type !== 'skip-rec', opt.dataset.type);
@@ -4539,17 +4541,17 @@
       document.getElementById('d-avoid-tag').style.display = recs.length > 0 ? '' : 'none';
       const dpa = document.getElementById('d-acc-panel-alert');
       if (opt.dataset.type === 'skip-rec') {
+        dpa.style.display = '';
         dpa.classList.remove('acc-panel-alert--warn');
         dpa.querySelector('.acc-panel-alert-title').textContent = '';
         dpa.querySelector('.acc-panel-alert-body').textContent = 'Add services as needed for this location to avoid adjustment charges.';
       } else if (recs.length > 0) {
+        dpa.style.display = '';
         dpa.classList.add('acc-panel-alert--warn');
         dpa.querySelector('.acc-panel-alert-title').textContent = 'Add to avoid adjustment charges';
         dpa.querySelector('.acc-panel-alert-body').textContent = 'The recommended services below should be added to prevent delivery issues and avoid adjustment charges after delivery.';
       } else {
-        dpa.classList.remove('acc-panel-alert--warn');
-        dpa.querySelector('.acc-panel-alert-title').textContent = 'Add to avoid adjustment charges';
-        dpa.querySelector('.acc-panel-alert-body').textContent = 'The recommended services below should be added to prevent delivery issues and avoid adjustment charges after delivery.';
+        dpa.style.display = 'none';
       }
       renderTooltipTags('d-tooltip-tags', recs, DELIVER_ACC_ITEMS);
       updateTooltipState('deliver', opt.dataset.type !== 'skip-rec', opt.dataset.type);
@@ -5044,6 +5046,8 @@
       alert.classList.add('acc-panel-alert--warn');
       title.textContent = 'Add to avoid adjustment charges';
       body.textContent = 'The recommended services below should be added to prevent delivery issues and avoid adjustment charges after delivery.';
+    } else {
+      alert.style.display = 'none';
     }
   }
 
