@@ -974,6 +974,11 @@
   /* ── Tooltip ── */
   .tooltip-anchor { position: relative; display: inline-block; }
 
+  @keyframes tooltip-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
   .tooltip-popup {
     display: none;
     position: absolute;
@@ -985,7 +990,10 @@
     align-items: center;
     white-space: normal;
   }
-  .tooltip-popup.visible { display: flex; }
+  .tooltip-popup.visible {
+    display: flex;
+    animation: tooltip-in 0.18s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
 
   .tooltip-box {
     background: white;
