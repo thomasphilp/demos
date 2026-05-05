@@ -4433,6 +4433,9 @@
       document.getElementById('pickup-dock-question').classList.remove('pulsing');
       btn.classList.add('selected');
       dockAnswers.pickup = btn.dataset.dock;
+      const gatedPickup = document.getElementById('loc-gated-pickup');
+      gatedPickup.classList.remove('loc-gated');
+      gatedPickup.removeAttribute('inert');
       const selected = document.querySelector('#pickup-loc-picker .loc-option.selected');
       if (selected) {
         // For commercial: dock=yes → no liftgate needed; dock=no/unknown → liftgate recommended
@@ -4455,6 +4458,9 @@
       document.getElementById('deliver-dock-question').classList.remove('pulsing');
       btn.classList.add('selected');
       dockAnswers.deliver = btn.dataset.dock;
+      const gatedDeliver = document.getElementById('loc-gated-deliver');
+      gatedDeliver.classList.remove('loc-gated');
+      gatedDeliver.removeAttribute('inert');
       const selected = document.querySelector('#deliver-loc-picker .loc-option.selected');
       if (selected) {
         // For commercial: dock=yes → no liftgate needed; dock=no/unknown → liftgate recommended
@@ -4478,8 +4484,13 @@
       const _ph = document.getElementById('pickup-help-panel');
       if (_ph._close) _ph._close(); else _ph.hidden = true;
       const gated = document.getElementById('loc-gated-pickup');
-      gated.classList.remove('loc-gated');
-      gated.removeAttribute('inert');
+      if (DOCK_QUESTION_TYPES.has(opt.dataset.type)) {
+        gated.classList.add('loc-gated');
+        gated.setAttribute('inert', '');
+      } else {
+        gated.classList.remove('loc-gated');
+        gated.removeAttribute('inert');
+      }
       const recs = LOC_REC_PICKUP[opt.dataset.type] || [];
       ACC_ITEMS.forEach(item => { item.warn = recs.includes(item.id); });
       document.getElementById('avoid-tag').style.display = recs.length > 0 ? '' : 'none';
@@ -4516,8 +4527,13 @@
       const _dh = document.getElementById('deliver-help-panel');
       if (_dh._close) _dh._close(); else _dh.hidden = true;
       const gated = document.getElementById('loc-gated-deliver');
-      gated.classList.remove('loc-gated');
-      gated.removeAttribute('inert');
+      if (DOCK_QUESTION_TYPES.has(opt.dataset.type)) {
+        gated.classList.add('loc-gated');
+        gated.setAttribute('inert', '');
+      } else {
+        gated.classList.remove('loc-gated');
+        gated.removeAttribute('inert');
+      }
       const recs = LOC_REC_DELIVER[opt.dataset.type] || [];
       DELIVER_ACC_ITEMS.forEach(item => { item.warn = recs.includes(item.id); });
       document.getElementById('d-avoid-tag').style.display = recs.length > 0 ? '' : 'none';
