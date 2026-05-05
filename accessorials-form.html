@@ -4449,6 +4449,7 @@
           updateTooltipState('pickup', true, 'commercial');
           renderList();
         }
+        updatePickupWarning();
         setTimeout(() => collapseLocPicker('pickup', selected.dataset.type), 200);
       }
     });
@@ -4474,6 +4475,7 @@
           updateTooltipState('deliver', true, 'commercial');
           dRenderList();
         }
+        updateDeliverWarning();
         setTimeout(() => collapseLocPicker('deliver', selected.dataset.type), 200);
       }
     });
@@ -6368,6 +6370,13 @@
       const gated = document.getElementById(`loc-gated-${section}`);
       if (gated) { gated.classList.remove('loc-gated'); gated.removeAttribute('inert'); }
       document.querySelectorAll(`#${section}-loc-picker .loc-option`).forEach(t => t.classList.remove('selected'));
+      if (section === 'pickup') {
+        ACC_ITEMS.forEach(item => { item.warn = false; });
+        document.getElementById('acc-panel-alert').style.display = 'none';
+      } else {
+        DELIVER_ACC_ITEMS.forEach(item => { item.warn = false; });
+        document.getElementById('d-acc-panel-alert').style.display = 'none';
+      }
       updateTooltipState(section, false);
       close();
       collapseLocPicker(section, null);
