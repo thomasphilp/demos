@@ -4402,8 +4402,13 @@
       if (labelEl) labelEl.textContent = DOCK_TYPE_LABELS[opt.dataset.type] || '';
       if (iconEl) iconEl.innerHTML = opt.querySelector('.loc-option-icon') ? opt.querySelector('.loc-option-icon').innerHTML : '';
     }
+    // Reset animation so it replays even if the panel was shown before
+    dq.style.animation = 'none';
     dq.hidden = false;
-    dq.classList.add('pulsing');
+    void dq.offsetWidth; // force reflow — restarts the CSS animation
+    dq.style.animation = '';
+    // Delay pulsing until entrance animation finishes (320ms)
+    setTimeout(() => dq.classList.add('pulsing'), 350);
     const dockBtns = dq.querySelectorAll('.dock-option');
     dockBtns.forEach(b => { b.style.width = ''; });
     const maxW = Math.max(...[...dockBtns].map(b => b.offsetWidth));
