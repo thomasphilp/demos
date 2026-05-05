@@ -6050,8 +6050,9 @@
       });
     }
 
-    // "Use my entered address" → commit as typed
+    // "Use my entered address" → commit as typed, clear business name
     searchPanel.querySelector('.addr-search-top').addEventListener('click', () => {
+      if (companyInput) companyInput.value = '';
       showCard(input.value, '', 'typed', false);
     });
 
