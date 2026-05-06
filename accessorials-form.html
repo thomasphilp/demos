@@ -151,9 +151,16 @@
   .loc-picker-body { display: flex; flex-direction: column; gap: 12px; transition: opacity 0.1s ease; }
   .loc-picker-body-wrap { overflow: hidden; max-height: 700px; transition: max-height 0.4s ease; padding: 4px; margin: -4px; }
   .loc-picker-body-wrap.collapsed { max-height: 0; }
-  .loc-picker-block:has(.loc-picker-body-wrap.collapsed) { padding: 0 16px; cursor: pointer; min-height: 48px; justify-content: center; }
+  .loc-picker-block:has(.loc-picker-body-wrap.collapsed) { padding: 12px 16px; cursor: pointer; min-height: 48px; justify-content: center; }
   .loc-picker-block:has(.loc-picker-body-wrap.collapsed):hover { background: rgba(9,10,12,0.04); }
   .loc-picker-summary {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .loc-picker-summary-autodetect {
+    font-size: 11px; font-weight: 400; color: var(--color-label-secondary);
+  }
+  .loc-picker-summary-autodetect .loc-summary-source { color: #2563eb; }
+  .loc-picker-summary-row {
     display: flex; align-items: center; justify-content: space-between; gap: 8px;
   }
   .loc-picker-summary-left { display: flex; align-items: center; gap: 16px; }
@@ -2103,14 +2110,17 @@
     <div class="loc-field-label" id="pickup-loc-label"><span>What type of location is this?</span><span class="req">*</span></div>
     <div class="loc-picker-block" id="pickup-loc-picker">
       <div class="loc-picker-summary" hidden>
-        <div class="loc-picker-summary-left">
-          <div class="loc-picker-summary-icon"></div>
-          <div class="loc-picker-summary-text">
-            <span class="loc-picker-summary-name"></span>
-            <span class="loc-picker-summary-detail" hidden></span>
+        <span class="loc-picker-summary-autodetect" hidden></span>
+        <div class="loc-picker-summary-row">
+          <div class="loc-picker-summary-left">
+            <div class="loc-picker-summary-icon"></div>
+            <div class="loc-picker-summary-text">
+              <span class="loc-picker-summary-name"></span>
+              <span class="loc-picker-summary-detail" hidden></span>
+            </div>
           </div>
+          <button class="loc-picker-change" type="button"><span class="loc-picker-change-q">Is this incorrect?</span> <span class="loc-picker-change-link">Change now</span></button>
         </div>
-        <button class="loc-picker-change" type="button"><span class="loc-picker-change-q">Is this incorrect?</span> <span class="loc-picker-change-link">Change now</span></button>
       </div>
       <div class="loc-picker-body-wrap">
       <div class="loc-picker-body">
@@ -2710,14 +2720,17 @@
     <div class="loc-field-label" id="deliver-loc-label"><span>What type of location is this?</span><span class="req">*</span></div>
     <div class="loc-picker-block" id="deliver-loc-picker">
       <div class="loc-picker-summary" hidden>
-        <div class="loc-picker-summary-left">
-          <div class="loc-picker-summary-icon"></div>
-          <div class="loc-picker-summary-text">
-            <span class="loc-picker-summary-name"></span>
-            <span class="loc-picker-summary-detail" hidden></span>
+        <span class="loc-picker-summary-autodetect" hidden></span>
+        <div class="loc-picker-summary-row">
+          <div class="loc-picker-summary-left">
+            <div class="loc-picker-summary-icon"></div>
+            <div class="loc-picker-summary-text">
+              <span class="loc-picker-summary-name"></span>
+              <span class="loc-picker-summary-detail" hidden></span>
+            </div>
           </div>
+          <button class="loc-picker-change" type="button"><span class="loc-picker-change-q">Is this incorrect?</span> <span class="loc-picker-change-link">Change now</span></button>
         </div>
-        <button class="loc-picker-change" type="button"><span class="loc-picker-change-q">Is this incorrect?</span> <span class="loc-picker-change-link">Change now</span></button>
       </div>
       <div class="loc-picker-body-wrap">
       <div class="loc-picker-body">
@@ -4333,9 +4346,12 @@
     const summaryIcon = picker.querySelector('.loc-picker-summary-icon');
     const summaryName = picker.querySelector('.loc-picker-summary-name');
     const summaryDetail = picker.querySelector('.loc-picker-summary-detail');
-    // External field label (sits above the picker block)
+    const summaryAutodetect = picker.querySelector('.loc-picker-summary-autodetect');
+    // External field label always stays as the question
     const extLabel = document.getElementById(`${section}-loc-label`);
     if (extLabel) extLabel.innerHTML = `<span>${isZH ? '这是什么类型的地点？' : 'What type of location is this?'}</span><span class="req">*</span>`;
+    // Reset autodetect line
+    if (summaryAutodetect) { summaryAutodetect.innerHTML = ''; summaryAutodetect.hidden = true; }
     if (type === 'skip-rec') {
       const tile = picker.querySelector(`.loc-option[data-type="${type}"]`);
       summaryIcon.innerHTML = tile ? tile.querySelector('.loc-option-icon').innerHTML : '';
@@ -4358,11 +4374,15 @@
         summaryDetail.hidden = true;
       }
     }
-    // In auto-detect demos, show auto-detection source only when residential is selected; keep residential tile label always visible
-    if (REBILL_SOURCE) {
-      if (type === 'residential') {
-        if (extLabel) extLabel.innerHTML = `<span class="loc-field-label-auto">${isZH ? '位置类型' : 'Location type'} · Auto-detected from <span class="loc-field-label-source">${REBILL_SOURCE}</span></span><span class="req">*</span>`;
+    // In auto-detect demos, show auto-detection source above the location name row
+    if (REBILL_SOURCE && type === 'residential') {
+      if (summaryAutodetect) {
+        summaryAutodetect.innerHTML = `· Auto-detected from <span class="loc-summary-source">${REBILL_SOURCE}</span>`;
+        summaryAutodetect.hidden = false;
       }
+      const resTileAuto = picker.querySelector('.loc-option[data-type="residential"] .loc-option-auto');
+      if (resTileAuto) resTileAuto.hidden = false;
+    } else if (REBILL_SOURCE) {
       const resTileAuto = picker.querySelector('.loc-option[data-type="residential"] .loc-option-auto');
       if (resTileAuto) resTileAuto.hidden = false;
     }
