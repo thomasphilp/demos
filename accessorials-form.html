@@ -183,7 +183,7 @@
   /* Help me choose */
   .addr-loc-btn {
     position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
-    width: 28px; height: 28px; flex-shrink: 0;
+    width: 24px; height: 24px; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
     background: #6d28d9; border-radius: 4px; border: none;
     cursor: pointer; padding: 0; color: white;
@@ -1066,33 +1066,59 @@
   .tooltip-close-btn svg { width: 12px; height: 12px; display: block; position: relative; top: -0.5px; }
 
   .tooltip-body {
-    padding: 10px 16px 16px;
-    display: flex; flex-direction: column; gap: 16px;
+    padding: 10px;
+    display: flex; flex-direction: column; gap: 10px;
   }
   .tooltip-text {
     font-size: 10px; font-weight: 400; color: rgba(9,10,12,0.9);
     line-height: 14px;
   }
   .tooltip-text strong { font-weight: 600; }
-  .tooltip-loc-header { display: flex; flex-direction: row; align-items: center; gap: 4px; }
-  .tooltip-loc-label { font-size: 10px; font-weight: 400; color: var(--color-label-secondary); line-height: 1.2; }
-  .tooltip-loc-value { font-size: 10px; font-weight: 600; color: var(--color-label-primary); line-height: 1.2; }
-  .tooltip-loc-container {
-    display: flex; flex-direction: column; gap: 5px;
-    background: rgba(9,10,12,0.03);
-    border: 1px solid rgba(9,10,12,0.08);
+  /* Source row — "Based on your services history…" */
+  .tooltip-source-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    background: rgba(9,10,12,0.02);
+    border: 1px solid rgba(9,10,12,0.05);
     border-radius: 4px;
-    padding: 8px 10px;
+    padding: 10px;
   }
-  .tooltip-rec-label { font-size: 10px; font-weight: 600; color: #a16207; line-height: 1.2; }
-  .tooltip-tags { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-  .tooltip-rebill-yellow { background: #fefce8; border-color: rgba(9,10,12,0.05); }
-  .tooltip-rebill-label { font-size: 10px; font-weight: 600; color: #854d0e; line-height: 1.2; }
-  .tooltip-rebill-divider { width: 100%; height: 1px; background: rgba(9,10,12,0.08); }
-  .tooltip-rebill-list { display: flex; flex-direction: column; gap: 5px; }
-  .tooltip-rebill-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-  .tooltip-rebill-service { font-size: 10px; font-weight: 400; color: rgba(9,10,12,0.9); }
-  .tooltip-rebill-count { font-size: 10px; font-weight: 600; color: #854d0e; }
+  .tooltip-source-left {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .tooltip-source-left svg { flex-shrink: 0; color: rgba(9,10,12,0.9); }
+  .tooltip-source-text {
+    font-size: 10px; font-weight: 400; color: rgba(9,10,12,0.9); line-height: 1.3;
+  }
+  .tooltip-rebill-badge {
+    background: #fef9c3;
+    border: 1px solid #fde047;
+    border-radius: 16px;
+    padding: 4px 6px;
+    height: 16px;
+    display: flex; align-items: center; flex-shrink: 0;
+    font-size: 10px; font-weight: 400; color: rgba(9,10,12,0.9);
+    white-space: nowrap;
+  }
+  /* Recs container */
+  .tooltip-loc-container {
+    display: flex; flex-direction: column; gap: 10px;
+    background: rgba(9,10,12,0.02);
+    border: 1px solid rgba(9,10,12,0.05);
+    border-radius: 4px;
+    padding: 10px;
+  }
+  .tooltip-recs-divider { width: 100%; height: 1px; background: rgba(9,10,12,0.08); }
+  .tooltip-recs-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .tooltip-recs-row-left {
+    display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+  }
+  .tooltip-recs-row-left svg { flex-shrink: 0; color: rgba(9,10,12,0.9); }
+  .tooltip-recs-label {
+    font-size: 10px; font-weight: 400; color: rgba(9,10,12,0.9); white-space: nowrap;
+  }
+  .tooltip-tags { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
   .tooltip-tag {
     background: #d9fceb;
     border: 1px solid #83ebb9;
@@ -1797,20 +1823,18 @@
   .addr-book-inner { background: #f5f3ff; }
   .addr-book-header {
     display: flex; align-items: center; gap: 8px;
-    padding: 12px 20px 12px 12px; border-bottom: 1px solid #d2d5da;
+    padding: 12px 20px 8px 12px;
   }
-  .addr-book-header-icon { width: 12px; height: 12px; flex-shrink: 0; color: #5b21b6; display: flex; }
-  .addr-book-header-icon svg { width: 12px; height: 12px; }
-  .addr-book-header-title { font-size: 12px; font-weight: 600; color: #5b21b6; white-space: nowrap; flex: 1; }
-  .addr-book-header-info { width: 11px; height: 11px; flex-shrink: 0; color: #7c3aed; display: flex; }
+  .addr-book-header-title { font-size: 10px; font-weight: 600; color: rgba(9,10,12,0.6); white-space: nowrap; flex: 1; }
+  .addr-book-header-info { width: 11px; height: 11px; flex-shrink: 0; color: rgba(9,10,12,0.4); display: flex; }
   .addr-book-header-info svg { width: 11px; height: 11px; }
   .addr-list-item {
     display: flex; align-items: center; gap: 8px;
-    height: 50px; padding: 10px 12px 10px 12px; cursor: pointer;
+    height: 50px; padding: 10px 12px; cursor: pointer;
     transition: background 0.1s;
   }
-  .addr-list-item:hover { background: rgba(9,10,12,0.04); }
-  .addr-list-icon { width: 12px; height: 12px; flex-shrink: 0; color: #5b21b6; display: flex; align-items: center; }
+  .addr-list-item:hover { background: rgba(9,10,12,0.05); }
+  .addr-list-icon { width: 12px; height: 12px; flex-shrink: 0; color: #5b21b6; display: flex; align-items: center; margin-right: 4px; }
   .addr-list-icon svg { width: 12px; height: 12px; }
   .addr-list-icon.search { color: #6a7281; }
   .addr-list-body { display: flex; flex-direction: column; flex: 1; min-width: 0; }
@@ -1822,7 +1846,7 @@
   .addr-list-chevron svg { width: 10px; height: 10px; }
   .addr-search-top {
     display: flex; align-items: center; gap: 8px;
-    padding: 10px 12px; border-bottom: 1px solid #d8dadf; cursor: pointer;
+    padding: 10px 20px 10px 12px; border-bottom: 1px solid rgba(9,10,12,0.05); cursor: pointer;
     transition: background 0.1s;
   }
   .addr-search-top:hover { background: rgba(9,10,12,0.03); }
@@ -1831,7 +1855,7 @@
   .addr-search-top-body { display: flex; flex-direction: column; flex: 1; min-width: 0; }
   .addr-search-top-title { font-size: 12px; font-weight: 600; color: #090a0c; line-height: 16px; letter-spacing: -0.1px; }
   .addr-search-top-val { font-size: 12px; font-weight: 400; color: #6a7281; line-height: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .addr-search-label { padding: 8px 12px; font-size: 12px; font-weight: 600; color: #555d68; line-height: 16px; }
+  .addr-search-label { padding: 8px 12px; font-size: 10px; font-weight: 600; color: rgba(9,10,12,0.6); line-height: normal; }
   .addr-search-top-chevron { width: 10px; height: 10px; flex-shrink: 0; color: rgba(9,10,12,0.3); display: flex; }
   .addr-search-top-chevron svg { width: 10px; height: 10px; }
 
@@ -1839,48 +1863,48 @@
   .addr-card {
     display: none; flex: 1; min-width: 0;
     height: 38px;
-    background: rgba(9,10,12,0.04);
+    background: rgba(9,10,12,0.02);
     border: 1px solid rgba(9,10,12,0.12);
     border-radius: 4px;
-    padding: 4px 8px;
-    gap: 8px; align-items: center; overflow: hidden;
+    padding: 4px 12px;
+    gap: 10px; align-items: center; overflow: hidden;
     cursor: pointer;
   }
-  .addr-card[data-source="addressbook"] { background: #ede9fe; }
   .addr-card-icon { width: 16px; height: 16px; flex-shrink: 0; color: rgba(9,10,12,0.45); display: flex; align-items: center; }
-  .addr-card[data-source="addressbook"] .addr-card-icon { color: #6d28d9; }
   .addr-card-icon svg { width: 16px; height: 16px; }
   .addr-card-content { display: flex; flex-direction: column; flex: 1; min-width: 0; overflow: hidden; }
   .addr-card-name {
-    font-size: 12px; font-weight: 600; color: #090a0c;
+    font-size: 12px; font-weight: 600; color: rgba(9,10,12,0.9);
     line-height: 16px; letter-spacing: -0.1px;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .addr-card[data-source="addressbook"] .addr-card-name { color: #4c1d95; }
-  .addr-card-name.gradient {
-    background: linear-gradient(90deg, #4c1d95 0%, #2563eb 46.1%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   }
   .addr-card-name:empty { display: none; }
   .addr-card-addr {
     font-size: 12px; font-weight: 400; color: rgba(9,10,12,0.9);
     line-height: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
+  .addr-card[data-source="addressbook"] { background: #ede9fe; }
+  .addr-card[data-source="addressbook"] .addr-card-icon { color: #6d28d9; }
+  .addr-card[data-source="addressbook"] .addr-card-name {
+    background: linear-gradient(90deg, #4c1d95 0%, #2563eb 46.1%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; color: transparent;
+  }
   /* Wrapper in committed mode */
   .input-control.addr-committed {
-    background: #f9fafb;
-    border-color: rgba(9,10,12,0.05);
+    background: rgba(9,10,12,0.02);
+    border-color: rgba(9,10,12,0.12);
     box-shadow: none;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 5px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 4px;
     min-height: unset;
     cursor: default;
   }
   .input-control.addr-committed:hover,
   .input-control.addr-committed:focus-within {
-    background: #f9fafb;
-    border-color: rgba(9,10,12,0.05);
+    background: rgba(9,10,12,0.02);
+    border-color: rgba(9,10,12,0.12);
     box-shadow: none;
     border-width: 1px;
   }
@@ -2051,7 +2075,6 @@
           <div class="addr-book-panel" id="pickup-addr-book-panel" hidden>
             <div class="addr-book-inner">
               <div class="addr-book-header">
-                <span class="addr-book-header-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 2.25C1.5 1.007 2.507 0 3.75 0H20.25C21.493 0 22.5 1.007 22.5 2.25V24H1.5V2.25ZM6.75 5.25H10.5V9H6.75V5.25ZM13.5 5.25H17.25V9H13.5V5.25ZM6.75 11.25H10.5V15H6.75V11.25ZM13.5 11.25H17.25V15H13.5V11.25ZM7.5 19.5H16.5V24H14.25V21.75H9.75V24H7.5V19.5Z"/></svg></span>
                 <span class="addr-book-header-title">Quick prefill from Address Book</span>
                 <span class="addr-book-header-info"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"><circle cx="6" cy="6" r="5"/><path d="M6 5.5v2.5"/><circle cx="6" cy="3.8" r="0.4" fill="currentColor" stroke="none"/></svg></span>
               </div>
@@ -2070,9 +2093,9 @@
               <span class="addr-search-top-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             </div>
             <div class="addr-search-label">Did you mean?</div>
-            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M19 19l-3.5-3.5"/></svg></span><div class="addr-list-body"><span class="addr-list-name">Chic Threads Co.</span><span class="addr-list-addr">1321 Birch Boulevard, Sunnyvale, CA 94086</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
-            <div class="addr-list-item"><span class="addr-list-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 2.25C1.5 1.007 2.507 0 3.75 0H20.25C21.493 0 22.5 1.007 22.5 2.25V24H1.5V2.25ZM6.75 5.25H10.5V9H6.75V5.25ZM13.5 5.25H17.25V9H13.5V5.25ZM6.75 11.25H10.5V15H6.75V11.25ZM13.5 11.25H17.25V15H13.5V11.25ZM7.5 19.5H16.5V24H14.25V21.75H9.75V24H7.5V19.5Z"/></svg></span><div class="addr-list-body"><span class="addr-list-name gradient">Jenny's place I visited</span><span class="addr-list-addr">456 Maple Street, Rivertown, TX 75001</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
-            <div class="addr-list-item"><span class="addr-list-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 2.25C1.5 1.007 2.507 0 3.75 0H20.25C21.493 0 22.5 1.007 22.5 2.25V24H1.5V2.25ZM6.75 5.25H10.5V9H6.75V5.25ZM13.5 5.25H17.25V9H13.5V5.25ZM6.75 11.25H10.5V15H6.75V11.25ZM13.5 11.25H17.25V15H13.5V11.25ZM7.5 19.5H16.5V24H14.25V21.75H9.75V24H7.5V19.5Z"/></svg></span><div class="addr-list-body"><span class="addr-list-name">Trendy Fabric Emporium</span><span class="addr-list-addr">789 Oak Avenue, Lakeview, FL 32123</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M19 19l-3.5-3.5"/></svg></span><div class="addr-list-body"><span class="addr-list-name gradient">Chic Threads Co.</span><span class="addr-list-addr">1321 Birch Boulevard, Sunnyvale, CA 94086</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M19 19l-3.5-3.5"/></svg></span><div class="addr-list-body"><span class="addr-list-name gradient">Jenny's place I visited</span><span class="addr-list-addr">456 Maple Street, Rivertown, TX 75001</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M19 19l-3.5-3.5"/></svg></span><div class="addr-list-body"><span class="addr-list-name dark">Trendy Fabric Emporium</span><span class="addr-list-addr">789 Oak Avenue, Lakeview, FL 32123</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
             <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M19 19l-3.5-3.5"/></svg></span><div class="addr-list-body"><span class="addr-list-name dark">Fashion Forward Fabrics</span><span class="addr-list-addr">321 Pine Road, Hillcrest, NY 10001</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
           </div>
         </div>
@@ -2257,11 +2280,11 @@
                 <div class="tooltip-box">
                   <div class="tooltip-header">
                     <div class="tooltip-header-left">
-                      <div class="tooltip-header-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="display:block;"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.300049 12C0.300049 5.53832 5.53832 0.300049 12 0.300049C18.4618 0.300049 23.7 5.53832 23.7 12C23.7 18.4618 18.4618 23.7 12 23.7C5.53832 23.7 0.300049 18.4618 0.300049 12ZM12 7.50005C12.4971 7.50005 12.9 7.90299 12.9 8.40005V12.9C12.9 13.3971 12.4971 13.8 12 13.8C11.503 13.8 11.1 13.3971 11.1 12.9V8.40005C11.1 7.90299 11.503 7.50005 12 7.50005ZM12 17.4C12.4971 17.4 12.9 16.9971 12.9 16.5C12.9 16.003 12.4971 15.6 12 15.6C11.503 15.6 11.1 16.003 11.1 16.5C11.1 16.9971 11.503 17.4 12 17.4Z"/></svg></div>
+                      <div class="tooltip-header-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="display:block;"><rect x="1" y="10" width="4" height="4" rx="1"/><rect x="6" y="6" width="4" height="8" rx="1"/><rect x="11" y="2" width="4" height="12" rx="1"/></svg></div>
                       <div class="tooltip-header-text">
-                        <p class="tooltip-title">Avoid adjustment charges</p>
+                        <p class="tooltip-title">Optimize your shipment</p>
                         <div class="tooltip-subtitle">
-                          <span>Address based recommendations</span>
+                          <span>Address based recommendations powered by AI</span>
                         </div>
                       </div>
                     </div>
@@ -2272,25 +2295,26 @@
                     </button>
                   </div>
                   <div class="tooltip-body">
-                    <div style="display:flex; flex-direction:column; gap:16px;">
-                      <div class="tooltip-loc-container tooltip-rebill-yellow" id="tooltip-rebill-section" style="display:none;">
-                        <span class="tooltip-rebill-label">Re-bill chance from the pick-up address</span>
-                        <div class="tooltip-rebill-divider"></div>
-                        <div class="tooltip-rebill-list" id="tooltip-rebill-list"></div>
+                    <div class="tooltip-source-row" id="tooltip-source-row" style="display:none;">
+                      <div class="tooltip-source-left">
+                        <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="5" width="2" height="3" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="3" y="3" width="2" height="5" rx="0.5" fill="currentColor" opacity="0.7"/><rect x="6" y="0" width="2" height="8" rx="0.5" fill="currentColor"/></svg>
+                        <span class="tooltip-source-text">Based on your services history for this location</span>
                       </div>
-                      <div class="tooltip-loc-container" id="tooltip-loc-container">
-                        <p class="tooltip-text" id="tooltip-body-text">The below accessorial services should be added to <strong>prevent pick-up issues</strong> and <strong>avoid adjustment charges</strong> after delivery.</p>
+                      <span class="tooltip-rebill-badge" id="tooltip-rebill-badge" style="display:none;"></span>
+                    </div>
+                    <div class="tooltip-loc-container" id="tooltip-loc-container">
+                      <p class="tooltip-text" id="tooltip-body-text"><strong>The below services should be added</strong> to prevent pick-up issues and avoid adjustment charges after delivery</p>
+                      <div class="tooltip-recs-divider"></div>
+                      <div class="tooltip-recs-row" id="tooltip-recs-row">
+                        <div class="tooltip-recs-row-left">
+                          <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 4l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                          <span class="tooltip-recs-label">Recommended services</span>
+                        </div>
                         <div class="tooltip-tags" id="tooltip-tags"></div>
                       </div>
                     </div>
                     <div class="tooltip-actions" id="tooltip-actions-wrap">
-                      <button class="tooltip-cta-btn" type="button">
-                        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                          <g transform="translate(0.75, 0.75)"><path fill-rule="nonzero" d="M 9.926357725733235e-9 10.155171034814904 C -0.00007495359226561055 11.189652433042005 0.42443817942904194 12 1.388137037370066 12 C 2.1599262673564454 12 2.4739802210088984 11.168557648756085 2.774910439769851 10.155171681559397 C 4.107644039723257 5.667176229466671 6.7598693534395125 3.8081880006988977 10.65338586716067 3.8081887338402804 C 12.621484313931854 3.8081885782641893 14.403268756814088 4.518597946327537 15.693024519986798 5.667176229466671 L 13.504239116107456 7.616376820936068 L 19.918188645622482 7.616376174191575 C 20.3177342730601 7.616376142607915 20.6471350251786 7.333156251098118 20.667238734978355 6.972338953614838 L 21 1.0000007006398675 L 18.71680370625062 2.974379216908833 C 16.653194485174282 1.1366540932351172 13.802346243017316 -2.4892193267048857e-7 10.65338586716067 4.0884549028173145e-14 C 4.5142962241652205 4.852885865872577e-7 -5.172431250684909e-7 4.702653829794528 9.926357725733235e-9 10.155171034814904 Z"/></g>
-                          <g transform="translate(22.5, 23.25) rotate(180)"><path fill-rule="nonzero" d="M 9.571845407143851e-9 10.155172751552707 C -0.00007227667711821199 11.189654318080446 0.4092797424720568 12.000001907348633 1.3385607596253022 12.000001907348633 C 2.0827861098030938 12.000001907348633 2.3856238626598447 11.16855954800279 2.6758065715451487 10.155173466808472 C 3.960942583680541 5.667177425510745 6.518445092654808 3.8081886910628904 10.272907573540312 3.808189424204382 C 12.170716808945985 3.808189268628269 13.888866510257074 4.518598616862214 15.132559557537808 5.667177067882863 L 13.021944314723536 7.616378133152998 L 19.20682489065742 7.616377417897232 C 19.592101043932995 7.616377386313568 19.909736913187103 7.333157726453009 19.92912263329488 6.972340384019982 L 20.25 1.0000008742014852 L 18.04834688555503 2.974379657680956 C 16.058438009905856 1.1366542433362825 13.309405131103908 -2.489219613585384e-7 10.272907573540312 4.0884556582457575e-14 C 4.35307093929832 4.852886694658315e-7 -4.987701519834341e-7 4.702654667800821 9.571845407143851e-9 10.155172751552707 Z"/></g>
-                        </svg>
-                        Add and re-quote
-                      </button>
+                      <button class="tooltip-cta-btn" type="button">Add and update quote</button>
                     </div>
                   </div>
                 </div>
@@ -2658,7 +2682,6 @@
           <div class="addr-book-panel" id="deliver-addr-book-panel" hidden>
             <div class="addr-book-inner">
               <div class="addr-book-header">
-                <span class="addr-book-header-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 2.25C1.5 1.007 2.507 0 3.75 0H20.25C21.493 0 22.5 1.007 22.5 2.25V24H1.5V2.25ZM6.75 5.25H10.5V9H6.75V5.25ZM13.5 5.25H17.25V9H13.5V5.25ZM6.75 11.25H10.5V15H6.75V11.25ZM13.5 11.25H17.25V15H13.5V11.25ZM7.5 19.5H16.5V24H14.25V21.75H9.75V24H7.5V19.5Z"/></svg></span>
                 <span class="addr-book-header-title">Quick prefill from Address Book</span>
                 <span class="addr-book-header-info"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"><circle cx="6" cy="6" r="5"/><path d="M6 5.5v2.5"/><circle cx="6" cy="3.8" r="0.4" fill="currentColor" stroke="none"/></svg></span>
               </div>
@@ -2677,9 +2700,9 @@
               <span class="addr-search-top-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             </div>
             <div class="addr-search-label">Did you mean?</div>
-            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M19 19l-3.5-3.5"/></svg></span><div class="addr-list-body"><span class="addr-list-name">Chic Threads Co.</span><span class="addr-list-addr">1321 Birch Boulevard, Sunnyvale, CA 94086</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
-            <div class="addr-list-item"><span class="addr-list-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 2.25C1.5 1.007 2.507 0 3.75 0H20.25C21.493 0 22.5 1.007 22.5 2.25V24H1.5V2.25ZM6.75 5.25H10.5V9H6.75V5.25ZM13.5 5.25H17.25V9H13.5V5.25ZM6.75 11.25H10.5V15H6.75V11.25ZM13.5 11.25H17.25V15H13.5V11.25ZM7.5 19.5H16.5V24H14.25V21.75H9.75V24H7.5V19.5Z"/></svg></span><div class="addr-list-body"><span class="addr-list-name gradient">Jenny's place I visited</span><span class="addr-list-addr">456 Maple Street, Rivertown, TX 75001</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
-            <div class="addr-list-item"><span class="addr-list-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 2.25C1.5 1.007 2.507 0 3.75 0H20.25C21.493 0 22.5 1.007 22.5 2.25V24H1.5V2.25ZM6.75 5.25H10.5V9H6.75V5.25ZM13.5 5.25H17.25V9H13.5V5.25ZM6.75 11.25H10.5V15H6.75V11.25ZM13.5 11.25H17.25V15H13.5V11.25ZM7.5 19.5H16.5V24H14.25V21.75H9.75V24H7.5V19.5Z"/></svg></span><div class="addr-list-body"><span class="addr-list-name">Trendy Fabric Emporium</span><span class="addr-list-addr">789 Oak Avenue, Lakeview, FL 32123</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M19 19l-3.5-3.5"/></svg></span><div class="addr-list-body"><span class="addr-list-name gradient">Chic Threads Co.</span><span class="addr-list-addr">1321 Birch Boulevard, Sunnyvale, CA 94086</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M19 19l-3.5-3.5"/></svg></span><div class="addr-list-body"><span class="addr-list-name gradient">Jenny's place I visited</span><span class="addr-list-addr">456 Maple Street, Rivertown, TX 75001</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M19 19l-3.5-3.5"/></svg></span><div class="addr-list-body"><span class="addr-list-name dark">Trendy Fabric Emporium</span><span class="addr-list-addr">789 Oak Avenue, Lakeview, FL 32123</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
             <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M19 19l-3.5-3.5"/></svg></span><div class="addr-list-body"><span class="addr-list-name dark">Fashion Forward Fabrics</span><span class="addr-list-addr">321 Pine Road, Hillcrest, NY 10001</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
           </div>
         </div>
@@ -2862,11 +2885,11 @@
                 <div class="tooltip-box">
                   <div class="tooltip-header">
                     <div class="tooltip-header-left">
-                      <div class="tooltip-header-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="display:block;"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.300049 12C0.300049 5.53832 5.53832 0.300049 12 0.300049C18.4618 0.300049 23.7 5.53832 23.7 12C23.7 18.4618 18.4618 23.7 12 23.7C5.53832 23.7 0.300049 18.4618 0.300049 12ZM12 7.50005C12.4971 7.50005 12.9 7.90299 12.9 8.40005V12.9C12.9 13.3971 12.4971 13.8 12 13.8C11.503 13.8 11.1 13.3971 11.1 12.9V8.40005C11.1 7.90299 11.503 7.50005 12 7.50005ZM12 17.4C12.4971 17.4 12.9 16.9971 12.9 16.5C12.9 16.003 12.4971 15.6 12 15.6C11.503 15.6 11.1 16.003 11.1 16.5C11.1 16.9971 11.503 17.4 12 17.4Z"/></svg></div>
+                      <div class="tooltip-header-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="display:block;"><rect x="1" y="10" width="4" height="4" rx="1"/><rect x="6" y="6" width="4" height="8" rx="1"/><rect x="11" y="2" width="4" height="12" rx="1"/></svg></div>
                       <div class="tooltip-header-text">
-                        <p class="tooltip-title">Avoid adjustment charges</p>
+                        <p class="tooltip-title">Optimize your shipment</p>
                         <div class="tooltip-subtitle">
-                          <span>Address based recommendations</span>
+                          <span>Address based recommendations powered by AI</span>
                         </div>
                       </div>
                     </div>
@@ -2877,25 +2900,26 @@
                     </button>
                   </div>
                   <div class="tooltip-body">
-                    <div style="display:flex; flex-direction:column; gap:16px;">
-                      <div class="tooltip-loc-container tooltip-rebill-yellow" id="d-tooltip-rebill-section" style="display:none;">
-                        <span class="tooltip-rebill-label">Re-bill chance from the delivery address</span>
-                        <div class="tooltip-rebill-divider"></div>
-                        <div class="tooltip-rebill-list" id="d-tooltip-rebill-list"></div>
+                    <div class="tooltip-source-row" id="d-tooltip-source-row" style="display:none;">
+                      <div class="tooltip-source-left">
+                        <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="5" width="2" height="3" rx="0.5" fill="currentColor" opacity="0.4"/><rect x="3" y="3" width="2" height="5" rx="0.5" fill="currentColor" opacity="0.7"/><rect x="6" y="0" width="2" height="8" rx="0.5" fill="currentColor"/></svg>
+                        <span class="tooltip-source-text">Based on your services history for this location</span>
                       </div>
-                      <div class="tooltip-loc-container" id="d-tooltip-loc-container">
-                        <p class="tooltip-text" id="d-tooltip-body-text">The below accessorial services should be added to <strong>prevent delivery issues</strong> and <strong>avoid adjustment charges</strong> after delivery.</p>
+                      <span class="tooltip-rebill-badge" id="d-tooltip-rebill-badge" style="display:none;"></span>
+                    </div>
+                    <div class="tooltip-loc-container" id="d-tooltip-loc-container">
+                      <p class="tooltip-text" id="d-tooltip-body-text"><strong>The below services should be added</strong> to prevent delivery issues and avoid adjustment charges after delivery</p>
+                      <div class="tooltip-recs-divider"></div>
+                      <div class="tooltip-recs-row" id="d-tooltip-recs-row">
+                        <div class="tooltip-recs-row-left">
+                          <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 4l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                          <span class="tooltip-recs-label">Recommended services</span>
+                        </div>
                         <div class="tooltip-tags" id="d-tooltip-tags"></div>
                       </div>
                     </div>
                     <div class="tooltip-actions" id="d-tooltip-actions-wrap">
-                      <button class="tooltip-cta-btn" type="button">
-                        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                          <g transform="translate(0.75, 0.75)"><path fill-rule="nonzero" d="M 9.926357725733235e-9 10.155171034814904 C -0.00007495359226561055 11.189652433042005 0.42443817942904194 12 1.388137037370066 12 C 2.1599262673564454 12 2.4739802210088984 11.168557648756085 2.774910439769851 10.155171681559397 C 4.107644039723257 5.667176229466671 6.7598693534395125 3.8081880006988977 10.65338586716067 3.8081887338402804 C 12.621484313931854 3.8081885782641893 14.403268756814088 4.518597946327537 15.693024519986798 5.667176229466671 L 13.504239116107456 7.616376820936068 L 19.918188645622482 7.616376174191575 C 20.3177342730601 7.616376142607915 20.6471350251786 7.333156251098118 20.667238734978355 6.972338953614838 L 21 1.0000007006398675 L 18.71680370625062 2.974379216908833 C 16.653194485174282 1.1366540932351172 13.802346243017316 -2.4892193267048857e-7 10.65338586716067 4.0884549028173145e-14 C 4.5142962241652205 4.852885865872577e-7 -5.172431250684909e-7 4.702653829794528 9.926357725733235e-9 10.155171034814904 Z"/></g>
-                          <g transform="translate(22.5, 23.25) rotate(180)"><path fill-rule="nonzero" d="M 9.571845407143851e-9 10.155172751552707 C -0.00007227667711821199 11.189654318080446 0.4092797424720568 12.000001907348633 1.3385607596253022 12.000001907348633 C 2.0827861098030938 12.000001907348633 2.3856238626598447 11.16855954800279 2.6758065715451487 10.155173466808472 C 3.960942583680541 5.667177425510745 6.518445092654808 3.8081886910628904 10.272907573540312 3.808189424204382 C 12.170716808945985 3.808189268628269 13.888866510257074 4.518598616862214 15.132559557537808 5.667177067882863 L 13.021944314723536 7.616378133152998 L 19.20682489065742 7.616377417897232 C 19.592101043932995 7.616377386313568 19.909736913187103 7.333157726453009 19.92912263329488 6.972340384019982 L 20.25 1.0000008742014852 L 18.04834688555503 2.974379657680956 C 16.058438009905856 1.1366542433362825 13.309405131103908 -2.489219613585384e-7 10.272907573540312 4.0884556582457575e-14 C 4.35307093929832 4.852886694658315e-7 -4.987701519834341e-7 4.702654667800821 9.571845407143851e-9 10.155172751552707 Z"/></g>
-                        </svg>
-                        Add and re-quote
-                      </button>
+                      <button class="tooltip-cta-btn" type="button">Add and update quote</button>
                     </div>
                   </div>
                 </div>
@@ -4270,55 +4294,53 @@
   const TOOLTIP_REMINDER = 'Selecting a location type helps us identify which services may be required. Review the options and select one to avoid potential adjustment charges.';
 
   function updateTooltipState(prefix, hasLocType, locType) {
-    const isPickup = prefix === 'pickup';
-    const textEl      = document.getElementById(isPickup ? 'tooltip-body-text'       : 'd-tooltip-body-text');
-    const headerEl    = document.getElementById(isPickup ? 'tooltip-loc-header'      : 'd-tooltip-loc-header');
-    const containerEl = document.getElementById(isPickup ? 'tooltip-loc-container'   : 'd-tooltip-loc-container');
-    const locValEl    = document.getElementById(isPickup ? 'tooltip-loc-value'       : 'd-tooltip-loc-value');
-    const actionsEl   = document.getElementById(isPickup ? 'tooltip-actions-wrap'    : 'd-tooltip-actions-wrap');
-    const rebillEl    = document.getElementById(isPickup ? 'tooltip-rebill-section'  : 'd-tooltip-rebill-section');
-    const rebillList  = document.getElementById(isPickup ? 'tooltip-rebill-list'     : 'd-tooltip-rebill-list');
-    const tagsEl      = document.getElementById(isPickup ? 'tooltip-tags'            : 'd-tooltip-tags');
-    const tagLabelEl  = document.getElementById(isPickup ? 'avoid-tag-label'         : 'd-avoid-tag-label');
+    const isPickup    = prefix === 'pickup';
+    const textEl      = document.getElementById(isPickup ? 'tooltip-body-text'      : 'd-tooltip-body-text');
+    const containerEl = document.getElementById(isPickup ? 'tooltip-loc-container'  : 'd-tooltip-loc-container');
+    const actionsEl   = document.getElementById(isPickup ? 'tooltip-actions-wrap'   : 'd-tooltip-actions-wrap');
+    const sourceRow   = document.getElementById(isPickup ? 'tooltip-source-row'     : 'd-tooltip-source-row');
+    const rebillBadge = document.getElementById(isPickup ? 'tooltip-rebill-badge'   : 'd-tooltip-rebill-badge');
+    const recsRow     = document.getElementById(isPickup ? 'tooltip-recs-row'       : 'd-tooltip-recs-row');
+    const tagsEl      = document.getElementById(isPickup ? 'tooltip-tags'           : 'd-tooltip-tags');
+    const tagLabelEl  = document.getElementById(isPickup ? 'avoid-tag-label'        : 'd-avoid-tag-label');
     if (!textEl || !actionsEl) return;
 
     if (hasLocType) {
-      if (REBILL_MODE) {
-        const items = isPickup ? ACC_ITEMS : DELIVER_ACC_ITEMS;
-        const warnWithData = items.filter(i => i.warn && REBILL_DATA[i.id] != null);
-        if (tagLabelEl) tagLabelEl.textContent = 'See how to avoid adjustment charges';
-        textEl.innerHTML = isPickup
-          ? 'The below accessorial services should be added to <strong>prevent pick-up issues</strong> and <strong>avoid adjustment charges</strong> after delivery.'
-          : 'The below accessorial services should be added to <strong>prevent delivery issues</strong> and <strong>avoid adjustment charges</strong> after delivery.';
-        // Populate and show rebill breakdown
-        if (rebillEl && rebillList && warnWithData.length > 0) {
-          rebillList.innerHTML = warnWithData.map(item => {
-            const pct = REBILL_DATA[item.id];
-            return `<div class="tooltip-rebill-row">
-              <span class="tooltip-rebill-service">${item.label}</span>
-              <span class="tooltip-rebill-count">${pct}%</span>
-            </div>`;
-          }).join('');
-          rebillEl.style.display = '';
+      if (tagLabelEl) tagLabelEl.textContent = 'See how to avoid adjustment charges';
+      // Source row — always show when loc type selected
+      if (sourceRow) sourceRow.style.display = '';
+      // Rebill badge — only in rebill mode with warned items
+      if (rebillBadge) {
+        if (REBILL_MODE) {
+          const items = isPickup ? ACC_ITEMS : DELIVER_ACC_ITEMS;
+          const warnWithData = items.filter(i => i.warn && REBILL_DATA[i.id] != null);
+          if (warnWithData.length > 0) {
+            const maxPct = Math.max(...warnWithData.map(i => REBILL_DATA[i.id]));
+            rebillBadge.textContent = `${maxPct}% re-bill risk`;
+            rebillBadge.style.display = '';
+          } else {
+            rebillBadge.style.display = 'none';
+          }
+        } else {
+          rebillBadge.style.display = 'none';
         }
-      } else {
-        textEl.innerHTML = isPickup
-          ? 'The below accessorial services should be added to <strong>prevent pick-up issues</strong> and <strong>avoid adjustment charges</strong> after delivery.'
-          : 'The below accessorial services should be added to <strong>prevent delivery issues</strong> and <strong>avoid adjustment charges</strong> after delivery.';
-        if (tagLabelEl) tagLabelEl.textContent = 'See how to avoid adjustment charges';
-        if (rebillEl) rebillEl.style.display = 'none';
       }
-      if (locValEl) locValEl.textContent = LOC_TYPE_LABELS[locType] || locType;
-      if (headerEl) headerEl.style.display = '';
+      // Recs section body text
+      textEl.innerHTML = isPickup
+        ? '<strong>The below services should be added</strong> to prevent pick-up issues and avoid adjustment charges after delivery'
+        : '<strong>The below services should be added</strong> to prevent delivery issues and avoid adjustment charges after delivery';
       if (containerEl) containerEl.style.display = '';
+      if (recsRow) recsRow.style.display = '';
       if (tagsEl) tagsEl.style.display = '';
       actionsEl.style.display = '';
     } else {
+      // No loc type: show reminder text, hide source row and recs row
       textEl.innerHTML = TOOLTIP_REMINDER;
-      if (headerEl) headerEl.style.display = 'none';
-      if (containerEl) containerEl.style.display = ''; // keep container visible for reminder text
-      if (tagsEl) tagsEl.style.display = 'none'; // hide tags, show only reminder text
-      if (rebillEl) rebillEl.style.display = 'none';
+      if (sourceRow) sourceRow.style.display = 'none';
+      if (containerEl) containerEl.style.display = '';
+      if (recsRow) recsRow.style.display = 'none';
+      if (tagsEl) tagsEl.style.display = 'none';
+      if (rebillBadge) rebillBadge.style.display = 'none';
       if (tagLabelEl) tagLabelEl.textContent = 'See how to avoid adjustment charges';
       actionsEl.style.display = 'none';
     }
@@ -4361,16 +4383,13 @@
       }
     }
     // In auto-detect demos, show auto-detection source above the location name row
-    if (REBILL_SOURCE && type === 'residential') {
+    if (REBILL_SOURCE) {
       if (summaryAutodetect) {
         summaryAutodetect.innerHTML = `Auto-detected from <span class="loc-summary-source">${REBILL_SOURCE}</span>`;
         summaryAutodetect.hidden = false;
       }
-      const resTileAuto = picker.querySelector('.loc-option[data-type="residential"] .loc-option-auto');
-      if (resTileAuto) resTileAuto.hidden = false;
-    } else if (REBILL_SOURCE) {
-      const resTileAuto = picker.querySelector('.loc-option[data-type="residential"] .loc-option-auto');
-      if (resTileAuto) resTileAuto.hidden = false;
+      const autoTile = picker.querySelector(`.loc-option[data-type="${type}"] .loc-option-auto`);
+      if (autoTile) autoTile.hidden = false;
     }
     const body = picker.querySelector('.loc-picker-body');
     body.style.opacity = '0';
@@ -4513,6 +4532,8 @@
 
   document.querySelectorAll('#pickup-loc-picker .loc-option').forEach(opt => {
     opt.addEventListener('click', () => {
+      const prevSelected = document.querySelector('#pickup-loc-picker .loc-option.selected');
+      const sameType = prevSelected && prevSelected.dataset.type === opt.dataset.type;
       document.querySelectorAll('#pickup-loc-picker .loc-option').forEach(o => { o.classList.remove('selected'); o.classList.remove('pulsing'); const al = o.querySelector('.loc-option-auto'); if (al && !(REBILL_SOURCE && o.dataset.type === 'residential')) al.hidden = true; });
       opt.classList.add('selected');
       const _ph = document.getElementById('pickup-help-panel');
@@ -4546,7 +4567,14 @@
       updateTooltipState('pickup', opt.dataset.type !== 'skip-rec', opt.dataset.type);
       renderList();
       if (DOCK_QUESTION_TYPES.has(opt.dataset.type)) {
-        showDockQuestion('pickup', opt);
+        if (sameType && dockAnswers.pickup !== null) {
+          // Re-clicking the same tile — preserve existing dock answer, just restore button state
+          const dq = document.getElementById('pickup-dock-question');
+          dq.querySelectorAll('.dock-option').forEach(o => o.classList.toggle('selected', o.dataset.dock === dockAnswers.pickup));
+          dq.hidden = false;
+        } else {
+          showDockQuestion('pickup', opt);
+        }
       } else {
         hideDockQuestion('pickup');
         collapseLocPicker('pickup', opt.dataset.type);
@@ -4556,6 +4584,8 @@
 
   document.querySelectorAll('#deliver-loc-picker .loc-option').forEach(opt => {
     opt.addEventListener('click', () => {
+      const prevSelected = document.querySelector('#deliver-loc-picker .loc-option.selected');
+      const sameType = prevSelected && prevSelected.dataset.type === opt.dataset.type;
       document.querySelectorAll('#deliver-loc-picker .loc-option').forEach(o => { o.classList.remove('selected'); o.classList.remove('pulsing'); const al = o.querySelector('.loc-option-auto'); if (al && !(REBILL_SOURCE && o.dataset.type === 'residential')) al.hidden = true; });
       opt.classList.add('selected');
       const _dh = document.getElementById('deliver-help-panel');
@@ -4589,7 +4619,14 @@
       updateTooltipState('deliver', opt.dataset.type !== 'skip-rec', opt.dataset.type);
       dRenderList();
       if (DOCK_QUESTION_TYPES.has(opt.dataset.type)) {
-        showDockQuestion('deliver', opt);
+        if (sameType && dockAnswers.deliver !== null) {
+          // Re-clicking the same tile — preserve existing dock answer, just restore button state
+          const dq = document.getElementById('deliver-dock-question');
+          dq.querySelectorAll('.dock-option').forEach(o => o.classList.toggle('selected', o.dataset.dock === dockAnswers.deliver));
+          dq.hidden = false;
+        } else {
+          showDockQuestion('deliver', opt);
+        }
       } else {
         hideDockQuestion('deliver');
         collapseLocPicker('deliver', opt.dataset.type);
@@ -6105,11 +6142,10 @@
         const addr    = addrEl ? addrEl.textContent : '';
         const company = nameEl ? nameEl.textContent : '';
         const iconEl  = item.querySelector('.addr-list-icon');
-        const isBook  = iconEl && !iconEl.classList.contains('search');
         const isGrad  = nameEl && nameEl.classList.contains('gradient');
         if (addrEl) { input.value = addr; if (searchVal) searchVal.textContent = addr; }
         if (nameEl && companyInput) companyInput.value = company;
-        showCard(addr, company, isBook ? 'addressbook' : 'search', isGrad);
+        showCard(addr, company, isGrad ? 'addressbook' : 'search', isGrad);
       });
     });
 
@@ -6747,6 +6783,51 @@
       updateDeliverWarning();
     }
 
+    function applyCommercial(sourceLabel) {
+      REBILL_SOURCE = sourceLabel;
+      ['pickup', 'deliver'].forEach(section => {
+        const picker = document.getElementById(`${section}-loc-picker`);
+        if (!picker) return;
+        const opt = picker.querySelector('.loc-option[data-type="commercial"]');
+        if (opt) {
+          picker.querySelectorAll('.loc-option').forEach(o => o.classList.remove('selected'));
+          opt.classList.add('selected');
+        }
+        // Pre-answer dock question as "yes" so summary shows "Has loading dock"
+        // Call showDockQuestion first so it populates the label/icon (needed when picker re-opens)
+        showDockQuestion(section, opt);
+        dockAnswers[section] = 'yes';
+        const dq = picker.querySelector('.dock-question');
+        if (dq) {
+          dq.querySelectorAll('.dock-option').forEach(o => o.classList.remove('selected'));
+          const yesBtn = dq.querySelector('.dock-option[data-dock="yes"]');
+          if (yesBtn) yesBtn.classList.add('selected');
+          dq.hidden = true;
+          dq.classList.remove('pulsing');
+        }
+        collapseLocPicker(section, 'commercial', true);
+        const gated = document.getElementById(`loc-gated-${section}`);
+        if (gated) { gated.classList.remove('loc-gated'); gated.removeAttribute('inert'); }
+        const autoTileLabel = picker.querySelector('.loc-option[data-type="commercial"] .loc-option-auto');
+        if (autoTileLabel) autoTileLabel.hidden = false;
+      });
+      // dock=yes + commercial → no liftgate needed
+      const pickupRecs = [];
+      ACC_ITEMS.forEach(item => { item.warn = pickupRecs.includes(item.id); });
+      document.getElementById('avoid-tag').style.display = 'none';
+      renderTooltipTags('tooltip-tags', pickupRecs, ACC_ITEMS);
+      updateTooltipState('pickup', true, 'commercial');
+      renderList();
+      updatePickupWarning();
+      const deliverRecs = [];
+      DELIVER_ACC_ITEMS.forEach(item => { item.warn = deliverRecs.includes(item.id); });
+      document.getElementById('d-avoid-tag').style.display = 'none';
+      renderTooltipTags('d-tooltip-tags', deliverRecs, DELIVER_ACC_ITEMS);
+      updateTooltipState('deliver', true, 'commercial');
+      dRenderList();
+      updateDeliverWarning();
+    }
+
     function applyNone() {
       REBILL_MODE = false;
       REBILL_SOURCE = null;
@@ -6789,12 +6870,12 @@
 
     linkNone.addEventListener('click', () => { applyNone(); setActive(linkNone); });
     linkRes.addEventListener('click', () => { applyNone(); applyResidential('your address book'); setActive(linkRes); });
-    linkRebill.addEventListener('click', () => { applyNone(); REBILL_MODE = true; applyResidential('the entered address'); setActive(linkRebill); });
+    linkRebill.addEventListener('click', () => { applyNone(); REBILL_MODE = true; applyCommercial('the entered address'); setActive(linkRebill); });
 
     // Set initial state from URL param if present, otherwise default to none
     const param = new URLSearchParams(location.search).get('loc');
     if (param === 'residential') { applyResidential('your address book'); setActive(linkRes); }
-    else if (param === 'rebill') { REBILL_MODE = true; applyResidential('the entered address'); setActive(linkRebill); }
+    else if (param === 'rebill') { REBILL_MODE = true; applyCommercial('the entered address'); setActive(linkRebill); }
     else { setActive(linkNone); }
   })();
 
