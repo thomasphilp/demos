@@ -5971,7 +5971,10 @@
   function setPickerVisible(pickerId, gatedId, visible) {
     const picker = document.getElementById(pickerId);
     if (!picker) return;
-    picker.style.display = visible ? '' : 'none';
+    // Hide/show the entire wrap (label + picker block together)
+    const wrap = picker.closest('.loc-picker-wrap');
+    if (wrap) wrap.style.display = visible ? '' : 'none';
+    else picker.style.display = visible ? '' : 'none';
     if (!visible) {
       picker.querySelectorAll('.loc-option').forEach(o => o.classList.remove('selected'));
       const gated = document.getElementById(gatedId);
@@ -6031,6 +6034,8 @@
       control.classList.add('addr-committed');
       bookPanel.hidden = true;
       searchPanel.hidden = true;
+      // Ensure the location picker is shown when an address is committed
+      input.dispatchEvent(new Event('input'));
     }
 
     function enterEditing() {
