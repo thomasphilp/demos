@@ -134,7 +134,7 @@
   }
   .loc-field-label {
     display: flex; align-items: center; gap: 4px;
-    font-size: 12px; font-weight: 600; color: var(--color-label-primary);
+    font-size: 12px; font-weight: 400; color: var(--color-label-primary);
     line-height: normal;
   }
   .loc-field-label .req { color: var(--color-destructive); font-weight: 400; }
@@ -550,8 +550,7 @@
   .loc-option-icon { width: 16px; height: 16px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 14px; line-height: 1; color: rgba(9,10,12,0.2); transition: color 0.15s; }
   .loc-option.selected .loc-option-icon { color: rgba(9,10,12,0.9); }
   .loc-option-label { font-size: 12px; font-weight: 500; color: var(--color-label-primary); line-height: 1.2; flex: 1; }
-  .loc-rec-wrap { display: flex; flex-direction: column; gap: 4px; width: 100%; margin-top: 2px; opacity: 0; transition: opacity 0.1s ease; }
-  .loc-option:hover .loc-rec-wrap, .loc-option.selected .loc-rec-wrap { opacity: 1; }
+  .loc-rec-wrap { display: none; }
   .loc-rec-label { font-size: 9px; font-weight: 400; color: var(--color-label-secondary); }
   .loc-rec-badges { display: flex; flex-wrap: wrap; gap: 3px; }
   .loc-rec-none { font-size: 9px; font-weight: 400; color: #15803d; display: flex; align-items: center; gap: 3px; }
@@ -2142,7 +2141,7 @@
         </button>
         <button class="loc-option" data-type="limited-access" data-section="pickup" type="button">
           <div class="loc-option-icon"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.516 2.17a.75.75 0 0 0-1.032 0 11.209 11.209 0 0 1-7.877 3.08.75.75 0 0 0-.722.515A12.74 12.74 0 0 0 2.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 0 0 .374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 0 0-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.704-3.08Zm3.094 8.016a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd"/></svg></div>
-          <span class="loc-option-label">Limited access<br><span style="font-weight:400;color:var(--color-label-secondary);font-size:10px;line-height:12px;margin-top:2px;display:block;">Includes military bases, government facilities, schools, churches, and farms</span></span>
+          <span class="loc-option-label">Limited access<br><span style="font-weight:400;color:var(--color-label-secondary);font-size:10px;line-height:12px;margin-top:2px;display:block;">Includes military bases, government facilities, schools, churches, farms, construction sites, storage facilities, marinas, and auction facilities</span></span>
           <div class="loc-rec-wrap">
             <span class="loc-rec-label">Recommended services</span>
             <div class="loc-rec-badges"><span class="loc-rec-badge">Liftgate</span><span class="loc-rec-badge">Limited Access</span></div>
@@ -2150,7 +2149,7 @@
         </button>
         <button class="loc-option" data-type="port" data-section="pickup" type="button">
           <div class="loc-option-icon"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M11.644 1.59a.75.75 0 0 1 .712 0l9.75 5.25a.75.75 0 0 1 0 1.32l-9.75 5.25a.75.75 0 0 1-.712 0l-9.75-5.25a.75.75 0 0 1 0-1.32l9.75-5.25Z"/><path d="m3.265 10.602 7.668 4.129a2.25 2.25 0 0 0 2.134 0l7.668-4.13 1.37.739a.75.75 0 0 1 0 1.32l-9.75 5.25a.75.75 0 0 1-.71 0l-9.75-5.25a.75.75 0 0 1 0-1.32l1.37-.738Z"/><path d="m10.933 19.231-7.668-4.13-1.37.739a.75.75 0 0 0 0 1.32l9.75 5.25c.221.12.489.12.71 0l9.75-5.25a.75.75 0 0 0 0-1.32l-1.37-.738-7.668 4.13a2.25 2.25 0 0 1-2.134 0Z"/></svg></div>
-          <span class="loc-option-label">Port / Terminal<br><span style="font-weight:400;color:var(--color-label-secondary);font-size:10px;line-height:12px;margin-top:2px;display:block;">Includes airports, seaports, rail yards, and cargo hubs</span></span>
+          <span class="loc-option-label">Terminal<br><span style="font-weight:400;color:var(--color-label-secondary);font-size:10px;line-height:12px;margin-top:2px;display:block;">Includes airports, seaports, rail yards, and cargo hubs</span></span>
           <div class="loc-rec-wrap">
             <span class="loc-rec-label">Recommended services</span>
             <div class="loc-rec-badges"><span class="loc-rec-badge">TWIC</span><span class="loc-rec-badge">CFS</span></div>
@@ -2170,7 +2169,7 @@
         </button>
         <button class="loc-option" data-type="skip-rec" data-section="pickup" type="button">
           <div class="loc-option-icon"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.300049 12C0.300049 5.53832 5.53832 0.300049 12 0.300049C18.4618 0.300049 23.7 5.53832 23.7 12C23.7 18.4618 18.4618 23.7 12 23.7C5.53832 23.7 0.300049 18.4618 0.300049 12ZM12 7.50005C12.4971 7.50005 12.9 7.90299 12.9 8.40005V12.9C12.9 13.3971 12.4971 13.8 12 13.8C11.503 13.8 11.1 13.3971 11.1 12.9V8.40005C11.1 7.90299 11.503 7.50005 12 7.50005ZM12 17.4C12.4971 17.4 12.9 16.9971 12.9 16.5C12.9 16.003 12.4971 15.6 12 15.6C11.503 15.6 11.1 16.003 11.1 16.5C11.1 16.9971 11.503 17.4 12 17.4Z"/></svg></div>
-          <span class="loc-option-label">Skip recommendations<br><span style="font-weight:400;color:var(--color-label-secondary);font-size:10px;line-height:12px;margin-top:2px;display:block;">The carrier will send an adjustment charge if the required services are not included.</span></span>
+          <span class="loc-option-label">Skip service recommendations<br><span style="font-weight:400;color:var(--color-label-secondary);font-size:10px;line-height:12px;margin-top:2px;display:block;">The carrier will send an adjustment charge if the required services are not included.</span></span>
           <div class="loc-rec-wrap">
             <span class="loc-rec-none" style="color:#d97706;"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.300049 12C0.300049 5.53832 5.53832 0.300049 12 0.300049C18.4618 0.300049 23.7 5.53832 23.7 12C23.7 18.4618 18.4618 23.7 12 23.7C5.53832 23.7 0.300049 18.4618 0.300049 12ZM12 7.50005C12.4971 7.50005 12.9 7.90299 12.9 8.40005V12.9C12.9 13.3971 12.4971 13.8 12 13.8C11.503 13.8 11.1 13.3971 11.1 12.9V8.40005C11.1 7.90299 11.503 7.50005 12 7.50005ZM12 17.4C12.4971 17.4 12.9 16.9971 12.9 16.5C12.9 16.003 12.4971 15.6 12 15.6C11.503 15.6 11.1 16.003 11.1 16.5C11.1 16.9971 11.503 17.4 12 17.4Z"/></svg>Not recommended</span>
           </div>
@@ -2747,7 +2746,7 @@
         </button>
         <button class="loc-option" data-type="limited-access" data-section="deliver" type="button">
           <div class="loc-option-icon"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.516 2.17a.75.75 0 0 0-1.032 0 11.209 11.209 0 0 1-7.877 3.08.75.75 0 0 0-.722.515A12.74 12.74 0 0 0 2.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 0 0 .374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 0 0-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.704-3.08Zm3.094 8.016a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd"/></svg></div>
-          <span class="loc-option-label">Limited access<br><span style="font-weight:400;color:var(--color-label-secondary);font-size:10px;line-height:12px;margin-top:2px;display:block;">Includes military bases, government facilities, schools, churches, farms, Amazon FBA, and auctions</span></span>
+          <span class="loc-option-label">Limited access<br><span style="font-weight:400;color:var(--color-label-secondary);font-size:10px;line-height:12px;margin-top:2px;display:block;">Includes military bases, government facilities, schools, churches, farms, construction sites, storage facilities, marinas, and auction facilities</span></span>
           <div class="loc-rec-wrap">
             <span class="loc-rec-label">Recommended services</span>
             <div class="loc-rec-badges"><span class="loc-rec-badge">Liftgate</span><span class="loc-rec-badge">Limited Access</span></div>
@@ -2755,7 +2754,7 @@
         </button>
         <button class="loc-option" data-type="port" data-section="deliver" type="button">
           <div class="loc-option-icon"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M11.644 1.59a.75.75 0 0 1 .712 0l9.75 5.25a.75.75 0 0 1 0 1.32l-9.75 5.25a.75.75 0 0 1-.712 0l-9.75-5.25a.75.75 0 0 1 0-1.32l9.75-5.25Z"/><path d="m3.265 10.602 7.668 4.129a2.25 2.25 0 0 0 2.134 0l7.668-4.13 1.37.739a.75.75 0 0 1 0 1.32l-9.75 5.25a.75.75 0 0 1-.71 0l-9.75-5.25a.75.75 0 0 1 0-1.32l1.37-.738Z"/><path d="m10.933 19.231-7.668-4.13-1.37.739a.75.75 0 0 0 0 1.32l9.75 5.25c.221.12.489.12.71 0l9.75-5.25a.75.75 0 0 0 0-1.32l-1.37-.738-7.668 4.13a2.25 2.25 0 0 1-2.134 0Z"/></svg></div>
-          <span class="loc-option-label">Port / Terminal<br><span style="font-weight:400;color:var(--color-label-secondary);font-size:10px;line-height:12px;margin-top:2px;display:block;">Includes airports, seaports, rail yards, and cargo hubs</span></span>
+          <span class="loc-option-label">Terminal<br><span style="font-weight:400;color:var(--color-label-secondary);font-size:10px;line-height:12px;margin-top:2px;display:block;">Includes airports, seaports, rail yards, and cargo hubs</span></span>
           <div class="loc-rec-wrap">
             <span class="loc-rec-label">Recommended services</span>
             <div class="loc-rec-badges"><span class="loc-rec-badge">TWIC</span><span class="loc-rec-badge">CFS</span></div>
@@ -2775,7 +2774,7 @@
         </button>
         <button class="loc-option" data-type="skip-rec" data-section="deliver" type="button">
           <div class="loc-option-icon"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.300049 12C0.300049 5.53832 5.53832 0.300049 12 0.300049C18.4618 0.300049 23.7 5.53832 23.7 12C23.7 18.4618 18.4618 23.7 12 23.7C5.53832 23.7 0.300049 18.4618 0.300049 12ZM12 7.50005C12.4971 7.50005 12.9 7.90299 12.9 8.40005V12.9C12.9 13.3971 12.4971 13.8 12 13.8C11.503 13.8 11.1 13.3971 11.1 12.9V8.40005C11.1 7.90299 11.503 7.50005 12 7.50005ZM12 17.4C12.4971 17.4 12.9 16.9971 12.9 16.5C12.9 16.003 12.4971 15.6 12 15.6C11.503 15.6 11.1 16.003 11.1 16.5C11.1 16.9971 11.503 17.4 12 17.4Z"/></svg></div>
-          <span class="loc-option-label">Skip recommendations<br><span style="font-weight:400;color:var(--color-label-secondary);font-size:10px;line-height:12px;margin-top:2px;display:block;">The carrier will send an adjustment charge if the required services are not included.</span></span>
+          <span class="loc-option-label">Skip service recommendations<br><span style="font-weight:400;color:var(--color-label-secondary);font-size:10px;line-height:12px;margin-top:2px;display:block;">The carrier will send an adjustment charge if the required services are not included.</span></span>
           <div class="loc-rec-wrap">
             <span class="loc-rec-none" style="color:#d97706;"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.300049 12C0.300049 5.53832 5.53832 0.300049 12 0.300049C18.4618 0.300049 23.7 5.53832 23.7 12C23.7 18.4618 18.4618 23.7 12 23.7C5.53832 23.7 0.300049 18.4618 0.300049 12ZM12 7.50005C12.4971 7.50005 12.9 7.90299 12.9 8.40005V12.9C12.9 13.3971 12.4971 13.8 12 13.8C11.503 13.8 11.1 13.3971 11.1 12.9V8.40005C11.1 7.90299 11.503 7.50005 12 7.50005ZM12 17.4C12.4971 17.4 12.9 16.9971 12.9 16.5C12.9 16.003 12.4971 15.6 12 15.6C11.503 15.6 11.1 16.003 11.1 16.5C11.1 16.9971 11.503 17.4 12 17.4Z"/></svg>Not recommended</span>
           </div>
@@ -4342,7 +4341,7 @@
     if (type === 'skip-rec') {
       const tile = picker.querySelector(`.loc-option[data-type="${type}"]`);
       summaryIcon.innerHTML = tile ? tile.querySelector('.loc-option-icon').innerHTML : '';
-      summaryName.textContent = isZH ? '跳过推荐' : 'Skip recommendations';
+      summaryName.textContent = isZH ? '跳过推荐' : 'Skip service recommendations';
       if (summaryDetail) { summaryDetail.textContent = isZH ? '不推荐' : 'Not recommended'; summaryDetail.hidden = false; }
     } else if (type) {
       const tile = picker.querySelector(`.loc-option[data-type="${type}"]`);
@@ -6162,9 +6161,9 @@
     'commercial':       'Commercial',
     'residential':      'Residential',
     'limited-access':   'Limited access',
-    'port':             'Port / Terminal',
+    'port':             'Terminal',
     'convention':       'Convention / Event',
-    'skip-rec':         'Skip recommendations',
+    'skip-rec':         'Skip service recommendations',
   };
 
   const LOC_Q_ICONS = {
@@ -6774,7 +6773,7 @@
         if (extLabel) extLabel.innerHTML = `<span>What type of location is this?</span><span class="req">*</span>`;
         hideDockQuestion(section);
         const gated = document.getElementById(`loc-gated-${section}`);
-        if (gated) { gated.classList.remove('loc-gated'); gated.removeAttribute('inert'); }
+        if (gated) { gated.classList.add('loc-gated'); gated.setAttribute('inert', ''); }
       });
       ACC_ITEMS.forEach(item => { item.warn = false; item.selected = false; });
       document.getElementById('avoid-tag').style.display = 'none';
