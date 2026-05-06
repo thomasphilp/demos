@@ -129,6 +129,17 @@
 
 
   /* ── Location type picker ── */
+  .loc-picker-wrap {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .loc-field-label {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 12px; font-weight: 600; color: var(--color-label-primary);
+    line-height: normal;
+  }
+  .loc-field-label .req { color: var(--color-destructive); font-weight: 400; }
+  .loc-field-label-auto { font-size: 12px; font-weight: 600; color: var(--color-label-primary); }
+  .loc-field-label-source { color: #2563eb; font-weight: 600; }
   .loc-picker-block {
     background: rgba(9,10,12,0.02);
     border: 1px solid rgba(9,10,12,0.08);
@@ -335,7 +346,7 @@
   }
   .loc-picker-question-sub {
     font-size: 11px; font-weight: 400; color: var(--color-label-secondary);
-    line-height: 15px; margin-top: -10px;
+    line-height: 15px;
   }
   .loc-picker-grid {
     display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 1fr; gap: 10px;
@@ -2088,12 +2099,13 @@
     </div><!-- /details-group -->
 
     <!-- Location type picker -->
+    <div class="loc-picker-wrap">
+    <div class="loc-field-label" id="pickup-loc-label"><span>What type of location is this?</span><span class="req">*</span></div>
     <div class="loc-picker-block" id="pickup-loc-picker">
       <div class="loc-picker-summary" hidden>
         <div class="loc-picker-summary-left">
           <div class="loc-picker-summary-icon"></div>
           <div class="loc-picker-summary-text">
-            <span class="loc-picker-summary-label">Location type</span>
             <span class="loc-picker-summary-name"></span>
             <span class="loc-picker-summary-detail" hidden></span>
           </div>
@@ -2102,7 +2114,6 @@
       </div>
       <div class="loc-picker-body-wrap">
       <div class="loc-picker-body">
-      <p class="loc-picker-question">What type of location is this?<span class="req" style="margin-left:2px;">*</span></p>
       <p class="loc-picker-question-sub">This helps us identify which services will be <strong style="color:#16a34a;font-weight:400;">recommended</strong> to avoid delays or adjustment charges.</p>
       <div class="loc-picker-grid">
         <button class="loc-option" data-type="residential" data-section="pickup" type="button">
@@ -2218,7 +2229,8 @@
       </div>
       </div><!-- /loc-picker-body -->
       </div><!-- /loc-picker-body-wrap -->
-    </div>
+    </div><!-- /loc-picker-block -->
+    </div><!-- /loc-picker-wrap -->
     <div id="loc-gated-pickup" class="loc-gated" inert>
       <div class="details-group">
 
@@ -2694,12 +2706,13 @@
     </div><!-- /details-group -->
 
     <!-- Location type picker -->
+    <div class="loc-picker-wrap">
+    <div class="loc-field-label" id="deliver-loc-label"><span>What type of location is this?</span><span class="req">*</span></div>
     <div class="loc-picker-block" id="deliver-loc-picker">
       <div class="loc-picker-summary" hidden>
         <div class="loc-picker-summary-left">
           <div class="loc-picker-summary-icon"></div>
           <div class="loc-picker-summary-text">
-            <span class="loc-picker-summary-label">Location type</span>
             <span class="loc-picker-summary-name"></span>
             <span class="loc-picker-summary-detail" hidden></span>
           </div>
@@ -2708,7 +2721,6 @@
       </div>
       <div class="loc-picker-body-wrap">
       <div class="loc-picker-body">
-      <p class="loc-picker-question">What type of location is this?<span class="req" style="margin-left:2px;">*</span></p>
       <p class="loc-picker-question-sub">This helps us identify which services will be <strong style="color:#16a34a;font-weight:400;">recommended</strong> to avoid delays or adjustment charges.</p>
       <div class="loc-picker-grid">
         <button class="loc-option" data-type="residential" data-section="deliver" type="button">
@@ -2824,7 +2836,8 @@
       </div>
       </div><!-- /loc-picker-body -->
       </div><!-- /loc-picker-body-wrap -->
-    </div>
+    </div><!-- /loc-picker-block -->
+    </div><!-- /loc-picker-wrap -->
     <div id="loc-gated-deliver" class="loc-gated" inert>
       <div class="details-group">
 
@@ -4318,24 +4331,21 @@
     const bodyWrap = picker.querySelector('.loc-picker-body-wrap');
     const summary  = picker.querySelector('.loc-picker-summary');
     const summaryIcon = picker.querySelector('.loc-picker-summary-icon');
-    const summaryLabel = picker.querySelector('.loc-picker-summary-label');
     const summaryName = picker.querySelector('.loc-picker-summary-name');
     const summaryDetail = picker.querySelector('.loc-picker-summary-detail');
-    // Always reset label to plain text first; rebill block below will override for residential
-    if (summaryLabel) summaryLabel.textContent = isZH ? '位置类型' : 'Location type';
+    // External field label (sits above the picker block)
+    const extLabel = document.getElementById(`${section}-loc-label`);
+    if (extLabel) extLabel.innerHTML = `<span>${isZH ? '这是什么类型的地点？' : 'What type of location is this?'}</span><span class="req">*</span>`;
     if (type === 'skip-rec') {
       const tile = picker.querySelector(`.loc-option[data-type="${type}"]`);
       summaryIcon.innerHTML = tile ? tile.querySelector('.loc-option-icon').innerHTML : '';
-      if (summaryLabel) summaryLabel.hidden = false;
       summaryName.textContent = isZH ? '跳过推荐' : 'Skip recommendations';
       if (summaryDetail) { summaryDetail.textContent = isZH ? '不推荐' : 'Not recommended'; summaryDetail.hidden = false; }
     } else if (type) {
       const tile = picker.querySelector(`.loc-option[data-type="${type}"]`);
       summaryIcon.innerHTML = tile ? tile.querySelector('.loc-option-icon').innerHTML : '';
-      if (summaryLabel) summaryLabel.hidden = false;
       summaryName.textContent = (isZH && ZH_LOC_TYPE_LABELS[type]) ? ZH_LOC_TYPE_LABELS[type] : (LOC_TYPE_LABELS[type] || type);
     } else {
-      if (summaryLabel) summaryLabel.hidden = false;
       summaryIcon.innerHTML = '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 11v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M8 9c0-1.5 2-1.5 2-3a2 2 0 1 0-4 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
       summaryName.textContent = isZH ? '未指定' : 'Not selected';
     }
@@ -4351,7 +4361,7 @@
     // In auto-detect demos, show auto-detection source only when residential is selected; keep residential tile label always visible
     if (REBILL_SOURCE) {
       if (type === 'residential') {
-        if (summaryLabel) summaryLabel.innerHTML = `Location type · Auto-detected from <span class="loc-summary-source">${REBILL_SOURCE}</span>`;
+        if (extLabel) extLabel.innerHTML = `<span class="loc-field-label-auto">${isZH ? '位置类型' : 'Location type'} · Auto-detected from <span class="loc-field-label-source">${REBILL_SOURCE}</span></span><span class="req">*</span>`;
       }
       const resTileAuto = picker.querySelector('.loc-option[data-type="residential"] .loc-option-auto');
       if (resTileAuto) resTileAuto.hidden = false;
@@ -4366,9 +4376,10 @@
     const picker = document.getElementById(`${section}-loc-picker`);
     if (!picker) return;
     picker.querySelector('.loc-picker-body-wrap').classList.remove('collapsed');
-    const summaryLabel = picker.querySelector('.loc-picker-summary-label');
-    if (summaryLabel) summaryLabel.hidden = false;
     picker.querySelector('.loc-picker-summary').hidden = true;
+    // Reset external field label
+    const extLabel = document.getElementById(`${section}-loc-label`);
+    if (extLabel) extLabel.innerHTML = `<span>${isZH ? '这是什么类型的地点？' : 'What type of location is this?'}</span><span class="req">*</span>`;
     // Restore dock question if the selected tile requires it
     const selectedOpt = picker.querySelector('.loc-option.selected');
     const dq = picker.querySelector('.dock-question');
