@@ -409,18 +409,19 @@
     padding: 8px;
   }
   .fba-info-icon { flex-shrink: 0; padding-top: 1px; color: var(--color-label-secondary); }
-  .fba-info-body { display: flex; flex-direction: column; gap: 6px; }
-  .fba-info-title { font-size: 10px; font-weight: 600; color: var(--color-label-primary); }
+  .fba-info-body { display: flex; flex-direction: column; gap: 4px; }
+  .fba-info-title { font-size: 10px; font-weight: 600; color: var(--color-label-primary); line-height: normal; }
   .fba-terms-link {
     display: inline-flex; align-items: center; gap: 4px;
     color: var(--color-tint); font-size: 10px; font-weight: 600; text-decoration: none;
   }
   .fba-terms-link:hover { opacity: 0.75; }
   .fba-notes {
-    margin: 0; padding-left: 14px;
-    font-size: 10px; color: var(--color-label-secondary); line-height: 1.8;
+    margin: 0; padding-left: 15px; list-style-type: disc;
+    font-size: 10px; color: var(--color-label-secondary); line-height: normal;
   }
-  .fba-notes strong { color: var(--color-label-primary); font-weight: 600; }
+  .fba-notes li { margin-bottom: 4px; }
+  .fba-notes li:last-child { margin-bottom: 0; }
 
   .dock-question {
     margin-top: 8px;
@@ -3078,7 +3079,7 @@
               <p class="fba-info-title">Important</p>
               <ul class="fba-notes">
                 <li>Your FBA number will be included in your Bill of lading</li>
-                <li>You must <strong>enter your piece count</strong> in the cargo form below</li>
+                <li>You must enter your piece count in the cargo form below</li>
               </ul>
             </div>
           </div>
@@ -4056,6 +4057,15 @@
 
   </div><!-- /section-cargo -->
 
+  <!-- Submit row -->
+  <div class="submit-row">
+    <button class="submit-btn" type="button" id="get-quotes-btn">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M13 5l7 7-7 7M5 12h15" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Get quotes
+    </button>
+  </div>
 
 </div><!-- /form-wrapper -->
 
