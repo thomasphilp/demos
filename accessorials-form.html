@@ -4637,6 +4637,7 @@
       const field = panel.closest('.dropdown-field');
       if (field && field.contains(e.target)) return;
       panel.classList.remove('open');
+      panel.scrollTop = 0;
       const btn = field ? field.querySelector('.dropdown-btn, .pc-type-btn') : null;
       if (btn) { btn.classList.remove('open'); btn.setAttribute('aria-expanded', false); }
     });
@@ -4646,6 +4647,7 @@
       const field = panel.closest('.dropdown-field');
       if (field && field.contains(e.target)) return;
       panel.style.display = 'none';
+      panel.scrollTop = 0;
       const btn = field ? field.querySelector('.dropdown-btn') : null;
       if (btn) btn.classList.remove('open');
     });
@@ -4832,6 +4834,7 @@
     const btn = document.getElementById(btnId);
     const panel = document.getElementById(panelId);
     panel.classList.remove('open');
+    panel.scrollTop = 0;
     btn.classList.remove('open');
     btn.setAttribute('aria-expanded', 'false');
   }
@@ -5184,6 +5187,7 @@
     }
     if (!nmfcFieldPopup.parentElement.contains(e.target)) {
       nmfcFieldPopup.classList.remove('visible');
+      nmfcFieldPopup.scrollTop = 0;
     }
   });
   nmfcTooltipClose.addEventListener('click', (e) => {
@@ -6084,8 +6088,8 @@
       nameEl.className = 'addr-card-name' + (isGradient ? ' gradient' : '');
       card.querySelector('.addr-card-addr').textContent = address || '';
       control.classList.add('addr-committed');
-      bookPanel.hidden = true;
-      searchPanel.hidden = true;
+      bookPanel.hidden = true;  bookPanel.scrollTop = 0;
+      searchPanel.hidden = true; searchPanel.scrollTop = 0;
       // Ensure the location picker is shown when an address is committed
       input.dispatchEvent(new Event('input'));
     }
@@ -6165,8 +6169,8 @@
         if (!control.classList.contains('addr-committed') && input.value.trim()) {
           showCard(input.value, '', 'typed', false);
         } else {
-          bookPanel.hidden = true;
-          searchPanel.hidden = true;
+          bookPanel.hidden = true;  bookPanel.scrollTop = 0;
+          searchPanel.hidden = true; searchPanel.scrollTop = 0;
         }
       }
     });
