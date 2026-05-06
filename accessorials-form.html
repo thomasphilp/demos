@@ -4325,7 +4325,7 @@
     }
   }
 
-  function collapseLocPicker(section, type) {
+  function collapseLocPicker(section, type, instant = false) {
     const picker = document.getElementById(`${section}-loc-picker`);
     if (!picker) return;
     const bodyWrap = picker.querySelector('.loc-picker-body-wrap');
@@ -4375,7 +4375,14 @@
     }
     const body = picker.querySelector('.loc-picker-body');
     body.style.opacity = '0';
-    bodyWrap.classList.add('collapsed');
+    if (instant) {
+      bodyWrap.style.transition = 'none';
+      bodyWrap.classList.add('collapsed');
+      void bodyWrap.offsetHeight;
+      bodyWrap.style.transition = '';
+    } else {
+      bodyWrap.classList.add('collapsed');
+    }
     summary.hidden = false;
   }
 
@@ -6712,7 +6719,7 @@
           picker.querySelectorAll('.loc-option').forEach(o => o.classList.remove('selected'));
           opt.classList.add('selected');
         }
-        collapseLocPicker(section, 'residential');
+        collapseLocPicker(section, 'residential', true);
         hideDockQuestion(section);
         const gated = document.getElementById(`loc-gated-${section}`);
         if (gated) { gated.classList.remove('loc-gated'); gated.removeAttribute('inert'); }
@@ -6746,7 +6753,19 @@
           const al = o.querySelector('.loc-option-auto');
           if (al) al.hidden = true;
         });
-        expandLocPicker(section);
+        // Expand instantly — avoids opacity setTimeout from expandLocPicker
+        // racing with a subsequent instant collapse in applyResidential
+        const bodyWrap = picker.querySelector('.loc-picker-body-wrap');
+        const summary  = picker.querySelector('.loc-picker-summary');
+        const body     = picker.querySelector('.loc-picker-body');
+        bodyWrap.style.transition = 'none';
+        bodyWrap.classList.remove('collapsed');
+        void bodyWrap.offsetHeight;
+        bodyWrap.style.transition = '';
+        body.style.opacity = '1';
+        if (summary) summary.hidden = true;
+        const extLabel = document.getElementById(`${section}-loc-label`);
+        if (extLabel) extLabel.innerHTML = `<span>What type of location is this?</span><span class="req">*</span>`;
         hideDockQuestion(section);
         const gated = document.getElementById(`loc-gated-${section}`);
         if (gated) { gated.classList.remove('loc-gated'); gated.removeAttribute('inert'); }
