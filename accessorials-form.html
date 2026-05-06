@@ -820,7 +820,9 @@
   .acc-desc-bar {
     display: flex; align-items: center; justify-content: space-between;
     padding: 6px 12px;
-    border-bottom: var(--border-1) solid rgba(9,10,12,0.05);
+    border-top: var(--border-1) solid rgba(9,10,12,0.05);
+    background: white;
+    position: sticky; bottom: 0;
   }
   .acc-desc-bar-label {
     font-size: 10px; font-weight: 500; color: var(--color-label-secondary);
@@ -2353,6 +2355,10 @@
                 </div>
               </div>
 
+              <div class="acc-list" id="acc-list">
+                <!-- Items injected by JS -->
+              </div>
+
               <div class="acc-desc-bar">
                 <span class="acc-desc-bar-label">View full service details</span>
                 <button class="acc-desc-toggle" id="acc-desc-toggle" type="button">
@@ -2361,10 +2367,6 @@
                   </div>
                   <span class="acc-toggle-state off" id="acc-desc-toggle-label">Off</span>
                 </button>
-              </div>
-
-              <div class="acc-list" id="acc-list">
-                <!-- Items injected by JS -->
               </div>
             </div>
           </div>
@@ -2954,6 +2956,8 @@
                   </div>
                 </div>
               </div>
+              <div class="acc-list" id="d-acc-list"></div>
+
               <div class="acc-desc-bar">
                 <span class="acc-desc-bar-label">View full service details</span>
                 <button class="acc-desc-toggle" id="d-acc-desc-toggle" type="button">
@@ -2963,7 +2967,6 @@
                   <span class="acc-toggle-state off" id="d-acc-desc-toggle-label">Off</span>
                 </button>
               </div>
-              <div class="acc-list" id="d-acc-list"></div>
             </div>
           </div>
         </div>
