@@ -4377,7 +4377,7 @@
     // In auto-detect demos, show auto-detection source above the location name row
     if (REBILL_SOURCE && type === 'residential') {
       if (summaryAutodetect) {
-        summaryAutodetect.innerHTML = `· Auto-detected from <span class="loc-summary-source">${REBILL_SOURCE}</span>`;
+        summaryAutodetect.innerHTML = `Auto-detected from <span class="loc-summary-source">${REBILL_SOURCE}</span>`;
         summaryAutodetect.hidden = false;
       }
       const resTileAuto = picker.querySelector('.loc-option[data-type="residential"] .loc-option-auto');
