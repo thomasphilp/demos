@@ -1987,21 +1987,22 @@
     font-family: 'Inter', sans-serif; font-size: 12px;
   }
   .demo-bar-label { color: var(--color-label-secondary); font-weight: 500; margin-right: 4px; }
-  .demo-bar a {
-    padding: 4px 12px; border-radius: 20px; text-decoration: none;
+  .demo-bar button {
+    padding: 4px 12px; border-radius: 20px;
     font-weight: 500; font-size: 12px; border: 1px solid rgba(9,10,12,0.2);
     color: var(--color-label-primary); background: white; transition: background 0.12s;
+    cursor: pointer; font-family: 'Inter', sans-serif;
   }
-  .demo-bar a:hover { background: rgba(9,10,12,0.05); }
-  .demo-bar a.active { background: var(--color-tint); color: white; border-color: var(--color-tint); }
+  .demo-bar button:hover { background: rgba(9,10,12,0.05); }
+  .demo-bar button.active { background: var(--color-tint); color: white; border-color: var(--color-tint); }
 </style>
 </head>
 <body>
 <div class="demo-bar">
   <span class="demo-bar-label">Demo state:</span>
-  <a href="?loc=none" id="demo-link-none">No location selected</a>
-  <a href="?loc=residential" id="demo-link-residential">Location pre-selected</a>
-  <a href="?loc=rebill" id="demo-link-rebill">Rebill % known</a>
+  <button type="button" id="demo-link-none">No location selected</button>
+  <button type="button" id="demo-link-residential">Location pre-selected</button>
+  <button type="button" id="demo-link-rebill">Rebill % known</button>
 </div>
 <div id="loc-tile-tooltip-global"></div>
 <nav class="page-nav" id="page-nav" aria-label="Form sections">
@@ -6690,12 +6691,16 @@
     domObserver.observe(document.body, { childList: true, subtree: true });
   })();
 
-  // ── Demo bar: apply state from URL param (must run after isZH is declared) ──
+  // ── Demo bar ──
   (function() {
-    const param = new URLSearchParams(location.search).get('loc');
-    const linkNone  = document.getElementById('demo-link-none');
-    const linkRes   = document.getElementById('demo-link-residential');
+    const linkNone   = document.getElementById('demo-link-none');
+    const linkRes    = document.getElementById('demo-link-residential');
     const linkRebill = document.getElementById('demo-link-rebill');
+
+    function setActive(btn) {
+      [linkNone, linkRes, linkRebill].forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
 
     function applyResidential(sourceLabel) {
       REBILL_SOURCE = sourceLabel;
@@ -6711,12 +6716,9 @@
         hideDockQuestion(section);
         const gated = document.getElementById(`loc-gated-${section}`);
         if (gated) { gated.classList.remove('loc-gated'); gated.removeAttribute('inert'); }
-        // collapseLocPicker will handle the label via REBILL_SOURCE
-        // Show auto-detected label on the residential tile
         const autoTileLabel = picker.querySelector('.loc-option[data-type="residential"] .loc-option-auto');
         if (autoTileLabel) autoTileLabel.hidden = false;
       });
-      // Set warn flags, show avoid-tags, populate tooltips + services list
       const pickupRecs = LOC_REC_PICKUP['residential'] || [];
       ACC_ITEMS.forEach(item => { item.warn = pickupRecs.includes(item.id); });
       document.getElementById('avoid-tag').style.display = pickupRecs.length > 0 ? '' : 'none';
@@ -6733,16 +6735,43 @@
       updateDeliverWarning();
     }
 
-    if (param === 'residential') {
-      linkRes.classList.add('active');
-      applyResidential('your address book');
-    } else if (param === 'rebill') {
-      linkRebill.classList.add('active');
-      REBILL_MODE = true;
-      applyResidential('the entered address');
-    } else {
-      linkNone.classList.add('active');
+    function applyNone() {
+      REBILL_MODE = false;
+      REBILL_SOURCE = null;
+      ['pickup', 'deliver'].forEach(section => {
+        const picker = document.getElementById(`${section}-loc-picker`);
+        if (!picker) return;
+        picker.querySelectorAll('.loc-option').forEach(o => {
+          o.classList.remove('selected');
+          const al = o.querySelector('.loc-option-auto');
+          if (al) al.hidden = true;
+        });
+        expandLocPicker(section);
+        hideDockQuestion(section);
+        const gated = document.getElementById(`loc-gated-${section}`);
+        if (gated) { gated.classList.remove('loc-gated'); gated.removeAttribute('inert'); }
+      });
+      ACC_ITEMS.forEach(item => { item.warn = false; item.selected = false; });
+      document.getElementById('avoid-tag').style.display = 'none';
+      renderList();
+      updateBtnLabel();
+      updatePickupWarning();
+      DELIVER_ACC_ITEMS.forEach(item => { item.warn = false; item.selected = false; });
+      document.getElementById('d-avoid-tag').style.display = 'none';
+      dRenderList();
+      dUpdateBtnLabel();
+      updateDeliverWarning();
     }
+
+    linkNone.addEventListener('click', () => { applyNone(); setActive(linkNone); });
+    linkRes.addEventListener('click', () => { applyNone(); applyResidential('your address book'); setActive(linkRes); });
+    linkRebill.addEventListener('click', () => { applyNone(); REBILL_MODE = true; applyResidential('the entered address'); setActive(linkRebill); });
+
+    // Set initial state from URL param if present, otherwise default to none
+    const param = new URLSearchParams(location.search).get('loc');
+    if (param === 'residential') { applyResidential('your address book'); setActive(linkRes); }
+    else if (param === 'rebill') { REBILL_MODE = true; applyResidential('the entered address'); setActive(linkRebill); }
+    else { setActive(linkNone); }
   })();
 
   // ── Section paginator ──────────────────────────────────────────────────────
