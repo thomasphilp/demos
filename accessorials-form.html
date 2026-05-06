@@ -4457,7 +4457,6 @@
   document.querySelectorAll('#pickup-dock-question .dock-option').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('#pickup-dock-question .dock-option').forEach(o => o.classList.remove('selected'));
-      document.getElementById('pickup-dock-question').classList.remove('pulsing');
       btn.classList.add('selected');
       dockAnswers.pickup = btn.dataset.dock;
       const gatedPickup = document.getElementById('loc-gated-pickup');
@@ -4475,6 +4474,11 @@
           renderList();
         }
         updatePickupWarning();
+        // Freeze the dock question animation before hiding — removing 'pulsing' would
+        // otherwise restart the base dockFadeIn animation, causing a visual flash.
+        const dq = document.getElementById('pickup-dock-question');
+        dq.style.animation = 'none';
+        dq.hidden = true;
         setTimeout(() => collapseLocPicker('pickup', selected.dataset.type), 200);
       }
     });
@@ -4483,7 +4487,6 @@
   document.querySelectorAll('#deliver-dock-question .dock-option').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('#deliver-dock-question .dock-option').forEach(o => o.classList.remove('selected'));
-      document.getElementById('deliver-dock-question').classList.remove('pulsing');
       btn.classList.add('selected');
       dockAnswers.deliver = btn.dataset.dock;
       const gatedDeliver = document.getElementById('loc-gated-deliver');
@@ -4501,6 +4504,9 @@
           dRenderList();
         }
         updateDeliverWarning();
+        const dq = document.getElementById('deliver-dock-question');
+        dq.style.animation = 'none';
+        dq.hidden = true;
         setTimeout(() => collapseLocPicker('deliver', selected.dataset.type), 200);
       }
     });
