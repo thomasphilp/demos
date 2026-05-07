@@ -14,7 +14,7 @@
   :root {
     --color-bg: #ffffff;
     --color-control-bg: rgba(9,10,12,0.02);
-    --color-control-border: rgba(9,10,12,0.07);
+    --color-control-border: rgba(9,10,12,0.12);
     --color-selected-bg: #ffffff;
     --color-selected-border: rgba(9,10,12,0.9);
     --color-label-primary: rgba(9,10,12,0.9);
@@ -644,12 +644,26 @@
   }
   .input-control:hover {
     background: rgba(9,10,12,0.06);
-    border-color: rgba(9,10,12,0.08);
+    border-color: rgba(9,10,12,0.24);
   }
   .input-control:focus-within {
     background: var(--color-selected-bg);
     border: var(--border-2) solid var(--color-selected-border);
   }
+  .input-control.disabled {
+    background: rgba(9,10,12,0.08);
+    border-color: rgba(9,10,12,0.04);
+    pointer-events: none;
+    cursor: default;
+  }
+  .input-control.disabled input,
+  .input-control.disabled textarea { color: rgba(9,10,12,0.4); }
+  .input-control.disabled .input-icon { color: rgba(9,10,12,0.2); }
+  .input-control.error {
+    background: rgba(241,46,46,0.1);
+    border: var(--border-2) solid rgba(220,38,38,1);
+  }
+  .input-control.error:hover { background: rgba(241,46,46,0.1); border-color: rgba(220,38,38,1); }
   .input-control input {
     flex: 1; border: none; background: transparent; outline: none;
     font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 400;
