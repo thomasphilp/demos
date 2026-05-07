@@ -16,7 +16,7 @@
     --color-control-bg: rgba(9,10,12,0.02);
     --color-control-border: rgba(9,10,12,0.12);
     --color-selected-bg: #ffffff;
-    --color-selected-border: var(--color-focus);
+    --color-selected-border: rgba(9,10,12,0.9);
     --color-label-primary: rgba(9,10,12,0.9);
     --color-label-secondary: rgba(9,10,12,0.6);
     --color-label-placeholder: rgba(9,10,12,0.3);
@@ -707,18 +707,23 @@
   /* clear button */
   .clear-btn {
     display: none; align-items: center; justify-content: center;
-    width: 16px; height: 16px; flex-shrink: 0;
+    width: 24px; height: 24px; flex-shrink: 0;
     border: var(--border-1) solid var(--color-alt-control-border);
     border-radius: var(--radius-base);
-    background: var(--color-control-bg);
+    background: rgba(9,10,12,0.05);
+    color: rgba(9,10,12,0.9);
     cursor: pointer;
     box-sizing: border-box;
+    box-shadow: inset 0 2px 0 0 rgba(255,255,255,0.5), inset 0 -2px 0 0 rgba(9,10,12,0.05);
+    transition: background 0.12s;
   }
+  .clear-btn:hover { background: rgba(9,10,12,0.1); }
+  .clear-btn:active { background: rgba(9,10,12,0.2); box-shadow: inset 0 0 0 1px rgba(9,10,12,0.5), inset 0 3px 8px 0 rgba(9,10,12,0.5); }
   .input-control:focus-within .clear-btn { display: flex; }
   .textarea-control.active .clear-btn { display: flex; }
-  .clear-btn svg { width: 7px; height: 7px; }
-  .addr-popup-wrap .clear-btn { width: 28px; height: 28px; box-shadow: inset 0 -2px 0 rgba(9,10,12,0.05), inset 0 1px 0 rgba(255,255,255,0.30); }
-  .addr-popup-wrap .clear-btn svg { width: 10px; height: 10px; }
+  .clear-btn svg { width: 12px; height: 12px; }
+  .addr-popup-wrap .clear-btn { width: 28px; height: 28px; }
+  .addr-popup-wrap .clear-btn svg { width: 12px; height: 12px; }
 
   /* phone left prefix */
   .phone-prefix {
@@ -2263,7 +2268,7 @@
           </div>
           <div class="loc-help-nav">
             <button class="loc-help-close" id="pickup-help-close" type="button" aria-label="Close">
-              <svg viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l6 6M7 1L1 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.805166 0.805166C1.30727 0.303063 2.12134 0.303063 2.62344 0.805166L12 10.1817L21.3766 0.805167C21.8787 0.303065 22.6928 0.303065 23.1949 0.805167C23.697 1.30727 23.697 2.12134 23.1949 2.62344L13.8183 12L23.1949 21.3766C23.697 21.8787 23.697 22.6928 23.1949 23.1949C22.6928 23.697 21.8787 23.697 21.3766 23.1949L12 13.8183L2.62344 23.1949C2.12134 23.697 1.30727 23.697 0.805166 23.1949C0.303063 22.6928 0.303063 21.8787 0.805166 21.3766L10.1817 12L0.805166 2.62344C0.303063 2.12134 0.303063 1.30727 0.805166 0.805166Z"/></svg>
             </button>
           </div>
         </div>
@@ -2452,11 +2457,7 @@
               </svg>
             </span>
             <input type="text" placeholder="First name" />
-            <button class="clear-btn" type="button" aria-label="Clear">
-              <svg viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M1 1l6 6M7 1L1 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-              </svg>
-            </button>
+            <button class="clear-btn" type="button" aria-label="Clear"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.805166 0.805166C1.30727 0.303063 2.12134 0.303063 2.62344 0.805166L12 10.1817L21.3766 0.805167C21.8787 0.303065 22.6928 0.303065 23.1949 0.805167C23.697 1.30727 23.697 2.12134 23.1949 2.62344L13.8183 12L23.1949 21.3766C23.697 21.8787 23.697 22.6928 23.1949 23.1949C22.6928 23.697 21.8787 23.697 21.3766 23.1949L12 13.8183L2.62344 23.1949C2.12134 23.697 1.30727 23.697 0.805166 23.1949C0.303063 22.6928 0.303063 21.8787 0.805166 21.3766L10.1817 12L0.805166 2.62344C0.303063 2.12134 0.303063 1.30727 0.805166 0.805166Z"/></svg></button>
           </div>
         </div>
         <div class="field">
@@ -2866,7 +2867,7 @@
           </div>
           <div class="loc-help-nav">
             <button class="loc-help-close" id="deliver-help-close" type="button" aria-label="Close">
-              <svg viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l6 6M7 1L1 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.805166 0.805166C1.30727 0.303063 2.12134 0.303063 2.62344 0.805166L12 10.1817L21.3766 0.805167C21.8787 0.303065 22.6928 0.303065 23.1949 0.805167C23.697 1.30727 23.697 2.12134 23.1949 2.62344L13.8183 12L23.1949 21.3766C23.697 21.8787 23.697 22.6928 23.1949 23.1949C22.6928 23.697 21.8787 23.697 21.3766 23.1949L12 13.8183L2.62344 23.1949C2.12134 23.697 1.30727 23.697 0.805166 23.1949C0.303063 22.6928 0.303063 21.8787 0.805166 21.3766L10.1817 12L0.805166 2.62344C0.303063 2.12134 0.303063 1.30727 0.805166 0.805166Z"/></svg>
             </button>
           </div>
         </div>
@@ -3531,7 +3532,7 @@
                 <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="10" height="10"><path d="M6.86 2.28a1.3 1.3 0 012.28 0l5.54 9.6A1.3 1.3 0 0113.54 14H2.46a1.3 1.3 0 01-1.14-1.92l5.54-9.6Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M8 6.5v3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="11.5" r="0.7" fill="currentColor"/></svg>
                 Not NMFC compliant
               </span>
-              <button class="clear-btn" id="cargo-desc-clear-btn" type="button" aria-label="Clear"><svg viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l6 6M7 1L1 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+              <button class="clear-btn" id="cargo-desc-clear-btn" type="button" aria-label="Clear"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.805166 0.805166C1.30727 0.303063 2.12134 0.303063 2.62344 0.805166L12 10.1817L21.3766 0.805167C21.8787 0.303065 22.6928 0.303065 23.1949 0.805167C23.697 1.30727 23.697 2.12134 23.1949 2.62344L13.8183 12L23.1949 21.3766C23.697 21.8787 23.697 22.6928 23.1949 23.1949C22.6928 23.697 21.8787 23.697 21.3766 23.1949L12 13.8183L2.62344 23.1949C2.12134 23.697 1.30727 23.697 0.805166 23.1949C0.303063 22.6928 0.303063 21.8787 0.805166 21.3766L10.1817 12L0.805166 2.62344C0.303063 2.12134 0.303063 1.30727 0.805166 0.805166Z"/></svg></button>
             </div>
             <div class="nmfc-suggest-panel" id="nmfc-suggest-panel">
               <div class="nmfc-suggest-header">
@@ -3644,7 +3645,7 @@
                   </svg>
                   Not NMFC compliant
                 </span>
-                <button class="clear-btn" id="nmfc-clear-btn" type="button" aria-label="Clear"><svg viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l6 6M7 1L1 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+                <button class="clear-btn" id="nmfc-clear-btn" type="button" aria-label="Clear"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.805166 0.805166C1.30727 0.303063 2.12134 0.303063 2.62344 0.805166L12 10.1817L21.3766 0.805167C21.8787 0.303065 22.6928 0.303065 23.1949 0.805167C23.697 1.30727 23.697 2.12134 23.1949 2.62344L13.8183 12L23.1949 21.3766C23.697 21.8787 23.697 22.6928 23.1949 23.1949C22.6928 23.697 21.8787 23.697 21.3766 23.1949L12 13.8183L2.62344 23.1949C2.12134 23.697 1.30727 23.697 0.805166 23.1949C0.303063 22.6928 0.303063 21.8787 0.805166 21.3766L10.1817 12L0.805166 2.62344C0.303063 2.12134 0.303063 1.30727 0.805166 0.805166Z"/></svg></button>
               </div>
               <div class="nmfc-field-popup" id="nmfc-field-popup">
                 <div class="nmfc-suggest-header">
@@ -5622,7 +5623,7 @@
     const trashSVG = `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.6893 3.79434V4.04175C17.7308 4.13709 18.7637 4.26247 19.7871 4.41702C20.166 4.47425 20.5436 4.53547 20.9199 4.60064C21.3651 4.67777 21.6635 5.10123 21.5864 5.54647C21.5093 5.99171 21.0858 6.29012 20.6406 6.213C20.5647 6.19984 20.4887 6.18685 20.4126 6.17403L19.3158 20.4328C19.1846 22.1379 17.7628 23.4545 16.0527 23.4545H7.50776C5.79764 23.4545 4.37583 22.1379 4.24467 20.4328L3.14785 6.17403C3.0718 6.18685 2.99581 6.19984 2.91988 6.213C2.47464 6.29012 2.05118 5.99171 1.97405 5.54647C1.89693 5.10123 2.19534 4.67777 2.64058 4.60064C3.01683 4.53547 3.39444 4.47425 3.77335 4.41702C4.79673 4.26247 5.82962 4.13709 6.87114 4.04175V3.79434C6.87114 2.08764 8.1939 0.6307 9.94252 0.574763C10.5527 0.555243 11.1653 0.54541 11.7802 0.54541C12.3951 0.54541 13.0077 0.555243 13.6179 0.574763C15.3666 0.6307 16.6893 2.08764 16.6893 3.79434ZM9.99484 2.21029C10.5876 2.19133 11.1828 2.18177 11.7802 2.18177C12.3777 2.18177 12.9728 2.19133 13.5656 2.21029C14.3888 2.23662 15.053 2.92788 15.053 3.79434V3.91722C13.9704 3.85148 12.8791 3.81814 11.7802 3.81814C10.6813 3.81814 9.59008 3.85148 8.5075 3.91722V3.79434C8.5075 2.92788 9.17163 2.23662 9.99484 2.21029ZM9.60779 8.69578C9.59043 8.24425 9.21031 7.89229 8.75877 7.90965C8.30724 7.92702 7.95527 8.30714 7.97264 8.75867L8.35026 18.5769C8.36763 19.0284 8.74775 19.3804 9.19928 19.363C9.65082 19.3456 10.0028 18.9655 9.98542 18.514L9.60779 8.69578ZM15.5868 8.75867C15.6042 8.30714 15.2522 7.92702 14.8007 7.90965C14.3491 7.89229 13.969 8.24425 13.9517 8.69578L13.574 18.514C13.5567 18.9655 13.9086 19.3456 14.3602 19.363C14.8117 19.3804 15.1918 19.0284 15.2092 18.5769L15.5868 8.75867Z"/></svg>`;
     const infoSVG = `<svg viewBox="0 0 24 24" fill="none" width="12" height="12"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
     const magnifySVG = `<svg class="warn-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.2 2.10005C5.72654 2.10005 2.10005 5.72654 2.10005 10.2C2.10005 14.6736 5.72654 18.3 10.2 18.3C12.4371 18.3 14.4608 17.3944 15.9276 15.9276C17.3944 14.4608 18.3 12.4371 18.3 10.2C18.3 5.72654 14.6736 2.10005 10.2 2.10005ZM0.300049 10.2C0.300049 4.73243 4.73243 0.300049 10.2 0.300049C15.6677 0.300049 20.1 4.73243 20.1 10.2C20.1 12.6094 19.2384 14.8189 17.808 16.5352L23.4364 22.1637C23.7879 22.5151 23.7879 23.085 23.4364 23.4364C23.085 23.7879 22.5151 23.7879 22.1637 23.4364L16.5352 17.808C14.8189 19.2384 12.6094 20.1 10.2 20.1C4.73243 20.1 0.300049 15.6677 0.300049 10.2Z"/></svg>`;
-    const clearXSVG = `<svg viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l6 6M7 1L1 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+    const clearXSVG = `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.805166 0.805166C1.30727 0.303063 2.12134 0.303063 2.62344 0.805166L12 10.1817L21.3766 0.805167C21.8787 0.303065 22.6928 0.303065 23.1949 0.805167C23.697 1.30727 23.697 2.12134 23.1949 2.62344L13.8183 12L23.1949 21.3766C23.697 21.8787 23.697 22.6928 23.1949 23.1949C22.6928 23.697 21.8787 23.697 21.3766 23.1949L12 13.8183L2.62344 23.1949C2.12134 23.697 1.30727 23.697 0.805166 23.1949C0.303063 22.6928 0.303063 21.8787 0.805166 21.3766L10.1817 12L0.805166 2.62344C0.303063 2.12134 0.303063 1.30727 0.805166 0.805166Z"/></svg>`;
     const warnTriSVG = `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="10" height="10"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.300049 12C0.300049 5.53832 5.53832 0.300049 12 0.300049C18.4618 0.300049 23.7 5.53832 23.7 12C23.7 18.4618 18.4618 23.7 12 23.7C5.53832 23.7 0.300049 18.4618 0.300049 12ZM12 7.50005C12.4971 7.50005 12.9 7.90299 12.9 8.40005V12.9C12.9 13.3971 12.4971 13.8 12 13.8C11.503 13.8 11.1 13.3971 11.1 12.9V8.40005C11.1 7.90299 11.503 7.50005 12 7.50005ZM12 17.4C12.4971 17.4 12.9 16.9971 12.9 16.5C12.9 16.003 12.4971 15.6 12 15.6C11.503 15.6 11.1 16.003 11.1 16.5C11.1 16.9971 11.503 17.4 12 17.4Z"/></svg>`;
     const fcIconSVG = `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="nonzero" d="M 16.875 4.262 L 20 3 L 12 0 L 8.883 1.1 L 16.875 4.262 Z"/><path fill-rule="nonzero" d="M 4.125 3 L 12 6.188 L 15.375 4.918 L 7.395 1.701 L 4.125 3 Z"/><path fill-rule="nonzero" d="M 3.75 4.262 L 11.313 7.395 L 11.313 16.457 L 3.75 12.975 L 3.75 4.262 Z"/><path fill-rule="nonzero" d="M 12.688 7.395 L 20.25 4.262 L 20.25 12.975 L 12.688 16.457 L 12.688 7.395 Z"/><path fill-rule="nonzero" d="M 21.773 13.875 L 24 15.004 L 24 18.654 L 22.182 19.442 L 20.344 18.654 L 14.025 21.75 L 14.025 23.1 L 12 24 L 9.975 23.1 L 9.975 21.75 L 3.375 18.654 L 1.818 19.442 L 0 18.654 L 0 15 L 2.219 13.875 L 11.418 18.125 C 11.79 18.282 12.21 18.282 12.582 18.125 L 21.773 13.875 Z"/></svg>`;
     const pcOpts = PC_TYPE_OPTIONS.map(v => `<div class="time-option" data-val="${v}">${v}</div>`).join('');
@@ -6525,7 +6526,7 @@
   });
 
   // Clear buttons for all text inputs
-  const clearBtnHTML = '<button class="clear-btn" type="button" aria-label="Clear"><svg viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l6 6M7 1L1 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>';
+  const clearBtnHTML = '<button class="clear-btn" type="button" aria-label="Clear"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.805166 0.805166C1.30727 0.303063 2.12134 0.303063 2.62344 0.805166L12 10.1817L21.3766 0.805167C21.8787 0.303065 22.6928 0.303065 23.1949 0.805167C23.697 1.30727 23.697 2.12134 23.1949 2.62344L13.8183 12L23.1949 21.3766C23.697 21.8787 23.697 22.6928 23.1949 23.1949C22.6928 23.697 21.8787 23.697 21.3766 23.1949L12 13.8183L2.62344 23.1949C2.12134 23.697 1.30727 23.697 0.805166 23.1949C0.303063 22.6928 0.303063 21.8787 0.805166 21.3766L10.1817 12L0.805166 2.62344C0.303063 2.12134 0.303063 1.30727 0.805166 0.805166Z"/></svg></button>';
   document.querySelectorAll('.input-control').forEach(control => {
     const input = control.querySelector('input[type="text"], input:not([type])');
     if (!input) return;
@@ -6908,12 +6909,12 @@
 
     linkNone.addEventListener('click', () => { applyNone(); setActive(linkNone); });
     linkRes.addEventListener('click', () => { applyNone(); applyResidential('your address book'); setActive(linkRes); });
-    linkRebill.addEventListener('click', () => { applyNone(); REBILL_MODE = true; applyCommercial('the entered address'); setActive(linkRebill); });
+    linkRebill.addEventListener('click', () => { applyNone(); REBILL_MODE = true; applyCommercial('the address'); setActive(linkRebill); });
 
     // Set initial state from URL param if present, otherwise default to none
     const param = new URLSearchParams(location.search).get('loc');
     if (param === 'residential') { applyResidential('your address book'); setActive(linkRes); }
-    else if (param === 'rebill') { REBILL_MODE = true; applyCommercial('the entered address'); setActive(linkRebill); }
+    else if (param === 'rebill') { REBILL_MODE = true; applyCommercial('the address'); setActive(linkRebill); }
     else { setActive(linkNone); }
   })();
 
