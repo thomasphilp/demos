@@ -6849,17 +6849,17 @@
         const autoTileLabel = picker.querySelector('.loc-option[data-type="commercial"] .loc-option-auto');
         if (autoTileLabel) autoTileLabel.hidden = false;
       });
-      // dock=yes + commercial → no liftgate needed
-      const pickupRecs = [];
+      // dock=no + commercial → liftgate recommended
+      const pickupRecs = ['liftgate'];
       ACC_ITEMS.forEach(item => { item.warn = pickupRecs.includes(item.id); });
-      document.getElementById('avoid-tag').style.display = 'none';
+      document.getElementById('avoid-tag').style.display = '';
       renderTooltipTags('tooltip-tags', pickupRecs, ACC_ITEMS);
       updateTooltipState('pickup', true, 'commercial');
       renderList();
       updatePickupWarning();
-      const deliverRecs = [];
+      const deliverRecs = ['d-liftgate'];
       DELIVER_ACC_ITEMS.forEach(item => { item.warn = deliverRecs.includes(item.id); });
-      document.getElementById('d-avoid-tag').style.display = 'none';
+      document.getElementById('d-avoid-tag').style.display = '';
       renderTooltipTags('d-tooltip-tags', deliverRecs, DELIVER_ACC_ITEMS);
       updateTooltipState('deliver', true, 'commercial');
       dRenderList();
