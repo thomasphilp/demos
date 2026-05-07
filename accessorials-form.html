@@ -584,6 +584,7 @@
   .loc-gated .dropdown-caret { color: rgba(9,10,12,0.2); }
   .loc-gated .dropdown-btn-text { color: rgba(9,10,12,0.4); }
   .loc-gated .dropdown-sm .tz-label { color: rgba(9,10,12,0.4); }
+  .loc-gated .time-between { color: rgba(9,10,12,0.4); }
   .loc-gated .field-label,
   .loc-gated .field-label .req,
   .loc-gated .field-label .info-icon { color: rgba(9,10,12,0.4); }
@@ -1006,7 +1007,7 @@
   .time-between {
     display: flex; align-items: center; justify-content: center;
     width: 32px; height: 32px; flex-shrink: 0;
-    font-size: 12px; color: rgba(9,10,12,0.05);
+    font-size: 12px; color: var(--color-label-secondary);
     padding-bottom: 0;
     align-self: flex-end;
   }
@@ -2591,7 +2592,7 @@
               <div class="cal-days" id="cal-days"></div>
             </div>
           </div>
-          <div class="time-between" style="color:rgba(9,10,12,0.9);">after</div>
+          <div class="time-between">after</div>
           <!-- Ready time -->
           <div class="field dropdown-sm" style="flex: 0 0 160px; width: 160px;">
             <div class="field-label"><span>Ready time</span><span class="req">*</span></div>
