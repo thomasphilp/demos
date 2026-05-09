@@ -758,7 +758,8 @@
   }
   .clear-btn:hover { background: rgba(9,10,12,0.1); }
   .clear-btn:active { background: rgba(9,10,12,0.2); box-shadow: inset 0 0 0 1px rgba(9,10,12,0.5), inset 0 3px 8px 0 rgba(9,10,12,0.5); }
-  .input-control:focus-within .clear-btn { display: flex; }
+  .input-control:focus-within:has(input:not(:placeholder-shown)) .clear-btn,
+  .input-control:focus-within:has(textarea:not(:placeholder-shown)) .clear-btn { display: flex; }
   .textarea-control.active .clear-btn { display: flex; }
   .clear-btn svg { width: 12px; height: 12px; }
   .addr-popup-wrap .clear-btn { width: 24px; height: 24px; }
