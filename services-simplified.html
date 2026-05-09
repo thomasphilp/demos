@@ -4873,6 +4873,7 @@
         const d = document.createElement('div');
         d.className = 'acc-list-divider is-rec';
         d.textContent = REBILL_MODE ? 'Recommended to avoid a 60% re-bill risk' : 'Recommended to avoid adjustment charges';
+        d.addEventListener('click', e => e.stopPropagation());
         list.appendChild(d);
         recDividerAdded = true;
       }
@@ -4880,6 +4881,7 @@
         const d = document.createElement('div');
         d.className = 'acc-list-divider' + (hasRec ? ' is-other' : '');
         d.textContent = 'Other';
+        d.addEventListener('click', e => e.stopPropagation());
         list.appendChild(d);
         otherDividerAdded = true;
       }
@@ -5709,6 +5711,7 @@
         const d = document.createElement('div');
         d.className = 'acc-list-divider is-rec';
         d.textContent = 'Recommended services to avoid delays and re-bills';
+        d.addEventListener('click', e => e.stopPropagation());
         list.appendChild(d);
         dRecDividerAdded = true;
       }
@@ -5716,6 +5719,7 @@
         const d = document.createElement('div');
         d.className = 'acc-list-divider' + (dHasRec ? ' is-other' : '');
         d.textContent = 'Services';
+        d.addEventListener('click', e => e.stopPropagation());
         list.appendChild(d);
         dOtherDividerAdded = true;
       }
@@ -7040,7 +7044,7 @@
     document.addEventListener('click', (e) => {
       if (wrap && !wrap.contains(e.target)) {
         if (!control.classList.contains('addr-committed') && input.value.trim()) {
-          showCard(input.value, '', 'typed', false);
+          showCard(input.value, companyInput ? companyInput.value : '', 'typed', false);
         } else {
           bookPanel.scrollTop = 0;  bookPanel.hidden = true;
           searchPanel.scrollTop = 0; searchPanel.hidden = true;
