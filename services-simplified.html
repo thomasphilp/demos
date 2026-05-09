@@ -7833,20 +7833,20 @@
       unlockGated('deliver');
     });
 
-    // "No, services are not needed" button — clears recommended services + unlocks fields (pickup)
+    // "Continue and decide later" button — unlocks fields but keeps recommended tags/groups intact
     const _noSvcBtn = document.getElementById('no-svc-btn');
     if (_noSvcBtn) _noSvcBtn.addEventListener('click', () => {
-      ACC_ITEMS.forEach(item => { item.warn = false; item.selected = false; });
+      ACC_ITEMS.forEach(item => { item.selected = false; });
       renderList(); updateBtnLabel(); updatePickupWarning();
       unlockSvcGate();
       const _svcRecRow = document.getElementById('acc-svc-rec-row');
       if (_svcRecRow) _svcRecRow.hidden = true;
     });
 
-    // "No, services are not needed" button — delivery
+    // "Continue and decide later" button — delivery
     const _dNoSvcBtn = document.getElementById('d-no-svc-btn');
     if (_dNoSvcBtn) _dNoSvcBtn.addEventListener('click', () => {
-      DELIVER_ACC_ITEMS.forEach(item => { item.warn = false; item.selected = false; });
+      DELIVER_ACC_ITEMS.forEach(item => { item.selected = false; });
       dRenderList(); dUpdateBtnLabel(); updateDeliverWarning();
       unlockDeliverSvcGate();
       const _svcRecRow = document.getElementById('d-acc-svc-rec-row');
