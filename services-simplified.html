@@ -4465,19 +4465,19 @@
           </div>
           <div class="reg-card">
             <div class="reg-card-checkboxes">
-              <div class="reg-checkbox-item" id="hazmat-checkbox-item" onclick="toggleHazmat(this)">
+              <div class="reg-checkbox-item" id="hazmat-checkbox-item" onclick="toggleHazmat(this)" tabindex="0" role="checkbox" aria-checked="false">
                 <div class="reg-checkbox">
                   <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.5 5.5L4 8L8.5 2" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </div>
                 <span class="reg-checkbox-label">Hazmat</span>
               </div>
-              <div class="reg-checkbox-item" onclick="toggleRegCheck(this)">
+              <div class="reg-checkbox-item" onclick="toggleRegCheck(this)" tabindex="0" role="checkbox" aria-checked="false">
                 <div class="reg-checkbox">
                   <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.5 5.5L4 8L8.5 2" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </div>
                 <span class="reg-checkbox-label">Beer, wine &amp; spirits</span>
               </div>
-              <div class="reg-checkbox-item" onclick="toggleRegCheck(this)">
+              <div class="reg-checkbox-item" onclick="toggleRegCheck(this)" tabindex="0" role="checkbox" aria-checked="false">
                 <div class="reg-checkbox">
                   <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.5 5.5L4 8L8.5 2" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </div>
@@ -5808,7 +5808,7 @@
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); }
     });
   }
-  document.querySelectorAll('.nmfc-list-item, .nmfc-use-own').forEach(makeKeyboardClickable);
+  document.querySelectorAll('.nmfc-list-item, .nmfc-use-own, .reg-checkbox-item').forEach(makeKeyboardClickable);
 
   // ── Close any open popup when focus moves outside it ──
   document.addEventListener('focusout', (e) => {
@@ -6329,9 +6329,9 @@
         <div class="field-label"><span>Regulated cargo declaration</span><span class="opt">(optional)</span></div>
         <div class="reg-card">
           <div class="reg-card-checkboxes">
-            <div class="reg-checkbox-item" onclick="toggleHazmatInCard(this)"><div class="reg-checkbox">${checkSVG}</div><span class="reg-checkbox-label">Hazmat</span></div>
-            <div class="reg-checkbox-item" onclick="toggleRegCheck(this)"><div class="reg-checkbox">${checkSVG}</div><span class="reg-checkbox-label">Beer, wine &amp; spirits</span></div>
-            <div class="reg-checkbox-item" onclick="toggleRegCheck(this)"><div class="reg-checkbox">${checkSVG}</div><span class="reg-checkbox-label">Nicotine/Tobacco</span></div>
+            <div class="reg-checkbox-item" onclick="toggleHazmatInCard(this)" tabindex="0" role="checkbox" aria-checked="false"><div class="reg-checkbox">${checkSVG}</div><span class="reg-checkbox-label">Hazmat</span></div>
+            <div class="reg-checkbox-item" onclick="toggleRegCheck(this)" tabindex="0" role="checkbox" aria-checked="false"><div class="reg-checkbox">${checkSVG}</div><span class="reg-checkbox-label">Beer, wine &amp; spirits</span></div>
+            <div class="reg-checkbox-item" onclick="toggleRegCheck(this)" tabindex="0" role="checkbox" aria-checked="false"><div class="reg-checkbox">${checkSVG}</div><span class="reg-checkbox-label">Nicotine/Tobacco</span></div>
           </div>
           <div class="hazmat-form">
             <div class="hazmat-form-row" style="align-items:flex-start;">
@@ -6581,7 +6581,10 @@
       if (node.nodeType === 1) container.appendChild(node.cloneNode(true));
     });
     const newSection = container.querySelector(`.commodity-section[data-commodity="${commodityCount}"]`);
-    if (newSection) initCommoditySection(newSection, commodityCount);
+    if (newSection) {
+      initCommoditySection(newSection, commodityCount);
+      newSection.querySelectorAll('.reg-checkbox-item').forEach(makeKeyboardClickable);
+    }
   });
 
   // ── Piece count rows ──
