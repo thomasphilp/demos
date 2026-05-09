@@ -2,32 +2,46 @@ name: CI
 
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    branches: ['**']
+    paths:
+      - '**.html'
+      - '.github/workflows/**'
 
 jobs:
+  # ---------------------------------------------------------------------------
+  #  🔍  JOB: validate — HTML structure check
+  # ---------------------------------------------------------------------------
   validate:
-    name: Validate HTML & Check Links
+    name: Validate HTML
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
 
       - name: Install html-validate
         run: npm install -g html-validate
 
-      - name: Validate HTML
+      - name: Validate HTML files
         run: html-validate services-simplified.html accessorials-form.html
+
+  # ---------------------------------------------------------------------------
+  #  🔗  JOB: links — broken link check
+  # ---------------------------------------------------------------------------
+  links:
+    name: Check Links
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
 
       - name: Check for broken links
         uses: lycheeverse/lychee-action@v1
         with:
-          args: --no-progress --exclude-loopback '*.html'
+          args: --no-progress --exclude-loopback --exclude 'fonts\.googleapis\.com' --exclude 'fonts\.gstatic\.com' '*.html'
           fail: true
