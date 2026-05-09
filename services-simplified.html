@@ -7987,7 +7987,6 @@
     linkRes.addEventListener('click', () => { applyNone(); applyResidential('your address book'); setActive(linkRes); window.scrollTo({ top: 0, behavior: 'smooth' }); });
     linkRebill.addEventListener('click', () => {
       applyNone(); REBILL_MODE = true; applyCommercial('the address'); setActive(linkRebill);
-      unlockSvcGate(); // location is known, fields accessible immediately
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
     linkRebill2.addEventListener('click', () => {
