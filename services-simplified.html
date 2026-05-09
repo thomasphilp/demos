@@ -7013,7 +7013,8 @@
 
     // Search panel suggestions
     searchPanel.querySelectorAll('.addr-list-item').forEach(item => {
-      item.addEventListener('click', () => {
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
         const addrEl = item.querySelector('.addr-list-addr');
         const nameEl = item.querySelector('.addr-list-name');
         const addr    = addrEl ? addrEl.textContent : '';
@@ -7028,7 +7029,8 @@
 
     // Address book items
     bookPanel.querySelectorAll('.addr-list-item').forEach(item => {
-      item.addEventListener('click', () => {
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
         const addrEl = item.querySelector('.addr-list-addr');
         const nameEl = item.querySelector('.addr-list-name');
         const addr    = addrEl ? addrEl.textContent : '';
