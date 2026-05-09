@@ -4866,6 +4866,7 @@
       const el = document.createElement('div');
       el.className = 'acc-item' + (item.selected ? ' selected' : '');
       el.dataset.id = item.id;
+      el.setAttribute('tabindex', '-1');
       const rebillPct = REBILL_MODE && item.warn && !item.selected ? REBILL_DATA[item.id] : null;
       const rebillBadge = rebillPct != null
         ? `<div class="acc-item-rebill"><span class="acc-item-rebill-text">60% re-bill chance</span></div>`
@@ -4880,6 +4881,7 @@
           ${rebillBadge}
         </div>
       `;
+      el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); } });
       el.addEventListener('click', (e) => {
         e.stopPropagation();
         const wasSelected = item.selected;
@@ -5340,6 +5342,12 @@
       accBtn.setAttribute('aria-expanded', false);
     }
   });
+  initPopupNav(
+    accBtn, accPanel,
+    () => accPanel.classList.contains('open'),
+    () => Array.from(accPanel.querySelectorAll('.acc-item')),
+    () => { accPanel.scrollTop = 0; accPanel.classList.remove('open'); accBtn.classList.remove('open'); accBtn.setAttribute('aria-expanded', false); }
+  );
 
   // ── Description toggle ──
   document.getElementById('acc-desc-toggle').addEventListener('click', (e) => {
@@ -5445,6 +5453,7 @@
       const div = document.createElement('div');
       div.className = 'time-option' + (t === currentTime ? ' selected' : '');
       div.textContent = t;
+      makePopupItem(div);
       div.addEventListener('click', (e) => {
         e.stopPropagation();
         const btnId = panelId.replace('-panel', '-btn');
@@ -5514,6 +5523,16 @@
     btn.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }
     });
+
+    // Arrow-key nav for time panels (calendar panels have no .time-option items)
+    if (id !== 'ready-date' && id !== 'd-appt-date' && id !== 'fba-appt-date') {
+      initPopupNav(
+        btn, panel,
+        () => panel.classList.contains('open'),
+        () => Array.from(panel.querySelectorAll('.time-option')),
+        () => closePicker(`${id}-btn`, `${id}-panel`)
+      );
+    }
   });
 
   // Close pickers on outside click
@@ -5683,6 +5702,7 @@
       const el = document.createElement('div');
       el.className = 'acc-item' + (item.selected ? ' selected' : '');
       el.dataset.id = item.id;
+      el.setAttribute('tabindex', '-1');
       const dRebillPct = REBILL_MODE && item.warn && !item.selected ? REBILL_DATA[item.id] : null;
       const dRebillBadge = dRebillPct != null
         ? `<div class="acc-item-rebill"><span class="acc-item-rebill-text">60% re-bill chance</span></div>`
@@ -5697,6 +5717,7 @@
           ${dRebillBadge}
         </div>
       `;
+      el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); } });
       el.addEventListener('click', (e) => {
         e.stopPropagation();
         const wasSelected = item.selected;
@@ -5800,15 +5821,86 @@
     }
   });
 
-  // ── Keyboard accessibility: NMFC list items, "use own" rows, freight-class items ──
-  // Make them focusable and activatable via Enter / Space
+  // ── Keyboard accessibility helpers ──
+
+  // For form elements that should be in tab order (reg checkboxes, etc.)
   function makeKeyboardClickable(el) {
     el.setAttribute('tabindex', '0');
     el.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); }
     });
   }
-  document.querySelectorAll('.nmfc-list-item, .nmfc-use-own, .reg-checkbox-item').forEach(makeKeyboardClickable);
+
+  // For popup items: focusable via arrow keys (tabindex=-1) but skipped by Tab
+  function makePopupItem(el) {
+    el.setAttribute('tabindex', '-1');
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); }
+    });
+  }
+
+  // Arrow-key navigation for any trigger → popup relationship.
+  // trigger: the button/input that opens the popup
+  // panel:   the popup container
+  // isOpen:  () => bool — whether the popup is currently open
+  // getItems: () => HTMLElement[] — the navigable items inside
+  // closePanel: () => void — close the popup
+  function initPopupNav(trigger, panel, isOpen, getItems, closePanel) {
+    // ArrowDown / ArrowUp on the trigger moves focus into the popup
+    trigger.addEventListener('keydown', (e) => {
+      if (!isOpen()) return;
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const items = getItems();
+        if (items.length) items[0].focus();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const items = getItems();
+        if (items.length) items[items.length - 1].focus();
+      }
+    });
+    // ArrowDown / ArrowUp / Escape within the popup
+    panel.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp' && e.key !== 'Escape') return;
+      const items = getItems();
+      const idx = items.indexOf(document.activeElement);
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closePanel();
+        trigger.focus();
+        return;
+      }
+      if (idx === -1) return;
+      e.preventDefault();
+      if (e.key === 'ArrowDown') {
+        if (idx < items.length - 1) items[idx + 1].focus();
+      } else {
+        if (idx === 0) { closePanel(); trigger.focus(); }
+        else items[idx - 1].focus();
+      }
+    });
+  }
+
+  // Apply to popup-style items (skipped by Tab; Enter/Space to activate)
+  document.querySelectorAll('.nmfc-list-item, .nmfc-use-own').forEach(makePopupItem);
+  // Apply tabindex=-1 to all static time-option elements
+  document.querySelectorAll('.time-option').forEach(makePopupItem);
+  // Keep reg checkboxes in tab order
+  document.querySelectorAll('.reg-checkbox-item').forEach(makeKeyboardClickable);
+
+  // Arrow-key navigation for the two cargo popups
+  initPopupNav(
+    cargoDescInput, nmfcSuggestPanel,
+    () => nmfcSuggestPanel.classList.contains('visible'),
+    () => Array.from(nmfcSuggestPanel.querySelectorAll('.nmfc-list-item, .nmfc-use-own')),
+    () => { nmfcSuggestPanel.classList.remove('visible'); cargoTextareaControl.classList.remove('active'); }
+  );
+  initPopupNav(
+    nmfcInput, nmfcFieldPopup,
+    () => nmfcFieldPopup.classList.contains('visible'),
+    () => Array.from(nmfcFieldPopup.querySelectorAll('.nmfc-list-item, .nmfc-use-own')),
+    () => { nmfcFieldPopup.classList.remove('visible'); nmfcFieldPopup.scrollTop = 0; }
+  );
 
   // ── Close any open popup when focus moves outside it ──
   document.addEventListener('focusout', (e) => {
@@ -5887,6 +5979,12 @@
       dAccBtn.setAttribute('aria-expanded', false);
     }
   });
+  initPopupNav(
+    dAccBtn, dAccPanel,
+    () => dAccPanel.classList.contains('open'),
+    () => Array.from(dAccPanel.querySelectorAll('.acc-item')),
+    () => { dAccPanel.scrollTop = 0; dAccPanel.classList.remove('open'); dAccBtn.classList.remove('open'); dAccBtn.setAttribute('aria-expanded', false); }
+  );
 
   document.getElementById('d-acc-desc-toggle').addEventListener('click', (e) => {
     e.stopPropagation();
@@ -5915,6 +6013,7 @@
     EXTRA_SVC_ITEMS.forEach(item => {
       const el = document.createElement('div');
       el.className = 'acc-item' + (item.selected ? ' selected' : '');
+      el.setAttribute('tabindex', '-1');
       el.innerHTML = `
         <div class="acc-checkbox">${item.selected ? checkSVG : ''}</div>
         <div class="acc-item-content">
@@ -5924,6 +6023,7 @@
           </div>
         </div>
       `;
+      el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); } });
       el.addEventListener('click', (e) => {
         e.stopPropagation();
         item.selected = !item.selected;
@@ -5960,6 +6060,12 @@
       extraSvcBtn.setAttribute('aria-expanded', false);
     }
   });
+  initPopupNav(
+    extraSvcBtn, extraSvcPanel,
+    () => extraSvcPanel.classList.contains('open'),
+    () => Array.from(extraSvcPanel.querySelectorAll('.acc-item')),
+    () => { extraSvcPanel.classList.remove('open'); extraSvcBtn.classList.remove('open'); extraSvcBtn.setAttribute('aria-expanded', false); }
+  );
 
   renderExtraSvcList();
 
@@ -5976,6 +6082,7 @@
     D_EXTRA_SVC_ITEMS.forEach(item => {
       const el = document.createElement('div');
       el.className = 'acc-item' + (item.selected ? ' selected' : '');
+      el.setAttribute('tabindex', '-1');
       el.innerHTML = `
         <div class="acc-checkbox">${item.selected ? checkSVG : ''}</div>
         <div class="acc-item-content">
@@ -5985,6 +6092,7 @@
           </div>
         </div>
       `;
+      el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); } });
       el.addEventListener('click', (e) => {
         e.stopPropagation();
         item.selected = !item.selected;
@@ -6021,6 +6129,12 @@
       dExtraSvcBtn.setAttribute('aria-expanded', false);
     }
   });
+  initPopupNav(
+    dExtraSvcBtn, dExtraSvcPanel,
+    () => dExtraSvcPanel.classList.contains('open'),
+    () => Array.from(dExtraSvcPanel.querySelectorAll('.acc-item')),
+    () => { dExtraSvcPanel.classList.remove('open'); dExtraSvcBtn.classList.remove('open'); dExtraSvcBtn.setAttribute('aria-expanded', false); }
+  );
 
   dRenderExtraSvcList();
 
@@ -6076,6 +6190,12 @@
       huBtn.setAttribute('aria-expanded', false);
     }
   });
+  initPopupNav(
+    huBtn, huPanel,
+    () => huPanel.classList.contains('open'),
+    () => Array.from(huPanel.querySelectorAll('.time-option')),
+    () => { huPanel.classList.remove('open'); huBtn.classList.remove('open'); huBtn.setAttribute('aria-expanded', false); }
+  );
 
   // Set default selected for handling unit
   huPanel.querySelector('[data-val="Pallet"]').classList.add('selected');
@@ -6111,7 +6231,7 @@
   });
 
   fcPanel.querySelectorAll('.fc-class-item').forEach(opt => {
-    makeKeyboardClickable(opt);
+    makePopupItem(opt);
     opt.addEventListener('click', (e) => {
       e.stopPropagation();
       document.getElementById('fc-btn-label').textContent = `Class ${opt.dataset.val}`;
@@ -6133,6 +6253,12 @@
       fcBtn.setAttribute('aria-expanded', false);
     }
   });
+  initPopupNav(
+    fcBtn, fcPanel,
+    () => fcPanel.classList.contains('open'),
+    () => Array.from(fcPanel.querySelectorAll('.fc-class-item')),
+    () => { fcPanel.classList.remove('open'); fcBtn.classList.remove('open'); fcBtn.setAttribute('aria-expanded', false); }
+  );
 
   // ── Measurement system toggle ──
   function updateMeasIndicator() {
@@ -6217,6 +6343,12 @@
         panel.classList.remove('open'); btn.classList.remove('open');
       }
     });
+    initPopupNav(
+      btn, panel,
+      () => panel.classList.contains('open'),
+      () => Array.from(panel.querySelectorAll('.time-option')),
+      () => { panel.classList.remove('open'); btn.classList.remove('open'); btn.setAttribute('aria-expanded', false); }
+    );
   })();
 
   // Packing group dropdown
@@ -6246,6 +6378,12 @@
         panel.classList.remove('open'); btn.classList.remove('open');
       }
     });
+    initPopupNav(
+      btn, panel,
+      () => panel.classList.contains('open'),
+      () => Array.from(panel.querySelectorAll('.time-option')),
+      () => { panel.classList.remove('open'); btn.classList.remove('open'); btn.setAttribute('aria-expanded', false); }
+    );
   })();
 
   // ── Add another commodity ──
@@ -6464,7 +6602,7 @@
         fcBtn.classList.toggle('open', !open);
       });
       fcPanel.querySelectorAll('.fc-class-item').forEach(item => {
-        makeKeyboardClickable(item);
+        makePopupItem(item);
         item.addEventListener('click', (e) => {
           e.stopPropagation();
           const val = item.dataset.val;
@@ -6494,6 +6632,12 @@
           fcBtn.classList.remove('open');
         }
       });
+      initPopupNav(
+        fcBtn, fcPanel,
+        () => fcPanel.style.display === 'flex',
+        () => Array.from(fcPanel.querySelectorAll('.fc-class-item')),
+        () => { fcPanel.style.display = 'none'; fcBtn.classList.remove('open'); }
+      );
     }
 
     // Piece count rows
@@ -6522,6 +6666,7 @@
         btn.setAttribute('aria-expanded', open);
       });
       panel.querySelectorAll('.time-option').forEach(opt => {
+        makePopupItem(opt);
         opt.addEventListener('click', (e) => {
           e.stopPropagation();
           label.textContent = opt.dataset.val;
@@ -6538,6 +6683,12 @@
           btn.classList.remove('open');
         }
       });
+      initPopupNav(
+        btn, panel,
+        () => panel.classList.contains('open'),
+        () => Array.from(panel.querySelectorAll('.time-option')),
+        () => { panel.classList.remove('open'); btn.classList.remove('open'); btn.setAttribute('aria-expanded', false); }
+      );
     }
     wireSimpleDropdown(
       section.querySelector('.hazmat-class-btn'),
@@ -6642,6 +6793,7 @@
     });
 
     panel.querySelectorAll('.time-option').forEach(opt => {
+      makePopupItem(opt);
       opt.addEventListener('click', (e) => {
         e.stopPropagation();
         label.textContent = opt.dataset.val;
@@ -6652,6 +6804,12 @@
         btn.setAttribute('aria-expanded', false);
       });
     });
+    initPopupNav(
+      btn, panel,
+      () => panel.classList.contains('open'),
+      () => Array.from(panel.querySelectorAll('.time-option')),
+      () => { panel.classList.remove('open'); btn.classList.remove('open'); btn.setAttribute('aria-expanded', false); }
+    );
 
     if (isFirst) {
       const clearBtn = row.querySelector('.pc-clear-btn');
