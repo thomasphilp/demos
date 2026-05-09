@@ -6,6 +6,8 @@
     "no-trailing-whitespace": "off",
     "long-title": "off",
     "require-sri": "off",
+    "void-style": "off",
+    "no-implicit-button-type": "off",
     "element-permitted-content": "warn",
     "attribute-allowed-values": "warn"
   }
