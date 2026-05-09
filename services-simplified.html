@@ -4739,7 +4739,7 @@
       label: 'Liftgate',
       shortDesc: 'Hydraulic platform lifts freight between ground level and the truck bed.',
       desc: 'A hydraulic platform lowers or raises freight to ground level. Required at any location without a raised loading dock — homes, retail stores, or street-level pickups.',
-      warn: false,
+      warn: true,
       selected: false
     },
     {
@@ -4779,7 +4779,7 @@
       label: 'Residential',
       shortDesc: 'Pickup or delivery at a home, apartment, or business in a residential area.',
       desc: 'Homes, apartments, or businesses in a residential neighborhood. Carriers typically send smaller trucks and require a liftgate — both add to the cost.',
-      warn: false,
+      warn: true,
       selected: false
     }
   ];
@@ -4875,6 +4875,13 @@
         d.textContent = REBILL_MODE ? 'Recommended to avoid a 60% re-bill risk' : 'Recommended';
         list.appendChild(d);
         recDividerAdded = true;
+      }
+      if (hasOther && !item.warn && !otherDividerAdded) {
+        const d = document.createElement('div');
+        d.className = 'acc-list-divider' + (hasRec ? ' is-other' : '');
+        d.textContent = 'Other';
+        list.appendChild(d);
+        otherDividerAdded = true;
       }
       const el = document.createElement('div');
       el.className = 'acc-item' + (item.selected ? ' selected' : '');
