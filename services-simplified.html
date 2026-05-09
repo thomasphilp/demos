@@ -4796,6 +4796,9 @@
     if (extraSvc) extraSvc.classList.remove('is-disabled');
     const gateBox = document.querySelector('#d-acc-dropdown-field')?.closest('.services-gate-box');
     if (gateBox) gateBox.classList.add('resolved');
+    // Auto-focus the first name field once the gate opens
+    const firstNameInput = gate && gate.querySelector('input[placeholder="First name"]');
+    if (firstNameInput) requestAnimationFrame(() => firstNameInput.focus());
   }
   function lockDeliverSvcGate() {
     D_SVC_RESOLVED = false;
@@ -4817,6 +4820,9 @@
     if (extraSvc) extraSvc.classList.remove('is-disabled');
     const gateBox = document.querySelector('#acc-dropdown-field')?.closest('.services-gate-box');
     if (gateBox) gateBox.classList.add('resolved');
+    // Auto-focus the first name field once the gate opens
+    const firstNameInput = gate && gate.querySelector('input[placeholder="First name"]');
+    if (firstNameInput) requestAnimationFrame(() => firstNameInput.focus());
   }
   function lockSvcGate() {
     SVC_RESOLVED = false;
@@ -5925,9 +5931,13 @@
     }
 
     // All standard acc-panel dropdowns (.open class)
+    // Multi-select panels must not close when to===null: that means the focused acc-item was
+    // destroyed by renderList()'s innerHTML reset, not that focus left the field.
+    const MULTISELECT_PANEL_IDS = new Set(['acc-panel', 'd-acc-panel', 'extra-svc-panel', 'd-extra-svc-panel']);
     document.querySelectorAll('.acc-panel.open').forEach(panel => {
       const field = panel.closest('.dropdown-field');
       if (field && field.contains(to)) return;
+      if (MULTISELECT_PANEL_IDS.has(panel.id) && to === null) return;
       panel.scrollTop = 0;
       panel.classList.remove('open');
       const btn = field ? field.querySelector('.dropdown-btn, .pc-type-btn') : null;
@@ -6243,6 +6253,7 @@
       fcPanel.classList.remove('open');
       fcBtn.classList.remove('open');
       fcBtn.setAttribute('aria-expanded', false);
+      fcBtn.focus(); // return focus to trigger so Tab lands on regulated cargo checkboxes
     });
   });
 
@@ -6615,6 +6626,7 @@
           fcBtn.classList.remove('open');
           fcBtn.classList.add('has-value');
           if (fcClearBtn) fcClearBtn.style.display = '';
+          fcBtn.focus(); // return focus to trigger so Tab proceeds to regulated cargo checkboxes
         });
       });
       if (fcClearBtn) {
