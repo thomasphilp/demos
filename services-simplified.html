@@ -1016,7 +1016,7 @@
   }
   .svc-box-divider {
     border: none; border-top: 1px solid rgba(9,10,12,0.05);
-    margin: 0;
+    margin: 0 0 4px;
   }
   .svc-rec-alert {
     display: flex; align-items: flex-start; gap: 8px;
@@ -5809,6 +5809,65 @@
     });
   }
   document.querySelectorAll('.nmfc-list-item, .nmfc-use-own').forEach(makeKeyboardClickable);
+
+  // ── Close any open popup when focus moves outside it ──
+  document.addEventListener('focusout', (e) => {
+    const to = e.relatedTarget; // element receiving focus (null = non-focusable target)
+
+    // NMFC cargo-description suggest panel
+    if (nmfcSuggestPanel.classList.contains('visible')) {
+      const wrap = nmfcSuggestPanel.closest('.nmfc-desc-wrap');
+      if (!wrap || !wrap.contains(to)) {
+        nmfcSuggestPanel.classList.remove('visible');
+        cargoTextareaControl.classList.remove('active');
+      }
+    }
+
+    // NMFC field popup
+    if (nmfcFieldPopup.classList.contains('visible')) {
+      const wrap = nmfcFieldPopup.closest('.nmfc-input-wrap');
+      if (!wrap || !wrap.contains(to)) {
+        nmfcFieldPopup.classList.remove('visible');
+        nmfcFieldPopup.scrollTop = 0;
+      }
+    }
+
+    // All standard acc-panel dropdowns (.open class)
+    document.querySelectorAll('.acc-panel.open').forEach(panel => {
+      const field = panel.closest('.dropdown-field');
+      if (field && field.contains(to)) return;
+      panel.scrollTop = 0;
+      panel.classList.remove('open');
+      const btn = field ? field.querySelector('.dropdown-btn, .pc-type-btn') : null;
+      if (btn) { btn.classList.remove('open'); btn.setAttribute('aria-expanded', false); }
+    });
+
+    // Commodity FC panels (toggled via style.display = 'flex')
+    document.querySelectorAll('.acc-panel').forEach(panel => {
+      if (panel.style.display !== 'flex') return;
+      const field = panel.closest('.dropdown-field');
+      if (field && field.contains(to)) return;
+      panel.style.display = 'none';
+      const btn = field ? field.querySelector('.dropdown-btn') : null;
+      if (btn) btn.classList.remove('open');
+    });
+
+    // Date / time picker panels
+    document.querySelectorAll('.picker-panel.open').forEach(panel => {
+      const container = panel.closest('.picker-field') || panel.parentElement;
+      if (container && container.contains(to)) return;
+      const btn = container ? container.querySelector('.dropdown-btn') : null;
+      panel.classList.remove('open');
+      if (btn) { btn.classList.remove('open'); btn.setAttribute('aria-expanded', false); }
+    });
+
+    // Address book / search panels
+    document.querySelectorAll('.addr-book-panel:not([hidden]), .addr-search-panel:not([hidden])').forEach(panel => {
+      const wrap = panel.closest('.addr-popup-wrap');
+      if (wrap && wrap.contains(to)) return;
+      panel.hidden = true;
+    });
+  });
 
   const dAccBtn = document.getElementById('d-acc-dropdown-btn');
   const dAccPanel = document.getElementById('d-acc-panel');
