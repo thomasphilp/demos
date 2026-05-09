@@ -4940,7 +4940,7 @@
       : selected.length === 1 ? selected[0].label
       : `${selected.length} selected`;
     if (badge) {
-      if (recommended.length > 0 && selected.length === 0) {
+      if (recommended.length > 0) {
         badge.innerHTML = `${BADGE_ICON}${recommended.length} recommended`;
         badge.hidden = false;
         badge.classList.toggle('acc-rec-badge--rebill', REBILL_MODE);
@@ -5767,9 +5767,21 @@
 
   function dUpdateBtnLabel() {
     const selected = DELIVER_ACC_ITEMS.filter(i => i.selected);
+    const recommended = DELIVER_ACC_ITEMS.filter(i => i.warn && !i.selected);
     document.getElementById('d-acc-btn-label').textContent = selected.length === 0 ? 'Select'
       : selected.length === 1 ? selected[0].label
       : `${selected.length} selected`;
+    const badge = document.getElementById('d-acc-rec-badge');
+    if (badge) {
+      if (recommended.length > 0) {
+        badge.innerHTML = `${BADGE_ICON}${recommended.length} recommended`;
+        badge.hidden = false;
+        badge.classList.toggle('acc-rec-badge--rebill', REBILL_MODE);
+      } else {
+        badge.hidden = true;
+        badge.classList.remove('acc-rec-badge--rebill');
+      }
+    }
   }
 
   function updateDeliverWarning(mode) {
