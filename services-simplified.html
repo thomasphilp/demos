@@ -3297,6 +3297,65 @@
 
       <!-- Ready for pick-up time + Hours of operation -->
     <div style="display:flex; flex-direction:column; gap:16px; margin-top:24px; padding-top:8px;">
+    <!-- Hours of operation -->
+    <div class="hours-section">
+      <div class="sub-heading">
+        <span class="sub-title">Hours of operation</span>
+        <span class="req">*</span>
+      </div>
+      <div class="time-card">
+        <div class="time-inputs">
+          <!-- Opens at -->
+          <div class="field dropdown-sm" style="flex:1; min-width:0;">
+            <div class="field-label"><span>Opens at</span><span class="req">*</span></div>
+            <div class="dropdown-btn" id="opens-at-btn" tabindex="0" role="button" aria-expanded="false" aria-haspopup="listbox">
+              <div class="dropdown-btn-left">
+                <span class="btn-icon">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 4.79995V12L17 16M22.8 12C22.8 17.9646 17.9646 22.8 12 22.8C6.03528 22.8 1.19995 17.9646 1.19995 12C1.19995 6.03528 6.03528 1.19995 12 1.19995C17.9646 1.19995 22.8 6.03528 22.8 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                <span class="dropdown-btn-text">8:00 AM</span>
+              </div>
+              <div class="dropdown-right">
+                <span class="tz-label">PST</span>
+                <div class="dropdown-caret">
+                  <svg viewBox="-1 -1 12 8" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 0L10 0L5 6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="picker-panel time-panel" id="opens-at-panel"></div>
+          </div>
+          <div class="time-between">—</div>
+          <!-- Closes at -->
+          <div class="field dropdown-sm" style="flex:1; min-width:0;">
+            <div class="field-label"><span>Closes at</span><span class="req">*</span></div>
+            <div class="dropdown-btn" id="closes-at-btn" tabindex="0" role="button" aria-expanded="false" aria-haspopup="listbox">
+              <div class="dropdown-btn-left">
+                <span class="btn-icon">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 4.79995V12L17 16M22.8 12C22.8 17.9646 17.9646 22.8 12 22.8C6.03528 22.8 1.19995 17.9646 1.19995 12C1.19995 6.03528 6.03528 1.19995 12 1.19995C17.9646 1.19995 22.8 6.03528 22.8 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                <span class="dropdown-btn-text">1:00 PM</span>
+              </div>
+              <div class="dropdown-right">
+                <span class="tz-label">PST</span>
+                <div class="dropdown-caret">
+                  <svg viewBox="-1 -1 12 8" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 0L10 0L5 6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="picker-panel time-panel" id="closes-at-panel"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div style="display:flex; flex-direction:column; gap:8px;">
       <div class="sub-heading">
         <span class="sub-title">Ready for pick-up time</span>
@@ -3387,65 +3446,6 @@
         <div class="inline-note">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span>This is not an appointment. Your carrier will arrive between the ready for pick-up time and the business close time.</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Hours of operation -->
-    <div class="hours-section">
-      <div class="sub-heading">
-        <span class="sub-title">Hours of operation</span>
-        <span class="req">*</span>
-      </div>
-      <div class="time-card">
-        <div class="time-inputs">
-          <!-- Opens at -->
-          <div class="field dropdown-sm" style="flex:1; min-width:0;">
-            <div class="field-label"><span>Opens at</span><span class="req">*</span></div>
-            <div class="dropdown-btn" id="opens-at-btn" tabindex="0" role="button" aria-expanded="false" aria-haspopup="listbox">
-              <div class="dropdown-btn-left">
-                <span class="btn-icon">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 4.79995V12L17 16M22.8 12C22.8 17.9646 17.9646 22.8 12 22.8C6.03528 22.8 1.19995 17.9646 1.19995 12C1.19995 6.03528 6.03528 1.19995 12 1.19995C17.9646 1.19995 22.8 6.03528 22.8 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </span>
-                <span class="dropdown-btn-text">8:00 AM</span>
-              </div>
-              <div class="dropdown-right">
-                <span class="tz-label">PST</span>
-                <div class="dropdown-caret">
-                  <svg viewBox="-1 -1 12 8" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0 0L10 0L5 6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div class="picker-panel time-panel" id="opens-at-panel"></div>
-          </div>
-          <div class="time-between">—</div>
-          <!-- Closes at -->
-          <div class="field dropdown-sm" style="flex:1; min-width:0;">
-            <div class="field-label"><span>Closes at</span><span class="req">*</span></div>
-            <div class="dropdown-btn" id="closes-at-btn" tabindex="0" role="button" aria-expanded="false" aria-haspopup="listbox">
-              <div class="dropdown-btn-left">
-                <span class="btn-icon">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 4.79995V12L17 16M22.8 12C22.8 17.9646 17.9646 22.8 12 22.8C6.03528 22.8 1.19995 17.9646 1.19995 12C1.19995 6.03528 6.03528 1.19995 12 1.19995C17.9646 1.19995 22.8 6.03528 22.8 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </span>
-                <span class="dropdown-btn-text">1:00 PM</span>
-              </div>
-              <div class="dropdown-right">
-                <span class="tz-label">PST</span>
-                <div class="dropdown-caret">
-                  <svg viewBox="-1 -1 12 8" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0 0L10 0L5 6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div class="picker-panel time-panel" id="closes-at-panel"></div>
-          </div>
         </div>
       </div>
     </div>
