@@ -589,6 +589,7 @@
   /* Gated section */
   .loc-gated {
     pointer-events: none; user-select: none;
+    opacity: 0.5;
     transition: opacity 0.25s ease;
   }
   .loc-gated .input-control {
@@ -644,7 +645,7 @@
   }
 
   /* ── Pick-up details group ── */
-  .details-group { display: flex; flex-direction: column; gap: 20px; }
+  .details-group { display: flex; flex-direction: column; gap: 32px; }
 
   /* ── Row ── */
   .row { display: flex; gap: 16px; align-items: flex-start; }
@@ -763,11 +764,11 @@
 
   /* ── Hint text ── */
   .hint {
-    display: flex; gap: 8px; align-items: flex-start;
+    display: flex; gap: 8px; align-items: center;
     font-size: 10px; color: var(--color-label-secondary);
     line-height: normal;
   }
-  .hint-icon { width: 12px; height: 12px; flex-shrink: 0; margin-top: 1px; }
+  .hint-icon { width: 12px; height: 12px; flex-shrink: 0; }
 
   /* ── Dropdown control ── */
   .dropdown-field { display: flex; flex-direction: column; gap: 8px; position: relative; }
@@ -804,6 +805,7 @@
     color: var(--color-label-primary);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
+  .dropdown-btn-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
   .dropdown-caret { width: 10px; height: 6px; flex-shrink: 0; display: flex; align-items: center; }
   .dropdown-caret svg { width: 10px; height: 6px; transition: transform 0.15s ease; }
   .dropdown-btn.open .dropdown-caret svg { transform: rotate(180deg); }
@@ -857,18 +859,15 @@
     border-radius: var(--radius-base);
     box-shadow: var(--shadow-lg);
     z-index: 100;
-    max-height: 480px;
-    min-height: 360px;
-    overflow-y: auto;
+    overflow: hidden;
   }
   .acc-panel.open { display: block; }
-  #hu-panel { max-height: 280px; min-height: unset; }
-  .pc-type-panel { max-height: 246px; min-height: unset; overflow-y: auto; }
-  #extra-svc-panel, #d-extra-svc-panel { min-height: unset; max-height: none; }
+  #hu-panel { max-height: 280px; overflow-y: auto; }
+  .pc-type-panel { max-height: 246px; overflow-y: auto; }
 
   .acc-panel-header {
     border-bottom: var(--border-1) solid rgba(9,10,12,0.05);
-    padding: 8px;
+    padding: 10px 12px;
     display: flex; flex-direction: column; gap: 8px;
   }
   .acc-panel-title {
@@ -879,15 +878,37 @@
   #extra-svc-panel .acc-panel-title,
   #d-extra-svc-panel .acc-panel-title,
   #acc-panel .acc-panel-title,
-  #d-acc-panel .acc-panel-title { color: var(--color-label-secondary); }
+  #d-acc-panel .acc-panel-title { color: var(--color-label-secondary); font-weight: 400; }
+
+  /* ── Inline notice (below services dropdown) ── */
+  .svc-inline-notice {
+    background: rgba(9,10,12,0.05);
+    backdrop-filter: blur(6px);
+    border-radius: var(--radius-base);
+    padding: 8px;
+    display: flex; gap: 8px; align-items: flex-start;
+    margin-top: 2px;
+  }
+  .svc-inline-notice-text {
+    display: flex; flex-direction: column; gap: 2px;
+    font-size: 10px; line-height: normal;
+  }
+  .svc-inline-notice > .hint-icon { margin-top: -3px; }
+  .svc-inline-notice-title {
+    font-weight: 600; color: var(--color-label-primary);
+  }
+  .svc-inline-notice-body {
+    font-weight: 400; color: var(--color-label-secondary);
+  }
 
   /* ── Descriptions toggle bar ── */
   .acc-desc-bar {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 6px 12px;
-    border-top: var(--border-1) solid rgba(9,10,12,0.05);
+    gap: 12px;
+    padding: 8px 12px;
+    border-top: var(--border-1) solid rgba(9,10,12,0.2);
     background: #F9FAFB;
-    position: sticky; bottom: 0;
+    border-radius: 0 0 var(--radius-base) var(--radius-base);
   }
   .acc-desc-bar-label {
     font-size: 10px; font-weight: 500; color: var(--color-label-secondary);
@@ -926,10 +947,11 @@
   }
   .acc-toggle-state.off { color: var(--color-label-secondary); }
   .acc-panel-alert {
-    background: rgba(9,10,12,0.04);
+    background: rgba(9,10,12,0.05);
     border-radius: var(--radius-base);
     padding: 8px;
     display: flex; gap: 8px; align-items: flex-start;
+    backdrop-filter: blur(6px);
   }
   .acc-panel-alert--warn { background: var(--color-yellow-200); }
   .acc-panel-alert svg { width: 12px; height: 12px; flex-shrink: 0; margin-top: 1px; color: rgba(9, 10, 12, 0.9); }
@@ -943,57 +965,96 @@
 
   /* ── Recommended badge on services button ── */
   .acc-rec-badge {
-    display: inline-flex; align-items: center;
-    background: #fef9c3; color: #854d0e; border: 1px solid #fde047;
-    font-size: 10px; font-weight: 600; line-height: 1;
-    padding: 3px 7px; border-radius: 100px;
-    margin-left: 6px; white-space: nowrap; flex-shrink: 0;
+    display: inline-flex; align-items: center; gap: 3px;
+    background: #fef9c3; color: rgba(9,10,12,0.9); border: 1px solid #eab308;
+    font-size: 10px; font-weight: 400; line-height: 1;
+    height: 16px; max-height: 16px; padding: 0 6px; border-radius: 100px;
+    white-space: nowrap; flex-shrink: 0;
   }
 
   /* ── Services gate container ── */
-  .services-gate-label {
-    font-size: 13px; font-weight: 500; color: var(--color-label-primary);
-    display: flex; align-items: center; gap: 4px; margin: 0;
+  @keyframes services-gate-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(9,10,12,0.06); }
+    50%       { box-shadow: 0 0 0 4px rgba(9,10,12,0.06); }
   }
   .services-gate-box {
     border: 1px solid var(--color-control-border);
-    border-radius: 8px;
-    padding: 12px 16px 16px;
+    border-radius: 4px;
+    padding: 12px 16px 16px 20px;
     display: flex; flex-direction: column; gap: 12px;
+    position: relative;
+    animation: services-gate-pulse 2s ease-in-out infinite;
   }
-  .services-box-divider {
-    border: none; border-top: 1px solid var(--color-control-border);
-    margin: 0 -16px;
+  .services-gate-box::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 5px;
+    background: rgba(9,10,12,0.04);
+    border-radius: 4px 0 0 4px;
   }
 
   /* ── Inline services hint + no-services button ── */
   .svc-rec-row {
-    display: flex; flex-direction: column; gap: 10px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .svc-box-divider {
+    border: none; border-top: 1px solid rgba(9,10,12,0.05);
+    margin: 0;
   }
   .svc-rec-alert {
-    display: flex; align-items: flex-start; gap: 7px;
-    font-size: 11px; line-height: 15px; color: var(--color-label-secondary);
+    display: flex; align-items: flex-start; gap: 8px;
+    font-size: 10px; line-height: normal; color: rgba(9,10,12,0.6);
   }
-  .svc-rec-alert svg { width: 13px; height: 13px; flex-shrink: 0; margin-top: 1px; color: var(--color-label-secondary); }
+  .svc-rec-alert svg { width: 12px; height: 12px; flex-shrink: 0; margin-top: 1px; color: rgba(9,10,12,0.6); }
 
-  /* ── "No, services are not needed" button — solid black by default ── */
+  /* ── "No, services are not needed" button — Medium/Secondary design spec ── */
   .no-svc-btn {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 7px 14px; border-radius: 6px;
-    border: 1px solid transparent;
-    background: rgba(9,10,12,0.88); color: #fff;
-    font-size: 12px; font-weight: 500; line-height: 1;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 12px; border-radius: 4px;
+    border: none; outline: none;
+    background: #090a0c; color: #fff;
+    font-size: 14px; font-weight: 600; line-height: 1;
+    font-family: inherit;
+    /* Rest + Hover bevel — Inner box shadow/Heavy */
+    box-shadow: inset 0px 1px 0px rgba(255,255,255,0.3), inset 0px -1px 0px rgba(255,255,255,0.2);
     cursor: pointer; align-self: flex-start;
+    transition: background 0.1s ease, box-shadow 0.1s ease;
   }
-  .no-svc-btn:hover { background: rgba(9,10,12,0.72); }
-  .no-svc-btn svg { width: 9px; height: 9px; color: rgba(255,255,255,0.6); }
+  /* Hover: darker bg, bevel persists */
+  .no-svc-btn:hover {
+    background: #23262a;
+  }
+  /* Pressed: dark pressed inset replaces bevel */
+  .no-svc-btn:active {
+    background: #090a0c;
+    box-shadow: inset 0px 0px 0px 1px rgba(9,10,12,0.5), inset 0px 3px 8px 0px rgba(9,10,12,0.5);
+  }
+  /* Focus: outer focus ring, no inner bevel */
+  .no-svc-btn:focus-visible {
+    background: #090a0c;
+    box-shadow: 0px 0px 0px 1px #fff, 0px 0px 0px 4px #1d4ed8;
+  }
+  /* Disabled priority */
+  .no-svc-btn:disabled {
+    background: rgba(9,10,12,0.08);
+    color: rgba(9,10,12,0.4);
+    box-shadow: none;
+    pointer-events: none;
+    cursor: default;
+  }
+  .no-svc-btn svg { width: 12px; height: 12px; color: rgba(255,255,255,0.7); }
 
   /* ── Fields locked until service decision ── */
   #svc-fields-gate { display: flex; flex-direction: column; gap: 0; }
 
   /* ── Optional field label suffix ── */
   .field-label-optional {
-    font-size: 11px; font-weight: 400; color: var(--color-label-secondary); margin-left: 4px;
+    font-size: 12px; font-weight: 400; color: var(--color-label-secondary);
+  }
+  .field:has(.dropdown-field.is-disabled) .field-label,
+  .field:has(.dropdown-field.is-disabled) .field-label-optional {
+    color: var(--color-label-placeholder);
   }
 
   /* ── Rebill warning banner (Demo 2) ── */
@@ -1006,16 +1067,24 @@
   }
   .rebill-banner svg { width: 13px; height: 13px; flex-shrink: 0; margin-top: 1px; color: #d97706; }
 
-  /* Amber badge variant for rebill mode */
-  .acc-rec-badge--rebill { background: #d97706; color: #fff; border-color: transparent; }
+  /* Orange badge variant for rebill mode (Tag/Orange/Medium spec) */
+  .acc-rec-badge--rebill { background: var(--color-yellow-200); color: rgba(9,10,12,0.9); border-color: var(--color-yellow-300); }
 
   /* Extra services disabled state (locked until service decision) */
-  #extra-svc-dropdown-field.is-disabled .dropdown-btn {
+  #extra-svc-dropdown-field.is-disabled,
+  #d-extra-svc-dropdown-field.is-disabled {
+    opacity: 0.5;
+  }
+  #extra-svc-dropdown-field.is-disabled .dropdown-btn,
+  #d-extra-svc-dropdown-field.is-disabled .dropdown-btn {
     background: rgba(9,10,12,0.08); border-color: transparent; pointer-events: none; box-shadow: none;
   }
   #extra-svc-dropdown-field.is-disabled .dropdown-btn-text,
   #extra-svc-dropdown-field.is-disabled .btn-icon,
-  #extra-svc-dropdown-field.is-disabled .dropdown-caret { color: rgba(9,10,12,0.35); }
+  #extra-svc-dropdown-field.is-disabled .dropdown-caret,
+  #d-extra-svc-dropdown-field.is-disabled .dropdown-btn-text,
+  #d-extra-svc-dropdown-field.is-disabled .btn-icon,
+  #d-extra-svc-dropdown-field.is-disabled .dropdown-caret { color: rgba(9,10,12,0.35); }
 
   /* ── Location type picker (Demo 3) ── */
   .loc-type-picker { display: flex; flex-direction: column; gap: 8px; }
@@ -1135,7 +1204,14 @@
   .inline-rec-skip-btn:active { background: rgba(9,10,12,0.20); box-shadow: inset 0 0 0 1px rgba(9,10,12,0.5), inset 0 3px 8px rgba(9,10,12,0.5); }
   .inline-rec-skip-btn:focus-visible { outline: none; box-shadow: 0 0 0 1px white, 0 0 0 4px #1d4ed8; }
 
-  .acc-list { padding: 8px; display: flex; flex-direction: column; gap: 4px; }
+  .acc-list { padding: 8px; display: flex; flex-direction: column; gap: 8px; }
+  /* Services + delivery panels: cap at 4.5 items then scroll */
+  #acc-panel .acc-list,
+  #d-acc-panel .acc-list {
+    max-height: 328px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
   .acc-list-divider {
     font-size: 10px; font-weight: 600; color: rgba(9,10,12,0.6);
     padding: 8px 8px 2px 4px; user-select: none;
@@ -1146,8 +1222,9 @@
 
   .acc-item {
     display: flex; gap: 8px; align-items: flex-start;
-    min-height: 32px; padding: 8px 8px 8px 12px;
+    min-height: 32px; padding: 8px 12px;
     border-radius: var(--radius-base);
+    flex-shrink: 0;
     cursor: pointer;
     transition: background 0.1s;
   }
@@ -1174,6 +1251,7 @@
 
   .acc-item-content { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 0; }
   .acc-item-label { font-size: 12px; font-weight: 500; color: var(--color-label-primary); }
+  .acc-item.selected .acc-item-label { font-weight: 600; }
   .acc-item-desc {
     font-size: 10px; font-weight: 400; color: var(--color-label-secondary);
     line-height: normal; margin-top: 1px;
@@ -1248,7 +1326,7 @@
     display: flex; gap: 4px; align-items: center;
     font-size: 12px;
   }
-  .sub-heading .sub-title { font-weight: 600; color: var(--color-label-primary); }
+  .sub-heading .sub-title { font-weight: 400; color: var(--color-label-primary); }
   .sub-heading .req { color: var(--color-destructive); font-weight: 400; }
 
   /* ── Tooltip ── */
@@ -2330,7 +2408,7 @@
             <div class="addr-book-inner">
               <div class="addr-book-header">
                 <span class="addr-book-header-title">Quick prefill from Address Book</span>
-                <span class="addr-book-header-info"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" overflow="visible"><path d="M11.1 11.1L11.1497 11.0751C11.8375 10.7312 12.6118 11.3524 12.4254 12.0983L11.5745 15.5016C11.3881 16.2475 12.1624 16.8687 12.8502 16.5248L12.9 16.5M22.8 12C22.8 17.9646 17.9646 22.8 12 22.8C6.03528 22.8 1.19995 17.9646 1.19995 12C1.19995 6.03528 6.03528 1.19995 12 1.19995C17.9646 1.19995 22.8 6.03528 22.8 12ZM12 7.49995H12.009V7.50895H12V7.49995Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <span class="addr-book-header-info"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" overflow="visible"><path d="M11.1 11.1L11.1497 11.0751C11.8375 10.7312 12.6118 11.3524 12.4254 12.0983L11.5745 15.5016C11.3881 16.2475 12.1624 16.8687 12.8502 16.5248L12.9 16.5M22.8 12C22.8 17.9646 17.9646 22.8 12 22.8C6.03528 22.8 1.19995 17.9646 1.19995 12C1.19995 6.03528 6.03528 1.19995 12 1.19995C17.9646 1.19995 22.8 6.03528 22.8 12ZM12 7.49995H12.009V7.50895H12V7.49995Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </div>
               <div class="addr-list-item"><span class="addr-list-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 2.25C1.5 1.007 2.507 0 3.75 0H20.25C21.493 0 22.5 1.007 22.5 2.25V24H1.5V2.25ZM6.75 5.25H10.5V9H6.75V5.25ZM13.5 5.25H17.25V9H13.5V5.25ZM6.75 11.25H10.5V15H6.75V11.25ZM13.5 11.25H17.25V15H13.5V11.25ZM7.5 19.5H16.5V24H14.25V21.75H9.75V24H7.5V19.5Z"/></svg></span><div class="addr-list-body"><span class="addr-list-name gradient">Jenny's place I visited</span><span class="addr-list-addr">456 Maple Street, Rivertown, TX 75001</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
               <div class="addr-list-item"><span class="addr-list-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 2.25C1.5 1.007 2.507 0 3.75 0H20.25C21.493 0 22.5 1.007 22.5 2.25V24H1.5V2.25ZM6.75 5.25H10.5V9H6.75V5.25ZM13.5 5.25H17.25V9H13.5V5.25ZM6.75 11.25H10.5V15H6.75V11.25ZM13.5 11.25H17.25V15H13.5V11.25ZM7.5 19.5H16.5V24H14.25V21.75H9.75V24H7.5V19.5Z"/></svg></span><div class="addr-list-body"><span class="addr-list-name">Chic Threads Co.</span><span class="addr-list-addr">1321 Birch Boulevard, Sunnyvale, CA 94086</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
@@ -2367,9 +2445,9 @@
           </div>
           <div class="hint">
             <span class="hint-icon">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </span>
-            <span>To avoid additional fees from carriers, do not put personal names as company names unless this is a residential shipment.</span>
+            <span>Use business names only, to avoid carrier fees.</span>
           </div>
         </div>
         <div class="field w-120">
@@ -2381,13 +2459,9 @@
       </div>
     </div><!-- /details-group -->
 
-    <div id="loc-gated-pickup" style="display:flex;flex-direction:column;gap:16px;">
+    <div id="loc-gated-pickup" style="display:flex;flex-direction:column;gap:32px;">
 
       <!-- Demo 2: Rebill warning banner -->
-      <div class="rebill-banner" id="acc-rebill-banner" hidden>
-        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd"/></svg>
-        <span>60% re-bill risk at this location without the recommended services</span>
-      </div>
 
       <!-- Demo 3: Location type picker -->
       <div class="loc-type-picker" id="demo3-loc-picker" hidden>
@@ -2431,15 +2505,16 @@
       </div>
 
       <!-- Services section container -->
-      <p class="services-gate-label">Does the pickup location require services? <span class="req">*</span></p>
+      <div class="field">
+      <div class="field-label"><span style="font-weight: 600; color: var(--color-label-primary);">Does the pickup location require services?</span><span class="req">*</span></div>
       <div class="services-gate-box">
       <div class="row" style="align-items: flex-start;">
         <!-- Services dropdown -->
-        <div class="field" style="flex:1; min-width:0;">
-          <div class="field-label">
+        <div class="field" style="flex: 1 1 50px; min-width:0;">
+          <div class="field-label" style="color: var(--color-label-primary);">
             <span>Services</span>
             <span class="info-icon" id="acc-info-icon">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </span>
           </div><!-- /field-label -->
           <div class="dropdown-field" id="acc-dropdown-field">
@@ -2452,19 +2527,21 @@
                   </svg>
                 </span>
                 <span class="dropdown-btn-text" id="acc-btn-label">Select</span>
-                <span class="acc-rec-badge" id="acc-rec-badge" hidden></span>
               </div>
-              <div class="dropdown-caret">
-                <svg viewBox="-1 -1 12 8" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M0 0L10 0L5 6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-                </svg>
+              <div class="dropdown-btn-right">
+                <span class="acc-rec-badge" id="acc-rec-badge" hidden></span>
+                <div class="dropdown-caret">
+                  <svg viewBox="-1 -1 12 8" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 0L10 0L5 6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+                  </svg>
+                </div>
               </div>
             </button>
 
             <!-- Services panel -->
             <div class="acc-panel" id="acc-panel">
               <div class="acc-panel-header">
-                <p class="acc-panel-title">Select the option that best matches the pick-up location</p>
+                <p class="acc-panel-title">Select services</p>
                 <div class="acc-panel-alert" id="acc-panel-alert" style="display:none;">
                   <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M0.300049 12C0.300049 5.53832 5.53832 0.300049 12 0.300049C18.4618 0.300049 23.7 5.53832 23.7 12C23.7 18.4618 18.4618 23.7 12 23.7C5.53832 23.7 0.300049 18.4618 0.300049 12ZM12 7.50005C12.4971 7.50005 12.9 7.90299 12.9 8.40005V12.9C12.9 13.3971 12.4971 13.8 12 13.8C11.503 13.8 11.1 13.3971 11.1 12.9V8.40005C11.1 7.90299 11.503 7.50005 12 7.50005ZM12 17.4C12.4971 17.4 12.9 16.9971 12.9 16.5C12.9 16.003 12.4971 15.6 12 15.6C11.503 15.6 11.1 16.003 11.1 16.5C11.1 16.9971 11.503 17.4 12 17.4Z"/>
@@ -2476,12 +2553,12 @@
                 </div>
               </div>
 
-              <div class="acc-list" id="acc-list">
+              <div class="acc-list desc-off" id="acc-list">
                 <!-- Items injected by JS -->
               </div>
 
               <div class="acc-desc-bar">
-                <span class="acc-desc-bar-label">View full service details</span>
+                <span class="acc-desc-bar-label">View expanded service details</span>
                 <button class="acc-desc-toggle" id="acc-desc-toggle" type="button">
                   <div class="acc-toggle-track off" id="acc-toggle-track">
                     <div class="acc-toggle-knob"></div>
@@ -2492,10 +2569,24 @@
             </div>
           </div>
 
+          <div class="svc-inline-notice" hidden>
+            <span class="hint-icon">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <div class="svc-inline-notice-text">
+              <p class="svc-inline-notice-title">Avoid adjustment charges</p>
+              <p class="svc-inline-notice-body">Add the recommended services to prevent pickup/delivery issues and avoid adjustment charges after delivery</p>
+            </div>
+          </div>
+          <div class="hint">
+            <span class="hint-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span>Add services if required to prevent pickup/delivery issues and avoid adjustment charges after delivery</span>
+          </div>
+
         </div>
 
         <!-- Extra Services dropdown (pickup) -->
-        <div class="field" style="flex:1; min-width:0;">
+        <div class="field" style="flex: 1 1 0px; min-width:0;">
           <div class="field-label"><span>Extra services</span><span class="field-label-optional">(optional)</span></div>
           <div class="dropdown-field is-disabled" id="extra-svc-dropdown-field">
             <button class="dropdown-btn" id="extra-svc-btn" type="button" aria-expanded="false">
@@ -2527,20 +2618,16 @@
 
       </div><!-- /services row -->
 
-      <hr class="services-box-divider">
-
-      <!-- Hint + No-services button (always visible inside container) -->
+      <!-- Hint + No-services button -->
       <div class="svc-rec-row" id="acc-svc-rec-row">
-        <div class="svc-rec-alert">
-          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.300049 12C0.300049 5.53832 5.53832 0.300049 12 0.300049C18.4618 0.300049 23.7 5.53832 23.7 12C23.7 18.4618 18.4618 23.7 12 23.7C5.53832 23.7 0.300049 18.4618 0.300049 12ZM12 7.50005C12.4971 7.50005 12.9 7.90299 12.9 8.40005V12.9C12.9 13.3971 12.4971 13.8 12 13.8C11.503 13.8 11.1 13.3971 11.1 12.9V8.40005C11.1 7.90299 11.503 7.50005 12 7.50005ZM12 17.4C12.4971 17.4 12.9 16.9971 12.9 16.5C12.9 16.003 12.4971 15.6 12 15.6C11.503 15.6 11.1 16.003 11.1 16.5C11.1 16.9971 11.503 17.4 12 17.4Z"/></svg>
-          Add services as needed to prevent pickup/delivery issues and avoid adjustment charges.
-        </div>
+        <hr class="svc-box-divider" id="svc-box-divider">
         <button class="no-svc-btn" id="no-svc-btn" type="button">
           No, services are not needed
         </button>
       </div>
 
       </div><!-- /services-gate-box -->
+      </div><!-- /field wrapper -->
 
       <!-- Fields locked until service decision (services selected or "not needed" clicked) -->
       <div id="svc-fields-gate" class="loc-gated" inert>
@@ -2585,6 +2672,7 @@
               </svg>
             </span>
             <input type="email" placeholder="contact@company.com" />
+            <button class="clear-btn" type="button" aria-label="Clear"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.805166 0.805166C1.30727 0.303063 2.12134 0.303063 2.62344 0.805166L12 10.1817L21.3766 0.805167C21.8787 0.303065 22.6928 0.303065 23.1949 0.805167C23.697 1.30727 23.697 2.12134 23.1949 2.62344L13.8183 12L23.1949 21.3766C23.697 21.8787 23.697 22.6928 23.1949 23.1949C22.6928 23.697 21.8787 23.697 21.3766 23.1949L12 13.8183L2.62344 23.1949C2.12134 23.697 1.30727 23.697 0.805166 23.1949C0.303063 22.6928 0.303063 21.8787 0.805166 21.3766L10.1817 12L0.805166 2.62344C0.303063 2.12134 0.303063 1.30727 0.805166 0.805166Z"/></svg></button>
           </div>
         </div>
         <div class="field">
@@ -2603,7 +2691,7 @@
 
       <!-- Reference number -->
       <div class="field">
-        <div class="field-label"><span>Reference number</span><span class="info-icon" id="ref-info-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" overflow="visible"><path d="M11.1 11.1L11.1497 11.0751C11.8375 10.7312 12.6118 11.3524 12.4254 12.0983L11.5745 15.5016C11.3881 16.2475 12.1624 16.8687 12.8502 16.5248L12.9 16.5M22.8 12C22.8 17.9646 17.9646 22.8 12 22.8C6.03528 22.8 1.19995 17.9646 1.19995 12C1.19995 6.03528 6.03528 1.19995 12 1.19995C17.9646 1.19995 22.8 6.03528 22.8 12ZM12 7.49995H12.009V7.50895H12V7.49995Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="req">*</span></div>
+        <div class="field-label"><span>Reference number</span><span class="info-icon" id="ref-info-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" overflow="visible"><path d="M11.1 11.1L11.1497 11.0751C11.8375 10.7312 12.6118 11.3524 12.4254 12.0983L11.5745 15.5016C11.3881 16.2475 12.1624 16.8687 12.8502 16.5248L12.9 16.5M22.8 12C22.8 17.9646 17.9646 22.8 12 22.8C6.03528 22.8 1.19995 17.9646 1.19995 12C1.19995 6.03528 6.03528 1.19995 12 1.19995C17.9646 1.19995 22.8 6.03528 22.8 12ZM12 7.49995H12.009V7.50895H12V7.49995Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="req">*</span></div>
         <div class="input-control">
           <span class="input-icon">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2719,7 +2807,7 @@
           </div>
         </div>
         <div class="inline-note">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span>This is not an appointment. Your carrier will arrive between the ready for pick-up time and the business close time.</span>
         </div>
       </div>
@@ -2809,7 +2897,7 @@
             <span class="input-icon">
               <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.627 18.969 13.381 18.05 14.868L22.523 19.478C23.342 20.322 23.332 21.668 22.5 22.5C21.668 23.332 20.322 23.342 19.478 22.523L14.868 18.05C13.381 18.969 11.627 19.5 9.75 19.5C4.365 19.5 0 15.135 0 9.75C0 4.365 4.365 0 9.75 0C15.135 0 19.5 4.365 19.5 9.75ZM9.75 16.5C13.478 16.5 16.5 13.478 16.5 9.75C16.5 6.022 13.478 3 9.75 3C6.022 3 3 6.022 3 9.75C3 13.478 6.022 16.5 9.75 16.5Z"/></svg>
             </span>
-            <input type="text" id="deliver-addr-input" placeholder="Search address" value="789 Oak Avenue, Hillcrest, FL 32123" />
+            <input type="text" id="deliver-addr-input" placeholder="Search address" value="321 Pine Road, Hillcrest, NY 10001" />
             <button class="addr-loc-btn" type="button" aria-label="Identify location">
               <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 2.25C1.5 1.007 2.507 0 3.75 0H20.25C21.493 0 22.5 1.007 22.5 2.25V24H1.5V2.25ZM6.75 5.25H10.5V9H6.75V5.25ZM13.5 5.25H17.25V9H13.5V5.25ZM6.75 11.25H10.5V15H6.75V11.25ZM13.5 11.25H17.25V15H13.5V11.25ZM7.5 19.5H16.5V24H14.25V21.75H9.75V24H7.5V19.5Z"/></svg>
             </button>
@@ -2819,7 +2907,7 @@
             <div class="addr-book-inner">
               <div class="addr-book-header">
                 <span class="addr-book-header-title">Quick prefill from Address Book</span>
-                <span class="addr-book-header-info"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" overflow="visible"><path d="M11.1 11.1L11.1497 11.0751C11.8375 10.7312 12.6118 11.3524 12.4254 12.0983L11.5745 15.5016C11.3881 16.2475 12.1624 16.8687 12.8502 16.5248L12.9 16.5M22.8 12C22.8 17.9646 17.9646 22.8 12 22.8C6.03528 22.8 1.19995 17.9646 1.19995 12C1.19995 6.03528 6.03528 1.19995 12 1.19995C17.9646 1.19995 22.8 6.03528 22.8 12ZM12 7.49995H12.009V7.50895H12V7.49995Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <span class="addr-book-header-info"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" overflow="visible"><path d="M11.1 11.1L11.1497 11.0751C11.8375 10.7312 12.6118 11.3524 12.4254 12.0983L11.5745 15.5016C11.3881 16.2475 12.1624 16.8687 12.8502 16.5248L12.9 16.5M22.8 12C22.8 17.9646 17.9646 22.8 12 22.8C6.03528 22.8 1.19995 17.9646 1.19995 12C1.19995 6.03528 6.03528 1.19995 12 1.19995C17.9646 1.19995 22.8 6.03528 22.8 12ZM12 7.49995H12.009V7.50895H12V7.49995Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </div>
               <div class="addr-list-item"><span class="addr-list-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 2.25C1.5 1.007 2.507 0 3.75 0H20.25C21.493 0 22.5 1.007 22.5 2.25V24H1.5V2.25ZM6.75 5.25H10.5V9H6.75V5.25ZM13.5 5.25H17.25V9H13.5V5.25ZM6.75 11.25H10.5V15H6.75V11.25ZM13.5 11.25H17.25V15H13.5V11.25ZM7.5 19.5H16.5V24H14.25V21.75H9.75V24H7.5V19.5Z"/></svg></span><div class="addr-list-body"><span class="addr-list-name gradient">Jenny's place I visited</span><span class="addr-list-addr">456 Maple Street, Rivertown, TX 75001</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
               <div class="addr-list-item"><span class="addr-list-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 2.25C1.5 1.007 2.507 0 3.75 0H20.25C21.493 0 22.5 1.007 22.5 2.25V24H1.5V2.25ZM6.75 5.25H10.5V9H6.75V5.25ZM13.5 5.25H17.25V9H13.5V5.25ZM6.75 11.25H10.5V15H6.75V11.25ZM13.5 11.25H17.25V15H13.5V11.25ZM7.5 19.5H16.5V24H14.25V21.75H9.75V24H7.5V19.5Z"/></svg></span><div class="addr-list-body"><span class="addr-list-name">Chic Threads Co.</span><span class="addr-list-addr">1321 Birch Boulevard, Sunnyvale, CA 94086</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
@@ -2852,13 +2940,13 @@
             <span class="input-icon">
               <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 2.25C1.5 1.007 2.507 0 3.75 0H20.25C21.493 0 22.5 1.007 22.5 2.25V24H1.5V2.25ZM6.75 5.25H10.5V9H6.75V5.25ZM13.5 5.25H17.25V9H13.5V5.25ZM6.75 11.25H10.5V15H6.75V11.25ZM13.5 11.25H17.25V15H13.5V11.25ZM7.5 19.5H16.5V24H14.25V21.75H9.75V24H7.5V19.5Z"/></svg>
             </span>
-            <input type="text" id="deliver-company-input" placeholder="Company name" value="Digital Fabric Solutions" />
+            <input type="text" id="deliver-company-input" placeholder="Company name" value="Fashion Forward Fabrics" />
           </div>
           <div class="hint">
             <span class="hint-icon">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </span>
-            <span>To avoid additional fees from carriers, do not put personal names as company names unless this is a residential shipment.</span>
+            <span>Use business names only, to avoid carrier fees.</span>
           </div>
         </div>
         <div class="field w-120">
@@ -2869,19 +2957,21 @@
     </div><!-- /details-group -->
 
     <!-- Location type picker -->
-    <div id="loc-gated-deliver">
-      <div class="details-group">
+    <div id="loc-gated-deliver" style="display:flex;flex-direction:column;gap:32px;">
 
-      <!-- Services + Reference -->
-      <div class="row" style="align-items: flex-end;">
-        <!-- Deliver-to Services -->
-        <div class="field" style="flex:1; min-width:0;">
-          <div class="field-label">
+      <!-- Services section container -->
+      <div class="field">
+      <div class="field-label"><span style="font-weight: 600; color: var(--color-label-primary);">Does the deliver-to location require services?</span><span class="req">*</span></div>
+      <div class="services-gate-box">
+      <div class="row" style="align-items: flex-start;">
+        <!-- Deliver-to Services dropdown -->
+        <div class="field" style="flex: 1 1 50px; min-width:0;">
+          <div class="field-label" style="color: var(--color-label-primary);">
             <span>Services</span>
             <span class="info-icon" id="d-acc-info-icon">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </span>
-          </div>
+          </div><!-- /field-label -->
           <div class="dropdown-field" id="d-acc-dropdown-field">
             <button class="dropdown-btn" id="d-acc-dropdown-btn" type="button" aria-expanded="false">
               <div class="dropdown-btn-left">
@@ -2893,30 +2983,37 @@
                 </span>
                 <span class="dropdown-btn-text" id="d-acc-btn-label">Select</span>
               </div>
-              <div class="dropdown-caret">
-                <svg viewBox="-1 -1 12 8" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M0 0L10 0L5 6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-                </svg>
+              <div class="dropdown-btn-right">
+                <span class="acc-rec-badge" id="d-acc-rec-badge" hidden></span>
+                <div class="dropdown-caret">
+                  <svg viewBox="-1 -1 12 8" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 0L10 0L5 6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+                  </svg>
+                </div>
               </div>
             </button>
 
+            <!-- Services panel -->
             <div class="acc-panel" id="d-acc-panel">
               <div class="acc-panel-header">
-                <p class="acc-panel-title">Select the option that best matches the delivery location</p>
+                <p class="acc-panel-title">Select services</p>
                 <div class="acc-panel-alert" id="d-acc-panel-alert" style="display:none;">
                   <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M0.300049 12C0.300049 5.53832 5.53832 0.300049 12 0.300049C18.4618 0.300049 23.7 5.53832 23.7 12C23.7 18.4618 18.4618 23.7 12 23.7C5.53832 23.7 0.300049 18.4618 0.300049 12ZM12 7.50005C12.4971 7.50005 12.9 7.90299 12.9 8.40005V12.9C12.9 13.3971 12.4971 13.8 12 13.8C11.503 13.8 11.1 13.3971 11.1 12.9V8.40005C11.1 7.90299 11.503 7.50005 12 7.50005ZM12 17.4C12.4971 17.4 12.9 16.9971 12.9 16.5C12.9 16.003 12.4971 15.6 12 15.6C11.503 15.6 11.1 16.003 11.1 16.5C11.1 16.9971 11.503 17.4 12 17.4Z"/>
                   </svg>
                   <div class="acc-panel-alert-text">
                     <p class="acc-panel-alert-title">Add to avoid adjustment charges</p>
-                    <p class="acc-panel-alert-body">The recommended services below should be added to prevent delivery issues and avoid adjustment charges after delivery.</p>
+                    <p class="acc-panel-alert-body">The recommended services below should be added to prevent pick-up/delivery issues and avoid adjustment charges after pick-up/delivery.</p>
                   </div>
                 </div>
               </div>
-              <div class="acc-list" id="d-acc-list"></div>
+
+              <div class="acc-list desc-off" id="d-acc-list">
+                <!-- Items injected by JS -->
+              </div>
 
               <div class="acc-desc-bar">
-                <span class="acc-desc-bar-label">View full service details</span>
+                <span class="acc-desc-bar-label">View expanded service details</span>
                 <button class="acc-desc-toggle" id="d-acc-desc-toggle" type="button">
                   <div class="acc-toggle-track off" id="d-acc-toggle-track">
                     <div class="acc-toggle-knob"></div>
@@ -2926,12 +3023,27 @@
               </div>
             </div>
           </div>
+
+          <div class="svc-inline-notice" id="d-svc-inline-notice" hidden>
+            <span class="hint-icon">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <div class="svc-inline-notice-text">
+              <p class="svc-inline-notice-title" id="d-svc-inline-notice-title">Avoid adjustment charges</p>
+              <p class="svc-inline-notice-body">Add the recommended services to prevent pickup/delivery issues and avoid adjustment charges after delivery</p>
+            </div>
+          </div>
+          <div class="hint">
+            <span class="hint-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span>Add services if required to prevent pickup/delivery issues and avoid adjustment charges after delivery</span>
+          </div>
+
         </div>
 
         <!-- Extra Services dropdown (deliver) -->
-        <div class="field" style="flex:1; min-width:0;">
-          <div class="field-label"><span>Extra services</span></div>
-          <div class="dropdown-field" id="d-extra-svc-dropdown-field">
+        <div class="field" style="flex: 1 1 0px; min-width:0;">
+          <div class="field-label"><span>Extra services</span><span class="field-label-optional">(optional)</span></div>
+          <div class="dropdown-field is-disabled" id="d-extra-svc-dropdown-field">
             <button class="dropdown-btn" id="d-extra-svc-btn" type="button" aria-expanded="false">
               <div class="dropdown-btn-left">
                 <span class="btn-icon">
@@ -2959,7 +3071,22 @@
           </div>
         </div>
 
+      </div><!-- /services row -->
+
+      <!-- No-services button -->
+      <div class="svc-rec-row" id="d-acc-svc-rec-row">
+        <hr class="svc-box-divider">
+        <button class="no-svc-btn" id="d-no-svc-btn" type="button">
+          No, services are not needed
+        </button>
       </div>
+
+      </div><!-- /services-gate-box -->
+      </div><!-- /field wrapper -->
+
+      <!-- Fields locked until service decision -->
+      <div id="d-svc-fields-gate" class="loc-gated" inert>
+      <div class="details-group">
 
       <!-- FBA details (conditional — shown when FBA service is selected) -->
       <div id="deliver-fba-details" hidden>
@@ -3053,7 +3180,7 @@
           <!-- Info box -->
           <div class="fba-info-box">
             <span class="fba-info-icon">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </span>
             <div class="fba-info-body">
               <p class="fba-info-title">Important</p>
@@ -3111,6 +3238,7 @@
               </svg>
             </span>
             <input type="email" placeholder="contact@company.com" />
+            <button class="clear-btn" type="button" aria-label="Clear"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.805166 0.805166C1.30727 0.303063 2.12134 0.303063 2.62344 0.805166L12 10.1817L21.3766 0.805167C21.8787 0.303065 22.6928 0.303065 23.1949 0.805167C23.697 1.30727 23.697 2.12134 23.1949 2.62344L13.8183 12L23.1949 21.3766C23.697 21.8787 23.697 22.6928 23.1949 23.1949C22.6928 23.697 21.8787 23.697 21.3766 23.1949L12 13.8183L2.62344 23.1949C2.12134 23.697 1.30727 23.697 0.805166 23.1949C0.303063 22.6928 0.303063 21.8787 0.805166 21.3766L10.1817 12L0.805166 2.62344C0.303063 2.12134 0.303063 1.30727 0.805166 0.805166Z"/></svg></button>
           </div>
         </div>
         <div class="field">
@@ -3127,7 +3255,7 @@
 
       <!-- Reference number -->
       <div class="field">
-        <div class="field-label"><span>Reference number</span><span class="info-icon" id="d-ref-info-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" overflow="visible"><path d="M11.1 11.1L11.1497 11.0751C11.8375 10.7312 12.6118 11.3524 12.4254 12.0983L11.5745 15.5016C11.3881 16.2475 12.1624 16.8687 12.8502 16.5248L12.9 16.5M22.8 12C22.8 17.9646 17.9646 22.8 12 22.8C6.03528 22.8 1.19995 17.9646 1.19995 12C1.19995 6.03528 6.03528 1.19995 12 1.19995C17.9646 1.19995 22.8 6.03528 22.8 12ZM12 7.49995H12.009V7.50895H12V7.49995Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="req">*</span></div>
+        <div class="field-label"><span>Reference number</span><span class="info-icon" id="d-ref-info-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" overflow="visible"><path d="M11.1 11.1L11.1497 11.0751C11.8375 10.7312 12.6118 11.3524 12.4254 12.0983L11.5745 15.5016C11.3881 16.2475 12.1624 16.8687 12.8502 16.5248L12.9 16.5M22.8 12C22.8 17.9646 17.9646 22.8 12 22.8C6.03528 22.8 1.19995 17.9646 1.19995 12C1.19995 6.03528 6.03528 1.19995 12 1.19995C17.9646 1.19995 22.8 6.03528 22.8 12ZM12 7.49995H12.009V7.50895H12V7.49995Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="req">*</span></div>
         <div class="input-control">
           <span class="input-icon">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -3154,16 +3282,17 @@
       </div><!-- /details-group -->
 
       <!-- Hours of operation + Appointment -->
-    <div style="display:flex; flex-direction:column; gap:16px; margin-top:24px;">
+    <div style="display:flex; flex-direction:column; gap:16px; margin-top:24px; padding-top:8px;">
     <div class="hours-section">
       <div class="sub-heading">
         <span class="sub-title">Hours of operation</span>
-        <span class="opt" style="font-size:12px;">(optional)</span>
+        <span class="req">*</span>
       </div>
       <div class="time-card">
         <div class="time-inputs">
+          <!-- Opens at -->
           <div class="field dropdown-sm" style="flex:1; min-width:0;">
-            <div class="field-label"><span>Opens at</span></div>
+            <div class="field-label"><span>Opens at</span><span class="req">*</span></div>
             <div class="dropdown-btn" id="d-opens-at-btn" tabindex="0" role="button" aria-expanded="false" aria-haspopup="listbox">
               <div class="dropdown-btn-left">
                 <span class="btn-icon">
@@ -3185,8 +3314,9 @@
             <div class="picker-panel time-panel" id="d-opens-at-panel"></div>
           </div>
           <div class="time-between">—</div>
+          <!-- Closes at -->
           <div class="field dropdown-sm" style="flex:1; min-width:0;">
-            <div class="field-label"><span>Closes at</span></div>
+            <div class="field-label"><span>Closes at</span><span class="req">*</span></div>
             <div class="dropdown-btn" id="d-closes-at-btn" tabindex="0" role="button" aria-expanded="false" aria-haspopup="listbox">
               <div class="dropdown-btn-left">
                 <span class="btn-icon">
@@ -3280,12 +3410,14 @@
           </div>
         </div>
         <div class="inline-note">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span>Schedule a delivery window with the consignee. Additional fees may apply.</span>
         </div>
       </div>
     </div>
     </div><!-- /loc-picker-block: schedule -->
+
+      </div><!-- /d-svc-fields-gate -->
 
     </div><!-- /loc-gated-deliver -->
   </div><!-- /section-deliver -->
@@ -3302,7 +3434,7 @@
         <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M6 1v10M1 6h10" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
         </svg>
-        Add another cargo item
+        Add another
       </button>
     </div>
 
@@ -3333,7 +3465,7 @@
       <div class="cargo-inputs-section">
         <div class="cargo-inputs-row">
           <div class="field">
-            <div class="field-label"><span>Cargo type</span><span class="info-icon" id="cargo-type-info-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" overflow="visible"><path d="M11.1 11.1L11.1497 11.0751C11.8375 10.7312 12.6118 11.3524 12.4254 12.0983L11.5745 15.5016C11.3881 16.2475 12.1624 16.8687 12.8502 16.5248L12.9 16.5M22.8 12C22.8 17.9646 17.9646 22.8 12 22.8C6.03528 22.8 1.19995 17.9646 1.19995 12C1.19995 6.03528 6.03528 1.19995 12 1.19995C17.9646 1.19995 22.8 6.03528 22.8 12ZM12 7.49995H12.009V7.50895H12V7.49995Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="req">*</span></div>
+            <div class="field-label"><span>Cargo type</span><span class="info-icon" id="cargo-type-info-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" overflow="visible"><path d="M11.1 11.1L11.1497 11.0751C11.8375 10.7312 12.6118 11.3524 12.4254 12.0983L11.5745 15.5016C11.3881 16.2475 12.1624 16.8687 12.8502 16.5248L12.9 16.5M22.8 12C22.8 17.9646 17.9646 22.8 12 22.8C6.03528 22.8 1.19995 17.9646 1.19995 12C1.19995 6.03528 6.03528 1.19995 12 1.19995C17.9646 1.19995 22.8 6.03528 22.8 12ZM12 7.49995H12.009V7.50895H12V7.49995Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="req">*</span></div>
             <div class="dropdown-field" id="hu-dropdown-field">
               <button class="dropdown-btn" id="hu-dropdown-btn" type="button" aria-expanded="false">
                 <div class="dropdown-btn-left">
@@ -3507,7 +3639,7 @@
             </div>
           </div>
           <div class="field-feedback">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <span>Avoid descriptions like "General Merchandise" as it increases your chances of carrier adjustment charges.</span>
           </div>
         </div>
@@ -3685,7 +3817,7 @@
               </div>
             </div>
             <div class="field-feedback">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
               <span>Carriers require NMFC numbers on all freight. Add yours to mitigate against potential carrier adjustment charges.</span>
             </div>
 
@@ -3744,7 +3876,7 @@
               </div>
             </div>
             <div class="field-feedback">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
               <span>Auto-fills from NMFC number. Otherwise, select a class or we'll use density.</span>
             </div>
           </div>
@@ -3918,7 +4050,7 @@
           </div>
           <div class="reg-card">
             <div class="field-feedback">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
               <span>This informs the carrier what type and quantity of items are on your <span class="hu-type-label">pallets</span> and is helpful in the event of a claim.</span>
             </div>
             <div id="pc-rows" class="pc-rows">
@@ -3990,7 +4122,7 @@
       <!-- Footer -->
       <div class="cargo-footer">
         <div class="field-feedback">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span>Use this if your <span class="hu-type-label">pallets</span> have mixed commodities, for example, pallets with batteries in boxes of batteries and apparel in cases.</span>
         </div>
         <button class="dark-btn" id="add-commodity-btn" type="button">
@@ -4077,6 +4209,24 @@
   let INLINE_REC_MODE = false;
   let REBILL_SOURCE = null; // set by applyResidential in rebill demo
   let SVC_RESOLVED = false; // true when user has made a service decision
+  let D_SVC_RESOLVED = false; // true when deliver user has made a service decision
+
+  function unlockDeliverSvcGate() {
+    D_SVC_RESOLVED = true;
+    const gate = document.getElementById('d-svc-fields-gate');
+    if (gate) { gate.classList.remove('loc-gated'); gate.removeAttribute('inert'); }
+    const extraSvc = document.getElementById('d-extra-svc-dropdown-field');
+    if (extraSvc) extraSvc.classList.remove('is-disabled');
+  }
+  function lockDeliverSvcGate() {
+    D_SVC_RESOLVED = false;
+    const gate = document.getElementById('d-svc-fields-gate');
+    if (gate) { gate.classList.add('loc-gated'); gate.setAttribute('inert', ''); }
+    const extraSvc = document.getElementById('d-extra-svc-dropdown-field');
+    if (extraSvc) extraSvc.classList.add('is-disabled');
+    const _svcRecRow = document.getElementById('d-acc-svc-rec-row');
+    if (_svcRecRow) _svcRecRow.hidden = false;
+  }
 
   function unlockSvcGate() {
     SVC_RESOLVED = true;
@@ -4091,6 +4241,9 @@
     if (gate) { gate.classList.add('loc-gated'); gate.setAttribute('inert', ''); }
     const extraSvc = document.getElementById('extra-svc-dropdown-field');
     if (extraSvc) extraSvc.classList.add('is-disabled');
+    // Restore svc-rec-row when gate is re-locked (demo reset)
+    const _svcRecRow = document.getElementById('acc-svc-rec-row');
+    if (_svcRecRow) _svcRecRow.hidden = false;
   }
 
   // Mock rebill % data keyed by service id (shown when REBILL_MODE is true)
@@ -4125,13 +4278,6 @@
         list.appendChild(d);
         recDividerAdded = true;
       }
-      if (hasOther && !item.warn && !otherDividerAdded) {
-        const d = document.createElement('div');
-        d.className = 'acc-list-divider' + (hasRec ? ' is-other' : '');
-        d.textContent = 'Other';
-        list.appendChild(d);
-        otherDividerAdded = true;
-      }
       const el = document.createElement('div');
       el.className = 'acc-item' + (item.selected ? ' selected' : '');
       el.dataset.id = item.id;
@@ -4157,7 +4303,11 @@
         updateBtnLabel();
         updatePickupWarning();
         // Unlock fields when any service is selected
-        if (!SVC_RESOLVED && ACC_ITEMS.some(i => i.selected)) unlockSvcGate();
+        if (!SVC_RESOLVED && ACC_ITEMS.some(i => i.selected)) {
+          unlockSvcGate();
+          const _svcRecRow = document.getElementById('acc-svc-rec-row');
+          if (_svcRecRow) _svcRecRow.hidden = true;
+        }
       });
       list.appendChild(el);
     });
@@ -4184,7 +4334,7 @@
       : `${selected.length} selected`;
     if (badge) {
       if (recommended.length > 0 && selected.length === 0) {
-        badge.textContent = `${recommended.length} recommended`;
+        badge.innerHTML = `<svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><path d="M4 0L4.85 2.9L8 4L4.85 5.1L4 8L3.15 5.1L0 4L3.15 2.9Z"/></svg>${recommended.length} recommended`;
         badge.hidden = false;
         badge.classList.toggle('acc-rec-badge--rebill', REBILL_MODE);
       } else {
@@ -4611,6 +4761,7 @@
     e.stopPropagation();
     showDesc = !showDesc;
     document.getElementById('acc-toggle-track').classList.toggle('off', !showDesc);
+    document.getElementById('acc-list').classList.toggle('desc-off', !showDesc);
     const stateLabel = document.getElementById('acc-desc-toggle-label');
     stateLabel.textContent = showDesc ? 'On' : 'Off';
     stateLabel.classList.toggle('off', !showDesc);
@@ -4967,6 +5118,12 @@
         item.selected = !item.selected;
         dRenderList();
         dUpdateBtnLabel();
+        // Unlock fields when any service is selected
+        if (!D_SVC_RESOLVED && DELIVER_ACC_ITEMS.some(i => i.selected)) {
+          unlockDeliverSvcGate();
+          const _svcRecRow = document.getElementById('d-acc-svc-rec-row');
+          if (_svcRecRow) _svcRecRow.hidden = true;
+        }
         // Show/hide FBA details section
         if (item.id === 'd-fba') {
           const fbaSection = document.getElementById('deliver-fba-details');
@@ -5074,6 +5231,7 @@
     e.stopPropagation();
     dShowDesc = !dShowDesc;
     document.getElementById('d-acc-toggle-track').classList.toggle('off', !dShowDesc);
+    document.getElementById('d-acc-list').classList.toggle('desc-off', !dShowDesc);
     const lbl = document.getElementById('d-acc-desc-toggle-label');
     lbl.textContent = dShowDesc ? 'On' : 'Off';
     lbl.classList.toggle('off', !dShowDesc);
@@ -6036,7 +6194,7 @@
   }
 
   initAddrPopups('pickup-addr-input',  'pickup-addr-book-panel',  'pickup-addr-search-panel',  'pickup-addr-search-val',  'pickup-company-input',  'search');
-  initAddrPopups('deliver-addr-input', 'deliver-addr-book-panel', 'deliver-addr-search-panel', 'deliver-addr-search-val', 'deliver-company-input', 'addressbook');
+  initAddrPopups('deliver-addr-input', 'deliver-addr-book-panel', 'deliver-addr-search-panel', 'deliver-addr-search-val', 'deliver-company-input', 'search');
 
   // ── Location type decision tree ──────────────────────────────────────────
   const LOC_TREE = [
@@ -6387,7 +6545,7 @@
     'Yes': '是', 'No': '否', 'Back': '返回', 'Skip': '跳过',
     'Select this location': '选择此地点',
     'Recommended services': '推荐附加服务', 'Location type:': '地点类型：',
-    'Select': '选择', 'View full service details': '查看完整附加服务详情',
+    'Select': '选择', 'View expanded service details': '查看完整附加服务详情',
     'Off': '关', 'On': '开',
     'Select the option that best matches the pick-up location': '选择最符合取货地点的选项',
     'Select the option that best matches the delivery location': '选择最符合送货地点的选项',
@@ -6689,6 +6847,20 @@
       updateTooltipState('deliver', true, 'commercial');
       dRenderList();
       updateDeliverWarning();
+      // Update delivery inline notice for rebill mode
+      const dNotice = document.getElementById('d-svc-inline-notice');
+      const dNoticeTitle = document.getElementById('d-svc-inline-notice-title');
+      if (dNotice && dNoticeTitle) {
+        if (REBILL_MODE) {
+          dNotice.style.background = 'var(--color-yellow-200)';
+          dNotice.style.backdropFilter = 'none';
+          dNoticeTitle.textContent = '60% re-bill risk at this location';
+        } else {
+          dNotice.style.background = '';
+          dNotice.style.backdropFilter = '';
+          dNoticeTitle.textContent = 'Avoid adjustment charges';
+        }
+      }
     }
 
     function applyNone() {
@@ -6730,13 +6902,22 @@
       dRenderList();
       dUpdateBtnLabel();
       updateDeliverWarning();
+      // Reset delivery inline notice
+      const _dNotice = document.getElementById('d-svc-inline-notice');
+      const _dNoticeTitle = document.getElementById('d-svc-inline-notice-title');
+      if (_dNotice && _dNoticeTitle) {
+        _dNotice.style.background = '';
+        _dNotice.style.backdropFilter = '';
+        _dNoticeTitle.textContent = 'Avoid adjustment charges';
+      }
       // Reset demo-specific UI
       const _banner = document.getElementById('acc-rebill-banner');
       if (_banner) _banner.hidden = true;
       const _locPicker3 = document.getElementById('demo3-loc-picker');
       if (_locPicker3) _locPicker3.hidden = true;
-      // Re-lock the service-decision gate
+      // Re-lock the service-decision gates
       lockSvcGate();
+      lockDeliverSvcGate();
     }
 
     function renderInlineRecTags(containerId, btnTextId, items) {
@@ -6784,12 +6965,24 @@
       unlockGated('deliver');
     });
 
-    // "No, services are not needed" button — clears recommended services + unlocks fields
+    // "No, services are not needed" button — clears recommended services + unlocks fields (pickup)
     const _noSvcBtn = document.getElementById('no-svc-btn');
     if (_noSvcBtn) _noSvcBtn.addEventListener('click', () => {
       ACC_ITEMS.forEach(item => { item.warn = false; item.selected = false; });
       renderList(); updateBtnLabel(); updatePickupWarning();
       unlockSvcGate();
+      const _svcRecRow = document.getElementById('acc-svc-rec-row');
+      if (_svcRecRow) _svcRecRow.hidden = true;
+    });
+
+    // "No, services are not needed" button — delivery
+    const _dNoSvcBtn = document.getElementById('d-no-svc-btn');
+    if (_dNoSvcBtn) _dNoSvcBtn.addEventListener('click', () => {
+      DELIVER_ACC_ITEMS.forEach(item => { item.warn = false; item.selected = false; });
+      dRenderList(); dUpdateBtnLabel(); updateDeliverWarning();
+      unlockDeliverSvcGate();
+      const _svcRecRow = document.getElementById('d-acc-svc-rec-row');
+      if (_svcRecRow) _svcRecRow.hidden = true;
     });
 
     // ── Demo 3: Location type picker interaction ──
@@ -6956,8 +7149,12 @@
     // Click → scroll to section
     navItems.forEach(item => {
       item.addEventListener('click', () => {
-        const target = document.getElementById(item.dataset.target);
-        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (item.dataset.target === 'section-pickup') {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          const target = document.getElementById(item.dataset.target);
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       });
     });
 
