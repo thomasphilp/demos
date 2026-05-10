@@ -1127,7 +1127,7 @@
 
   .loc-type-card {
     background: #fff; border: 1px solid rgba(9,10,12,0.1); border-radius: 4px;
-    padding: 14px 16px 14px 20px; position: relative;
+    padding: 8px 12px 8px 18px; position: relative;
     display: flex; flex-direction: column; gap: 10px;
   }
   .loc-type-card-strip {
@@ -3093,6 +3093,10 @@
           <span class="loc-type-label">What type of location is this?</span>
           <span class="loc-type-label-optional">(optional)</span>
         </div>
+        <div class="loc-type-inline-feedback">
+          <svg class="loc-type-feedback-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <span class="loc-type-feedback-text">Helps us identify services to <span class="loc-type-feedback-blue">avoid delays or adjustment charges</span></span>
+        </div>
         <div class="loc-type-card" id="loc-type-card">
           <div class="loc-type-card-strip"></div>
           <div class="loc-type-search-wrap" id="loc-type-search-wrap">
@@ -3113,10 +3117,6 @@
               <button class="loc-type-option" data-type="convention" data-dock="false"><span class="loc-type-option-name">Convention center</span><span class="loc-type-option-desc">Has similar trade show requirements</span></button>
               <button class="loc-type-option" data-type="stadium" data-dock="false"><span class="loc-type-option-name">Stadium</span><span class="loc-type-option-desc">Has similar trade show requirements</span></button>
             </div>
-          </div>
-          <div class="loc-type-inline-feedback">
-            <svg class="loc-type-feedback-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-            <span class="loc-type-feedback-text">Helps us identify services to <span class="loc-type-feedback-blue">avoid delays or adjustment charges</span></span>
           </div>
         </div>
         <div class="loc-type-chip" id="loc-type-chip" hidden>
