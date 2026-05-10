@@ -5716,7 +5716,7 @@
       if (dHasRec && item.warn && !dRecDividerAdded) {
         const d = document.createElement('div');
         d.className = 'acc-list-divider is-rec';
-        d.textContent = 'Recommended services to avoid delays and re-bills';
+        d.textContent = REBILL_MODE ? 'Recommended to avoid a 60% re-bill chance' : 'Recommended to avoid adjustment charges';
         d.addEventListener('click', e => e.stopPropagation());
         list.appendChild(d);
         dRecDividerAdded = true;
