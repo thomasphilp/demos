@@ -5795,30 +5795,9 @@
   }
 
   function updateDeliverWarning(mode) {
-    const warnItems = DELIVER_ACC_ITEMS.filter(i => i.warn);
-    const allSelected = warnItems.length > 0 && warnItems.every(i => i.selected);
-    const deselected = warnItems.filter(i => !i.selected);
+    // In-panel alert not used in new design — always hide
     const alert = document.getElementById('d-acc-panel-alert');
-    const title = alert.querySelector('.acc-panel-alert-title');
-    const body  = alert.querySelector('.acc-panel-alert-body');
-    if (allSelected) {
-      alert.style.display = 'none';
-    } else if (mode === 'rebill' && deselected.length > 0) {
-      const labels = deselected.map(i => i.label);
-      const serviceList = labels.length === 1 ? labels[0] : labels.slice(0, -1).join(', ') + ' and ' + labels[labels.length - 1];
-      const them = labels.length === 1 ? 'it' : 'them';
-      alert.style.display = '';
-      alert.classList.add('acc-panel-alert--warn');
-      title.textContent = 'Are you sure?';
-      body.textContent = `Carriers typically charge for ${serviceList} at this type of location. If you skip ${them} now, the carrier may add the charge after delivery as a re-bill.`;
-    } else if (warnItems.length > 0) {
-      alert.style.display = '';
-      alert.classList.add('acc-panel-alert--warn');
-      title.textContent = 'Add to avoid adjustment charges';
-      body.textContent = 'The recommended services below should be added to prevent delivery issues and avoid adjustment charges after delivery.';
-    } else {
-      alert.style.display = 'none';
-    }
+    if (alert) alert.style.display = 'none';
   }
 
 
