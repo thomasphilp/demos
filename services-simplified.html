@@ -1148,7 +1148,7 @@
   .loc-type-input {
     flex: 1; border: none; background: transparent; min-width: 0;
     font-size: 14px; color: var(--color-label-primary);
-    cursor: pointer; outline: none; font-family: inherit;
+    cursor: text; outline: none; font-family: inherit;
   }
   .loc-type-input::placeholder { color: rgba(9,10,12,0.3); }
 
@@ -3141,7 +3141,7 @@
               <svg class="loc-type-search-icon" viewBox="0 0 24 24" fill="none"><g clip-path="url(#clip0_1218_6827)">
 <path d="M22.8 22.8002L16.5639 16.5642M16.5639 16.5642C18.1926 14.9355 19.2 12.6855 19.2 10.2002C19.2 5.22963 15.1705 1.2002 10.2 1.2002C5.22939 1.2002 1.19995 5.22963 1.19995 10.2002C1.19995 15.1708 5.22939 19.2002 10.2 19.2002C12.6852 19.2002 14.9352 18.1928 16.5639 16.5642Z" stroke="currentColor" stroke-opacity="0.9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g><defs><clipPath id="clip0_1218_6827"><rect width="24" height="24" fill="white"/></clipPath></defs></svg>
-              <input type="text" id="loc-type-input" class="loc-type-input" placeholder="Select the pickup location type" autocomplete="off" readonly>
+              <input type="text" id="loc-type-input" class="loc-type-input" placeholder="Select the pickup location type" autocomplete="off">
             </div>
             <div class="loc-type-dropdown" id="loc-type-dropdown" hidden>
               <div class="loc-type-dropdown-title">Select a location type</div>
@@ -8045,9 +8045,34 @@
     });
 
     // ── Demo 3: Location type picker interaction ──
+    function filterLocTypeOptions(query) {
+      const dropdown = document.getElementById('loc-type-dropdown');
+      if (!dropdown) return;
+      const q = query.trim().toLowerCase();
+      dropdown.querySelectorAll('.loc-type-option').forEach(opt => {
+        const name = (opt.querySelector('.loc-type-option-name') || {}).textContent || '';
+        const desc = (opt.querySelector('.loc-type-option-desc') || {}).textContent || '';
+        opt.hidden = q ? !name.toLowerCase().includes(q) && !desc.toLowerCase().includes(q) : false;
+      });
+      // Hide headers if all their options are filtered out
+      dropdown.querySelectorAll('.loc-type-dropdown-header').forEach(header => {
+        let sib = header.nextElementSibling;
+        let hasVisible = false;
+        while (sib && !sib.classList.contains('loc-type-dropdown-header')) {
+          if (sib.classList.contains('loc-type-option') && !sib.hidden) { hasVisible = true; break; }
+          sib = sib.nextElementSibling;
+        }
+        header.hidden = !hasVisible;
+      });
+      // Hide title row when actively filtering
+      const title = dropdown.querySelector('.loc-type-dropdown-title');
+      if (title) title.hidden = !!q;
+    }
+
     function resetDemo3Picker() {
       const input = document.getElementById('loc-type-input');
       if (input) input.value = '';
+      filterLocTypeOptions('');
       const dropdown = document.getElementById('loc-type-dropdown');
       if (dropdown) dropdown.hidden = true;
       const searchWrap = document.getElementById('loc-type-search-wrap');
@@ -8065,8 +8090,18 @@
     // Open dropdown when user clicks input row (input or search icon)
     const _locTypeInput = document.getElementById('loc-type-input');
     const _locTypeInputRow = _locTypeInput ? _locTypeInput.closest('.loc-type-input-row') : null;
-    const _openLocDropdown = () => { const dd = document.getElementById('loc-type-dropdown'); if (dd) dd.hidden = false; };
-    if (_locTypeInput) _locTypeInput.addEventListener('click', _openLocDropdown);
+    const _openLocDropdown = () => {
+      const dd = document.getElementById('loc-type-dropdown');
+      if (dd) dd.hidden = false;
+    };
+    if (_locTypeInput) {
+      _locTypeInput.addEventListener('click', _openLocDropdown);
+      _locTypeInput.addEventListener('input', () => {
+        const dd = document.getElementById('loc-type-dropdown');
+        if (dd) dd.hidden = false;
+        filterLocTypeOptions(_locTypeInput.value);
+      });
+    }
     if (_locTypeInputRow) _locTypeInputRow.addEventListener('click', _openLocDropdown);
 
     // Close dropdown on outside click
