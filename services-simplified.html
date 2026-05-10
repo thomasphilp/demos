@@ -1092,7 +1092,14 @@
   .rebill-banner svg { width: 13px; height: 13px; flex-shrink: 0; margin-top: 1px; color: #d97706; }
 
   /* Orange badge variant for rebill mode (Tag/Orange/Medium spec) */
-  .acc-rec-badge--rebill { background: #fef9c3; color: rgba(9,10,12,0.9); border-color: #eab308; }
+  @keyframes rebill-badge-pulse {
+    0%, 100% { border-color: rgba(234,179,8,0.5); box-shadow: 0 0 0 0.4px rgba(234,179,8,0.3); }
+    50%       { border-color: #eab308;             box-shadow: 0 0 0 2px rgba(234,179,8,0.25); }
+  }
+  .acc-rec-badge--rebill {
+    background: #fef9c3; color: rgba(9,10,12,0.9); border-color: #eab308;
+    animation: rebill-badge-pulse 2.7s ease-in-out infinite;
+  }
 
   /* Extra services disabled state (locked until service decision) */
   #extra-svc-dropdown-field.is-disabled,
@@ -1295,10 +1302,6 @@
     white-space: nowrap; line-height: 1;
   }
 
-  @keyframes rebill-tag-pulse {
-    0%, 100% { border-color: rgba(253,224,71,0.5); box-shadow: 0 0 0 0.4px rgba(253,224,71,0.3); }
-    50%       { border-color: #fde047;             box-shadow: 0 0 0 2px rgba(253,224,71,0.25); }
-  }
   .acc-item-rebill {
     display: inline-flex; align-items: center; gap: 3px;
     background: #fefce8;
@@ -1308,7 +1311,6 @@
     height: 16px;
     align-self: flex-start;
     margin-top: 2px;
-    animation: rebill-tag-pulse 2.7s ease-in-out infinite;
   }
   .acc-item-rebill svg { width: 8px; height: 8px; flex-shrink: 0; color: #854d0e; }
   .acc-item-rebill-text {
