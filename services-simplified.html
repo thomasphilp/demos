@@ -1120,15 +1120,43 @@
 
   /* ── Location type picker (Demo 3) ── */
   .loc-type-picker { display: flex; flex-direction: column; gap: 8px; }
+
+  .loc-type-label-row { display: flex; align-items: baseline; gap: 5px; }
+  .loc-type-label { font-size: 12px; font-weight: 600; color: #1d4ed8; }
+  .loc-type-label-optional { font-size: 12px; color: rgba(9,10,12,0.55); }
+
+  .loc-type-card {
+    background: #fff; border: 1px solid rgba(9,10,12,0.1); border-radius: 4px;
+    padding: 14px 16px 14px 20px; position: relative;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .loc-type-card-strip {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 6px; background: #dbeafe; border-radius: 4px 0 0 4px;
+  }
+
   .loc-type-search-wrap { position: relative; }
+  .loc-type-input-row {
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(9,10,12,0.02); border: 1px solid rgba(9,10,12,0.12);
+    border-radius: 4px; padding: 0 16px; height: 48px; cursor: pointer;
+  }
+  .loc-type-input-row:focus-within {
+    border-color: var(--color-focus); box-shadow: 0 0 0 3px rgba(29,78,216,0.08); background: #fff;
+  }
+  .loc-type-search-icon { width: 16px; height: 16px; flex-shrink: 0; color: rgba(9,10,12,0.38); }
   .loc-type-input {
-    display: flex; align-items: center; width: 100%; padding: 9px 12px;
-    border: 1px solid var(--color-control-border); border-radius: var(--radius-base);
-    background: var(--color-control-bg); font-size: 13px; color: var(--color-label-primary);
+    flex: 1; border: none; background: transparent; min-width: 0;
+    font-size: 14px; color: var(--color-label-primary);
     cursor: pointer; outline: none; font-family: inherit;
   }
-  .loc-type-input:focus { border-color: var(--color-focus); box-shadow: 0 0 0 3px rgba(29,78,216,0.08); background:#fff; }
-  .loc-type-input::placeholder { color: var(--color-label-placeholder); }
+  .loc-type-input::placeholder { color: rgba(9,10,12,0.3); }
+
+  .loc-type-inline-feedback { display: flex; align-items: center; gap: 6px; }
+  .loc-type-feedback-icon { width: 12px; height: 12px; flex-shrink: 0; color: rgba(9,10,12,0.42); }
+  .loc-type-feedback-text { font-size: 10px; color: rgba(9,10,12,0.6); line-height: 14px; }
+  .loc-type-feedback-blue { font-weight: 600; color: #2563eb; }
+
   .loc-type-dropdown {
     position: absolute; top: calc(100% + 4px); left: 0; right: 0;
     background: #fff; border: 1px solid var(--color-control-border); border-radius: var(--radius-base);
@@ -3061,20 +3089,34 @@
 
       <!-- Demo 3: Location type picker -->
       <div class="loc-type-picker" id="demo3-loc-picker" hidden>
-        <div class="loc-type-search-wrap" id="loc-type-search-wrap">
-          <input type="text" id="loc-type-input" class="loc-type-input" placeholder="Search the pickup location type" autocomplete="off" readonly>
-          <div class="loc-type-dropdown" id="loc-type-dropdown" hidden>
-            <div class="loc-type-dropdown-header">Popular categories</div>
-            <button class="loc-type-option" data-type="residential" data-dock="false"><span class="loc-type-option-name">Residential</span><span class="loc-type-option-desc">Includes house, apartment, condo</span></button>
-            <button class="loc-type-option" data-type="commercial" data-dock="true"><span class="loc-type-option-name">Commercial</span><span class="loc-type-option-desc">Includes offices, retail, restaurants, warehouses</span></button>
-            <button class="loc-type-option" data-type="terminal" data-dock="false"><span class="loc-type-option-name">Terminal</span><span class="loc-type-option-desc">Includes airports, seaports, rail yards, and cargo hubs</span></button>
-            <button class="loc-type-option" data-type="trade-show" data-dock="false"><span class="loc-type-option-name">Trade show</span><span class="loc-type-option-desc">Includes convention centers, stadiums, hotels, and event venues</span></button>
-            <div class="loc-type-dropdown-header">All types</div>
-            <button class="loc-type-option" data-type="airport" data-dock="false"><span class="loc-type-option-name">Airport</span><span class="loc-type-option-desc">Has similar terminal service requirements</span></button>
-            <button class="loc-type-option" data-type="military" data-dock="false"><span class="loc-type-option-name">Military base</span><span class="loc-type-option-desc">Has restricted access</span></button>
-            <button class="loc-type-option" data-type="storage" data-dock="false"><span class="loc-type-option-name">Storage facility</span><span class="loc-type-option-desc">Has similar trade show requirements</span></button>
-            <button class="loc-type-option" data-type="convention" data-dock="false"><span class="loc-type-option-name">Convention center</span><span class="loc-type-option-desc">Has similar trade show requirements</span></button>
-            <button class="loc-type-option" data-type="stadium" data-dock="false"><span class="loc-type-option-name">Stadium</span><span class="loc-type-option-desc">Has similar trade show requirements</span></button>
+        <div class="loc-type-label-row">
+          <span class="loc-type-label">What type of location is this?</span>
+          <span class="loc-type-label-optional">(optional)</span>
+        </div>
+        <div class="loc-type-card" id="loc-type-card">
+          <div class="loc-type-card-strip"></div>
+          <div class="loc-type-search-wrap" id="loc-type-search-wrap">
+            <div class="loc-type-input-row">
+              <svg class="loc-type-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="loc-type-input" class="loc-type-input" placeholder="Select the pickup location type" autocomplete="off" readonly>
+            </div>
+            <div class="loc-type-dropdown" id="loc-type-dropdown" hidden>
+              <div class="loc-type-dropdown-header">Popular categories</div>
+              <button class="loc-type-option" data-type="residential" data-dock="false"><span class="loc-type-option-name">Residential</span><span class="loc-type-option-desc">Includes house, apartment, condo</span></button>
+              <button class="loc-type-option" data-type="commercial" data-dock="true"><span class="loc-type-option-name">Commercial</span><span class="loc-type-option-desc">Includes offices, retail, restaurants, warehouses</span></button>
+              <button class="loc-type-option" data-type="terminal" data-dock="false"><span class="loc-type-option-name">Terminal</span><span class="loc-type-option-desc">Includes airports, seaports, rail yards, and cargo hubs</span></button>
+              <button class="loc-type-option" data-type="trade-show" data-dock="false"><span class="loc-type-option-name">Trade show</span><span class="loc-type-option-desc">Includes convention centers, stadiums, hotels, and event venues</span></button>
+              <div class="loc-type-dropdown-header">All types</div>
+              <button class="loc-type-option" data-type="airport" data-dock="false"><span class="loc-type-option-name">Airport</span><span class="loc-type-option-desc">Has similar terminal service requirements</span></button>
+              <button class="loc-type-option" data-type="military" data-dock="false"><span class="loc-type-option-name">Military base</span><span class="loc-type-option-desc">Has restricted access</span></button>
+              <button class="loc-type-option" data-type="storage" data-dock="false"><span class="loc-type-option-name">Storage facility</span><span class="loc-type-option-desc">Has similar trade show requirements</span></button>
+              <button class="loc-type-option" data-type="convention" data-dock="false"><span class="loc-type-option-name">Convention center</span><span class="loc-type-option-desc">Has similar trade show requirements</span></button>
+              <button class="loc-type-option" data-type="stadium" data-dock="false"><span class="loc-type-option-name">Stadium</span><span class="loc-type-option-desc">Has similar trade show requirements</span></button>
+            </div>
+          </div>
+          <div class="loc-type-inline-feedback">
+            <svg class="loc-type-feedback-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            <span class="loc-type-feedback-text">Helps us identify services to <span class="loc-type-feedback-blue">avoid delays or adjustment charges</span></span>
           </div>
         </div>
         <div class="loc-type-chip" id="loc-type-chip" hidden>
@@ -3097,7 +3139,6 @@
           <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"/></svg>
           <span>Applied recommended service: <strong id="demo3-applied-label">Liftgate</strong></span>
         </div>
-        <p class="loc-type-hint">This helps us identify which services will be recommended to avoid delays or adjustment charges.</p>
       </div>
 
       <!-- Services section container -->
@@ -7883,6 +7924,8 @@
       if (dropdown) dropdown.hidden = true;
       const searchWrap = document.getElementById('loc-type-search-wrap');
       if (searchWrap) searchWrap.hidden = false;
+      const locCard = document.getElementById('loc-type-card');
+      if (locCard) locCard.hidden = false;
       const chip = document.getElementById('loc-type-chip');
       if (chip) chip.hidden = true;
       const dockQ = document.getElementById('demo3-dock-q');
@@ -7893,14 +7936,12 @@
       if (appliedRow) appliedRow.hidden = true;
     }
 
-    // Open dropdown when user clicks input
+    // Open dropdown when user clicks input row (input or search icon)
     const _locTypeInput = document.getElementById('loc-type-input');
-    if (_locTypeInput) {
-      _locTypeInput.addEventListener('click', () => {
-        const dd = document.getElementById('loc-type-dropdown');
-        if (dd) dd.hidden = false;
-      });
-    }
+    const _locTypeInputRow = _locTypeInput ? _locTypeInput.closest('.loc-type-input-row') : null;
+    const _openLocDropdown = () => { const dd = document.getElementById('loc-type-dropdown'); if (dd) dd.hidden = false; };
+    if (_locTypeInput) _locTypeInput.addEventListener('click', _openLocDropdown);
+    if (_locTypeInputRow) _locTypeInputRow.addEventListener('click', _openLocDropdown);
 
     // Close dropdown on outside click
     document.addEventListener('click', (e) => {
@@ -7916,9 +7957,11 @@
         const type = btn.dataset.type;
         const hasDockQuestion = btn.dataset.dock === 'true';
         const typeName = btn.querySelector('.loc-type-option-name').textContent;
-        // Hide search, show chip
+        // Hide search card, show chip
         const searchWrap = document.getElementById('loc-type-search-wrap');
         if (searchWrap) searchWrap.hidden = true;
+        const locCard = document.getElementById('loc-type-card');
+        if (locCard) locCard.hidden = true;
         const chipName = document.getElementById('loc-type-chip-name');
         if (chipName) chipName.textContent = typeName;
         const chip = document.getElementById('loc-type-chip');
