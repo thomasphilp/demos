@@ -7749,10 +7749,13 @@
       const _dHint = document.getElementById('d-svc-hint-span');
       const _rebillText = REBILL_MODE ? REBILL_BODY : DEFAULT_BODY;
       const _rebillColor = REBILL_MODE ? 'var(--color-yellow-700)' : '';
+      const _rebillHTML = REBILL_MODE
+        ? _rebillText.replace('60% chance', '<span style="font-weight:600">60% chance</span>')
+        : _rebillText;
       if (_pBody) _pBody.textContent = _rebillText;
-      if (_pHint) { _pHint.textContent = _rebillText; _pHint.style.color = _rebillColor; }
+      if (_pHint) { _pHint.innerHTML = _rebillHTML; _pHint.style.color = _rebillColor; }
       if (_dBody) _dBody.textContent = _rebillText;
-      if (_dHint) { _dHint.textContent = _rebillText; _dHint.style.color = _rebillColor; }
+      if (_dHint) { _dHint.innerHTML = _rebillHTML; _dHint.style.color = _rebillColor; }
     }
 
     function applyNone() {
@@ -7809,9 +7812,9 @@
       const _rDBody = document.getElementById('d-svc-inline-notice-body');
       const _rDHint = document.getElementById('d-svc-hint-span');
       if (_rPBody) _rPBody.textContent = _DEFAULT_BODY;
-      if (_rPHint) { _rPHint.textContent = _DEFAULT_BODY; _rPHint.style.color = ''; }
+      if (_rPHint) { _rPHint.innerHTML = _DEFAULT_BODY; _rPHint.style.color = ''; }
       if (_rDBody) _rDBody.textContent = _DEFAULT_BODY;
-      if (_rDHint) { _rDHint.textContent = _DEFAULT_BODY; _rDHint.style.color = ''; }
+      if (_rDHint) { _rDHint.innerHTML = _DEFAULT_BODY; _rDHint.style.color = ''; }
       // Reset demo-specific UI
       const _banner = document.getElementById('acc-rebill-banner');
       if (_banner) _banner.hidden = true;
