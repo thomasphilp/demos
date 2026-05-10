@@ -1126,13 +1126,13 @@
   .loc-type-label-optional { font-size: 12px; color: rgba(9,10,12,0.55); }
 
   .loc-type-card {
-    background: #fff; border: 1px solid rgba(9,10,12,0.1); border-radius: 4px;
-    padding: 14px 16px 14px 20px; position: relative;
-    display: flex; flex-direction: column; gap: 10px;
+    background: rgba(9,10,12,0.01); border: 1px solid rgba(9,10,12,0.05); border-radius: 4px;
+    padding: 16px 16px 16px 20px; position: relative; overflow: hidden;
+    display: flex; flex-direction: column; gap: 12px;
   }
   .loc-type-card-strip {
-    position: absolute; left: 0; top: 0; bottom: 0;
-    width: 6px; background: #dbeafe; border-radius: 4px 0 0 4px;
+    position: absolute; left: -1px; top: -1px; bottom: -1px;
+    width: 6px; background: #dbeafe;
   }
 
   .loc-type-search-wrap { position: relative; }
@@ -1186,31 +1186,57 @@
   .loc-type-option-chevron { width: 12px; height: 12px; flex-shrink: 0; color: var(--color-label-secondary); }
   .loc-type-chip {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 8px 12px; background: var(--color-control-bg);
-    border: 1px solid var(--color-control-border); border-radius: var(--radius-base);
+    height: 48px; padding: 8px 20px 8px 12px;
+    background: rgba(9,10,12,0.02); border: 1px solid rgba(9,10,12,0.12); border-radius: 4px; gap: 8px;
   }
-  .loc-type-chip-name { font-size: 13px; font-weight: 500; color: var(--color-label-primary); }
-  .loc-type-change-btn { font-size: 11px; font-weight: 500; color: var(--color-tint); background: none; border: none; cursor: pointer; padding: 0; }
+  .loc-type-chip-left { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+  .loc-type-chip-num { font-size: 12px; font-weight: 600; color: var(--color-label-primary); flex-shrink: 0; }
+  .loc-type-chip-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .loc-type-chip-name { font-size: 12px; font-weight: 600; color: var(--color-label-primary); }
+  .loc-type-chip-desc { font-size: 10px; color: var(--color-label-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .loc-type-change-btn { font-size: 12px; font-weight: 600; color: var(--color-tint); background: none; border: none; cursor: pointer; padding: 0; white-space: nowrap; flex-shrink: 0; }
   .loc-type-change-btn:hover { text-decoration: underline; }
-  .dock-q-block { display: flex; flex-direction: column; gap: 7px; }
-  .dock-q-label { font-size: 12px; font-weight: 500; color: var(--color-label-primary); line-height: 16px; }
-  .dock-q-btns { display: flex; gap: 6px; }
-  .dock-q-btn {
-    padding: 5px 14px; border-radius: 100px; border: 1px solid var(--color-control-border);
-    background: #fff; font-size: 12px; font-weight: 500; color: var(--color-label-primary); cursor: pointer; font-family: inherit;
+  .dock-q-block {
+    display: flex; align-items: center; justify-content: space-between;
+    min-height: 48px; padding: 8px 12px;
+    background: rgba(9,10,12,0.02); border: 1px solid rgba(9,10,12,0.12); border-radius: 4px; gap: 8px;
   }
-  .dock-q-btn:hover { background: var(--color-control-bg); }
-  .dock-q-btn.selected { background: rgba(0,112,58,0.08); border-color: var(--color-tint); color: var(--color-tint); }
+  .dock-q-label { font-size: 12px; font-weight: 600; color: var(--color-label-primary); }
+  .dock-q-btns { display: flex; gap: 8px; }
+  .dock-q-btn {
+    display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+    border-radius: 4px; border: 1px solid rgba(9,10,12,0.3);
+    background: rgba(9,10,12,0.02); font-size: 12px; font-weight: 400;
+    color: var(--color-label-primary); cursor: pointer; font-family: inherit;
+    box-shadow: inset 0 2px 0 rgba(255,255,255,0.5), inset 0 -2px 0 rgba(9,10,12,0.05);
+  }
+  .dock-q-btn:hover { background: rgba(9,10,12,0.04); }
+  .dock-q-btn.selected { border: 2px solid rgba(9,10,12,0.9); background: #fff; }
+  .dock-q-radio {
+    display: block; flex-shrink: 0; width: 16px; height: 16px; border-radius: 50%;
+    border: 1px solid rgba(9,10,12,0.12); background: rgba(9,10,12,0.02); position: relative;
+  }
+  .dock-q-btn.selected .dock-q-radio { border: 2px solid #00703a; background: #fff; }
+  .dock-q-btn.selected .dock-q-radio::after {
+    content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 8px; height: 8px; border-radius: 50%; background: #00703a;
+  }
   .loc-rec-row {
     display: flex; align-items: center; justify-content: space-between; gap: 8px;
-    padding: 8px 12px; background: rgba(0,112,58,0.05); border: 1px solid rgba(0,112,58,0.2); border-radius: var(--radius-base);
+    height: 48px; padding: 8px 12px;
+    background: #fff; border: 1px solid rgba(9,10,12,0.9); border-radius: 4px;
   }
-  .loc-rec-label { font-size: 11px; font-weight: 500; color: var(--color-label-primary); }
+  .loc-rec-label-wrap { display: flex; align-items: center; gap: 4px; min-width: 0; }
+  .loc-rec-prefix { font-size: 12px; font-weight: 600; color: var(--color-label-primary); white-space: nowrap; }
+  .loc-rec-service { font-size: 12px; color: var(--color-label-secondary); }
   .loc-apply-btn {
-    padding: 5px 13px; border-radius: 100px; border: none;
-    background: var(--color-tint); color: #fff; font-size: 11px; font-weight: 500; cursor: pointer; white-space: nowrap; font-family: inherit;
+    display: flex; align-items: center; gap: 6px; padding: 8px 14px;
+    border-radius: 4px; border: none;
+    background: rgba(9,10,12,0.9); color: #fff; font-size: 12px; font-weight: 600;
+    cursor: pointer; white-space: nowrap; font-family: inherit; flex-shrink: 0;
   }
-  .loc-apply-btn:hover { opacity: 0.88; }
+  .loc-apply-btn:hover { background: rgba(9,10,12,0.8); }
+  .loc-apply-icon { width: 14px; height: 14px; flex-shrink: 0; }
   .loc-applied-row { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--color-label-secondary); }
   .loc-applied-row svg { width: 13px; height: 13px; flex-shrink: 0; color: var(--color-tint); }
   .loc-type-hint { font-size: 11px; color: var(--color-label-secondary); line-height: 15px; }
@@ -3208,26 +3234,38 @@
               </button>
             </div>
           </div>
-        </div>
-        <div class="loc-type-chip" id="loc-type-chip" hidden>
-          <span class="loc-type-chip-name" id="loc-type-chip-name">Commercial</span>
-          <button class="loc-type-change-btn" id="loc-type-change-btn">Change location type</button>
-        </div>
-        <div class="dock-q-block" id="demo3-dock-q" hidden>
-          <p class="dock-q-label" id="demo3-dock-label">Does this location have a loading dock or forklift?</p>
-          <div class="dock-q-btns">
-            <button class="dock-q-btn" data-answer="yes">Yes</button>
-            <button class="dock-q-btn" data-answer="no">No</button>
-            <button class="dock-q-btn" data-answer="unknown">I don't know</button>
+          <div class="loc-type-chip" id="loc-type-chip" hidden>
+            <div class="loc-type-chip-left">
+              <span class="loc-type-chip-num">1.</span>
+              <div class="loc-type-chip-text">
+                <span class="loc-type-chip-name" id="loc-type-chip-name">Commercial</span>
+                <span class="loc-type-chip-desc" id="loc-type-chip-desc">Includes offices, retail, restaurants, warehouses, and distribution centers</span>
+              </div>
+            </div>
+            <button class="loc-type-change-btn" id="loc-type-change-btn">Change location type</button>
           </div>
-        </div>
-        <div class="loc-rec-row" id="demo3-rec-row" hidden>
-          <span class="loc-rec-label" id="demo3-rec-label">Recommended service: Liftgate</span>
-          <button class="loc-apply-btn" id="demo3-apply-btn">Apply 1 service</button>
-        </div>
-        <div class="loc-applied-row" id="demo3-applied-row" hidden>
-          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"/></svg>
-          <span>Applied recommended service: <strong id="demo3-applied-label">Liftgate</strong></span>
+          <div class="dock-q-block" id="demo3-dock-q" hidden>
+            <p class="dock-q-label" id="demo3-dock-label">Does this location have a loading dock or forklift?</p>
+            <div class="dock-q-btns">
+              <button class="dock-q-btn" data-answer="yes"><span class="dock-q-radio"></span>Yes</button>
+              <button class="dock-q-btn" data-answer="no"><span class="dock-q-radio"></span>No</button>
+              <button class="dock-q-btn" data-answer="unknown"><span class="dock-q-radio"></span>I don't know</button>
+            </div>
+          </div>
+          <div class="loc-rec-row" id="demo3-rec-row" hidden>
+            <div class="loc-rec-label-wrap">
+              <span class="loc-rec-prefix">Recommended service:</span>
+              <span class="loc-rec-service" id="demo3-rec-service">Liftgate</span>
+            </div>
+            <button class="loc-apply-btn" id="demo3-apply-btn">
+              <svg class="loc-apply-icon" viewBox="0 0 24 24" fill="none"><path d="M13.5 19.5L21 12L13.5 4.5M21 12H3" stroke="currentColor" stroke-opacity="0.9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="loc-apply-text">Apply 1 service</span>
+            </button>
+          </div>
+          <div class="loc-applied-row" id="demo3-applied-row" hidden>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"/></svg>
+            <span>Applied recommended service: <strong id="demo3-applied-label">Liftgate</strong></span>
+          </div>
         </div>
       </div>
 
@@ -8014,8 +8052,6 @@
       if (dropdown) dropdown.hidden = true;
       const searchWrap = document.getElementById('loc-type-search-wrap');
       if (searchWrap) searchWrap.hidden = false;
-      const locCard = document.getElementById('loc-type-card');
-      if (locCard) locCard.hidden = false;
       const chip = document.getElementById('loc-type-chip');
       if (chip) chip.hidden = true;
       const dockQ = document.getElementById('demo3-dock-q');
@@ -8047,13 +8083,14 @@
         const type = btn.dataset.type;
         const hasDockQuestion = btn.dataset.dock === 'true';
         const typeName = btn.querySelector('.loc-type-option-name').textContent;
-        // Hide search card, show chip
+        const typeDesc = (btn.querySelector('.loc-type-option-desc') || {}).textContent || '';
+        // Hide search wrap (card stays visible), show chip inside card
         const searchWrap = document.getElementById('loc-type-search-wrap');
         if (searchWrap) searchWrap.hidden = true;
-        const locCard = document.getElementById('loc-type-card');
-        if (locCard) locCard.hidden = true;
         const chipName = document.getElementById('loc-type-chip-name');
         if (chipName) chipName.textContent = typeName;
+        const chipDesc = document.getElementById('loc-type-chip-desc');
+        if (chipDesc) chipDesc.textContent = typeDesc;
         const chip = document.getElementById('loc-type-chip');
         if (chip) chip.hidden = false;
         // Reset dependent state
@@ -8071,10 +8108,10 @@
           const recs = LOC_REC_PICKUP[type] || [];
           if (recs.length > 0 && recRow) {
             const labels = recs.map(id => { const item = ACC_ITEMS.find(i => i.id === id); return item ? item.label : id; });
-            const recLabel = document.getElementById('demo3-rec-label');
-            const applyBtn = document.getElementById('demo3-apply-btn');
-            if (recLabel) recLabel.textContent = `Recommended service${labels.length > 1 ? 's' : ''}: ${labels.join(', ')}`;
-            if (applyBtn) applyBtn.textContent = `Apply ${recs.length} service${recs.length > 1 ? 's' : ''}`;
+            const recService = document.getElementById('demo3-rec-service');
+            const applyText = document.getElementById('demo3-apply-btn').querySelector('.loc-apply-text');
+            if (recService) recService.textContent = labels.join(', ');
+            if (applyText) applyText.textContent = `Apply ${recs.length} service${recs.length > 1 ? 's' : ''}`;
             recRow.dataset.recs = JSON.stringify(recs);
             recRow.hidden = false;
           }
@@ -8095,10 +8132,10 @@
         if (appliedRow) appliedRow.hidden = true;
         if (recs.length > 0 && recRow) {
           const labels = recs.map(id => { const item = ACC_ITEMS.find(i => i.id === id); return item ? item.label : id; });
-          const recLabel = document.getElementById('demo3-rec-label');
-          const applyBtn = document.getElementById('demo3-apply-btn');
-          if (recLabel) recLabel.textContent = `Recommended service${labels.length > 1 ? 's' : ''}: ${labels.join(', ')}`;
-          if (applyBtn) applyBtn.textContent = `Apply ${recs.length} service${recs.length > 1 ? 's' : ''}`;
+          const recService = document.getElementById('demo3-rec-service');
+          const applyText = document.getElementById('demo3-apply-btn').querySelector('.loc-apply-text');
+          if (recService) recService.textContent = labels.join(', ');
+          if (applyText) applyText.textContent = `Apply ${recs.length} service${recs.length > 1 ? 's' : ''}`;
           recRow.dataset.recs = JSON.stringify(recs);
           recRow.hidden = false;
         } else if (recRow) {
