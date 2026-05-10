@@ -25,6 +25,7 @@
     --color-yellow-50: #fefce8;
     --color-yellow-200: #fef08a;
     --color-yellow-300: #fde047;
+    --color-yellow-700: #a16207;
     --color-focus: #1d4ed8;
     --color-gray-100: #f3f4f6;
     --color-gray-200: #d8dadf;
@@ -7747,10 +7748,11 @@
       const _dBody = document.getElementById('d-svc-inline-notice-body');
       const _dHint = document.getElementById('d-svc-hint-span');
       const _rebillText = REBILL_MODE ? REBILL_BODY : DEFAULT_BODY;
+      const _rebillColor = REBILL_MODE ? 'var(--color-yellow-700)' : '';
       if (_pBody) _pBody.textContent = _rebillText;
-      if (_pHint) _pHint.textContent = _rebillText;
+      if (_pHint) { _pHint.textContent = _rebillText; _pHint.style.color = _rebillColor; }
       if (_dBody) _dBody.textContent = _rebillText;
-      if (_dHint) _dHint.textContent = _rebillText;
+      if (_dHint) { _dHint.textContent = _rebillText; _dHint.style.color = _rebillColor; }
     }
 
     function applyNone() {
@@ -7807,9 +7809,9 @@
       const _rDBody = document.getElementById('d-svc-inline-notice-body');
       const _rDHint = document.getElementById('d-svc-hint-span');
       if (_rPBody) _rPBody.textContent = _DEFAULT_BODY;
-      if (_rPHint) _rPHint.textContent = _DEFAULT_BODY;
+      if (_rPHint) { _rPHint.textContent = _DEFAULT_BODY; _rPHint.style.color = ''; }
       if (_rDBody) _rDBody.textContent = _DEFAULT_BODY;
-      if (_rDHint) _rDHint.textContent = _DEFAULT_BODY;
+      if (_rDHint) { _rDHint.textContent = _DEFAULT_BODY; _rDHint.style.color = ''; }
       // Reset demo-specific UI
       const _banner = document.getElementById('acc-rebill-banner');
       if (_banner) _banner.hidden = true;
