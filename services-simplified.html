@@ -3159,12 +3159,12 @@
             </span>
             <div class="svc-inline-notice-text">
               <p class="svc-inline-notice-title">Avoid adjustment charges</p>
-              <p class="svc-inline-notice-body">Add the recommended services to prevent pickup/delivery issues and avoid adjustment charges after delivery</p>
+              <p class="svc-inline-notice-body" id="svc-inline-notice-body">Add the recommended services to prevent pickup/delivery issues and avoid adjustment charges after delivery</p>
             </div>
           </div>
           <div class="hint">
             <span class="hint-icon"><svg viewBox="0 0 11.7002 11.7002" fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="12" height="12"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.8501 0C9.08095 0 11.7002 2.61924 11.7002 5.8501C11.7002 9.08096 9.08096 11.7002 5.8501 11.7002C2.61924 11.7002 0 9.08095 0 5.8501C1.31429e-05 2.61925 2.61925 1.31425e-05 5.8501 0ZM5.81104 7.55322C5.4184 7.55322 5.1001 7.87152 5.1001 8.26416C5.1001 8.6568 5.4184 8.9751 5.81104 8.9751H5.88916C6.2818 8.9751 6.6001 8.6568 6.6001 8.26416C6.6001 7.87152 6.2818 7.55322 5.88916 7.55322H5.81104ZM5.8501 2.4751C5.43588 2.4751 5.1001 2.81088 5.1001 3.2251V5.99072C5.1001 6.40494 5.43588 6.74072 5.8501 6.74072C6.26431 6.74072 6.6001 6.40494 6.6001 5.99072V3.2251C6.6001 2.81088 6.26431 2.4751 5.8501 2.4751Z"/></svg></span>
-            <span>Add the recommended services to prevent pickup/delivery issues and avoid adjustment charges after delivery</span>
+            <span id="svc-hint-span">Add the recommended services to prevent pickup/delivery issues and avoid adjustment charges after delivery</span>
           </div>
 
         </div>
@@ -3614,12 +3614,12 @@
             </span>
             <div class="svc-inline-notice-text">
               <p class="svc-inline-notice-title" id="d-svc-inline-notice-title">Avoid adjustment charges</p>
-              <p class="svc-inline-notice-body">Add the recommended services to prevent pickup/delivery issues and avoid adjustment charges after delivery</p>
+              <p class="svc-inline-notice-body" id="d-svc-inline-notice-body">Add the recommended services to prevent pickup/delivery issues and avoid adjustment charges after delivery</p>
             </div>
           </div>
           <div class="hint">
             <span class="hint-icon"><svg viewBox="0 0 11.7002 11.7002" fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="12" height="12"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.8501 0C9.08095 0 11.7002 2.61924 11.7002 5.8501C11.7002 9.08096 9.08096 11.7002 5.8501 11.7002C2.61924 11.7002 0 9.08095 0 5.8501C1.31429e-05 2.61925 2.61925 1.31425e-05 5.8501 0ZM5.81104 7.55322C5.4184 7.55322 5.1001 7.87152 5.1001 8.26416C5.1001 8.6568 5.4184 8.9751 5.81104 8.9751H5.88916C6.2818 8.9751 6.6001 8.6568 6.6001 8.26416C6.6001 7.87152 6.2818 7.55322 5.88916 7.55322H5.81104ZM5.8501 2.4751C5.43588 2.4751 5.1001 2.81088 5.1001 3.2251V5.99072C5.1001 6.40494 5.43588 6.74072 5.8501 6.74072C6.26431 6.74072 6.6001 6.40494 6.6001 5.99072V3.2251C6.6001 2.81088 6.26431 2.4751 5.8501 2.4751Z"/></svg></span>
-            <span>Add the recommended services to prevent pickup/delivery issues and avoid adjustment charges after delivery</span>
+            <span id="d-svc-hint-span">Add the recommended services to prevent pickup/delivery issues and avoid adjustment charges after delivery</span>
           </div>
 
         </div>
@@ -7729,6 +7729,8 @@
       // Update delivery inline notice for rebill mode
       const dNotice = document.getElementById('d-svc-inline-notice');
       const dNoticeTitle = document.getElementById('d-svc-inline-notice-title');
+      const REBILL_BODY = 'Add the recommended services to avoid a 60% re-bill risk after delivery';
+      const DEFAULT_BODY = 'Add the recommended services to prevent pickup/delivery issues and avoid adjustment charges after delivery';
       if (dNotice && dNoticeTitle) {
         if (REBILL_MODE) {
           dNotice.style.background = 'var(--color-yellow-200)';
@@ -7740,6 +7742,15 @@
           dNoticeTitle.textContent = 'Avoid adjustment charges';
         }
       }
+      const _pBody = document.getElementById('svc-inline-notice-body');
+      const _pHint = document.getElementById('svc-hint-span');
+      const _dBody = document.getElementById('d-svc-inline-notice-body');
+      const _dHint = document.getElementById('d-svc-hint-span');
+      const _rebillText = REBILL_MODE ? REBILL_BODY : DEFAULT_BODY;
+      if (_pBody) _pBody.textContent = _rebillText;
+      if (_pHint) _pHint.textContent = _rebillText;
+      if (_dBody) _dBody.textContent = _rebillText;
+      if (_dHint) _dHint.textContent = _rebillText;
     }
 
     function applyNone() {
@@ -7789,6 +7800,16 @@
         _dNotice.style.backdropFilter = '';
         _dNoticeTitle.textContent = 'Avoid adjustment charges';
       }
+      // Reset hint/notice body text to default
+      const _DEFAULT_BODY = 'Add the recommended services to prevent pickup/delivery issues and avoid adjustment charges after delivery';
+      const _rPBody = document.getElementById('svc-inline-notice-body');
+      const _rPHint = document.getElementById('svc-hint-span');
+      const _rDBody = document.getElementById('d-svc-inline-notice-body');
+      const _rDHint = document.getElementById('d-svc-hint-span');
+      if (_rPBody) _rPBody.textContent = _DEFAULT_BODY;
+      if (_rPHint) _rPHint.textContent = _DEFAULT_BODY;
+      if (_rDBody) _rDBody.textContent = _DEFAULT_BODY;
+      if (_rDHint) _rDHint.textContent = _DEFAULT_BODY;
       // Reset demo-specific UI
       const _banner = document.getElementById('acc-rebill-banner');
       if (_banner) _banner.hidden = true;
