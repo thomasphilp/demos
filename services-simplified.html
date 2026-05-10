@@ -1140,8 +1140,11 @@
     display: flex; align-items: center; gap: 12px;
     background: rgba(9,10,12,0.02); border: 1px solid rgba(9,10,12,0.12);
     border-radius: 4px; padding: 0 16px; height: 48px; cursor: pointer;
+    transition: background 0.1s, border-color 0.1s, box-shadow 0.1s;
   }
-  .loc-type-input-row:focus-within {
+  .loc-type-input-row:hover { background: rgba(9,10,12,0.04); border-color: rgba(9,10,12,0.2); }
+  .loc-type-input-row:focus-within,
+  .loc-type-input-row--open {
     border-color: var(--color-focus); box-shadow: 0 0 0 3px rgba(29,78,216,0.08); background: #fff;
   }
   .loc-type-search-icon { width: 16px; height: 16px; flex-shrink: 0; color: rgba(9,10,12,0.38); }
@@ -1158,7 +1161,7 @@
   .loc-type-feedback-blue { font-weight: 600; color: #2563eb; }
 
   .loc-type-dropdown {
-    position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+    position: absolute; top: calc(100% + 4px); left: -25px; right: -25px;
     background: #fff; border: 1px solid rgba(9,10,12,0.9); border-radius: var(--radius-base);
     box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
     max-height: 320px; overflow-y: auto; z-index: 60;
@@ -8073,8 +8076,7 @@
       const input = document.getElementById('loc-type-input');
       if (input) input.value = '';
       filterLocTypeOptions('');
-      const dropdown = document.getElementById('loc-type-dropdown');
-      if (dropdown) dropdown.hidden = true;
+      _setLocDropdownOpen(false);
       const searchWrap = document.getElementById('loc-type-search-wrap');
       if (searchWrap) searchWrap.hidden = false;
       const chip = document.getElementById('loc-type-chip');
@@ -8090,15 +8092,16 @@
     // Open dropdown when user clicks input row (input or search icon)
     const _locTypeInput = document.getElementById('loc-type-input');
     const _locTypeInputRow = _locTypeInput ? _locTypeInput.closest('.loc-type-input-row') : null;
-    const _openLocDropdown = () => {
+    const _setLocDropdownOpen = (open) => {
       const dd = document.getElementById('loc-type-dropdown');
-      if (dd) dd.hidden = false;
+      if (dd) dd.hidden = !open;
+      if (_locTypeInputRow) _locTypeInputRow.classList.toggle('loc-type-input-row--open', open);
     };
+    const _openLocDropdown = () => _setLocDropdownOpen(true);
     if (_locTypeInput) {
       _locTypeInput.addEventListener('click', _openLocDropdown);
       _locTypeInput.addEventListener('input', () => {
-        const dd = document.getElementById('loc-type-dropdown');
-        if (dd) dd.hidden = false;
+        _setLocDropdownOpen(true);
         filterLocTypeOptions(_locTypeInput.value);
       });
     }
@@ -8108,7 +8111,7 @@
     document.addEventListener('click', (e) => {
       const wrap = document.getElementById('loc-type-search-wrap');
       const dd = document.getElementById('loc-type-dropdown');
-      if (dd && !dd.hidden && wrap && !wrap.contains(e.target)) dd.hidden = true;
+      if (dd && !dd.hidden && wrap && !wrap.contains(e.target)) _setLocDropdownOpen(false);
     }, true);
 
     // Location type option selection
@@ -8209,6 +8212,9 @@
       if (picker) picker.hidden = false;
       ACC_ITEMS.forEach(item => { item.warn = false; item.selected = false; });
       renderList(); updateBtnLabel(); updatePickupWarning();
+      // Re-open the dropdown so user can immediately pick a new type
+      _setLocDropdownOpen(true);
+      if (_locTypeInput) _locTypeInput.focus();
     });
 
     linkRes.addEventListener('click', () => { applyNone(); applyResidential('your address book'); setActive(linkRes); window.scrollTo({ top: 0, behavior: 'smooth' }); });
