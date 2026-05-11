@@ -1001,6 +1001,10 @@
     position: relative;
     animation: services-gate-pulse 2s ease-in-out infinite;
   }
+  .services-gate-box.type-selected {
+    animation: none;
+    background: rgba(9, 10, 12, 0.05);
+  }
   .services-gate-box.resolved {
     animation: none;
     background: rgba(9, 10, 12, 0.01);
@@ -5025,7 +5029,7 @@
     const extraSvc = document.getElementById('extra-svc-dropdown-field');
     if (extraSvc) extraSvc.classList.remove('is-disabled');
     const gateBox = document.querySelector('#acc-dropdown-field')?.closest('.services-gate-box');
-    if (gateBox) gateBox.classList.add('resolved');
+    if (gateBox) { gateBox.classList.remove('type-selected'); gateBox.classList.add('resolved'); }
     // Auto-focus the first name field once the gate opens
     const firstNameInput = gate && gate.querySelector('input[placeholder="First name"]');
     if (firstNameInput) requestAnimationFrame(() => firstNameInput.focus());
@@ -8114,6 +8118,8 @@
       if (appliedRow) appliedRow.hidden = true;
       const feedback = document.querySelector('#loc-type-card .loc-type-inline-feedback');
       if (feedback) feedback.hidden = false;
+      const _pgbReset = document.querySelector('#acc-dropdown-field')?.closest('.services-gate-box');
+      if (_pgbReset) { _pgbReset.classList.remove('type-selected'); _pgbReset.classList.remove('resolved'); }
     }
 
     // Open dropdown when user clicks input row (input or search icon)
@@ -8158,6 +8164,8 @@
         if (chipDesc) chipDesc.textContent = typeDesc;
         const chip = document.getElementById('loc-type-chip');
         if (chip) chip.hidden = false;
+        const _pgb = document.querySelector('#acc-dropdown-field')?.closest('.services-gate-box');
+        if (_pgb) { _pgb.classList.add('type-selected'); _pgb.classList.remove('resolved'); }
         // Reset dependent state
         const dockQ = document.getElementById('demo3-dock-q');
         if (dockQ) { dockQ.hidden = true; dockQ.querySelectorAll('.dock-q-btn').forEach(b => b.classList.remove('selected')); }
@@ -8198,6 +8206,8 @@
       if (chipDesc) { chipDesc.textContent = 'This category or type does not exist'; chipDesc.classList.add('loc-type-chip-desc--unknown'); }
       const chip = document.getElementById('loc-type-chip');
       if (chip) chip.hidden = false;
+      const _pgb2 = document.querySelector('#acc-dropdown-field')?.closest('.services-gate-box');
+      if (_pgb2) { _pgb2.classList.add('type-selected'); _pgb2.classList.remove('resolved'); }
       _setLocDropdownOpen(false);
       // No dock question or recommendation for unknown types
       const dockQ = document.getElementById('demo3-dock-q');
