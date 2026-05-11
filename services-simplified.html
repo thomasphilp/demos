@@ -8252,6 +8252,8 @@
       if (recRow) recRow.hidden = true;
       const dockQ = document.getElementById('demo3-dock-q');
       if (dockQ) dockQ.hidden = true;
+      const svcRecRow = document.getElementById('acc-svc-rec-row');
+      if (svcRecRow) svcRecRow.hidden = true;
       const appliedRow = document.getElementById('demo3-applied-row');
       const appliedLabel = document.getElementById('demo3-applied-label');
       if (appliedLabel && recs.length > 0) {
@@ -8269,6 +8271,8 @@
       if (picker) picker.hidden = false;
       ACC_ITEMS.forEach(item => { item.warn = false; item.selected = false; });
       renderList(); updateBtnLabel(); updatePickupWarning();
+      const _svcRecRowRestore = document.getElementById('acc-svc-rec-row');
+      if (_svcRecRowRestore) _svcRecRowRestore.hidden = false;
       // Re-open the dropdown so user can immediately pick a new type
       _setLocDropdownOpen(true);
       if (_locTypeInput) _locTypeInput.focus();
