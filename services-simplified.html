@@ -6469,8 +6469,8 @@
   let showExtraDesc = false;
 
   const EXTRA_SVC_ITEMS = [
-    { id: 'appointment',   label: 'Appointment',   shortDesc: 'Carrier will contact you or the location to schedule a pickup or delivery window.', desc: 'The carrier will call you or the pickup location to agree on a specific time window — typically a 4-hour block. Required at locations that cannot receive freight without advance notice, such as schools, hospitals, medical offices, and trade shows. Adds cost because the carrier must commit to a reserved slot and coordinate with the driver in advance.', selected: false },
-    { id: 'inside-pickup', label: 'Inside pickup', shortDesc: 'Carrier will pick up freight from inside the building, beyond the threshold or dock.', desc: 'The driver enters the building and retrieves freight from inside — beyond the door, threshold, or dock area. Necessary when freight cannot be staged at a loading dock or brought to the curb before pickup. Adds cost because the driver spends extra time on-site and may need additional handling equipment.', selected: false },
+    { id: 'appointment',   label: 'Appointment',   shortDesc: 'Carrier will contact you or the location to schedule a pickup or delivery window.', desc: 'The carrier schedules a time window — typically a 4-hour block — with you or the pickup location. Required at schools, hospitals, medical offices, and trade shows. Adds cost for the reserved slot and driver coordination.', selected: false },
+    { id: 'inside-pickup', label: 'Inside pickup', shortDesc: 'Carrier will pick up freight from inside the building, beyond the threshold or dock.', desc: 'The driver retrieves freight from inside the building, past the threshold or dock. Required when freight can\'t be staged at the curb or dock for pickup. Adds cost for the extra labor and time on-site.', selected: false },
   ];
 
   function renderExtraSvcList() {
@@ -6550,8 +6550,8 @@
   let dShowExtraDesc = false;
 
   const D_EXTRA_SVC_ITEMS = [
-    { id: 'd-appointment',     label: 'Appointment',     shortDesc: 'Carrier will contact you or the location to schedule a pickup or delivery window.', desc: 'The carrier will call you or the delivery location to agree on a specific time window — typically a 4-hour block. Required at locations that cannot receive freight without advance notice, such as schools, hospitals, medical offices, and trade shows. Adds cost because the carrier must commit to a reserved slot and coordinate with the driver in advance.', selected: false },
-    { id: 'd-inside-delivery', label: 'Inside delivery', shortDesc: 'Carrier will bring freight inside the building, beyond the threshold or dock.', desc: 'The driver carries freight past the threshold or dock and places it inside the building — often down a hallway or into a specific room. Goes beyond standard curbside or dock delivery. Adds cost because the driver spends extra time on-site and may need additional handling or equipment.', selected: false },
+    { id: 'd-appointment',     label: 'Appointment',     shortDesc: 'Carrier will contact you or the location to schedule a pickup or delivery window.', desc: 'The carrier schedules a time window — typically a 4-hour block — with you or the delivery location. Required at schools, hospitals, medical offices, and trade shows. Adds cost for the reserved slot and driver coordination.', selected: false },
+    { id: 'd-inside-delivery', label: 'Inside delivery', shortDesc: 'Carrier will bring freight inside the building, beyond the threshold or dock.', desc: 'The driver carries freight past the threshold or dock and into the building — beyond standard curbside or dock drop-off. Required when freight needs to go to a specific room or hallway. Adds cost for the extra labor and time on-site.', selected: false },
   ];
 
   function dRenderExtraSvcList() {
