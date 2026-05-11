@@ -1203,10 +1203,10 @@
   .loc-type-popular-section { background: #eff6ff; }
   .loc-type-no-results {
     display: flex; align-items: center; gap: 10px;
-    width: 100%; padding: 12px 16px; border: none; border-top: 1px solid rgba(9,10,12,0.06);
-    background: none; cursor: pointer; text-align: left; font-family: inherit;
+    width: 100%; padding: 12px 16px; border-top: 1px solid rgba(9,10,12,0.06);
+    background: none; pointer-events: none;
   }
-  .loc-type-no-results:hover { background: var(--color-control-bg); }
+  .loc-type-input-row:focus-within:has(input:not(:placeholder-shown)) .clear-btn { display: flex; }
   .loc-type-no-results-label { font-size: 13px; font-weight: 500; color: var(--color-label-primary); }
   .loc-type-no-results-sub { font-size: 11px; color: var(--color-label-secondary); margin-top: 2px; }
   .loc-type-chip-desc--unknown { font-style: italic; color: rgba(9,10,12,0.38); }
@@ -3165,6 +3165,7 @@
             <div class="loc-type-input-row">
               <svg class="loc-type-search-icon" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg>
               <input type="text" id="loc-type-input" class="loc-type-input" placeholder="Select the pickup location type" autocomplete="off">
+              <button class="clear-btn" id="loc-type-clear-btn" type="button" aria-label="Clear"><svg viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.805166 0.805166C1.30727 0.303063 2.12134 0.303063 2.62344 0.805166L12 10.1817L21.3766 0.805167C21.8787 0.303065 22.6928 0.303065 23.1949 0.805167C23.697 1.30727 23.697 2.12134 23.1949 2.62344L13.8183 12L23.1949 21.3766C23.697 21.8787 23.697 22.6928 23.1949 23.1949C22.6928 23.697 21.8787 23.697 21.3766 23.1949L12 13.8183L2.62344 23.1949C2.12134 23.697 1.30727 23.697 0.805166 23.1949C0.303063 22.6928 0.303063 21.8787 0.805166 21.3766L10.1817 12L0.805166 2.62344C0.303063 2.12134 0.303063 1.30727 0.805166 0.805166Z"/></svg></button>
             </div>
             <div class="loc-type-dropdown" id="loc-type-dropdown" hidden>
               <div class="loc-type-dropdown-title">Select a location type</div>
@@ -3472,12 +3473,13 @@
                 </div>
                 <span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               </button>
-              <button class="loc-type-no-results" id="loc-type-no-results" hidden>
+              <div class="loc-type-no-results" id="loc-type-no-results" hidden>
+                <svg class="loc-type-search-icon" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg>
                 <div class="loc-type-option-text">
                   <span class="loc-type-no-results-label" id="loc-type-no-results-query"></span>
-                  <span class="loc-type-no-results-sub">This category or type does not exist — select anyway</span>
+                  <span class="loc-type-no-results-sub">No results found</span>
                 </div>
-              </button>
+              </div>
             </div>
           </div>
           <div class="loc-type-chip" id="loc-type-chip" hidden>
@@ -8468,28 +8470,12 @@
       });
     });
 
-    // "Not found" fallback option
-    const _noResultsBtn = document.getElementById('loc-type-no-results');
-    if (_noResultsBtn) _noResultsBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const typed = _locTypeInput ? _locTypeInput.value.trim() : '';
-      if (!typed) return;
-      const searchWrap = document.getElementById('loc-type-search-wrap');
-      if (searchWrap) searchWrap.hidden = true;
-      const chipName = document.getElementById('loc-type-chip-name');
-      if (chipName) chipName.textContent = typed;
-      const chipDesc = document.getElementById('loc-type-chip-desc');
-      if (chipDesc) { chipDesc.textContent = 'This category or type does not exist'; chipDesc.classList.add('loc-type-chip-desc--unknown'); }
-      const chip = document.getElementById('loc-type-chip');
-      if (chip) chip.hidden = false;
-      const _pgb2 = document.querySelector('#acc-dropdown-field')?.closest('.services-gate-box');
-      if (_pgb2) { _pgb2.classList.add('type-selected'); _pgb2.classList.remove('resolved'); }
-      _setLocDropdownOpen(false);
-      // No dock question or recommendation for unknown types
-      const dockQ = document.getElementById('demo3-dock-q');
-      if (dockQ) dockQ.hidden = true;
-      const recRow = document.getElementById('demo3-rec-row');
-      if (recRow) recRow.hidden = true;
+    // Clear button for loc-type input
+    const _locTypeClearBtn = document.getElementById('loc-type-clear-btn');
+    if (_locTypeClearBtn) _locTypeClearBtn.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      if (_locTypeInput) { _locTypeInput.value = ''; _locTypeInput.focus(); }
+      filterLocTypeOptions('');
     });
 
     // Dock question buttons
