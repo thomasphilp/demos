@@ -8112,6 +8112,8 @@
       if (recRow) recRow.hidden = true;
       const appliedRow = document.getElementById('demo3-applied-row');
       if (appliedRow) appliedRow.hidden = true;
+      const feedback = document.querySelector('#loc-type-card .loc-type-inline-feedback');
+      if (feedback) feedback.hidden = false;
     }
 
     // Open dropdown when user clicks input row (input or search icon)
@@ -8242,6 +8244,10 @@
       if (recRow) recRow.hidden = true;
       const dockQ = document.getElementById('demo3-dock-q');
       if (dockQ) dockQ.hidden = true;
+      const chip = document.getElementById('loc-type-chip');
+      if (chip) chip.hidden = true;
+      const feedback = document.querySelector('#loc-type-card .loc-type-inline-feedback');
+      if (feedback) feedback.hidden = true;
       const appliedRow = document.getElementById('demo3-applied-row');
       const appliedLabel = document.getElementById('demo3-applied-label');
       if (appliedLabel && recs.length > 0) {
