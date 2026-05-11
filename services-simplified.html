@@ -1180,14 +1180,15 @@
     max-height: 470px; overflow-y: auto; z-index: 60;
   }
   .loc-type-dropdown-title {
-    padding: 12px; font-size: 10px; color: var(--color-label-secondary);
-    border-bottom: 1px solid rgba(9,10,12,0.05);
+    position: sticky; top: 0; z-index: 1;
+    padding: 8px 12px; font-size: 10px; font-weight: 600; color: rgba(9,10,12,0.6);
+    background: #fff; border-bottom: 1px solid rgba(9,10,12,0.06); line-height: normal;
   }
   .loc-type-dropdown-header {
-    padding: 8px 12px; font-size: 10px; font-weight: 600; color: #1d4ed8;
+    padding: 8px 12px; font-size: 10px; font-weight: 600; color: rgba(9,10,12,0.6);
   }
   .loc-type-dropdown-header--alt {
-    color: var(--color-label-secondary); border-top: 1px solid rgba(9,10,12,0.05);
+    color: rgba(9,10,12,0.6); border-top: 1px solid rgba(9,10,12,0.06);
   }
   .loc-type-option {
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
@@ -1207,8 +1208,8 @@
     background: none; pointer-events: none;
   }
   .loc-type-input-row:focus-within:has(input:not(:placeholder-shown)) .clear-btn { display: flex; }
-  .loc-type-no-results-label { font-size: 13px; font-weight: 500; color: var(--color-label-primary); }
-  .loc-type-no-results-sub { font-size: 11px; color: var(--color-label-secondary); margin-top: 2px; }
+  .loc-type-no-results-label { font-size: 12px; font-weight: 500; color: var(--color-label-primary); }
+  .loc-type-no-results-sub { font-size: 10px; color: var(--color-label-secondary); margin-top: 1px; }
   .loc-type-chip-desc--unknown { font-style: italic; color: rgba(9,10,12,0.38); }
   .loc-type-chip {
     display: flex; align-items: center; justify-content: space-between;
@@ -2304,7 +2305,7 @@
   .addr-book-panel, .addr-search-panel {
     position: absolute; top: calc(100% + 4px); left: 0; right: 0;
     z-index: 200; border: 1px solid #23262a; border-radius: 4px;
-    overflow: hidden; box-shadow: var(--shadow-lg); background: white;
+    overflow-y: auto; box-shadow: var(--shadow-lg); background: white;
   }
   .addr-book-inner { background: #f5f3ff; }
   .addr-book-header {
@@ -2342,7 +2343,7 @@
   .addr-search-top-icon svg { width: 12px; height: 12px; }
   .addr-search-top-body { display: flex; flex-direction: column; flex: 1; min-width: 0; }
   .addr-search-top-val { font-size: 12px; font-weight: 500; color: var(--color-label-primary); line-height: 16px; letter-spacing: -0.1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .addr-search-label { padding: 8px 12px; font-size: 10px; font-weight: 600; color: rgba(9,10,12,0.6); line-height: normal; }
+  .addr-search-label { position: sticky; top: 0; z-index: 1; padding: 8px 12px; font-size: 10px; font-weight: 600; color: rgba(9,10,12,0.6); line-height: normal; background: #fff; }
   .addr-search-label.with-border { border-top: 1px solid rgba(9,10,12,0.06); }
   .addr-search-top-chevron { width: 10px; height: 10px; flex-shrink: 0; color: rgba(9,10,12,0.3); display: flex; }
   .addr-search-top-chevron svg { width: 10px; height: 10px; }
@@ -8356,19 +8357,21 @@
         const desc = (opt.querySelector('.loc-type-option-desc') || {}).textContent || '';
         opt.hidden = q ? !name.toLowerCase().includes(q) && !desc.toLowerCase().includes(q) : false;
       });
-      // Hide headers if all their options are filtered out
-      dropdown.querySelectorAll('.loc-type-dropdown-header').forEach(header => {
-        let sib = header.nextElementSibling;
+      // Always hide popular section when user is filtering — show only "All types" results
+      const popularSection = dropdown.querySelector('.loc-type-popular-section');
+      if (popularSection) popularSection.hidden = !!q;
+      // Hide "All types" header if none of its options are visible
+      const altHeader = dropdown.querySelector('.loc-type-dropdown-header--alt');
+      if (altHeader) {
+        let sib = altHeader.nextElementSibling;
         let hasVisible = false;
-        while (sib && !sib.classList.contains('loc-type-dropdown-header')) {
+        while (sib) {
           if (sib.classList.contains('loc-type-option') && !sib.hidden) { hasVisible = true; break; }
           sib = sib.nextElementSibling;
         }
-        header.hidden = !hasVisible;
-      });
-      // Hide title row when actively filtering
-      const title = dropdown.querySelector('.loc-type-dropdown-title');
-      if (title) title.hidden = !!q;
+        altHeader.hidden = !hasVisible;
+      }
+      // "Select a location type" title is always visible (sticky anchor)
       // Show "not found" fallback only when query has no matches
       const noResults = document.getElementById('loc-type-no-results');
       if (noResults) {
