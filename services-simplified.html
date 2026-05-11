@@ -1145,7 +1145,7 @@
   }
   .loc-type-card-strip {
     position: absolute; left: 0; top: 0; bottom: 0;
-    width: 6px; background: #dbeafe; border-radius: 4px 0 0 4px;
+    width: 6px; background: #dbeafe;
   }
 
   .loc-type-search-wrap { position: relative; }
@@ -2306,6 +2306,7 @@
     position: absolute; top: calc(100% + 4px); left: 0; right: 0;
     z-index: 200; border: 1px solid #23262a; border-radius: 4px;
     overflow-y: auto; box-shadow: var(--shadow-lg); background: white;
+    max-height: 400px;
   }
   .addr-book-inner { background: #f5f3ff; }
   .addr-book-header {
@@ -3119,6 +3120,16 @@
             <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg></span><div class="addr-list-body"><span class="addr-list-name gradient">Jenny's place I visited</span><span class="addr-list-addr">456 Maple Street, Rivertown, TX 75001</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
             <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg></span><div class="addr-list-body"><span class="addr-list-name dark">Trendy Fabric Emporium</span><span class="addr-list-addr">789 Oak Avenue, Lakeview, FL 32123</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
             <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg></span><div class="addr-list-body"><span class="addr-list-name dark">Fashion Forward Fabrics</span><span class="addr-list-addr">321 Pine Road, Hillcrest, NY 10001</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg></span><div class="addr-list-body"><span class="addr-list-name gradient">Apex Distribution LLC</span><span class="addr-list-addr">2200 Industrial Blvd, Chicago, IL 60601</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg></span><div class="addr-list-body"><span class="addr-list-name dark">Blue Ridge Logistics</span><span class="addr-list-addr">550 Commerce Pkwy, Atlanta, GA 30301</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg></span><div class="addr-list-body"><span class="addr-list-name gradient">Sunrise Wholesale Goods</span><span class="addr-list-addr">88 Harbor View Dr, Seattle, WA 98101</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg></span><div class="addr-list-body"><span class="addr-list-name dark">Pacific Rim Imports</span><span class="addr-list-addr">1450 Shoreline Way, Los Angeles, CA 90001</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg></span><div class="addr-list-body"><span class="addr-list-name gradient">Valley Supply Co.</span><span class="addr-list-addr">340 Elm Street, Phoenix, AZ 85001</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg></span><div class="addr-list-body"><span class="addr-list-name dark">Metro Parts &amp; Supply</span><span class="addr-list-addr">912 Grand Ave, Denver, CO 80201</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg></span><div class="addr-list-body"><span class="addr-list-name gradient">Clearwater Freight</span><span class="addr-list-addr">67 Bayview Terrace, Miami, FL 33101</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg></span><div class="addr-list-body"><span class="addr-list-name dark">Northern Tier Warehouse</span><span class="addr-list-addr">1800 Industrial Loop, Minneapolis, MN 55401</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg></span><div class="addr-list-body"><span class="addr-list-name gradient">Ironwood Manufacturing</span><span class="addr-list-addr">425 Mill Road, Detroit, MI 48201</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg></span><div class="addr-list-body"><span class="addr-list-name dark">Gulf Coast Distributors</span><span class="addr-list-addr">3310 Port Access Rd, Houston, TX 77001</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
           </div>
         </div>
       </div>
@@ -3954,6 +3965,16 @@
             <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg></span><div class="addr-list-body"><span class="addr-list-name gradient">Jenny's place I visited</span><span class="addr-list-addr">456 Maple Street, Rivertown, TX 75001</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
             <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg></span><div class="addr-list-body"><span class="addr-list-name dark">Trendy Fabric Emporium</span><span class="addr-list-addr">789 Oak Avenue, Lakeview, FL 32123</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
             <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg></span><div class="addr-list-body"><span class="addr-list-name dark">Fashion Forward Fabrics</span><span class="addr-list-addr">321 Pine Road, Hillcrest, NY 10001</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg></span><div class="addr-list-body"><span class="addr-list-name gradient">Apex Distribution LLC</span><span class="addr-list-addr">2200 Industrial Blvd, Chicago, IL 60601</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg></span><div class="addr-list-body"><span class="addr-list-name dark">Blue Ridge Logistics</span><span class="addr-list-addr">550 Commerce Pkwy, Atlanta, GA 30301</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg></span><div class="addr-list-body"><span class="addr-list-name gradient">Sunrise Wholesale Goods</span><span class="addr-list-addr">88 Harbor View Dr, Seattle, WA 98101</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg></span><div class="addr-list-body"><span class="addr-list-name dark">Pacific Rim Imports</span><span class="addr-list-addr">1450 Shoreline Way, Los Angeles, CA 90001</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg></span><div class="addr-list-body"><span class="addr-list-name gradient">Valley Supply Co.</span><span class="addr-list-addr">340 Elm Street, Phoenix, AZ 85001</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg></span><div class="addr-list-body"><span class="addr-list-name dark">Metro Parts &amp; Supply</span><span class="addr-list-addr">912 Grand Ave, Denver, CO 80201</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg></span><div class="addr-list-body"><span class="addr-list-name gradient">Clearwater Freight</span><span class="addr-list-addr">67 Bayview Terrace, Miami, FL 33101</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg></span><div class="addr-list-body"><span class="addr-list-name dark">Northern Tier Warehouse</span><span class="addr-list-addr">1800 Industrial Loop, Minneapolis, MN 55401</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg></span><div class="addr-list-body"><span class="addr-list-name gradient">Ironwood Manufacturing</span><span class="addr-list-addr">425 Mill Road, Detroit, MI 48201</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="addr-list-item"><span class="addr-list-icon search"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg></span><div class="addr-list-body"><span class="addr-list-name dark">Gulf Coast Distributors</span><span class="addr-list-addr">3310 Port Access Rd, Houston, TX 77001</span></div><span class="addr-list-chevron"><svg viewBox="0 0 10 10" fill="none"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
           </div>
         </div>
       </div>
@@ -5180,10 +5201,10 @@
   // ── Services data ──
   const ACC_ITEMS = [
     {
-      id: 'ltl-inside',
-      label: 'LTL Inside Service',
-      shortDesc: 'Takes freight past the dock or curbside and delivers it inside a room or hallway.',
-      desc: 'Driver moves freight past the dock or curbside — through a door, down a hallway, or into a room. Adds cost due to extra labor and time on site.',
+      id: 'cfs',
+      label: 'CFS',
+      shortDesc: 'Pickup or delivery at a warehouse for ocean or air freight consolidation.',
+      desc: 'Container Freight Station — a warehouse where ocean or air shipments are consolidated or broken down. Common for international freight moving through a port or airport.',
       warn: false,
       selected: false
     },
@@ -5196,19 +5217,27 @@
       selected: false
     },
     {
-      id: 'cfs',
-      label: 'CFS',
-      shortDesc: 'Pickup or delivery at a warehouse for ocean or air freight consolidation.',
-      desc: 'Container Freight Station — a warehouse where ocean or air shipments are consolidated or broken down. Common for international freight moving through a port or airport.',
-      warn: false,
-      selected: false
-    },
-    {
       id: 'limited-access',
       label: 'Limited Access',
       shortDesc: 'Location is hard for a 53-ft trailer — schools, job sites, military bases.',
       desc: 'Applies when a standard 53-ft truck can\'t easily access or enter the site. Common examples: schools, job sites, churches, military bases, and storage facilities. Carriers charge extra for the added difficulty.',
       warn: false,
+      selected: false
+    },
+    {
+      id: 'ltl-inside',
+      label: 'LTL Inside Service',
+      shortDesc: 'Takes freight past the dock or curbside and delivers it inside a room or hallway.',
+      desc: 'Driver moves freight past the dock or curbside — through a door, down a hallway, or into a room. Adds cost due to extra labor and time on site.',
+      warn: false,
+      selected: false
+    },
+    {
+      id: 'residential',
+      label: 'Residential',
+      shortDesc: 'Pickup or delivery at a home, apartment, or business in a residential area.',
+      desc: 'Homes, apartments, or businesses in a residential neighborhood. Carriers typically send smaller trucks and require a liftgate — both add to the cost.',
+      warn: true,
       selected: false
     },
     {
@@ -5225,14 +5254,6 @@
       shortDesc: 'Driver needs a TWIC card to access a secure port or maritime facility.',
       desc: 'Transportation Worker Identification Credential. Required at secure ports, marine terminals, and some chemical plants. Without a valid TWIC card, the driver will be turned away at the gate.',
       warn: false,
-      selected: false
-    },
-    {
-      id: 'residential',
-      label: 'Residential',
-      shortDesc: 'Pickup or delivery at a home, apartment, or business in a residential area.',
-      desc: 'Homes, apartments, or businesses in a residential neighborhood. Carriers typically send smaller trucks and require a liftgate — both add to the cost.',
-      warn: true,
       selected: false
     }
   ];
@@ -5330,9 +5351,9 @@
         list.appendChild(d);
         recDividerAdded = true;
       }
-      if (hasOther && !item.warn && !otherDividerAdded) {
+      if (hasRec && hasOther && !item.warn && !otherDividerAdded) {
         const d = document.createElement('div');
-        d.className = 'acc-list-divider' + (hasRec ? ' is-other' : '');
+        d.className = 'acc-list-divider is-other';
         d.textContent = 'Other';
         d.addEventListener('click', e => e.stopPropagation());
         list.appendChild(d);
@@ -6140,14 +6161,14 @@
 
   // ── Deliver-to services ──
   const DELIVER_ACC_ITEMS = [
+    { id: 'd-cfs',            warn: false, label: 'CFS',           shortDesc: 'Delivery at a warehouse for ocean or air freight consolidation.', desc: 'Container Freight Station — a warehouse where ocean or air shipments are consolidated or broken down. Common for international freight moving through a port or airport.', selected: false },
+    { id: 'd-fba',            warn: false, label: 'FBA',           shortDesc: 'Delivery to an Amazon Fulfillment Center (FBA/FFC).', desc: 'Fulfillment by Amazon — requires specific BOL format, FBA reference number, and compliance with Amazon\'s carrier requirements. Appointment may be needed.', selected: false },
+    { id: 'd-liftgate',       warn: false, label: 'Liftgate',      shortDesc: 'Requires a hydraulic lift to load or unload freight from the truck.', desc: 'A hydraulic platform lowers or raises freight to ground level. Required at any location without a raised loading dock — homes, retail stores, or street-level deliveries.', selected: false },
+    { id: 'd-limited-access', warn: false, label: 'Limited Access',      shortDesc: 'Location is hard for a 53-ft trailer — schools, military bases, govt buildings.', desc: 'Applies when a standard 53-ft truck can\'t easily access or enter the site. Common examples: schools, churches, military bases, government facilities, and storage facilities. Carriers charge extra for the added difficulty.', selected: false },
     { id: 'd-ltl-inside',     warn: false, label: 'LTL Inside Service', shortDesc: 'Moving freight past the dock or curbside into a room or hallway.', desc: 'Driver moves freight past the dock or curbside — through a door, down a hallway, or into a room. Adds cost due to extra labor and time on site.', selected: false },
-    { id: 'd-liftgate',       warn: false, label: 'Liftgate', shortDesc: 'Requires a hydraulic lift to load or unload freight from the truck.', desc: 'A hydraulic platform lowers or raises freight to ground level. Required at any location without a raised loading dock — homes, retail stores, or street-level deliveries.', selected: false },
-    { id: 'd-cfs',            warn: false, label: 'CFS', shortDesc: 'Delivery at a warehouse for ocean or air freight consolidation.', desc: 'Container Freight Station — a warehouse where ocean or air shipments are consolidated or broken down. Common for international freight moving through a port or airport.', selected: false },
-    { id: 'd-limited-access', warn: false, label: 'Limited Access', shortDesc: 'Location is hard for a 53-ft trailer — schools, military bases, govt buildings.', desc: 'Applies when a standard 53-ft truck can\'t easily access or enter the site. Common examples: schools, churches, military bases, government facilities, and storage facilities. Carriers charge extra for the added difficulty.', selected: false },
-    { id: 'd-fba',            warn: false, label: 'FBA', shortDesc: 'Delivery to an Amazon Fulfillment Center (FBA/FFC).', desc: 'Fulfillment by Amazon — requires specific BOL format, FBA reference number, and compliance with Amazon\'s carrier requirements. Appointment may be needed.', selected: false },
-    { id: 'd-tradeshow',      warn: false, label: 'Tradeshow', shortDesc: 'Shipping to a convention center with precise timing requirements.', desc: 'Trade shows require tight scheduling and coordination with an on-site decorator (drayage). Missing the delivery window can mean a missed show.', selected: false },
-    { id: 'd-twic',           warn: false, label: 'TWIC', shortDesc: 'Driver needs a TWIC card to access a secure port or maritime facility.', desc: 'Transportation Worker Identification Credential. Required at secure ports, marine terminals, and some chemical plants. Without a valid TWIC card, the driver will be turned away at the gate.', selected: false },
-    { id: 'd-residential',    warn: false, label: 'Residential', shortDesc: 'Delivery to a home or business in a residential area.', desc: 'Homes, apartments, or businesses in a residential neighborhood. Carriers typically send smaller trucks and require a liftgate — both add to the cost.', selected: false },
+    { id: 'd-residential',    warn: false, label: 'Residential',   shortDesc: 'Delivery to a home or business in a residential area.', desc: 'Homes, apartments, or businesses in a residential neighborhood. Carriers typically send smaller trucks and require a liftgate — both add to the cost.', selected: false },
+    { id: 'd-tradeshow',      warn: false, label: 'Tradeshow',     shortDesc: 'Shipping to a convention center with precise timing requirements.', desc: 'Trade shows require tight scheduling and coordination with an on-site decorator (drayage). Missing the delivery window can mean a missed show.', selected: false },
+    { id: 'd-twic',           warn: false, label: 'TWIC',          shortDesc: 'Driver needs a TWIC card to access a secure port or maritime facility.', desc: 'Transportation Worker Identification Credential. Required at secure ports, marine terminals, and some chemical plants. Without a valid TWIC card, the driver will be turned away at the gate.', selected: false },
   ];
 
   let dShowDesc = false;
@@ -6168,10 +6189,10 @@
         list.appendChild(d);
         dRecDividerAdded = true;
       }
-      if (dHasOther && !item.warn && !dOtherDividerAdded) {
+      if (dHasRec && dHasOther && !item.warn && !dOtherDividerAdded) {
         const d = document.createElement('div');
-        d.className = 'acc-list-divider' + (dHasRec ? ' is-other' : '');
-        d.textContent = 'Services';
+        d.className = 'acc-list-divider is-other';
+        d.textContent = 'Other';
         d.addEventListener('click', e => e.stopPropagation());
         list.appendChild(d);
         dOtherDividerAdded = true;
@@ -7391,13 +7412,18 @@
   initAddrPicker('deliver-addr-input', 'deliver-loc-picker', 'loc-gated-deliver');
 
   // ── Address popup panels ──────────────────────────────────────────────────
-  function initAddrPopups(inputId, bookPanelId, searchPanelId, searchValId, companyInputId, initialSource) {
+  function initAddrPopups(inputId, bookPanelId, searchPanelId, searchValId, companyInputId, initialSource, gatedId) {
     const input        = document.getElementById(inputId);
     const bookPanel    = document.getElementById(bookPanelId);
     const searchPanel  = document.getElementById(searchPanelId);
     const searchVal    = document.getElementById(searchValId);
     const companyInput = companyInputId ? document.getElementById(companyInputId) : null;
     if (!input || !bookPanel || !searchPanel) return;
+
+    function gateSection() {
+      const gated = gatedId ? document.getElementById(gatedId) : null;
+      if (gated) { gated.classList.add('loc-gated'); gated.setAttribute('inert', ''); }
+    }
 
     const wrap    = input.closest('.addr-popup-wrap');
     const control = input.closest('.input-control');
@@ -7445,9 +7471,10 @@
       bookPanel.hidden = true;
     });
 
-    // Input typing → update "Use my entered address" preview
+    // Input typing → update "Use my entered address" preview; gate section when field is empty
     input.addEventListener('input', () => {
       if (searchVal) searchVal.textContent = input.value || '';
+      if (!input.value.trim()) gateSection();
     });
 
     // Purple button: always toggles the address book panel, closes search
@@ -7537,17 +7564,18 @@
       if (!clearBtn) return;
       clearBtn.addEventListener('click', () => {
         // Generic handler already cleared input.value + focused input (which opens searchPanel)
-        // We additionally reset committed state, clear company name, and close all panels
+        // We additionally reset committed state, clear company name, close panels, and gate section
         if (companyInput) companyInput.value = '';
         control.classList.remove('addr-committed');
         bookPanel.scrollTop = 0;  bookPanel.hidden = true;
         searchPanel.scrollTop = 0; searchPanel.hidden = true;
+        gateSection();
       });
     }, 0);
   }
 
-  initAddrPopups('pickup-addr-input',  'pickup-addr-book-panel',  'pickup-addr-search-panel',  'pickup-addr-search-val',  'pickup-company-input',  'search');
-  initAddrPopups('deliver-addr-input', 'deliver-addr-book-panel', 'deliver-addr-search-panel', 'deliver-addr-search-val', 'deliver-company-input', 'search');
+  initAddrPopups('pickup-addr-input',  'pickup-addr-book-panel',  'pickup-addr-search-panel',  'pickup-addr-search-val',  'pickup-company-input',  'search', 'loc-gated-pickup');
+  initAddrPopups('deliver-addr-input', 'deliver-addr-book-panel', 'deliver-addr-search-panel', 'deliver-addr-search-val', 'deliver-company-input', 'search', 'loc-gated-deliver');
 
   // ── Location type decision tree ──────────────────────────────────────────
   const LOC_TREE = [
@@ -7878,6 +7906,38 @@
       input.dispatchEvent(new Event('input', { bubbles: true }));
       input.focus();
     });
+  });
+
+  // ── Phone fields: clear button + (XXX) XXX-XXXX auto-format ─────────────
+  function formatPhone(raw) {
+    const digits = raw.replace(/\D/g, '').slice(0, 10);
+    if (!digits) return '';
+    if (digits.length <= 3) return '(' + digits;
+    if (digits.length <= 6) return '(' + digits.slice(0,3) + ') ' + digits.slice(3);
+    return '(' + digits.slice(0,3) + ') ' + digits.slice(3,6) + '-' + digits.slice(6);
+  }
+  document.querySelectorAll('input[type="tel"]').forEach(input => {
+    const control = input.closest('.input-control');
+    if (!control) return;
+    if (!control.querySelector('.clear-btn')) control.insertAdjacentHTML('beforeend', clearBtnHTML);
+    const btn = control.querySelector('.clear-btn');
+    const updateHasValue = () => control.classList.toggle('has-value', input.value.trim().length > 0);
+    input.addEventListener('input', () => {
+      const start = input.selectionStart;
+      const oldLen = input.value.length;
+      const formatted = formatPhone(input.value);
+      input.value = formatted;
+      const diff = formatted.length - oldLen;
+      const newPos = Math.max(0, start + diff);
+      input.setSelectionRange(newPos, newPos);
+      updateHasValue();
+    });
+    btn.addEventListener('click', () => {
+      input.value = '';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.focus();
+    });
+    updateHasValue();
   });
 
   // ── Translation toggle ──────────────────────────────────────────────────
