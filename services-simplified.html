@@ -7530,6 +7530,20 @@
       const company = companyInput ? companyInput.value : '';
       showCard(input.value, company, initialSource || 'search', false);
     }
+
+    // Clear button: full addr reset — runs after generic handler adds the button
+    setTimeout(() => {
+      const clearBtn = control.querySelector('.clear-btn');
+      if (!clearBtn) return;
+      clearBtn.addEventListener('click', () => {
+        // Generic handler already cleared input.value + focused input (which opens searchPanel)
+        // We additionally reset committed state, clear company name, and close all panels
+        if (companyInput) companyInput.value = '';
+        control.classList.remove('addr-committed');
+        bookPanel.scrollTop = 0;  bookPanel.hidden = true;
+        searchPanel.scrollTop = 0; searchPanel.hidden = true;
+      });
+    }, 0);
   }
 
   initAddrPopups('pickup-addr-input',  'pickup-addr-book-panel',  'pickup-addr-search-panel',  'pickup-addr-search-val',  'pickup-company-input',  'search');
