@@ -3889,7 +3889,7 @@
       </div>
 
       <!-- Services section container -->
-      <div class="field">
+      <div class="field" id="svc-field-wrapper">
       <div class="field-label"><span style="font-weight: 600; color: var(--color-label-primary);">This location requires additional services <span style="font-weight: 400; color: var(--color-label-secondary);">(accessorials)</span></span><span class="req">*</span><span class="field-label-autodetect" hidden>Auto-detected from selected address</span></div>
       <div class="svc-new-box" id="svc-box">
         <!-- Top bar -->
@@ -4270,7 +4270,7 @@
     <div id="loc-gated-deliver" style="display:flex;flex-direction:column;gap:32px;">
 
       <!-- Services section container -->
-      <div class="field">
+      <div class="field" id="d-svc-field-wrapper">
       <div class="field-label"><span style="font-weight: 600; color: var(--color-label-primary);">This location requires additional services <span style="font-weight: 400; color: var(--color-label-secondary);">(accessorials)</span></span><span class="req">*</span></div>
       <div class="svc-new-box" id="d-svc-box">
         <!-- Top bar -->
@@ -8434,6 +8434,11 @@
       // Re-lock the service-decision gates
       lockSvcGate();
       lockDeliverSvcGate();
+      // Restore services field wrappers to visible (demo handlers hide them as needed)
+      const _svcFW = document.getElementById('svc-field-wrapper');
+      if (_svcFW) _svcFW.hidden = false;
+      const _dSvcFW = document.getElementById('d-svc-field-wrapper');
+      if (_dSvcFW) _dSvcFW.hidden = false;
     }
 
     function renderInlineRecTags(containerId, btnTextId, items) {
@@ -8701,15 +8706,53 @@
       if (_locTypeInput) _locTypeInput.focus();
     });
 
-    linkRes.addEventListener('click', () => { applyNone(); applyResidential('your address book'); setActive(linkRes); window.scrollTo({ top: 0, behavior: 'smooth' }); });
-    if (linkRes2) linkRes2.addEventListener('click', () => { applyNone(); applyResidential('your address book'); setActive(linkRes2); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    // Demo 1 — "Location known services": services auto-resolved, pill container hidden
+    linkRes.addEventListener('click', () => {
+      applyNone();
+      applyResidential('your address book');
+      // Auto-select recommended services so the gate opens silently
+      ACC_ITEMS.forEach(i => { if (i.warn) i.selected = true; });
+      renderList(); updateBtnLabel(); updatePickupWarning();
+      unlockSvcGate();
+      const _r1 = document.getElementById('acc-svc-rec-row');
+      if (_r1) _r1.hidden = true;
+      DELIVER_ACC_ITEMS.forEach(i => { if (i.warn) i.selected = true; });
+      dRenderList(); dUpdateBtnLabel(); updateDeliverWarning();
+      unlockDeliverSvcGate();
+      const _dr1 = document.getElementById('d-acc-svc-rec-row');
+      if (_dr1) _dr1.hidden = true;
+      // Hide the services selection UI for this demo
+      const _fw = document.getElementById('svc-field-wrapper');
+      if (_fw) _fw.hidden = true;
+      const _dfw = document.getElementById('d-svc-field-wrapper');
+      if (_dfw) _dfw.hidden = true;
+      setActive(linkRes);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Demo 2 — "Location known services exposed": show pill container for selection
+    if (linkRes2) linkRes2.addEventListener('click', () => {
+      applyNone();
+      applyResidential('your address book');
+      // Services field wrappers remain visible (restored by applyNone)
+      setActive(linkRes2);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
     linkRebill.addEventListener('click', () => {
       applyNone(); REBILL_MODE = true; applyCommercial('the address'); setActive(linkRebill);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+
+    // Demo 3 — "Location Unknown": hide services, show loc type picker
     linkRebill2.addEventListener('click', () => {
       applyNone(); setActive(linkRebill2);
-      // Unlock the services section (it was locked by applyNone)
+      // Hide services field wrappers (location not known, services N/A)
+      const _fw3 = document.getElementById('svc-field-wrapper');
+      if (_fw3) _fw3.hidden = true;
+      const _dfw3 = document.getElementById('d-svc-field-wrapper');
+      if (_dfw3) _dfw3.hidden = true;
+      // Unlock the pickup loc-gated section so address/loc-type picker is accessible
       const gated = document.getElementById('loc-gated-pickup');
       if (gated) { gated.classList.remove('loc-gated'); gated.removeAttribute('inert'); }
       // Show the loc type picker
@@ -8717,11 +8760,11 @@
       if (locPicker3) { locPicker3.hidden = false; resetDemo3Picker(); }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
-    // Set initial state from URL param if present, otherwise default to none
+    // Set initial state from URL param if present, otherwise default to Demo 1
     const param = new URLSearchParams(location.search).get('loc');
-    if (param === 'residential') { applyResidential('your address book'); setActive(linkRes); }
+    if (param === 'residential') { linkRes.click(); }
     else if (param === 'rebill') { REBILL_MODE = true; applyCommercial('the address'); setActive(linkRebill); }
-    else { applyResidential('your address book'); setActive(linkRes); }
+    else { linkRes.click(); }
     // Always start at the top on load/refresh
     window.scrollTo({ top: 0, behavior: 'instant' });
   })();
