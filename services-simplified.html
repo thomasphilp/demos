@@ -3046,6 +3046,7 @@
 <div class="demo-bar">
   <span class="demo-bar-label">Demo state:</span>
   <button type="button" id="demo-link-residential">Location known services</button>
+  <button type="button" id="demo-link-residential-2">Location known services</button>
   <button type="button" id="demo-link-rebill" hidden>Location rebill risk</button>
   <button type="button" id="demo-link-rebill2">Location Unknown</button>
 </div>
@@ -8359,10 +8360,11 @@
   // ── Demo bar ──
   (function() {
     const linkRes       = document.getElementById('demo-link-residential');
+    const linkRes2      = document.getElementById('demo-link-residential-2');
     const linkRebill    = document.getElementById('demo-link-rebill');
     const linkRebill2   = document.getElementById('demo-link-rebill2');
     function setActive(btn) {
-      [linkRes, linkRebill, linkRebill2].forEach(b => b.classList.remove('active'));
+      [linkRes, linkRes2, linkRebill, linkRebill2].forEach(b => { if (b) b.classList.remove('active'); });
       btn.classList.add('active');
     }
 
@@ -8804,6 +8806,7 @@
     });
 
     linkRes.addEventListener('click', () => { applyNone(); applyResidential('your address book'); setActive(linkRes); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    if (linkRes2) linkRes2.addEventListener('click', () => { applyNone(); applyResidential('your address book'); setActive(linkRes2); window.scrollTo({ top: 0, behavior: 'smooth' }); });
     linkRebill.addEventListener('click', () => {
       applyNone(); REBILL_MODE = true; applyCommercial('the address'); setActive(linkRebill);
       window.scrollTo({ top: 0, behavior: 'smooth' });
