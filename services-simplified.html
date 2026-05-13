@@ -1182,19 +1182,19 @@
     line-height: 1.2; white-space: nowrap;
   }
   .svc-pill.selected .svc-pill-label { font-weight: 600; }
-  .svc-pill.warn { background: #fefce8; }
-  .svc-pill.warn:hover { background: #fef9c3; }
+  .svc-pill.warn:not(.selected) { background: #fefce8; }
+  .svc-pill.warn:not(.selected):hover { background: #fef9c3; }
   .svc-pill-sep { color: rgba(9,10,12,0.4); margin: 0 2px; }
   .svc-pill-rec { color: #ca8a04; }
 
   /* Expanded content */
-  .svc-expanded-content { padding: 0 16px 0 20px; }
+  .svc-expanded-content { padding: 0 16px 12px 20px; }
   .svc-expanded-grid { display: flex; gap: 12px; }
   .svc-expanded-col { flex: 1; display: flex; flex-direction: column; gap: 12px; }
 
   /* List item — matches Figma expanded card */
   .svc-list-item {
-    display: flex; align-items: center; gap: 12px;
+    display: flex; align-items: center; gap: 10px;
     padding: 10px;
     min-height: 32px;
     border-radius: 4px;
@@ -1215,7 +1215,6 @@
     border: 1px solid rgba(9,10,12,0.12);
     background: rgba(9,10,12,0.02);
     flex-shrink: 0;
-    align-self: flex-start;
     display: flex; align-items: center; justify-content: center;
     box-sizing: border-box;
     transition: background 0.1s, border-color 0.1s;
@@ -1228,7 +1227,7 @@
   .svc-list-item-full-desc { display: none; font-size: 10px; color: var(--color-label-secondary); line-height: normal; margin: 0; width: 100%; }
   .svc-expanded-grid.show-full-desc .svc-list-item-desc { display: none; }
   .svc-expanded-grid.show-full-desc .svc-list-item-full-desc { display: block; }
-  .svc-learn-more-wrap { margin-top: 12px; margin-bottom: 12px; }
+  .svc-learn-more-wrap { margin-top: 12px; }
   .svc-learn-more-divider { border: none; border-top: 1px solid rgba(9,10,12,0.06); margin: 0; }
   .svc-learn-more-btn { background: none; border: none; padding: 0; font-size: 10px; color: var(--color-tint); cursor: pointer; font-family: inherit; font-weight: 500; line-height: normal; }
 
@@ -2719,20 +2718,37 @@
   .demo-bar {
     position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
     display: flex; align-items: center; gap: 8px;
-    padding: 10px 24px; background: #f5f5f7;
-    border-bottom: 1px solid rgba(9,10,12,0.08);
+    padding: 10px 24px; background: #000;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
     font-family: 'Inter', sans-serif; font-size: 12px;
   }
-  .demo-bar-label { color: var(--color-label-secondary); font-weight: 500; margin-right: 4px; }
+  .demo-bar-label { color: rgba(255,255,255,0.5); font-weight: 500; margin-right: 4px; }
   .demo-bar button {
     padding: 4px 12px; border-radius: 20px;
-    font-weight: 500; font-size: 12px; border: 1px solid rgba(9,10,12,0.2);
-    color: var(--color-label-primary); background: white; transition: background 0.12s;
+    font-weight: 500; font-size: 12px; border: 1px solid rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.08); transition: background 0.12s;
     cursor: pointer; font-family: 'Inter', sans-serif;
   }
-  .demo-bar button:hover { background: rgba(9,10,12,0.05); }
+  .demo-bar button:hover { background: rgba(255,255,255,0.15); }
   .demo-bar button:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--color-focus), 0 0 10px 3px rgba(29,78,216,0.2); }
   .demo-bar button.active { background: var(--color-tint); color: white; border-color: var(--color-tint); }
+
+  /* Loc type dropdown button (Demo 4 button-mode) */
+  .loc-type-dropdown-btn {
+    display: none; width: 100%; padding: 9px 12px; border-radius: 8px;
+    border: 1px solid rgba(9,10,12,0.2); background: white;
+    font-family: 'Inter', sans-serif; font-size: 13px;
+    color: var(--color-label-primary); cursor: pointer;
+    align-items: center; justify-content: space-between; gap: 8px;
+    text-align: left; transition: border-color 0.12s; box-sizing: border-box;
+  }
+  .loc-type-dropdown-btn:hover { border-color: rgba(9,10,12,0.4); }
+  .loc-type-dropdown-btn.open { border-color: rgba(9,10,12,0.9); }
+  .loc-type-dropdown-btn-text { flex: 1; }
+  .loc-type-dropdown-btn-chevron { width: 12px; height: 12px; flex-shrink: 0; color: rgba(9,10,12,0.45); transition: transform 0.15s; }
+  .loc-type-dropdown-btn.open .loc-type-dropdown-btn-chevron { transform: rotate(180deg); }
+  .loc-type-picker--btn-mode .loc-type-input-row { display: none; }
+  .loc-type-picker--btn-mode .loc-type-dropdown-btn { display: flex; }
   /* !! TOKENS:START !! */
 :root {
   /* Colors » Light */
@@ -3260,8 +3276,9 @@
 </head>
 <body>
 <div class="demo-bar">
-  <span class="demo-bar-label">Demo state:</span>
+  <span class="demo-bar-label">You are in demo mode</span>
   <button type="button" id="demo-link-residential-2">Location known services exposed</button>
+  <button type="button" id="demo-link-loc-type-finder">exposed with location type finder</button>
   <button type="button" id="demo-link-rebill2">Location Unknown</button>
   <button type="button" id="demo-link-residential">Location known services</button>
   <button type="button" id="demo-link-rebill" hidden>Location rebill risk</button>
@@ -3394,6 +3411,10 @@
             <span class="loc-type-feedback-text">This helps us identify which services will be recommended to <span class="loc-type-feedback-blue">avoid delays or adjustment charges</span>.</span>
           </div>
           <div class="loc-type-search-wrap" id="loc-type-search-wrap">
+            <button class="loc-type-dropdown-btn" id="loc-type-dropdown-btn" type="button">
+              <span class="loc-type-dropdown-btn-text" id="loc-type-dropdown-btn-text">Select location type</span>
+              <svg class="loc-type-dropdown-btn-chevron" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
             <div class="loc-type-input-row">
               <svg class="loc-type-search-icon" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z" fill="currentColor" fill-opacity="0.9"/></svg>
               <input type="text" id="loc-type-input" class="loc-type-input" placeholder="Select the pickup location type" autocomplete="off">
@@ -5677,7 +5698,7 @@
       id: 'cfs',
       label: 'CFS',
       shortDesc: 'Pickup or delivery at a warehouse for ocean or air freight consolidation.',
-      desc: 'Container Freight Station — a warehouse where ocean or air shipments are consolidated or broken down. Common for international freight moving through a port or airport.',
+      desc: 'Container Freight Station — a warehouse for consolidating ocean and air freight, usually located at a port or airport.',
       warn: false,
       selected: false
     },
@@ -5685,7 +5706,7 @@
       id: 'liftgate',
       label: 'Liftgate',
       shortDesc: 'Hydraulic platform lifts freight between ground level and the truck bed.',
-      desc: 'A hydraulic platform lowers or raises freight to ground level. Required at any location without a raised loading dock — homes, retail stores, or street-level pickups.',
+      desc: 'Raises or lowers freight to ground level. Required where there\'s no loading dock — homes, retail stores, or curbside pickups.',
       warn: true,
       selected: false
     },
@@ -5693,7 +5714,7 @@
       id: 'limited-access',
       label: 'Limited Access',
       shortDesc: 'Location is hard for a 53-ft trailer — schools, job sites, military bases.',
-      desc: 'Applies when a standard 53-ft truck can\'t easily access or enter the site. Common examples: schools, job sites, churches, military bases, and storage facilities. Carriers charge extra for the added difficulty.',
+      desc: 'Sites a 53-ft truck can\'t easily enter — schools, job sites, churches, military bases, and storage facilities.',
       warn: false,
       selected: false
     },
@@ -5701,7 +5722,7 @@
       id: 'ltl-inside',
       label: 'LTL Inside Service',
       shortDesc: 'Takes freight past the dock or curbside and delivers it inside a room or hallway.',
-      desc: 'Driver moves freight past the dock or curbside — through a door, down a hallway, or into a room. Adds cost due to extra labor and time on site.',
+      desc: 'Driver delivers freight past the dock or curbside — into a room or hallway. Adds cost for extra labor and on-site time.',
       warn: false,
       selected: false
     },
@@ -5709,7 +5730,7 @@
       id: 'residential',
       label: 'Residential',
       shortDesc: 'Pickup or delivery at a home, apartment, or business in a residential area.',
-      desc: 'Homes, apartments, or businesses in a residential neighborhood. Carriers typically send smaller trucks and require a liftgate — both add to the cost.',
+      desc: 'Homes, apartments, or businesses in a residential area. Carriers use smaller trucks and typically require a liftgate.',
       warn: true,
       selected: false
     },
@@ -5717,7 +5738,7 @@
       id: 'tradeshow',
       label: 'Tradeshow',
       shortDesc: 'Shipping to/from a convention center with precise timing requirements.',
-      desc: 'Trade shows require tight scheduling and coordination with an on-site decorator (drayage). Missing the delivery window can mean a missed show.',
+      desc: 'Requires tight scheduling and drayage coordination. Missing the delivery window often means a missed show.',
       warn: false,
       selected: false
     },
@@ -5725,7 +5746,7 @@
       id: 'twic',
       label: 'TWIC',
       shortDesc: 'Driver needs a TWIC card to access a secure port or maritime facility.',
-      desc: 'Transportation Worker Identification Credential. Required at secure ports, marine terminals, and some chemical plants. Without a valid TWIC card, the driver will be turned away at the gate.',
+      desc: 'Required at secure ports, marine terminals, and chemical plants. Drivers without a valid TWIC card will be turned away.',
       warn: false,
       selected: false
     }
@@ -6758,14 +6779,14 @@
 
   // ── Deliver-to services ──
   const DELIVER_ACC_ITEMS = [
-    { id: 'd-cfs',            warn: false, label: 'CFS',           shortDesc: 'Pickup or delivery at a warehouse for ocean or air freight consolidation.', desc: 'Container Freight Station — a warehouse where ocean or air shipments are consolidated or broken down. Common for international freight moving through a port or airport.', selected: false },
-    { id: 'd-fba',            warn: false, label: 'FBA',           shortDesc: 'Delivery to an Amazon Fulfillment Center (FBA/FFC).', desc: 'Fulfillment by Amazon — requires specific BOL format, FBA reference number, and compliance with Amazon\'s carrier requirements. Appointment may be needed.', selected: false },
-    { id: 'd-liftgate',       warn: false, label: 'Liftgate',      shortDesc: 'Hydraulic platform lifts freight between ground level and the truck bed.', desc: 'A hydraulic platform lowers or raises freight to ground level. Required at any location without a raised loading dock — homes, retail stores, or street-level deliveries.', selected: false },
-    { id: 'd-limited-access', warn: false, label: 'Limited Access', shortDesc: 'Location is hard for a 53-ft trailer — schools, job sites, military bases.', desc: 'Applies when a standard 53-ft truck can\'t easily access or enter the site. Common examples: schools, job sites, churches, military bases, and storage facilities. Carriers charge extra for the added difficulty.', selected: false },
-    { id: 'd-ltl-inside',     warn: false, label: 'LTL Inside Service', shortDesc: 'Takes freight past the dock or curbside and delivers it inside a room or hallway.', desc: 'Driver moves freight past the dock or curbside — through a door, down a hallway, or into a room. Adds cost due to extra labor and time on site.', selected: false },
-    { id: 'd-residential',    warn: false, label: 'Residential',   shortDesc: 'Pickup or delivery at a home, apartment, or business in a residential area.', desc: 'Homes, apartments, or businesses in a residential neighborhood. Carriers typically send smaller trucks and require a liftgate — both add to the cost.', selected: false },
-    { id: 'd-tradeshow',      warn: false, label: 'Tradeshow',     shortDesc: 'Shipping to/from a convention center with precise timing requirements.', desc: 'Trade shows require tight scheduling and coordination with an on-site decorator (drayage). Missing the delivery window can mean a missed show.', selected: false },
-    { id: 'd-twic',           warn: false, label: 'TWIC',          shortDesc: 'Driver needs a TWIC card to access a secure port or maritime facility.', desc: 'Transportation Worker Identification Credential. Required at secure ports, marine terminals, and some chemical plants. Without a valid TWIC card, the driver will be turned away at the gate.', selected: false },
+    { id: 'd-cfs',            warn: false, label: 'CFS',           shortDesc: 'Pickup or delivery at a warehouse for ocean or air freight consolidation.', desc: 'Container Freight Station — a warehouse for consolidating ocean and air freight, usually located at a port or airport.', selected: false },
+    { id: 'd-fba',            warn: false, label: 'FBA',           shortDesc: 'Delivery to an Amazon Fulfillment Center (FBA/FFC).', desc: 'Delivery to an Amazon fulfillment center — requires a specific BOL format, FBA reference number, and Amazon carrier compliance.', selected: false },
+    { id: 'd-liftgate',       warn: false, label: 'Liftgate',      shortDesc: 'Hydraulic platform lifts freight between ground level and the truck bed.', desc: 'Raises or lowers freight to ground level. Required where there\'s no loading dock — homes, retail stores, or curbside deliveries.', selected: false },
+    { id: 'd-limited-access', warn: false, label: 'Limited Access', shortDesc: 'Location is hard for a 53-ft trailer — schools, job sites, military bases.', desc: 'Sites a 53-ft truck can\'t easily enter — schools, job sites, churches, military bases, and storage facilities.', selected: false },
+    { id: 'd-ltl-inside',     warn: false, label: 'LTL Inside Service', shortDesc: 'Takes freight past the dock or curbside and delivers it inside a room or hallway.', desc: 'Driver delivers freight past the dock or curbside — into a room or hallway. Adds cost for extra labor and on-site time.', selected: false },
+    { id: 'd-residential',    warn: false, label: 'Residential',   shortDesc: 'Pickup or delivery at a home, apartment, or business in a residential area.', desc: 'Homes, apartments, or businesses in a residential area. Carriers use smaller trucks and typically require a liftgate.', selected: false },
+    { id: 'd-tradeshow',      warn: false, label: 'Tradeshow',     shortDesc: 'Shipping to/from a convention center with precise timing requirements.', desc: 'Requires tight scheduling and drayage coordination. Missing the delivery window often means a missed show.', selected: false },
+    { id: 'd-twic',           warn: false, label: 'TWIC',          shortDesc: 'Driver needs a TWIC card to access a secure port or maritime facility.', desc: 'Required at secure ports, marine terminals, and chemical plants. Drivers without a valid TWIC card will be turned away.', selected: false },
   ];
 
   let dShowDesc = false;
@@ -8814,12 +8835,13 @@
 
   // ── Demo bar ──
   (function() {
-    const linkRes       = document.getElementById('demo-link-residential');
-    const linkRes2      = document.getElementById('demo-link-residential-2');
-    const linkRebill    = document.getElementById('demo-link-rebill');
-    const linkRebill2   = document.getElementById('demo-link-rebill2');
+    const linkRes        = document.getElementById('demo-link-residential');
+    const linkRes2       = document.getElementById('demo-link-residential-2');
+    const linkRebill     = document.getElementById('demo-link-rebill');
+    const linkRebill2    = document.getElementById('demo-link-rebill2');
+    const linkLocFinder  = document.getElementById('demo-link-loc-type-finder');
     function setActive(btn) {
-      [linkRes, linkRes2, linkRebill, linkRebill2].forEach(b => { if (b) b.classList.remove('active'); });
+      [linkRes, linkRes2, linkRebill, linkRebill2, linkLocFinder].forEach(b => { if (b) b.classList.remove('active'); });
       btn.classList.add('active');
     }
 
@@ -8989,7 +9011,7 @@
       const _banner = document.getElementById('acc-rebill-banner');
       if (_banner) _banner.hidden = true;
       const _locPicker3 = document.getElementById('demo3-loc-picker');
-      if (_locPicker3) _locPicker3.hidden = true;
+      if (_locPicker3) { _locPicker3.hidden = true; _locPicker3.classList.remove('loc-type-picker--btn-mode'); }
       // Re-lock the service-decision gates
       lockSvcGate();
       lockDeliverSvcGate();
@@ -9134,6 +9156,11 @@
       if (input) input.value = '';
       filterLocTypeOptions('');
       _setLocDropdownOpen(false);
+      // Reset dropdown button state
+      const _dBtn = document.getElementById('loc-type-dropdown-btn');
+      if (_dBtn) _dBtn.classList.remove('open');
+      const _dBtnText = document.getElementById('loc-type-dropdown-btn-text');
+      if (_dBtnText) _dBtnText.textContent = 'Select location type';
       const searchWrap = document.getElementById('loc-type-search-wrap');
       if (searchWrap) searchWrap.hidden = false;
       const chip = document.getElementById('loc-type-chip');
@@ -9157,6 +9184,9 @@
       const dd = document.getElementById('loc-type-dropdown');
       if (dd) dd.hidden = !open;
       if (_locTypeInputRow) _locTypeInputRow.classList.toggle('loc-type-input-row--open', open);
+      // Sync dropdown button open state
+      const _dbtn = document.getElementById('loc-type-dropdown-btn');
+      if (_dbtn) _dbtn.classList.toggle('open', open);
     };
     const _openLocDropdown = () => _setLocDropdownOpen(true);
     if (_locTypeInput) {
@@ -9167,6 +9197,17 @@
       });
     }
     if (_locTypeInputRow) _locTypeInputRow.addEventListener('click', _openLocDropdown);
+
+    // Dropdown button (button-mode, Demo 4)
+    const _locTypeDropdownBtn = document.getElementById('loc-type-dropdown-btn');
+    if (_locTypeDropdownBtn) {
+      _locTypeDropdownBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const dd = document.getElementById('loc-type-dropdown');
+        const isOpen = dd && !dd.hidden;
+        _setLocDropdownOpen(!isOpen);
+      });
+    }
 
     // Close dropdown on outside click
     document.addEventListener('click', (e) => {
@@ -9183,7 +9224,38 @@
         const hasDockQuestion = btn.dataset.dock === 'true';
         const typeName = btn.querySelector('.loc-type-option-name').textContent;
         const typeDesc = (btn.querySelector('.loc-type-option-desc') || {}).textContent || '';
-        // Hide search wrap (card stays visible), show chip inside card
+        const picker = document.getElementById('demo3-loc-picker');
+        const isBtnMode = picker && picker.classList.contains('loc-type-picker--btn-mode');
+
+        if (isBtnMode) {
+          // Button mode (Demo 4): update button text, close dropdown, immediately show result
+          const dBtnText = document.getElementById('loc-type-dropdown-btn-text');
+          if (dBtnText) dBtnText.textContent = typeName;
+          _setLocDropdownOpen(false);
+          const _pgb = document.getElementById('svc-box');
+          if (_pgb) { _pgb.classList.add('type-selected'); _pgb.classList.remove('resolved'); }
+          const dockQ = document.getElementById('demo3-dock-q');
+          if (dockQ) { dockQ.hidden = true; dockQ.querySelectorAll('.dock-q-btn').forEach(b => b.classList.remove('selected')); }
+          const appliedRow = document.getElementById('demo3-applied-row');
+          if (appliedRow) appliedRow.hidden = true;
+          // For dock types, default to "no dock" (liftgate recommended); otherwise use type-based recs
+          const recs = hasDockQuestion ? ['liftgate'] : (LOC_REC_PICKUP[type] || []);
+          const recRow = document.getElementById('demo3-rec-row');
+          if (recs.length > 0 && recRow) {
+            const labels = recs.map(id => { const item = ACC_ITEMS.find(i => i.id === id); return item ? item.label : id; });
+            const recService = document.getElementById('demo3-rec-service');
+            const applyText = document.getElementById('demo3-apply-btn').querySelector('.loc-apply-text');
+            if (recService) recService.textContent = labels.join(', ');
+            if (applyText) applyText.textContent = `Apply ${recs.length} service${recs.length > 1 ? 's' : ''}`;
+            recRow.dataset.recs = JSON.stringify(recs);
+            recRow.hidden = false;
+          } else if (recRow) {
+            recRow.hidden = true;
+          }
+          return;
+        }
+
+        // Combo mode (Demo 3): hide search wrap, show chip, show dock question or recs
         const searchWrap = document.getElementById('loc-type-search-wrap');
         if (searchWrap) searchWrap.hidden = true;
         const chipName = document.getElementById('loc-type-chip-name');
@@ -9326,6 +9398,26 @@
       const _dNew2 = document.getElementById('d-svc-box');
       if (_dNew2) _dNew2.hidden = false;
       setActive(linkRes2);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Demo 4 — "exposed with location type finder": show new pill container + loc type picker in button mode
+    if (linkLocFinder) linkLocFinder.addEventListener('click', () => {
+      applyNone();
+      applyResidential('your address book');
+      // Show new pill container (same as Demo 2)
+      const _new4 = document.getElementById('svc-box');
+      if (_new4) _new4.hidden = false;
+      const _dNew4 = document.getElementById('d-svc-box');
+      if (_dNew4) _dNew4.hidden = false;
+      // Show loc type picker in dropdown-button mode
+      const locPicker4 = document.getElementById('demo3-loc-picker');
+      if (locPicker4) {
+        locPicker4.hidden = false;
+        resetDemo3Picker();
+        locPicker4.classList.add('loc-type-picker--btn-mode');
+      }
+      setActive(linkLocFinder);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
