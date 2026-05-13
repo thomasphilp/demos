@@ -1118,7 +1118,7 @@
   }
   .svc-new-toggle-track.on .svc-new-toggle-knob { transform: translateX(12px); }
   .svc-new-toggle-state {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
     color: var(--color-label-secondary);
     min-width: 18px;
@@ -4556,7 +4556,7 @@
       <div class="svc-new-box" id="d-svc-box" hidden>
         <!-- Top bar -->
         <div class="svc-new-topbar">
-          <span class="svc-new-topbar-label">Select services</span>
+          <span class="svc-new-topbar-label" id="d-svc-new-topbar-label">Select services</span>
           <div class="svc-new-toggle-wrap">
             <span class="svc-new-toggle-label-text">View full service details</span>
             <button class="svc-new-toggle" id="d-svc-expand-toggle" type="button" aria-pressed="false">
@@ -6348,17 +6348,22 @@
 
   // ── Expand/collapse toggle — pickup ──
   const svcExpandToggle = document.getElementById('svc-expand-toggle');
+  const checkCircleSvg = `<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4.5" fill="#00703a"/><path d="M2.5 5.5L4.5 7.5L7.5 3" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
   function updateSvcTopbarLabel() {
     const label = document.getElementById('svc-new-topbar-label');
-    const track = document.getElementById('svc-toggle-track');
     if (!label) return;
-    if (track && track.classList.contains('on')) {
-      const n = ACC_ITEMS.filter(i => i.selected).length;
-      const checkSvg = `<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4.5" fill="#00703a"/><path d="M2.5 5.5L4.5 7.5L7.5 3" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-      label.innerHTML = n > 0 ? `${checkSvg} <span style="font-weight:600;color:rgba(9,10,12,0.9);font-size:10px;">${n} selected</span>` : 'Select services';
-    } else {
-      label.textContent = 'Select services';
-    }
+    const n = ACC_ITEMS.filter(i => i.selected).length;
+    label.innerHTML = n > 0
+      ? `${checkCircleSvg} <span style="font-weight:600;color:rgba(9,10,12,0.9);font-size:10px;">${n} selected</span>`
+      : 'Select services';
+  }
+  function updateDSvcTopbarLabel() {
+    const label = document.getElementById('d-svc-new-topbar-label');
+    if (!label) return;
+    const n = DELIVER_ACC_ITEMS.filter(i => i.selected).length;
+    label.innerHTML = n > 0
+      ? `${checkCircleSvg} <span style="font-weight:600;color:rgba(9,10,12,0.9);font-size:10px;">${n} selected</span>`
+      : 'Select services';
   }
   if (svcExpandToggle) {
     svcExpandToggle.addEventListener('click', () => {
@@ -6793,6 +6798,7 @@
       item.selected = !item.selected;
       dRenderList();
       dUpdateBtnLabel();
+      updateDSvcTopbarLabel();
       const anySelected = DELIVER_ACC_ITEMS.some(i => i.selected);
       const box = document.getElementById('d-svc-box');
       if (box) box.classList.toggle('type-selected', anySelected);
