@@ -6356,7 +6356,7 @@
     if (!label) return;
     const n = ACC_ITEMS.filter(i => i.selected).length;
     label.innerHTML = n > 0
-      ? `${checkCircleSvg} <span style="font-weight:600;color:rgba(9,10,12,0.9);font-size:10px;">${n} selected</span>`
+      ? `<span style="display:inline-flex;align-items:center;gap:4px;">${checkCircleSvg}<span style="font-weight:600;color:rgba(9,10,12,0.9);font-size:10px;">${n} selected</span></span>`
       : 'Select services';
   }
   function updateDSvcTopbarLabel() {
@@ -6364,7 +6364,7 @@
     if (!label) return;
     const n = DELIVER_ACC_ITEMS.filter(i => i.selected).length;
     label.innerHTML = n > 0
-      ? `${checkCircleSvg} <span style="font-weight:600;color:rgba(9,10,12,0.9);font-size:10px;">${n} selected</span>`
+      ? `<span style="display:inline-flex;align-items:center;gap:4px;">${checkCircleSvg}<span style="font-weight:600;color:rgba(9,10,12,0.9);font-size:10px;">${n} selected</span></span>`
       : 'Select services';
   }
   if (svcExpandToggle) {
