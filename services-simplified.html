@@ -5789,7 +5789,7 @@
     const pillWrap = document.getElementById(pillWrapId);
     if (pillWrap) {
       pillWrap.innerHTML = '';
-      const sorted = [...items].sort((a, b) => (b.warn ? 1 : 0) - (a.warn ? 1 : 0));
+      const sorted = [...items].sort((a, b) => { const w = (b.warn ? 1 : 0) - (a.warn ? 1 : 0); return w !== 0 ? w : a.label.localeCompare(b.label); });
       sorted.forEach(item => {
         const pill = document.createElement('div');
         pill.className = 'svc-pill' + (item.selected ? ' selected' : '') + (item.warn ? ' warn' : '');
@@ -5843,7 +5843,7 @@
     const list = document.getElementById('acc-list');
     if (list) {
       list.innerHTML = '';
-      const sorted = [...ACC_ITEMS].sort((a, b) => (b.warn ? 1 : 0) - (a.warn ? 1 : 0));
+      const sorted = [...ACC_ITEMS].sort((a, b) => { const w = (b.warn ? 1 : 0) - (a.warn ? 1 : 0); return w !== 0 ? w : a.label.localeCompare(b.label); });
       const hasRec = sorted.some(i => i.warn);
       const hasOther = sorted.some(i => !i.warn);
       let recDividerAdded = false, otherDividerAdded = false;
@@ -6705,7 +6705,7 @@
     const dList = document.getElementById('d-acc-list');
     if (dList) {
       dList.innerHTML = '';
-      const dSorted = [...DELIVER_ACC_ITEMS].sort((a, b) => (b.warn ? 1 : 0) - (a.warn ? 1 : 0));
+      const dSorted = [...DELIVER_ACC_ITEMS].sort((a, b) => { const w = (b.warn ? 1 : 0) - (a.warn ? 1 : 0); return w !== 0 ? w : a.label.localeCompare(b.label); });
       const dHasRec = dSorted.some(i => i.warn);
       const dHasOther = dSorted.some(i => !i.warn);
       let dRecDividerAdded = false, dOtherDividerAdded = false;
