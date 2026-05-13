@@ -1208,6 +1208,8 @@
   }
   .svc-list-item:hover { background: rgba(9,10,12,0.06); }
   .svc-list-item.selected { background: var(--controls-selected-bg); border: 2px solid rgba(9,10,12,0.9); padding: 7px 11px; }
+  .svc-list-item.warn:not(.selected) { background: #fefce8; }
+  .svc-list-item.warn:not(.selected):hover { background: #fef9c3; }
   .svc-list-item-checkbox {
     width: 16px; height: 16px;
     border-radius: 4px;
@@ -5829,7 +5831,7 @@
       const sortedGrid = [...items].sort((a, b) => { const w = (b.warn ? 1 : 0) - (a.warn ? 1 : 0); return w !== 0 ? w : a.label.localeCompare(b.label); });
       sortedGrid.forEach(item => {
         const el = document.createElement('div');
-        el.className = 'svc-list-item' + (item.selected ? ' selected' : '');
+        el.className = 'svc-list-item' + (item.selected ? ' selected' : '') + (item.warn ? ' warn' : '');
         el.setAttribute('role', 'checkbox');
         el.setAttribute('aria-checked', item.selected ? 'true' : 'false');
         el.setAttribute('tabindex', '0');
