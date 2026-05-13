@@ -3891,7 +3891,131 @@
       <!-- Services section container -->
       <div class="field" id="svc-field-wrapper">
       <div class="field-label"><span style="font-weight: 600; color: var(--color-label-primary);">This location requires additional services <span style="font-weight: 400; color: var(--color-label-secondary);">(accessorials)</span></span><span class="req">*</span><span class="field-label-autodetect" hidden>Auto-detected from selected address</span></div>
-      <div class="svc-new-box" id="svc-box">
+
+      <!-- OLD services container (Demo 1) — dropdown -->
+      <div class="services-gate-box" id="svc-box-old">
+      <div class="row" style="align-items: flex-start;">
+        <!-- Services dropdown -->
+        <div class="field" style="flex: 1 1 50px; min-width:0;">
+          <div class="field-label" style="color: var(--color-label-primary);">
+            <span>Services</span>
+          </div><!-- /field-label -->
+          <div class="dropdown-field" id="acc-dropdown-field">
+            <button class="dropdown-btn" id="acc-dropdown-btn" type="button" aria-expanded="false">
+              <div class="dropdown-btn-left">
+                <span class="btn-icon">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M14 5H11.1636V16.4925H2V19H11C12.6569 19 14 17.6569 14 16V5Z" fill="currentColor"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16.0019 0C16.0006 0.0415155 16 0.0831851 16 0.125V17.6562C16 18.7953 16.9234 19.7188 18.0625 19.7188H18.0856C18.3461 16.8279 20.7757 14.5625 23.7344 14.5625C23.8234 14.5625 23.912 14.5646 24 14.5686V0H16.0019ZM23.7344 16.625C23.8237 16.625 23.9123 16.6282 24 16.6346V23.8341C23.9123 23.8405 23.8237 23.8438 23.7344 23.8438C21.741 23.8438 20.125 22.2278 20.125 20.2344C20.125 18.241 21.741 16.625 23.7344 16.625Z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span class="dropdown-btn-text" id="acc-btn-label">Select</span>
+              </div>
+              <div class="dropdown-btn-right">
+                <span class="acc-rec-badge" id="acc-rec-badge" hidden></span>
+                <div class="dropdown-caret">
+                  <svg viewBox="-1 -1 12 8" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 0L10 0L5 6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+                  </svg>
+                </div>
+              </div>
+            </button>
+            <!-- Services panel -->
+            <div class="acc-panel" id="acc-panel">
+              <div class="acc-panel-header">
+                <p class="acc-panel-title">Select services</p>
+                <div class="acc-panel-alert" id="acc-panel-alert" style="display:none;">
+                  <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0.300049 12C0.300049 5.53832 5.53832 0.300049 12 0.300049C18.4618 0.300049 23.7 5.53832 23.7 12C23.7 18.4618 18.4618 23.7 12 23.7C5.53832 23.7 0.300049 18.4618 0.300049 12ZM12 7.50005C12.4971 7.50005 12.9 7.90299 12.9 8.40005V12.9C12.9 13.3971 12.4971 13.8 12 13.8C11.503 13.8 11.1 13.3971 11.1 12.9V8.40005C11.1 7.90299 11.503 7.50005 12 7.50005ZM12 17.4C12.4971 17.4 12.9 16.9971 12.9 16.5C12.9 16.003 12.4971 15.6 12 15.6C11.503 15.6 11.1 16.003 11.1 16.5C11.1 16.9971 11.503 17.4 12 17.4Z"/>
+                  </svg>
+                  <div class="acc-panel-alert-text">
+                    <p class="acc-panel-alert-title">Add to avoid adjustment charges</p>
+                    <p class="acc-panel-alert-body">The recommended services below should be added to prevent pick-up/delivery issues and avoid adjustment charges after pick-up/delivery.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="acc-list desc-off" id="acc-list">
+                <!-- Items injected by JS -->
+              </div>
+              <div class="acc-desc-bar">
+                <span class="acc-desc-bar-label">View expanded service details</span>
+                <button class="acc-desc-toggle" id="acc-desc-toggle" type="button">
+                  <div class="acc-toggle-track off" id="acc-toggle-track">
+                    <div class="acc-toggle-knob"></div>
+                  </div>
+                  <span class="acc-toggle-state off" id="acc-desc-toggle-label">Off</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="svc-inline-notice" hidden>
+            <span class="hint-icon">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <div class="svc-inline-notice-text">
+              <p class="svc-inline-notice-title">Avoid adjustment charges</p>
+              <p class="svc-inline-notice-body" id="svc-inline-notice-body">Add the recommended services to prevent pickup/delivery issues and avoid adjustment charges after delivery</p>
+            </div>
+          </div>
+          <div class="hint">
+            <span class="hint-icon"><svg viewBox="0 0 11.7002 11.7002" fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="12" height="12"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.8501 0C9.08095 0 11.7002 2.61924 11.7002 5.8501C11.7002 9.08096 9.08096 11.7002 5.8501 11.7002C2.61924 11.7002 0 9.08095 0 5.8501C1.31429e-05 2.61925 2.61925 1.31425e-05 5.8501 0ZM5.81104 7.55322C5.4184 7.55322 5.1001 7.87152 5.1001 8.26416C5.1001 8.6568 5.4184 8.9751 5.81104 8.9751H5.88916C6.2818 8.9751 6.6001 8.6568 6.6001 8.26416C6.6001 7.87152 6.2818 7.55322 5.88916 7.55322H5.81104ZM5.8501 2.4751C5.43588 2.4751 5.1001 2.81088 5.1001 3.2251V5.99072C5.1001 6.40494 5.43588 6.74072 5.8501 6.74072C6.26431 6.74072 6.6001 6.40494 6.6001 5.99072V3.2251C6.6001 2.81088 6.26431 2.4751 5.8501 2.4751Z"/></svg></span>
+            <span id="svc-hint-span">Add the recommended services to prevent pickup/delivery issues and avoid adjustment charges after delivery</span>
+          </div>
+        </div>
+
+        <!-- Extra Services dropdown (pickup) -->
+        <div class="field" style="flex: 1 1 0px; min-width:0;">
+          <div class="field-label"><span>Extra services</span><span class="field-label-optional">(optional)</span></div>
+          <div class="dropdown-field is-disabled" id="extra-svc-dropdown-field">
+            <button class="dropdown-btn" id="extra-svc-btn" type="button" aria-expanded="false">
+              <div class="dropdown-btn-left">
+                <span class="btn-icon">
+                  <svg viewBox="0 0 24.0469 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5.375 21C5.375 18.5147 7.38972 16.5 9.875 16.5H19.5469C22.0322 16.5 24.0469 18.5147 24.0469 21V24H5.375V21Z"/>
+                    <path d="M8 6.75C8 3.02208 11.0221 0 14.75 0C18.4779 0 21.5 3.02208 21.5 6.75C21.5 10.4779 18.4779 13.5 14.75 13.5C11.0221 13.5 8 10.4779 8 6.75Z"/>
+                    <path d="M7.5 16.5C5.01472 16.5 3 18.5147 3 21V24H0V21C0 18.5147 2.01472 16.5 4.5 16.5H7.5Z"/>
+                    <path d="M9.375 0C9.89067 0 10.3925 0.0594256 10.875 0.168945C7.8692 0.851173 5.625 3.53775 5.625 6.75C5.625 9.96218 7.86931 12.6478 10.875 13.3301C10.3924 13.4396 9.89075 13.5 9.375 13.5C5.64708 13.5 2.625 10.4779 2.625 6.75C2.625 3.02208 5.64708 0 9.375 0Z"/>
+                  </svg>
+                </span>
+                <span class="dropdown-btn-text" id="extra-svc-label">Select</span>
+              </div>
+              <div class="dropdown-caret">
+                <svg viewBox="-1 -1 12 8" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 0L10 0L5 6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+                </svg>
+              </div>
+            </button>
+            <div class="acc-panel" id="extra-svc-panel">
+              <div class="acc-panel-header">
+                <p class="acc-panel-title">Select extra services</p>
+              </div>
+              <div class="acc-list desc-off" id="extra-svc-list"></div>
+              <div class="acc-desc-bar">
+                <span class="acc-desc-bar-label">View expanded service details</span>
+                <button class="acc-desc-toggle" id="extra-svc-desc-toggle" type="button">
+                  <div class="acc-toggle-track off" id="extra-svc-toggle-track">
+                    <div class="acc-toggle-knob"></div>
+                  </div>
+                  <span class="acc-toggle-state off" id="extra-svc-desc-toggle-label">Off</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /services row -->
+
+      <!-- Hint + No-services button -->
+      <div class="svc-rec-row" id="acc-svc-rec-row">
+        <hr class="svc-box-divider" id="svc-box-divider">
+        <div style="display:flex; align-items:center; gap:16px;">
+          <span class="or-chip">or</span>
+          <button class="no-svc-btn" id="no-svc-btn" type="button">Skip for now</button>
+        </div>
+      </div>
+      </div><!-- /svc-box-old -->
+
+      <!-- NEW services container (Demo 2) — pill/grid -->
+      <div class="svc-new-box" id="svc-box" hidden>
         <!-- Top bar -->
         <div class="svc-new-topbar">
           <span class="svc-new-topbar-label"></span>
@@ -3917,14 +4041,15 @@
         <hr class="svc-new-divider">
         <!-- Bottom: or / Skip for now -->
         <div class="svc-new-bottom">
-          <div class="svc-rec-row" id="acc-svc-rec-row">
+          <div class="svc-rec-row" id="acc-svc-rec-row-new">
             <div style="display:flex; align-items:center; gap:16px;">
               <span class="or-chip">or</span>
-              <button class="no-svc-btn" id="no-svc-btn" type="button">Skip for now</button>
+              <button class="no-svc-btn" id="no-svc-btn-new" type="button">Skip for now</button>
             </div>
           </div>
         </div>
       </div><!-- /svc-new-box -->
+
       </div><!-- /field wrapper -->
 
       <!-- Fields locked until service decision (services selected or "not needed" clicked) -->
@@ -4272,7 +4397,131 @@
       <!-- Services section container -->
       <div class="field" id="d-svc-field-wrapper">
       <div class="field-label"><span style="font-weight: 600; color: var(--color-label-primary);">This location requires additional services <span style="font-weight: 400; color: var(--color-label-secondary);">(accessorials)</span></span><span class="req">*</span></div>
-      <div class="svc-new-box" id="d-svc-box">
+
+      <!-- OLD services container (Demo 1) — dropdown -->
+      <div class="services-gate-box" id="d-svc-box-old">
+      <div class="row" style="align-items: flex-start;">
+        <!-- Deliver-to Services dropdown -->
+        <div class="field" style="flex: 1 1 50px; min-width:0;">
+          <div class="field-label" style="color: var(--color-label-primary);">
+            <span>Services</span>
+          </div><!-- /field-label -->
+          <div class="dropdown-field" id="d-acc-dropdown-field">
+            <button class="dropdown-btn" id="d-acc-dropdown-btn" type="button" aria-expanded="false">
+              <div class="dropdown-btn-left">
+                <span class="btn-icon">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M14 5H11.1636V16.4925H2V19H11C12.6569 19 14 17.6569 14 16V5Z" fill="currentColor"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16.0019 0C16.0006 0.0415155 16 0.0831851 16 0.125V17.6562C16 18.7953 16.9234 19.7188 18.0625 19.7188H18.0856C18.3461 16.8279 20.7757 14.5625 23.7344 14.5625C23.8234 14.5625 23.912 14.5646 24 14.5686V0H16.0019ZM23.7344 16.625C23.8237 16.625 23.9123 16.6282 24 16.6346V23.8341C23.9123 23.8405 23.8237 23.8438 23.7344 23.8438C21.741 23.8438 20.125 22.2278 20.125 20.2344C20.125 18.241 21.741 16.625 23.7344 16.625Z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span class="dropdown-btn-text" id="d-acc-btn-label">Select</span>
+              </div>
+              <div class="dropdown-btn-right">
+                <span class="acc-rec-badge" id="d-acc-rec-badge" hidden></span>
+                <div class="dropdown-caret">
+                  <svg viewBox="-1 -1 12 8" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 0L10 0L5 6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+                  </svg>
+                </div>
+              </div>
+            </button>
+            <!-- Services panel -->
+            <div class="acc-panel" id="d-acc-panel">
+              <div class="acc-panel-header">
+                <p class="acc-panel-title">Select services</p>
+                <div class="acc-panel-alert" id="d-acc-panel-alert" style="display:none;">
+                  <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0.300049 12C0.300049 5.53832 5.53832 0.300049 12 0.300049C18.4618 0.300049 23.7 5.53832 23.7 12C23.7 18.4618 18.4618 23.7 12 23.7C5.53832 23.7 0.300049 18.4618 0.300049 12ZM12 7.50005C12.4971 7.50005 12.9 7.90299 12.9 8.40005V12.9C12.9 13.3971 12.4971 13.8 12 13.8C11.503 13.8 11.1 13.3971 11.1 12.9V8.40005C11.1 7.90299 11.503 7.50005 12 7.50005ZM12 17.4C12.4971 17.4 12.9 16.9971 12.9 16.5C12.9 16.003 12.4971 15.6 12 15.6C11.503 15.6 11.1 16.003 11.1 16.5C11.1 16.9971 11.503 17.4 12 17.4Z"/>
+                  </svg>
+                  <div class="acc-panel-alert-text">
+                    <p class="acc-panel-alert-title">Add to avoid adjustment charges</p>
+                    <p class="acc-panel-alert-body">The recommended services below should be added to prevent pick-up/delivery issues and avoid adjustment charges after pick-up/delivery.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="acc-list desc-off" id="d-acc-list">
+                <!-- Items injected by JS -->
+              </div>
+              <div class="acc-desc-bar">
+                <span class="acc-desc-bar-label">View expanded service details</span>
+                <button class="acc-desc-toggle" id="d-acc-desc-toggle" type="button">
+                  <div class="acc-toggle-track off" id="d-acc-toggle-track">
+                    <div class="acc-toggle-knob"></div>
+                  </div>
+                  <span class="acc-toggle-state off" id="d-acc-desc-toggle-label">Off</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="svc-inline-notice" id="d-svc-inline-notice" hidden>
+            <span class="hint-icon">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <div class="svc-inline-notice-text">
+              <p class="svc-inline-notice-title" id="d-svc-inline-notice-title">Avoid adjustment charges</p>
+              <p class="svc-inline-notice-body" id="d-svc-inline-notice-body">Add the recommended services to prevent pickup/delivery issues and avoid adjustment charges after delivery</p>
+            </div>
+          </div>
+          <div class="hint">
+            <span class="hint-icon"><svg viewBox="0 0 11.7002 11.7002" fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="12" height="12"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.8501 0C9.08095 0 11.7002 2.61924 11.7002 5.8501C11.7002 9.08096 9.08096 11.7002 5.8501 11.7002C2.61924 11.7002 0 9.08095 0 5.8501C1.31429e-05 2.61925 2.61925 1.31425e-05 5.8501 0ZM5.81104 7.55322C5.4184 7.55322 5.1001 7.87152 5.1001 8.26416C5.1001 8.6568 5.4184 8.9751 5.81104 8.9751H5.88916C6.2818 8.9751 6.6001 8.6568 6.6001 8.26416C6.6001 7.87152 6.2818 7.55322 5.88916 7.55322H5.81104ZM5.8501 2.4751C5.43588 2.4751 5.1001 2.81088 5.1001 3.2251V5.99072C5.1001 6.40494 5.43588 6.74072 5.8501 6.74072C6.26431 6.74072 6.6001 6.40494 6.6001 5.99072V3.2251C6.6001 2.81088 6.26431 2.4751 5.8501 2.4751Z"/></svg></span>
+            <span id="d-svc-hint-span">Add the recommended services to prevent pickup/delivery issues and avoid adjustment charges after delivery</span>
+          </div>
+        </div>
+
+        <!-- Extra Services dropdown (deliver) -->
+        <div class="field" style="flex: 1 1 0px; min-width:0;">
+          <div class="field-label"><span>Extra services</span><span class="field-label-optional">(optional)</span></div>
+          <div class="dropdown-field is-disabled" id="d-extra-svc-dropdown-field">
+            <button class="dropdown-btn" id="d-extra-svc-btn" type="button" aria-expanded="false">
+              <div class="dropdown-btn-left">
+                <span class="btn-icon">
+                  <svg viewBox="0 0 24.0469 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5.375 21C5.375 18.5147 7.38972 16.5 9.875 16.5H19.5469C22.0322 16.5 24.0469 18.5147 24.0469 21V24H5.375V21Z"/>
+                    <path d="M8 6.75C8 3.02208 11.0221 0 14.75 0C18.4779 0 21.5 3.02208 21.5 6.75C21.5 10.4779 18.4779 13.5 14.75 13.5C11.0221 13.5 8 10.4779 8 6.75Z"/>
+                    <path d="M7.5 16.5C5.01472 16.5 3 18.5147 3 21V24H0V21C0 18.5147 2.01472 16.5 4.5 16.5H7.5Z"/>
+                    <path d="M9.375 0C9.89067 0 10.3925 0.0594256 10.875 0.168945C7.8692 0.851173 5.625 3.53775 5.625 6.75C5.625 9.96218 7.86931 12.6478 10.875 13.3301C10.3924 13.4396 9.89075 13.5 9.375 13.5C5.64708 13.5 2.625 10.4779 2.625 6.75C2.625 3.02208 5.64708 0 9.375 0Z"/>
+                  </svg>
+                </span>
+                <span class="dropdown-btn-text" id="d-extra-svc-label">Select</span>
+              </div>
+              <div class="dropdown-caret">
+                <svg viewBox="-1 -1 12 8" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 0L10 0L5 6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+                </svg>
+              </div>
+            </button>
+            <div class="acc-panel" id="d-extra-svc-panel">
+              <div class="acc-panel-header">
+                <p class="acc-panel-title">Select extra services</p>
+              </div>
+              <div class="acc-list desc-off" id="d-extra-svc-list"></div>
+              <div class="acc-desc-bar">
+                <span class="acc-desc-bar-label">View expanded service details</span>
+                <button class="acc-desc-toggle" id="d-extra-svc-desc-toggle" type="button">
+                  <div class="acc-toggle-track off" id="d-extra-svc-toggle-track">
+                    <div class="acc-toggle-knob"></div>
+                  </div>
+                  <span class="acc-toggle-state off" id="d-extra-svc-desc-toggle-label">Off</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /services row -->
+
+      <!-- No-services button -->
+      <div class="svc-rec-row" id="d-acc-svc-rec-row">
+        <hr class="svc-box-divider">
+        <div style="display:flex; align-items:center; gap:16px;">
+          <span class="or-chip">or</span>
+          <button class="no-svc-btn" id="d-no-svc-btn" type="button">Skip for now</button>
+        </div>
+      </div>
+      </div><!-- /d-svc-box-old -->
+
+      <!-- NEW services container (Demo 2) — pill/grid -->
+      <div class="svc-new-box" id="d-svc-box" hidden>
         <!-- Top bar -->
         <div class="svc-new-topbar">
           <span class="svc-new-topbar-label"></span>
@@ -4298,14 +4547,15 @@
         <hr class="svc-new-divider">
         <!-- Bottom: or / Skip for now -->
         <div class="svc-new-bottom">
-          <div class="svc-rec-row" id="d-acc-svc-rec-row">
+          <div class="svc-rec-row" id="d-acc-svc-rec-row-new">
             <div style="display:flex; align-items:center; gap:16px;">
               <span class="or-chip">or</span>
-              <button class="no-svc-btn" id="d-no-svc-btn" type="button">Skip for now</button>
+              <button class="no-svc-btn" id="d-no-svc-btn-new" type="button">Skip for now</button>
             </div>
           </div>
         </div>
-      </div><!-- /svc-new-box -->
+      </div><!-- /d-svc-new-box -->
+
       </div><!-- /field wrapper -->
 
       <!-- Fields locked until service decision -->
@@ -5441,8 +5691,10 @@
     D_SVC_RESOLVED = true;
     const gate = document.getElementById('d-svc-fields-gate');
     if (gate) { gate.classList.remove('loc-gated'); gate.removeAttribute('inert'); }
-    const gateBox = document.getElementById('d-svc-box');
-    if (gateBox) { gateBox.classList.remove('type-selected'); gateBox.classList.add('resolved'); }
+    const dOldBox = document.getElementById('d-svc-box-old');
+    if (dOldBox) { dOldBox.classList.remove('type-selected'); dOldBox.classList.add('resolved'); }
+    const dNewBox = document.getElementById('d-svc-box');
+    if (dNewBox) { dNewBox.classList.remove('type-selected'); dNewBox.classList.add('resolved'); }
     // Auto-focus the first name field once the gate opens
     const firstNameInput = gate && gate.querySelector('input[placeholder="First name"]');
     if (firstNameInput) requestAnimationFrame(() => firstNameInput.focus());
@@ -5453,16 +5705,22 @@
     if (gate) { gate.classList.add('loc-gated'); gate.setAttribute('inert', ''); }
     const _svcRecRow = document.getElementById('d-acc-svc-rec-row');
     if (_svcRecRow) _svcRecRow.hidden = false;
-    const gateBox = document.getElementById('d-svc-box');
-    if (gateBox) { gateBox.classList.remove('resolved'); gateBox.classList.remove('type-selected'); }
+    const _svcRecRowNew = document.getElementById('d-acc-svc-rec-row-new');
+    if (_svcRecRowNew) _svcRecRowNew.hidden = false;
+    const dOldBox = document.getElementById('d-svc-box-old');
+    if (dOldBox) { dOldBox.classList.remove('resolved'); dOldBox.classList.remove('type-selected'); }
+    const dNewBox = document.getElementById('d-svc-box');
+    if (dNewBox) { dNewBox.classList.remove('resolved'); dNewBox.classList.remove('type-selected'); }
   }
 
   function unlockSvcGate() {
     SVC_RESOLVED = true;
     const gate = document.getElementById('svc-fields-gate');
     if (gate) { gate.classList.remove('loc-gated'); gate.removeAttribute('inert'); }
-    const gateBox = document.getElementById('svc-box');
-    if (gateBox) { gateBox.classList.remove('type-selected'); gateBox.classList.add('resolved'); }
+    const oldBox = document.getElementById('svc-box-old');
+    if (oldBox) { oldBox.classList.remove('type-selected'); oldBox.classList.add('resolved'); }
+    const newBox = document.getElementById('svc-box');
+    if (newBox) { newBox.classList.remove('type-selected'); newBox.classList.add('resolved'); }
     // Auto-focus the first name field once the gate opens
     const firstNameInput = gate && gate.querySelector('input[placeholder="First name"]');
     if (firstNameInput) requestAnimationFrame(() => firstNameInput.focus());
@@ -5471,11 +5729,15 @@
     SVC_RESOLVED = false;
     const gate = document.getElementById('svc-fields-gate');
     if (gate) { gate.classList.add('loc-gated'); gate.setAttribute('inert', ''); }
-    // Restore svc-rec-row when gate is re-locked (demo reset)
+    // Restore svc-rec-rows when gate is re-locked (demo reset)
     const _svcRecRow = document.getElementById('acc-svc-rec-row');
     if (_svcRecRow) _svcRecRow.hidden = false;
-    const gateBox = document.getElementById('svc-box');
-    if (gateBox) { gateBox.classList.remove('resolved'); gateBox.classList.remove('type-selected'); }
+    const _svcRecRowNew = document.getElementById('acc-svc-rec-row-new');
+    if (_svcRecRowNew) _svcRecRowNew.hidden = false;
+    const oldBox = document.getElementById('svc-box-old');
+    if (oldBox) { oldBox.classList.remove('resolved'); oldBox.classList.remove('type-selected'); }
+    const newBox = document.getElementById('svc-box');
+    if (newBox) { newBox.classList.remove('resolved'); newBox.classList.remove('type-selected'); }
   }
 
   // Mock rebill % data keyed by service id (shown when REBILL_MODE is true)
@@ -5551,6 +5813,64 @@
   }
 
   function renderList() {
+    // ── Old dropdown list (Demo 1) ──
+    const list = document.getElementById('acc-list');
+    if (list) {
+      list.innerHTML = '';
+      const sorted = [...ACC_ITEMS].sort((a, b) => (b.warn ? 1 : 0) - (a.warn ? 1 : 0));
+      const hasRec = sorted.some(i => i.warn);
+      const hasOther = sorted.some(i => !i.warn);
+      let recDividerAdded = false, otherDividerAdded = false;
+      sorted.forEach(item => {
+        if (hasRec && item.warn && !recDividerAdded) {
+          const d = document.createElement('div');
+          d.className = 'acc-list-divider is-rec';
+          d.textContent = REBILL_MODE ? 'Recommended to avoid a 60% re-bill chance' : 'Recommended to avoid adjustment charges';
+          d.addEventListener('click', e => e.stopPropagation());
+          list.appendChild(d);
+          recDividerAdded = true;
+        }
+        if (hasRec && hasOther && !item.warn && !otherDividerAdded) {
+          const d = document.createElement('div');
+          d.className = 'acc-list-divider is-other';
+          d.textContent = 'Other';
+          d.addEventListener('click', e => e.stopPropagation());
+          list.appendChild(d);
+          otherDividerAdded = true;
+        }
+        const el = document.createElement('div');
+        el.className = 'acc-item' + (item.selected ? ' selected' : '');
+        el.dataset.id = item.id;
+        el.setAttribute('tabindex', '-1');
+        const rebillPct = REBILL_MODE && item.warn && !item.selected ? REBILL_DATA[item.id] : null;
+        const rebillBadge = rebillPct != null ? `<div class="acc-item-rebill"><span class="acc-item-rebill-text">60% re-bill chance</span></div>` : '';
+        el.innerHTML = `
+          <div class="acc-checkbox">${item.selected ? checkSVG : ''}</div>
+          <div class="acc-item-content">
+            <div>
+              <p class="acc-item-label">${item.label}</p>
+              <p class="acc-item-desc">${showDesc ? item.desc : item.shortDesc}</p>
+            </div>
+            ${rebillBadge}
+          </div>
+        `;
+        el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); } });
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          item.selected = !item.selected;
+          renderList();
+          updateBtnLabel();
+          updatePickupWarning();
+          if (!SVC_RESOLVED && ACC_ITEMS.some(i => i.selected)) {
+            unlockSvcGate();
+            const _r = document.getElementById('acc-svc-rec-row');
+            if (_r) _r.hidden = true;
+          }
+        });
+        list.appendChild(el);
+      });
+    }
+    // ── New pill/grid (Demo 2) ──
     renderSvcView(ACC_ITEMS, 'svc-pill-wrap', 'svc-expanded-grid', (item) => {
       item.selected = !item.selected;
       renderList();
@@ -5561,7 +5881,7 @@
       if (box) box.classList.toggle('type-selected', anySelected);
       if (!SVC_RESOLVED && anySelected) {
         unlockSvcGate();
-        const row = document.getElementById('acc-svc-rec-row');
+        const row = document.getElementById('acc-svc-rec-row-new');
         if (row) row.hidden = true;
       }
     });
@@ -6006,6 +6326,38 @@
     });
   }
 
+  // ── Old dropdown (Demo 1) — acc-dropdown-btn ──
+  const accBtn = document.getElementById('acc-dropdown-btn');
+  const accPanel = document.getElementById('acc-panel');
+  if (accBtn && accPanel) {
+    accBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeAllTooltips();
+      const open = accPanel.classList.toggle('open');
+      accBtn.classList.toggle('open', open);
+      accBtn.setAttribute('aria-expanded', open);
+    });
+    initPopupNav(
+      accBtn, accPanel,
+      () => accPanel.classList.contains('open'),
+      () => Array.from(accPanel.querySelectorAll('.acc-item')),
+      () => { accPanel.scrollTop = 0; accPanel.classList.remove('open'); accBtn.classList.remove('open'); accBtn.setAttribute('aria-expanded', false); }
+    );
+  }
+  const accDescToggle = document.getElementById('acc-desc-toggle');
+  if (accDescToggle) {
+    accDescToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showDesc = !showDesc;
+      document.getElementById('acc-toggle-track').classList.toggle('off', !showDesc);
+      document.getElementById('acc-list').classList.toggle('desc-off', !showDesc);
+      const stateLabel = document.getElementById('acc-desc-toggle-label');
+      stateLabel.textContent = showDesc ? 'On' : 'Off';
+      stateLabel.classList.toggle('off', !showDesc);
+      renderList();
+    });
+  }
+
   // ── Init ──
   renderList();
   updateBtnLabel();
@@ -6323,6 +6675,70 @@
   let dShowDesc = false;
 
   function dRenderList() {
+    // ── Old dropdown list (Demo 1) ──
+    const dList = document.getElementById('d-acc-list');
+    if (dList) {
+      dList.innerHTML = '';
+      const dSorted = [...DELIVER_ACC_ITEMS].sort((a, b) => (b.warn ? 1 : 0) - (a.warn ? 1 : 0));
+      const dHasRec = dSorted.some(i => i.warn);
+      const dHasOther = dSorted.some(i => !i.warn);
+      let dRecDividerAdded = false, dOtherDividerAdded = false;
+      dSorted.forEach(item => {
+        if (dHasRec && item.warn && !dRecDividerAdded) {
+          const d = document.createElement('div');
+          d.className = 'acc-list-divider is-rec';
+          d.textContent = REBILL_MODE ? 'Recommended to avoid a 60% re-bill chance' : 'Recommended to avoid adjustment charges';
+          d.addEventListener('click', e => e.stopPropagation());
+          dList.appendChild(d);
+          dRecDividerAdded = true;
+        }
+        if (dHasRec && dHasOther && !item.warn && !dOtherDividerAdded) {
+          const d = document.createElement('div');
+          d.className = 'acc-list-divider is-other';
+          d.textContent = 'Other';
+          d.addEventListener('click', e => e.stopPropagation());
+          dList.appendChild(d);
+          dOtherDividerAdded = true;
+        }
+        const el = document.createElement('div');
+        el.className = 'acc-item' + (item.selected ? ' selected' : '');
+        el.dataset.id = item.id;
+        el.setAttribute('tabindex', '-1');
+        const dRebillPct = REBILL_MODE && item.warn && !item.selected ? REBILL_DATA[item.id] : null;
+        const dRebillBadge = dRebillPct != null ? `<div class="acc-item-rebill"><span class="acc-item-rebill-text">60% re-bill chance</span></div>` : '';
+        el.innerHTML = `
+          <div class="acc-checkbox">${item.selected ? checkSVG : ''}</div>
+          <div class="acc-item-content">
+            <div>
+              <p class="acc-item-label">${item.label}</p>
+              <p class="acc-item-desc">${dShowDesc ? item.desc : item.shortDesc}</p>
+            </div>
+            ${dRebillBadge}
+          </div>
+        `;
+        el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); } });
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const wasWarnSelected = item.warn && item.selected;
+          item.selected = !item.selected;
+          dRenderList();
+          dUpdateBtnLabel();
+          if (!D_SVC_RESOLVED && DELIVER_ACC_ITEMS.some(i => i.selected)) {
+            unlockDeliverSvcGate();
+            const _dr = document.getElementById('d-acc-svc-rec-row');
+            if (_dr) _dr.hidden = true;
+          }
+          if (item.id === 'd-fba') {
+            const fbaSection = document.getElementById('deliver-fba-details');
+            if (fbaSection) fbaSection.hidden = !item.selected;
+          }
+          if (wasWarnSelected) updateDeliverWarning('rebill');
+          else updateDeliverWarning();
+        });
+        dList.appendChild(el);
+      });
+    }
+    // ── New pill/grid (Demo 2) ──
     renderSvcView(DELIVER_ACC_ITEMS, 'd-svc-pill-wrap', 'd-svc-expanded-grid', (item) => {
       const wasWarnSelected = item.warn && item.selected;
       item.selected = !item.selected;
@@ -6333,7 +6749,7 @@
       if (box) box.classList.toggle('type-selected', anySelected);
       if (!D_SVC_RESOLVED && anySelected) {
         unlockDeliverSvcGate();
-        const row = document.getElementById('d-acc-svc-rec-row');
+        const row = document.getElementById('d-acc-svc-rec-row-new');
         if (row) row.hidden = true;
       }
       if (item.id === 'd-fba') {
@@ -6570,6 +6986,38 @@
       if (stateLabel) stateLabel.textContent = isOn ? 'On' : 'Off';
       if (pillContent) pillContent.hidden = isOn;
       if (expandedContent) expandedContent.hidden = !isOn;
+    });
+  }
+
+  // ── Old dropdown (Demo 1) — d-acc-dropdown-btn ──
+  const dAccBtn = document.getElementById('d-acc-dropdown-btn');
+  const dAccPanel = document.getElementById('d-acc-panel');
+  if (dAccBtn && dAccPanel) {
+    dAccBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeAllTooltips();
+      const open = dAccPanel.classList.toggle('open');
+      dAccBtn.classList.toggle('open', open);
+      dAccBtn.setAttribute('aria-expanded', open);
+    });
+    initPopupNav(
+      dAccBtn, dAccPanel,
+      () => dAccPanel.classList.contains('open'),
+      () => Array.from(dAccPanel.querySelectorAll('.acc-item')),
+      () => { dAccPanel.scrollTop = 0; dAccPanel.classList.remove('open'); dAccBtn.classList.remove('open'); dAccBtn.setAttribute('aria-expanded', false); }
+    );
+  }
+  const dAccDescToggle = document.getElementById('d-acc-desc-toggle');
+  if (dAccDescToggle) {
+    dAccDescToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dShowDesc = !dShowDesc;
+      document.getElementById('d-acc-toggle-track').classList.toggle('off', !dShowDesc);
+      document.getElementById('d-acc-list').classList.toggle('desc-off', !dShowDesc);
+      const lbl = document.getElementById('d-acc-desc-toggle-label');
+      lbl.textContent = dShowDesc ? 'On' : 'Off';
+      lbl.classList.toggle('off', !dShowDesc);
+      dRenderList();
     });
   }
 
@@ -8434,11 +8882,20 @@
       // Re-lock the service-decision gates
       lockSvcGate();
       lockDeliverSvcGate();
-      // Restore services field wrappers to visible (demo handlers hide them as needed)
+      // Restore services field wrappers to visible (demo handlers hide them as needed for Demo 3)
       const _svcFW = document.getElementById('svc-field-wrapper');
       if (_svcFW) _svcFW.hidden = false;
       const _dSvcFW = document.getElementById('d-svc-field-wrapper');
       if (_dSvcFW) _dSvcFW.hidden = false;
+      // Hide both inner containers — demo handlers show the right one
+      const _svcBoxOld = document.getElementById('svc-box-old');
+      if (_svcBoxOld) _svcBoxOld.hidden = true;
+      const _svcBoxNew = document.getElementById('svc-box');
+      if (_svcBoxNew) _svcBoxNew.hidden = true;
+      const _dSvcBoxOld = document.getElementById('d-svc-box-old');
+      if (_dSvcBoxOld) _dSvcBoxOld.hidden = true;
+      const _dSvcBoxNew = document.getElementById('d-svc-box');
+      if (_dSvcBoxNew) _dSvcBoxNew.hidden = true;
     }
 
     function renderInlineRecTags(containerId, btnTextId, items) {
@@ -8486,7 +8943,7 @@
       unlockGated('deliver');
     });
 
-    // "Continue and decide later" button — unlocks fields but keeps recommended tags/groups intact
+    // "Continue and decide later" button — pickup (old dropdown, Demo 1)
     const _noSvcBtn = document.getElementById('no-svc-btn');
     if (_noSvcBtn) _noSvcBtn.addEventListener('click', () => {
       ACC_ITEMS.forEach(item => { item.selected = false; });
@@ -8495,8 +8952,17 @@
       const _svcRecRow = document.getElementById('acc-svc-rec-row');
       if (_svcRecRow) _svcRecRow.hidden = true;
     });
+    // "Continue and decide later" button — pickup (new pill, Demo 2)
+    const _noSvcBtnNew = document.getElementById('no-svc-btn-new');
+    if (_noSvcBtnNew) _noSvcBtnNew.addEventListener('click', () => {
+      ACC_ITEMS.forEach(item => { item.selected = false; });
+      renderList(); updateBtnLabel(); updatePickupWarning();
+      unlockSvcGate();
+      const _svcRecRowNew = document.getElementById('acc-svc-rec-row-new');
+      if (_svcRecRowNew) _svcRecRowNew.hidden = true;
+    });
 
-    // "Continue and decide later" button — delivery
+    // "Continue and decide later" button — delivery (old dropdown, Demo 1)
     const _dNoSvcBtn = document.getElementById('d-no-svc-btn');
     if (_dNoSvcBtn) _dNoSvcBtn.addEventListener('click', () => {
       DELIVER_ACC_ITEMS.forEach(item => { item.selected = false; });
@@ -8504,6 +8970,15 @@
       unlockDeliverSvcGate();
       const _svcRecRow = document.getElementById('d-acc-svc-rec-row');
       if (_svcRecRow) _svcRecRow.hidden = true;
+    });
+    // "Continue and decide later" button — delivery (new pill, Demo 2)
+    const _dNoSvcBtnNew = document.getElementById('d-no-svc-btn-new');
+    if (_dNoSvcBtnNew) _dNoSvcBtnNew.addEventListener('click', () => {
+      DELIVER_ACC_ITEMS.forEach(item => { item.selected = false; });
+      dRenderList(); dUpdateBtnLabel(); updateDeliverWarning();
+      unlockDeliverSvcGate();
+      const _svcRecRowNew = document.getElementById('d-acc-svc-rec-row-new');
+      if (_svcRecRowNew) _svcRecRowNew.hidden = true;
     });
 
     // ── Demo 3: Location type picker interaction ──
@@ -8706,11 +9181,16 @@
       if (_locTypeInput) _locTypeInput.focus();
     });
 
-    // Demo 1 — "Location known services": services auto-resolved, pill container hidden
+    // Demo 1 — "Location known services": show old dropdown, auto-resolve services
     linkRes.addEventListener('click', () => {
       applyNone();
       applyResidential('your address book');
-      // Auto-select recommended services so the gate opens silently
+      // Show old container, keep new hidden
+      const _old1 = document.getElementById('svc-box-old');
+      if (_old1) _old1.hidden = false;
+      const _dOld1 = document.getElementById('d-svc-box-old');
+      if (_dOld1) _dOld1.hidden = false;
+      // Auto-select recommended services so the gate opens
       ACC_ITEMS.forEach(i => { if (i.warn) i.selected = true; });
       renderList(); updateBtnLabel(); updatePickupWarning();
       unlockSvcGate();
@@ -8721,20 +9201,19 @@
       unlockDeliverSvcGate();
       const _dr1 = document.getElementById('d-acc-svc-rec-row');
       if (_dr1) _dr1.hidden = true;
-      // Hide the services selection UI for this demo
-      const _fw = document.getElementById('svc-field-wrapper');
-      if (_fw) _fw.hidden = true;
-      const _dfw = document.getElementById('d-svc-field-wrapper');
-      if (_dfw) _dfw.hidden = true;
       setActive(linkRes);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // Demo 2 — "Location known services exposed": show pill container for selection
+    // Demo 2 — "Location known services exposed": show new pill container
     if (linkRes2) linkRes2.addEventListener('click', () => {
       applyNone();
       applyResidential('your address book');
-      // Services field wrappers remain visible (restored by applyNone)
+      // Show new pill container, keep old dropdown hidden
+      const _new2 = document.getElementById('svc-box');
+      if (_new2) _new2.hidden = false;
+      const _dNew2 = document.getElementById('d-svc-box');
+      if (_dNew2) _dNew2.hidden = false;
       setActive(linkRes2);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
