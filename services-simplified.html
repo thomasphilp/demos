@@ -1186,7 +1186,8 @@
 
   /* Expanded content */
   .svc-expanded-content { padding: 0 16px 12px 20px; }
-  .svc-expanded-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .svc-expanded-grid { display: flex; flex-wrap: wrap; gap: 12px; }
+  .svc-list-item { width: calc(50% - 6px); }
 
   /* List item — matches Figma expanded card */
   .svc-list-item {
