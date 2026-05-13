@@ -5828,8 +5828,8 @@
     const grid = document.getElementById(gridId);
     if (grid) {
       grid.innerHTML = '';
-      const warnItems = [...items].filter(i => i.warn).sort((a, b) => a.label.localeCompare(b.label));
-      const normalItems = [...items].filter(i => !i.warn).sort((a, b) => a.label.localeCompare(b.label));
+      const sortedGrid = [...items].sort((a, b) => { const w = (b.warn ? 1 : 0) - (a.warn ? 1 : 0); return w !== 0 ? w : a.label.localeCompare(b.label); });
+      const mid = Math.ceil(sortedGrid.length / 2);
       const leftCol = document.createElement('div');
       leftCol.className = 'svc-expanded-col';
       const rightCol = document.createElement('div');
@@ -5855,8 +5855,8 @@
         el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handler(); } });
         col.appendChild(el);
       };
-      warnItems.forEach(item => makeGridItem(item, leftCol));
-      normalItems.forEach(item => makeGridItem(item, rightCol));
+      sortedGrid.slice(0, mid).forEach(item => makeGridItem(item, leftCol));
+      sortedGrid.slice(mid).forEach(item => makeGridItem(item, rightCol));
       grid.appendChild(leftCol);
       grid.appendChild(rightCol);
     }
