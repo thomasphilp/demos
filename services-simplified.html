@@ -1063,11 +1063,9 @@
   }
   .svc-new-topbar-label {
     flex: 1;
-    font-size: 11px;
-    font-weight: 600;
+    font-size: 10px;
+    font-weight: 400;
     color: var(--color-label-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
   }
   .svc-new-toggle-wrap {
     display: flex;
@@ -1119,8 +1117,23 @@
   /* Divider */
   .svc-new-divider { border: none; border-top: 1px solid rgba(9,10,12,0.06); margin: 0; }
 
+  /* Inline feedback row (between top divider and pills) */
+  .svc-pill-feedback {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 0 16px 0 20px;
+    margin-bottom: 12px;
+  }
+  .svc-pill-feedback svg { flex-shrink: 0; margin-top: 1px; }
+  .svc-pill-feedback-text {
+    font-size: 10px;
+    color: var(--color-label-primary);
+    line-height: 1.4;
+  }
+
   /* Pill content area */
-  .svc-pill-content { padding: 12px 16px 12px 20px; }
+  .svc-pill-content { padding: 12px 16px 12px 20px; padding-top: 0; }
   .svc-pill-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
 
   /* Pill */
@@ -1156,7 +1169,10 @@
     line-height: 1.2; white-space: nowrap;
   }
   .svc-pill.selected .svc-pill-label { font-weight: 600; }
-  .svc-pill-suggested { font-size: 11px; color: var(--color-label-secondary); padding-left: 24px; }
+  .svc-pill.warn { background: #fefce8; }
+  .svc-pill.warn:hover { background: #fef9c3; }
+  .svc-pill-sep { color: rgba(9,10,12,0.4); margin: 0 2px; }
+  .svc-pill-rec { color: #ca8a04; }
 
   /* Expanded content */
   .svc-expanded-content { padding: 12px 16px 12px 20px; }
@@ -4018,9 +4034,9 @@
       <div class="svc-new-box" id="svc-box" hidden>
         <!-- Top bar -->
         <div class="svc-new-topbar">
-          <span class="svc-new-topbar-label"></span>
+          <span class="svc-new-topbar-label">Select services</span>
           <div class="svc-new-toggle-wrap">
-            <span class="svc-new-toggle-label-text">View expanded</span>
+            <span class="svc-new-toggle-label-text">View full service details</span>
             <button class="svc-new-toggle" id="svc-expand-toggle" type="button" aria-pressed="false">
               <div class="svc-new-toggle-track" id="svc-toggle-track">
                 <div class="svc-new-toggle-knob"></div>
@@ -4030,6 +4046,11 @@
           </div>
         </div>
         <hr class="svc-new-divider">
+        <!-- Inline recommendation feedback -->
+        <div class="svc-pill-feedback" style="padding-top:12px;">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:rgba(9,10,12,0.6)"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6 5.5V8.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="6" cy="3.75" r="0.5" fill="currentColor"/></svg>
+          <span class="svc-pill-feedback-text">Consider adding the recommended services to prevent pickup issues and avoid adjustment charges</span>
+        </div>
         <!-- Default (pill) view -->
         <div class="svc-pill-content" id="svc-pill-content">
           <div class="svc-pill-wrap" id="svc-pill-wrap"></div>
@@ -4524,9 +4545,9 @@
       <div class="svc-new-box" id="d-svc-box" hidden>
         <!-- Top bar -->
         <div class="svc-new-topbar">
-          <span class="svc-new-topbar-label"></span>
+          <span class="svc-new-topbar-label">Select services</span>
           <div class="svc-new-toggle-wrap">
-            <span class="svc-new-toggle-label-text">View expanded</span>
+            <span class="svc-new-toggle-label-text">View full service details</span>
             <button class="svc-new-toggle" id="d-svc-expand-toggle" type="button" aria-pressed="false">
               <div class="svc-new-toggle-track" id="d-svc-toggle-track">
                 <div class="svc-new-toggle-knob"></div>
@@ -4536,6 +4557,11 @@
           </div>
         </div>
         <hr class="svc-new-divider">
+        <!-- Inline recommendation feedback -->
+        <div class="svc-pill-feedback" style="padding-top:12px;">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:rgba(9,10,12,0.6)"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6 5.5V8.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="6" cy="3.75" r="0.5" fill="currentColor"/></svg>
+          <span class="svc-pill-feedback-text">Consider adding the recommended services to prevent pickup issues and avoid adjustment charges</span>
+        </div>
         <!-- Default (pill) view -->
         <div class="svc-pill-content" id="d-svc-pill-content">
           <div class="svc-pill-wrap" id="d-svc-pill-wrap"></div>
@@ -5763,18 +5789,18 @@
     const pillWrap = document.getElementById(pillWrapId);
     if (pillWrap) {
       pillWrap.innerHTML = '';
-      items.forEach(item => {
+      const sorted = [...items].sort((a, b) => (b.warn ? 1 : 0) - (a.warn ? 1 : 0));
+      sorted.forEach(item => {
         const pill = document.createElement('div');
-        pill.className = 'svc-pill' + (item.selected ? ' selected' : '');
+        pill.className = 'svc-pill' + (item.selected ? ' selected' : '') + (item.warn ? ' warn' : '');
         pill.setAttribute('role', 'checkbox');
         pill.setAttribute('aria-checked', item.selected ? 'true' : 'false');
         pill.setAttribute('tabindex', '0');
         pill.innerHTML = `
           <div class="svc-pill-inner">
             <div class="svc-pill-checkbox">${item.selected ? checkIconSVG : ''}</div>
-            <span class="svc-pill-label">${item.label}</span>
+            <span class="svc-pill-label">${item.label}${item.warn ? ' <span class="svc-pill-sep">·</span> <span class="svc-pill-rec">Recommended</span>' : ''}</span>
           </div>
-          ${item.warn ? '<span class="svc-pill-suggested">Suggested</span>' : ''}
         `;
         const handler = () => onItemToggle(item);
         pill.addEventListener('click', handler);
