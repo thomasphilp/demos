@@ -610,6 +610,9 @@
   .loc-gated .loc-field-label .req,
   .loc-gated .sub-heading .req,
   .loc-gated .sub-heading .sub-title,
+  .loc-gated .section-title,
+  .loc-gated .section-label,
+  .loc-gated .hours-section .sub-title,
   .loc-gated .cal-month-label { color: rgba(9,10,12,0.4); }
   .loc-gated .input-control {
     background: rgba(9,10,12,0.08);
@@ -1182,39 +1185,39 @@
   .svc-pill-rec { color: #ca8a04; }
 
   /* Expanded content */
-  .svc-expanded-content { padding: 12px 16px 12px 20px; }
-  .svc-expanded-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .svc-expanded-content { padding: 0 16px 12px 20px; }
+  .svc-expanded-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-  /* List item */
+  /* List item — matches Figma expanded card */
   .svc-list-item {
-    display: flex; align-items: flex-start; gap: 8px;
-    padding: 8px;
+    display: flex; align-items: center; gap: 12px;
+    padding: 8px 12px;
+    min-height: 32px;
     border-radius: 4px;
     border: 1px solid rgba(9,10,12,0.12);
     background: rgba(9,10,12,0.02);
     cursor: pointer;
     transition: background 0.1s, border-color 0.1s;
     user-select: none;
+    box-sizing: border-box;
   }
   .svc-list-item:hover { background: rgba(9,10,12,0.06); }
-  .svc-list-item.selected { background: #fff; border: 2px solid rgba(9,10,12,0.9); padding: 7px; }
+  .svc-list-item.selected { background: #fff; border: 2px solid rgba(9,10,12,0.9); padding: 7px 11px; }
   .svc-list-item-checkbox {
     width: 16px; height: 16px;
-    border-radius: 3px;
-    border: 1.5px solid rgba(9,10,12,0.2);
-    background: white;
+    border-radius: 4px;
+    border: 1px solid rgba(9,10,12,0.12);
+    background: rgba(9,10,12,0.02);
     flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
     box-sizing: border-box;
-    margin-top: 1px;
     transition: background 0.1s, border-color 0.1s;
   }
   .svc-list-item.selected .svc-list-item-checkbox { background: #00703a; border-color: #00703a; }
-  .svc-list-item-text { flex: 1; min-width: 0; }
-  .svc-list-item-label { font-size: 13px; font-weight: 500; color: var(--color-label-primary); line-height: 1.2; margin: 0; }
+  .svc-list-item-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0; }
+  .svc-list-item-label { font-size: 12px; font-weight: 500; color: var(--color-label-primary); line-height: normal; margin: 0; white-space: nowrap; }
   .svc-list-item.selected .svc-list-item-label { font-weight: 600; }
-  .svc-list-item-desc { font-size: 11px; color: var(--color-label-secondary); line-height: 1.4; margin: 2px 0 0; }
-  .svc-list-item-suggested { font-size: 11px; color: var(--color-label-secondary); font-style: italic; margin: 2px 0 0; }
+  .svc-list-item-desc { font-size: 10px; color: var(--color-label-secondary); line-height: normal; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
 
   /* Bottom section of new container */
   .svc-new-bottom { padding: 12px 16px 14px 20px; }
@@ -4041,7 +4044,7 @@
       <div class="svc-new-box" id="svc-box" hidden>
         <!-- Top bar -->
         <div class="svc-new-topbar">
-          <span class="svc-new-topbar-label">Select services</span>
+          <span class="svc-new-topbar-label" id="svc-new-topbar-label">Select services</span>
           <div class="svc-new-toggle-wrap">
             <span class="svc-new-toggle-label-text">View full service details</span>
             <button class="svc-new-toggle" id="svc-expand-toggle" type="button" aria-pressed="false">
@@ -4053,13 +4056,13 @@
           </div>
         </div>
         <hr class="svc-new-divider">
-        <!-- Inline recommendation feedback -->
-        <div class="svc-pill-feedback" style="padding-top:12px;">
+        <!-- Inline recommendation feedback (always visible) -->
+        <div class="svc-pill-feedback" style="padding-top:12px; padding-bottom:12px;">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:rgba(9,10,12,0.6)"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6 5.5V8.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="6" cy="3.75" r="0.5" fill="currentColor"/></svg>
           <span class="svc-pill-feedback-text">Consider adding the recommended services to prevent pickup issues and avoid adjustment charges</span>
         </div>
         <!-- Default (pill) view -->
-        <div class="svc-pill-content" id="svc-pill-content">
+        <div class="svc-pill-content" id="svc-pill-content" style="padding-top:0;">
           <div class="svc-pill-wrap" id="svc-pill-wrap"></div>
         </div>
         <!-- Expanded (list) view -->
@@ -4564,13 +4567,13 @@
           </div>
         </div>
         <hr class="svc-new-divider">
-        <!-- Inline recommendation feedback -->
-        <div class="svc-pill-feedback" style="padding-top:12px;">
+        <!-- Inline recommendation feedback (always visible) -->
+        <div class="svc-pill-feedback" style="padding-top:12px; padding-bottom:12px;">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:rgba(9,10,12,0.6)"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6 5.5V8.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="6" cy="3.75" r="0.5" fill="currentColor"/></svg>
           <span class="svc-pill-feedback-text">Consider adding the recommended services to prevent pickup issues and avoid adjustment charges</span>
         </div>
         <!-- Default (pill) view -->
-        <div class="svc-pill-content" id="d-svc-pill-content">
+        <div class="svc-pill-content" id="d-svc-pill-content" style="padding-top:0;">
           <div class="svc-pill-wrap" id="d-svc-pill-wrap"></div>
         </div>
         <!-- Expanded (list) view -->
@@ -5818,23 +5821,21 @@
     const grid = document.getElementById(gridId);
     if (grid) {
       grid.innerHTML = '';
-      items.forEach(item => {
+      const sortedGrid = [...items].sort((a, b) => { const w = (b.warn ? 1 : 0) - (a.warn ? 1 : 0); return w !== 0 ? w : a.label.localeCompare(b.label); });
+      sortedGrid.forEach(item => {
         const el = document.createElement('div');
         el.className = 'svc-list-item' + (item.selected ? ' selected' : '');
         el.setAttribute('role', 'checkbox');
         el.setAttribute('aria-checked', item.selected ? 'true' : 'false');
         el.setAttribute('tabindex', '0');
-        const rebillPct = REBILL_MODE && item.warn && !item.selected ? REBILL_DATA[item.id] : null;
-        const rebillBadge = rebillPct != null
-          ? `<div class="acc-item-rebill" style="margin-top:4px;"><span class="acc-item-rebill-text">60% re-bill chance</span></div>`
-          : '';
+        const labelHtml = item.warn
+          ? `${item.label} <span class="svc-pill-sep">·</span> <span class="svc-pill-rec">Recommended</span>`
+          : item.label;
         el.innerHTML = `
           <div class="svc-list-item-checkbox">${item.selected ? checkIconSVG : ''}</div>
           <div class="svc-list-item-text">
-            <p class="svc-list-item-label">${item.label}</p>
+            <p class="svc-list-item-label">${labelHtml}</p>
             <p class="svc-list-item-desc">${item.shortDesc}</p>
-            ${item.warn ? '<p class="svc-list-item-suggested">Suggested</p>' : ''}
-            ${rebillBadge}
           </div>
         `;
         const handler = () => onItemToggle(item);
@@ -5909,6 +5910,7 @@
       renderList();
       updateBtnLabel();
       updatePickupWarning();
+      updateSvcTopbarLabel();
       const anySelected = ACC_ITEMS.some(i => i.selected);
       const box = document.getElementById('svc-box');
       if (box) box.classList.toggle('type-selected', anySelected);
@@ -6345,6 +6347,18 @@
 
   // ── Expand/collapse toggle — pickup ──
   const svcExpandToggle = document.getElementById('svc-expand-toggle');
+  function updateSvcTopbarLabel() {
+    const label = document.getElementById('svc-new-topbar-label');
+    const track = document.getElementById('svc-toggle-track');
+    if (!label) return;
+    if (track && track.classList.contains('on')) {
+      const n = ACC_ITEMS.filter(i => i.selected).length;
+      const checkSvg = `<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4.5" fill="#00703a"/><path d="M2.5 5.5L4.5 7.5L7.5 3" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      label.innerHTML = n > 0 ? `${checkSvg} <span style="font-weight:600;color:rgba(9,10,12,0.9);font-size:10px;">${n} selected</span>` : 'Select services';
+    } else {
+      label.textContent = 'Select services';
+    }
+  }
   if (svcExpandToggle) {
     svcExpandToggle.addEventListener('click', () => {
       const track = document.getElementById('svc-toggle-track');
@@ -6356,6 +6370,7 @@
       if (stateLabel) stateLabel.textContent = isOn ? 'On' : 'Off';
       if (pillContent) pillContent.hidden = isOn;
       if (expandedContent) expandedContent.hidden = !isOn;
+      updateSvcTopbarLabel();
     });
   }
 
