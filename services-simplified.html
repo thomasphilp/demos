@@ -9291,7 +9291,7 @@
     const param = new URLSearchParams(location.search).get('loc');
     if (param === 'residential') { linkRes.click(); }
     else if (param === 'rebill') { REBILL_MODE = true; applyCommercial('the address'); setActive(linkRebill); }
-    else { linkRes.click(); }
+    else { linkRes2.click(); }
     // Always start at the top on load/refresh
     window.scrollTo({ top: 0, behavior: 'instant' });
   })();
@@ -9305,14 +9305,20 @@
       navItems.forEach(item => item.classList.toggle('active', item.dataset.target === id));
     }
 
-    // Click → scroll to section
+    // Click → scroll to section (16px below demo-bar)
     navItems.forEach(item => {
       item.addEventListener('click', () => {
+        const demoBar = document.querySelector('.demo-bar');
+        const demoBarBottom = demoBar ? demoBar.getBoundingClientRect().bottom : 0;
+        const gap = 16;
         if (item.dataset.target === 'section-pickup') {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
           const target = document.getElementById(item.dataset.target);
-          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          if (target) {
+            const targetTop = target.getBoundingClientRect().top + window.scrollY;
+            window.scrollTo({ top: targetTop - demoBarBottom - gap, behavior: 'smooth' });
+          }
         }
       });
     });
