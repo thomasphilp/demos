@@ -1062,9 +1062,8 @@
     z-index: 1;
     pointer-events: none;
   }
-  .svc-new-box.type-selected::before,
-  .svc-new-box.resolved::before {
-    background: #00703a;
+  .svc-new-box.type-selected::before {
+    background: #bbf7d0;
   }
 
   /* Top bar */
@@ -1189,14 +1188,14 @@
   .svc-pill-rec { color: #ca8a04; }
 
   /* Expanded content */
-  .svc-expanded-content { padding: 0 16px 16px 20px; }
+  .svc-expanded-content { padding: 0 16px 0 20px; }
   .svc-expanded-grid { display: flex; gap: 12px; }
   .svc-expanded-col { flex: 1; display: flex; flex-direction: column; gap: 12px; }
 
   /* List item — matches Figma expanded card */
   .svc-list-item {
     display: flex; align-items: center; gap: 12px;
-    padding: 8px 12px;
+    padding: 10px;
     min-height: 32px;
     border-radius: 4px;
     border: 1px solid rgba(9,10,12,0.12);
@@ -1207,7 +1206,7 @@
     box-sizing: border-box;
   }
   .svc-list-item:hover { background: rgba(9,10,12,0.06); }
-  .svc-list-item.selected { background: var(--controls-selected-bg); border: 2px solid rgba(9,10,12,0.9); padding: 7px 11px; }
+  .svc-list-item.selected { background: var(--controls-selected-bg); border: 2px solid rgba(9,10,12,0.9); padding: 9px; }
   .svc-list-item.warn:not(.selected) { background: #fefce8; }
   .svc-list-item.warn:not(.selected):hover { background: #fef9c3; }
   .svc-list-item-checkbox {
@@ -1216,6 +1215,7 @@
     border: 1px solid rgba(9,10,12,0.12);
     background: rgba(9,10,12,0.02);
     flex-shrink: 0;
+    align-self: flex-start;
     display: flex; align-items: center; justify-content: center;
     box-sizing: border-box;
     transition: background 0.1s, border-color 0.1s;
@@ -1225,6 +1225,12 @@
   .svc-list-item-label { font-size: 12px; font-weight: 500; color: var(--color-label-primary); line-height: normal; margin: 0; white-space: nowrap; }
   .svc-list-item.selected .svc-list-item-label { font-weight: 600; }
   .svc-list-item-desc { font-size: 10px; color: var(--color-label-secondary); line-height: normal; margin: 0; width: 100%; }
+  .svc-list-item-full-desc { display: none; font-size: 10px; color: var(--color-label-secondary); line-height: normal; margin: 0; width: 100%; }
+  .svc-expanded-grid.show-full-desc .svc-list-item-desc { display: none; }
+  .svc-expanded-grid.show-full-desc .svc-list-item-full-desc { display: block; }
+  .svc-learn-more-wrap { margin-top: 12px; margin-bottom: 12px; }
+  .svc-learn-more-divider { border: none; border-top: 1px solid rgba(9,10,12,0.06); margin: 0; }
+  .svc-learn-more-btn { background: none; border: none; padding: 0; font-size: 10px; color: var(--color-tint); cursor: pointer; font-family: inherit; font-weight: 500; line-height: normal; }
 
   /* Bottom section of new container */
   .svc-new-bottom { padding: 12px 16px 14px 20px; }
@@ -3910,7 +3916,7 @@
               <span class="loc-rec-service" id="demo3-rec-service">Liftgate</span>
             </div>
             <button class="loc-apply-btn" id="demo3-apply-btn">
-              <svg class="loc-apply-icon" viewBox="0 0 24 24" fill="none"><path d="M13.5 19.5L21 12L13.5 4.5M21 12H3" stroke="currentColor" stroke-opacity="0.9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <svg class="loc-apply-icon" viewBox="0 0 24 24" fill="none"><path d="M13.5 19.5L21 12L13.5 4.5M21 12H3" stroke="currentColor" stroke-opacity="0.9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
               <span class="loc-apply-text">Apply 1 service</span>
             </button>
           </div>
@@ -4053,7 +4059,7 @@
         <div class="svc-new-topbar">
           <span class="svc-new-topbar-label" id="svc-new-topbar-label">Select services</span>
           <div class="svc-new-toggle-wrap">
-            <span class="svc-new-toggle-label-text">View full service details</span>
+            <span class="svc-new-toggle-label-text">View service details</span>
             <button class="svc-new-toggle" id="svc-expand-toggle" type="button" aria-pressed="false">
               <div class="svc-new-toggle-track" id="svc-toggle-track">
                 <div class="svc-new-toggle-knob"></div>
@@ -4065,7 +4071,7 @@
         <hr class="svc-new-divider">
         <!-- Inline recommendation feedback (always visible) -->
         <div class="svc-pill-feedback" style="padding-top:12px; padding-bottom:6px;">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:rgba(9,10,12,0.6)"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6 5.5V8.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="6" cy="3.75" r="0.5" fill="currentColor"/></svg>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:rgba(9,10,12,0.6)"><path d="M12 8.39995V12.9M22.8 12C22.8 17.9646 17.9646 22.8 12 22.8C6.03528 22.8 1.19995 17.9646 1.19995 12C1.19995 6.03528 6.03528 1.19995 12 1.19995C17.9646 1.19995 22.8 6.03528 22.8 12ZM12 16.5H12.009V16.509H12V16.5Z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span class="svc-pill-feedback-text">Consider adding the recommended services to prevent pickup issues and avoid adjustment charges</span>
         </div>
         <!-- Default (pill) view -->
@@ -4075,6 +4081,9 @@
         <!-- Expanded (list) view -->
         <div class="svc-expanded-content" id="svc-expanded-content" hidden>
           <div class="svc-expanded-grid" id="svc-expanded-grid"></div>
+          <div class="svc-learn-more-wrap">
+            <button class="svc-learn-more-btn" id="svc-learn-more-btn" type="button">Learn more about services</button>
+          </div>
         </div>
         <hr class="svc-new-divider">
         <!-- Bottom: or / Skip for now -->
@@ -4282,11 +4291,11 @@
             <div class="picker-panel cal-panel" id="ready-date-panel">
               <div class="cal-header">
                 <button class="cal-nav-btn" id="cal-prev" type="button" aria-label="Previous month">
-                  <svg viewBox="0 0 8 12" fill="none" width="8" height="12"><path d="M7 1L1 6L7 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <svg viewBox="0 0 8 12" fill="none" width="8" height="12"><path d="M7 1L1 6L7 11" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
                 <span class="cal-month-label" id="cal-month-label">January 2026</span>
                 <button class="cal-nav-btn" id="cal-next" type="button" aria-label="Next month">
-                  <svg viewBox="0 0 8 12" fill="none" width="8" height="12"><path d="M1 1L7 6L1 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <svg viewBox="0 0 8 12" fill="none" width="8" height="12"><path d="M1 1L7 6L1 11" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
               </div>
               <div class="cal-weekdays">
@@ -4564,7 +4573,7 @@
         <div class="svc-new-topbar">
           <span class="svc-new-topbar-label" id="d-svc-new-topbar-label">Select services</span>
           <div class="svc-new-toggle-wrap">
-            <span class="svc-new-toggle-label-text">View full service details</span>
+            <span class="svc-new-toggle-label-text">View service details</span>
             <button class="svc-new-toggle" id="d-svc-expand-toggle" type="button" aria-pressed="false">
               <div class="svc-new-toggle-track" id="d-svc-toggle-track">
                 <div class="svc-new-toggle-knob"></div>
@@ -4576,7 +4585,7 @@
         <hr class="svc-new-divider">
         <!-- Inline recommendation feedback (always visible) -->
         <div class="svc-pill-feedback" style="padding-top:12px; padding-bottom:6px;">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:rgba(9,10,12,0.6)"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6 5.5V8.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="6" cy="3.75" r="0.5" fill="currentColor"/></svg>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:rgba(9,10,12,0.6)"><path d="M12 8.39995V12.9M22.8 12C22.8 17.9646 17.9646 22.8 12 22.8C6.03528 22.8 1.19995 17.9646 1.19995 12C1.19995 6.03528 6.03528 1.19995 12 1.19995C17.9646 1.19995 22.8 6.03528 22.8 12ZM12 16.5H12.009V16.509H12V16.5Z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span class="svc-pill-feedback-text">Consider adding the recommended services to prevent pickup issues and avoid adjustment charges</span>
         </div>
         <!-- Default (pill) view -->
@@ -4586,6 +4595,9 @@
         <!-- Expanded (list) view -->
         <div class="svc-expanded-content" id="d-svc-expanded-content" hidden>
           <div class="svc-expanded-grid" id="d-svc-expanded-grid"></div>
+          <div class="svc-learn-more-wrap">
+            <button class="svc-learn-more-btn" id="d-svc-learn-more-btn" type="button">Learn more about services</button>
+          </div>
         </div>
         <hr class="svc-new-divider">
         <!-- Bottom: or / Skip for now -->
@@ -4656,11 +4668,11 @@
                     <div class="picker-panel cal-panel" id="fba-appt-date-panel">
                       <div class="cal-header">
                         <button class="cal-nav-btn" id="fba-cal-prev" type="button" aria-label="Previous month">
-                          <svg viewBox="0 0 8 12" fill="none" width="8" height="12"><path d="M7 1L1 6L7 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                          <svg viewBox="0 0 8 12" fill="none" width="8" height="12"><path d="M7 1L1 6L7 11" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
                         <span class="cal-month-label" id="fba-cal-month-label">May 2026</span>
                         <button class="cal-nav-btn" id="fba-cal-next" type="button" aria-label="Next month">
-                          <svg viewBox="0 0 8 12" fill="none" width="8" height="12"><path d="M1 1L7 6L1 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                          <svg viewBox="0 0 8 12" fill="none" width="8" height="12"><path d="M1 1L7 6L1 11" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </button>
                       </div>
                       <div class="cal-weekdays">
@@ -4676,7 +4688,7 @@
                     <div class="dropdown-btn" id="fba-appt-time-btn" tabindex="0" role="button" aria-expanded="false" aria-haspopup="listbox">
                       <div class="dropdown-btn-left">
                         <span class="btn-icon">
-                          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.79995V12L17 16M22.8 12C22.8 17.9646 17.9646 22.8 12 22.8C6.03528 22.8 1.19995 17.9646 1.19995 12C1.19995 6.03528 6.03528 1.19995 12 1.19995C17.9646 1.19995 22.8 6.03528 22.8 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.79995V12L17 16M22.8 12C22.8 17.9646 17.9646 22.8 12 22.8C6.03528 22.8 1.19995 17.9646 1.19995 12C1.19995 6.03528 6.03528 1.19995 12 1.19995C17.9646 1.19995 22.8 6.03528 22.8 12Z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
                         <span class="dropdown-btn-text">Select time</span>
                       </div>
@@ -4888,11 +4900,11 @@
             <div class="picker-panel cal-panel" id="d-appt-date-panel">
               <div class="cal-header">
                 <button class="cal-nav-btn" id="d-cal-prev" type="button" aria-label="Previous month">
-                  <svg viewBox="0 0 8 12" fill="none" width="8" height="12"><path d="M7 1L1 6L7 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <svg viewBox="0 0 8 12" fill="none" width="8" height="12"><path d="M7 1L1 6L7 11" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
                 <span class="cal-month-label" id="d-cal-month-label">April 2026</span>
                 <button class="cal-nav-btn" id="d-cal-next" type="button" aria-label="Next month">
-                  <svg viewBox="0 0 8 12" fill="none" width="8" height="12"><path d="M1 1L7 6L1 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <svg viewBox="0 0 8 12" fill="none" width="8" height="12"><path d="M1 1L7 6L1 11" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
               </div>
               <div class="cal-weekdays">
@@ -5848,6 +5860,7 @@
           <div class="svc-list-item-text">
             <p class="svc-list-item-label">${labelHtml}</p>
             <p class="svc-list-item-desc">${item.shortDesc}</p>
+            <p class="svc-list-item-full-desc">${item.desc}</p>
           </div>
         `;
         const handler = () => onItemToggle(item);
@@ -6391,7 +6404,21 @@
       if (stateLabel) stateLabel.textContent = isOn ? 'On' : 'Off';
       if (pillContent) pillContent.hidden = isOn;
       if (expandedContent) expandedContent.hidden = !isOn;
+      // Reset learn more state when toggling view
+      const grid = document.getElementById('svc-expanded-grid');
+      const learnBtn = document.getElementById('svc-learn-more-btn');
+      if (grid) grid.classList.remove('show-full-desc');
+      if (learnBtn) learnBtn.textContent = 'Learn more about services';
       updateSvcTopbarLabel();
+    });
+  }
+
+  const svcLearnMoreBtn = document.getElementById('svc-learn-more-btn');
+  if (svcLearnMoreBtn) {
+    svcLearnMoreBtn.addEventListener('click', () => {
+      const grid = document.getElementById('svc-expanded-grid');
+      const isExpanded = grid.classList.toggle('show-full-desc');
+      svcLearnMoreBtn.textContent = isExpanded ? 'Hide' : 'Learn more about services';
     });
   }
 
@@ -7056,6 +7083,20 @@
       if (stateLabel) stateLabel.textContent = isOn ? 'On' : 'Off';
       if (pillContent) pillContent.hidden = isOn;
       if (expandedContent) expandedContent.hidden = !isOn;
+      // Reset learn more state when toggling view
+      const grid = document.getElementById('d-svc-expanded-grid');
+      const learnBtn = document.getElementById('d-svc-learn-more-btn');
+      if (grid) grid.classList.remove('show-full-desc');
+      if (learnBtn) learnBtn.textContent = 'Learn more about services';
+    });
+  }
+
+  const dSvcLearnMoreBtn = document.getElementById('d-svc-learn-more-btn');
+  if (dSvcLearnMoreBtn) {
+    dSvcLearnMoreBtn.addEventListener('click', () => {
+      const grid = document.getElementById('d-svc-expanded-grid');
+      const isExpanded = grid.classList.toggle('show-full-desc');
+      dSvcLearnMoreBtn.textContent = isExpanded ? 'Hide' : 'Learn more about services';
     });
   }
 
@@ -7506,7 +7547,7 @@
     const checkSVG = `<svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.5 5.5L4 8L8.5 2" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
     const caretSVG = `<svg viewBox="-1 -1 12 8" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M0 0L10 0L5 6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
     const trashSVG = `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.6893 3.79434V4.04175C17.7308 4.13709 18.7637 4.26247 19.7871 4.41702C20.166 4.47425 20.5436 4.53547 20.9199 4.60064C21.3651 4.67777 21.6635 5.10123 21.5864 5.54647C21.5093 5.99171 21.0858 6.29012 20.6406 6.213C20.5647 6.19984 20.4887 6.18685 20.4126 6.17403L19.3158 20.4328C19.1846 22.1379 17.7628 23.4545 16.0527 23.4545H7.50776C5.79764 23.4545 4.37583 22.1379 4.24467 20.4328L3.14785 6.17403C3.0718 6.18685 2.99581 6.19984 2.91988 6.213C2.47464 6.29012 2.05118 5.99171 1.97405 5.54647C1.89693 5.10123 2.19534 4.67777 2.64058 4.60064C3.01683 4.53547 3.39444 4.47425 3.77335 4.41702C4.79673 4.26247 5.82962 4.13709 6.87114 4.04175V3.79434C6.87114 2.08764 8.1939 0.6307 9.94252 0.574763C10.5527 0.555243 11.1653 0.54541 11.7802 0.54541C12.3951 0.54541 13.0077 0.555243 13.6179 0.574763C15.3666 0.6307 16.6893 2.08764 16.6893 3.79434ZM9.99484 2.21029C10.5876 2.19133 11.1828 2.18177 11.7802 2.18177C12.3777 2.18177 12.9728 2.19133 13.5656 2.21029C14.3888 2.23662 15.053 2.92788 15.053 3.79434V3.91722C13.9704 3.85148 12.8791 3.81814 11.7802 3.81814C10.6813 3.81814 9.59008 3.85148 8.5075 3.91722V3.79434C8.5075 2.92788 9.17163 2.23662 9.99484 2.21029ZM9.60779 8.69578C9.59043 8.24425 9.21031 7.89229 8.75877 7.90965C8.30724 7.92702 7.95527 8.30714 7.97264 8.75867L8.35026 18.5769C8.36763 19.0284 8.74775 19.3804 9.19928 19.363C9.65082 19.3456 10.0028 18.9655 9.98542 18.514L9.60779 8.69578ZM15.5868 8.75867C15.6042 8.30714 15.2522 7.92702 14.8007 7.90965C14.3491 7.89229 13.969 8.24425 13.9517 8.69578L13.574 18.514C13.5567 18.9655 13.9086 19.3456 14.3602 19.363C14.8117 19.3804 15.1918 19.0284 15.2092 18.5769L15.5868 8.75867Z"/></svg>`;
-    const infoSVG = `<svg viewBox="0 0 24 24" fill="none" width="12" height="12"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    const infoSVG = `<svg viewBox="0 0 24 24" fill="none" width="12" height="12"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
     const magnifySVG = `<svg class="warn-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 9.75C19.5 11.6272 18.9695 13.3805 18.0502 14.8682L22.5228 19.4776C23.3422 20.3221 23.3321 21.6679 22.5 22.5C21.6679 23.3321 20.3221 23.3422 19.4776 22.5228L14.8682 18.0502C13.3805 18.9695 11.6272 19.5 9.75 19.5C4.36522 19.5 0 15.1348 0 9.75C0 4.36522 4.36522 0 9.75 0C15.1348 0 19.5 4.36522 19.5 9.75ZM9.75 16.5C13.4779 16.5 16.5 13.4779 16.5 9.75C16.5 6.02208 13.4779 3 9.75 3C6.02208 3 3 6.02208 3 9.75C3 13.4779 6.02208 16.5 9.75 16.5Z"/></svg>`;
     const clearXSVG = `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.805166 0.805166C1.30727 0.303063 2.12134 0.303063 2.62344 0.805166L12 10.1817L21.3766 0.805167C21.8787 0.303065 22.6928 0.303065 23.1949 0.805167C23.697 1.30727 23.697 2.12134 23.1949 2.62344L13.8183 12L23.1949 21.3766C23.697 21.8787 23.697 22.6928 23.1949 23.1949C22.6928 23.697 21.8787 23.697 21.3766 23.1949L12 13.8183L2.62344 23.1949C2.12134 23.697 1.30727 23.697 0.805166 23.1949C0.303063 22.6928 0.303063 21.8787 0.805166 21.3766L10.1817 12L0.805166 2.62344C0.303063 2.12134 0.303063 1.30727 0.805166 0.805166Z"/></svg>`;
     const warnTriSVG = `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="10" height="10"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.300049 12C0.300049 5.53832 5.53832 0.300049 12 0.300049C18.4618 0.300049 23.7 5.53832 23.7 12C23.7 18.4618 18.4618 23.7 12 23.7C5.53832 23.7 0.300049 18.4618 0.300049 12ZM12 7.50005C12.4971 7.50005 12.9 7.90299 12.9 8.40005V12.9C12.9 13.3971 12.4971 13.8 12 13.8C11.503 13.8 11.1 13.3971 11.1 12.9V8.40005C11.1 7.90299 11.503 7.50005 12 7.50005ZM12 17.4C12.4971 17.4 12.9 16.9971 12.9 16.5C12.9 16.003 12.4971 15.6 12 15.6C11.503 15.6 11.1 16.003 11.1 16.5C11.1 16.9971 11.503 17.4 12 17.4Z"/></svg>`;
@@ -8276,7 +8317,7 @@
   };
 
   // ── Tile info icons — saved for later ──
-  // const infoSVG = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  // const infoSVG = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
   // const globalTip = document.getElementById('loc-tile-tooltip-global');
   // document.querySelectorAll('.loc-option[data-type]').forEach(btn => {
   //   const desc = LOC_TYPE_DESC[btn.dataset.type];
