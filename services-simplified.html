@@ -1190,8 +1190,8 @@
 
   /* Expanded content */
   .svc-expanded-content { padding: 0 16px 16px 20px; }
-  .svc-expanded-grid { display: flex; flex-wrap: wrap; gap: 12px; }
-  .svc-list-item { width: calc(50% - 6px); }
+  .svc-expanded-grid { display: flex; gap: 12px; }
+  .svc-expanded-col { flex: 1; display: flex; flex-direction: column; gap: 12px; }
 
   /* List item — matches Figma expanded card */
   .svc-list-item {
@@ -5828,8 +5828,13 @@
     const grid = document.getElementById(gridId);
     if (grid) {
       grid.innerHTML = '';
-      const sortedGrid = [...items].sort((a, b) => { const w = (b.warn ? 1 : 0) - (a.warn ? 1 : 0); return w !== 0 ? w : a.label.localeCompare(b.label); });
-      sortedGrid.forEach(item => {
+      const warnItems = [...items].filter(i => i.warn).sort((a, b) => a.label.localeCompare(b.label));
+      const normalItems = [...items].filter(i => !i.warn).sort((a, b) => a.label.localeCompare(b.label));
+      const leftCol = document.createElement('div');
+      leftCol.className = 'svc-expanded-col';
+      const rightCol = document.createElement('div');
+      rightCol.className = 'svc-expanded-col';
+      const makeGridItem = (item, col) => {
         const el = document.createElement('div');
         el.className = 'svc-list-item' + (item.selected ? ' selected' : '') + (item.warn ? ' warn' : '');
         el.setAttribute('role', 'checkbox');
@@ -5848,8 +5853,12 @@
         const handler = () => onItemToggle(item);
         el.addEventListener('click', handler);
         el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handler(); } });
-        grid.appendChild(el);
-      });
+        col.appendChild(el);
+      };
+      warnItems.forEach(item => makeGridItem(item, leftCol));
+      normalItems.forEach(item => makeGridItem(item, rightCol));
+      grid.appendChild(leftCol);
+      grid.appendChild(rightCol);
     }
   }
 
