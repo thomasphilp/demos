@@ -1041,14 +1041,16 @@
     position: relative;
     overflow: hidden;
     background: white;
-    box-shadow: 0 0 0 2px #f3f4f6;
+    animation: services-gate-pulse 2s ease-in-out infinite;
   }
   .svc-new-box.type-selected {
     background: rgba(9,10,12,0.01);
+    animation: none;
     box-shadow: none;
   }
   .svc-new-box.resolved {
     background: rgba(9,10,12,0.01);
+    animation: none;
     box-shadow: none;
   }
   .svc-new-box.type-selected hr.svc-new-divider:last-of-type,
