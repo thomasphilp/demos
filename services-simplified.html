@@ -1034,21 +1034,22 @@
 
   /* ── NEW Services container ── */
   .svc-new-box {
-    border: 1px solid var(--color-control-border);
+    border: 1px solid rgba(9,10,12,0.1);
     border-radius: 4px;
     display: flex;
     flex-direction: column;
     position: relative;
     overflow: hidden;
-    animation: services-gate-pulse 2s ease-in-out infinite;
+    background: white;
+    box-shadow: 0 0 0 2px #f3f4f6;
   }
   .svc-new-box.type-selected {
-    animation: none;
-    background: rgba(9, 10, 12, 0.01);
+    background: rgba(9,10,12,0.02);
+    box-shadow: none;
   }
   .svc-new-box.resolved {
-    animation: none;
-    background: rgba(9, 10, 12, 0.01);
+    background: rgba(9,10,12,0.02);
+    box-shadow: none;
   }
   .svc-new-box.type-selected hr.svc-new-divider:last-of-type,
   .svc-new-box.resolved hr.svc-new-divider:last-of-type { display: none; }
@@ -1059,14 +1060,14 @@
     position: absolute;
     left: 0; top: 0; bottom: 0;
     width: 5px;
-    background: rgba(9,10,12,0.04);
+    background: #f3f4f6;
     border-radius: 4px 0 0 4px;
     transition: background 0.25s;
     z-index: 1;
     pointer-events: none;
   }
   .svc-new-box.type-selected::before {
-    background: #bbf7d0;
+    background: #baf5d8;
   }
 
   /* Top bar */
@@ -1118,17 +1119,19 @@
     top: 2px; left: 2px;
     width: 12px; height: 12px;
     border-radius: 50%;
-    background: white;
+    background: rgba(9,10,12,0.9);
     box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-    transition: transform 0.15s;
+    transition: transform 0.15s, background 0.15s;
   }
-  .svc-new-toggle-track.on .svc-new-toggle-knob { transform: translateX(12px); }
+  .svc-new-toggle-track.on .svc-new-toggle-knob { transform: translateX(12px); background: white; }
   .svc-new-toggle-state {
     font-size: 10px;
     font-weight: 600;
     color: var(--color-label-secondary);
     min-width: 18px;
+    transition: color 0.15s;
   }
+  .svc-new-toggle-track.on ~ .svc-new-toggle-state { color: rgba(9,10,12,0.9); }
 
   /* Divider */
   .svc-new-divider { border: none; border-top: 1px solid rgba(9,10,12,0.06); margin: 0; }
@@ -1197,8 +1200,8 @@
 
   /* List item — matches Figma expanded card */
   .svc-list-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 10px;
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 8px 12px;
     min-height: 32px;
     border-radius: 4px;
     border: 1px solid rgba(9,10,12,0.12);
@@ -1209,7 +1212,7 @@
     box-sizing: border-box;
   }
   .svc-list-item:hover { background: rgba(9,10,12,0.06); }
-  .svc-list-item.selected { background: var(--controls-selected-bg); border: 2px solid rgba(9,10,12,0.9); padding: 9px; }
+  .svc-list-item.selected { background: var(--controls-selected-bg); border: 2px solid rgba(9,10,12,0.9); padding: 7px 11px; }
   .svc-list-item.warn:not(.selected) { background: #fefce8; }
   .svc-list-item.warn:not(.selected):hover { background: #fef9c3; }
   .svc-list-item-checkbox {
@@ -1221,6 +1224,7 @@
     display: flex; align-items: center; justify-content: center;
     box-sizing: border-box;
     transition: background 0.1s, border-color 0.1s;
+    margin-top: 1px;
   }
   .svc-list-item.selected .svc-list-item-checkbox { background: #00703a; border-color: #00703a; }
   .svc-list-item-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
@@ -1232,7 +1236,8 @@
   .svc-expanded-grid.show-full-desc .svc-list-item-full-desc { display: -webkit-box; }
   .svc-learn-more-wrap { margin-top: 12px; }
   .svc-learn-more-divider { border: none; border-top: 1px solid rgba(9,10,12,0.06); margin: 0; }
-  .svc-learn-more-btn { background: none; border: none; padding: 0; font-size: 10px; color: var(--color-tint); cursor: pointer; font-family: inherit; font-weight: 500; line-height: normal; }
+  .svc-learn-more-btn { background: none; border: none; padding: 0; font-size: 10px; color: var(--color-tint); cursor: pointer; font-family: inherit; font-weight: 600; line-height: normal; display: inline-flex; align-items: center; gap: 4px; }
+  .svc-list-item-info { flex-shrink: 0; color: rgba(9,10,12,0.28); align-self: flex-start; margin-top: 1px; }
 
   /* Bottom section of new container */
   .svc-new-bottom { padding: 12px 16px 14px 20px; }
@@ -4111,7 +4116,7 @@
         <div class="svc-expanded-content" id="svc-expanded-content" hidden>
           <div class="svc-expanded-grid" id="svc-expanded-grid"></div>
           <div class="svc-learn-more-wrap">
-            <button class="svc-learn-more-btn" id="svc-learn-more-btn" type="button">Learn more about services</button>
+            <button class="svc-learn-more-btn" id="svc-learn-more-btn" type="button">Learn more about all services <svg width="9" height="9" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h6M15 3h6m0 0v6m0-6L10 14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           </div>
         </div>
         <hr class="svc-new-divider">
@@ -4625,7 +4630,7 @@
         <div class="svc-expanded-content" id="d-svc-expanded-content" hidden>
           <div class="svc-expanded-grid" id="d-svc-expanded-grid"></div>
           <div class="svc-learn-more-wrap">
-            <button class="svc-learn-more-btn" id="d-svc-learn-more-btn" type="button">Learn more about services</button>
+            <button class="svc-learn-more-btn" id="d-svc-learn-more-btn" type="button">Learn more about all services <svg width="9" height="9" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h6M15 3h6m0 0v6m0-6L10 14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           </div>
         </div>
         <hr class="svc-new-divider">
@@ -5884,6 +5889,7 @@
         const labelHtml = item.warn
           ? `${item.label} <span class="svc-pill-sep">·</span> <span class="svc-pill-rec">Recommended</span>`
           : item.label;
+        const infoIconSVG = `<svg class="svc-list-item-info" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 8.5v3.5M12 15.5h.01" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>`;
         el.innerHTML = `
           <div class="svc-list-item-checkbox">${item.selected ? checkIconSVG : ''}</div>
           <div class="svc-list-item-text">
@@ -5891,6 +5897,7 @@
             <p class="svc-list-item-desc">${item.shortDesc}</p>
             <p class="svc-list-item-full-desc">${item.desc}</p>
           </div>
+          ${infoIconSVG}
         `;
         const handler = () => onItemToggle(item);
         el.addEventListener('click', handler);
@@ -6437,17 +6444,18 @@
       const grid = document.getElementById('svc-expanded-grid');
       const learnBtn = document.getElementById('svc-learn-more-btn');
       if (grid) grid.classList.remove('show-full-desc');
-      if (learnBtn) learnBtn.textContent = 'Learn more about services';
+      if (learnBtn) learnBtn.innerHTML = 'Learn more about all services <svg width="9" height="9" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h6M15 3h6m0 0v6m0-6L10 14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
       updateSvcTopbarLabel();
     });
   }
 
   const svcLearnMoreBtn = document.getElementById('svc-learn-more-btn');
+  const _extLinkSvg = `<svg width="9" height="9" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h6M15 3h6m0 0v6m0-6L10 14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
   if (svcLearnMoreBtn) {
     svcLearnMoreBtn.addEventListener('click', () => {
       const grid = document.getElementById('svc-expanded-grid');
       const isExpanded = grid.classList.toggle('show-full-desc');
-      svcLearnMoreBtn.textContent = isExpanded ? 'Hide' : 'Learn more about services';
+      svcLearnMoreBtn.innerHTML = isExpanded ? 'Hide service details' : `Learn more about all services ${_extLinkSvg}`;
     });
   }
 
@@ -7116,7 +7124,7 @@
       const grid = document.getElementById('d-svc-expanded-grid');
       const learnBtn = document.getElementById('d-svc-learn-more-btn');
       if (grid) grid.classList.remove('show-full-desc');
-      if (learnBtn) learnBtn.textContent = 'Learn more about services';
+      if (learnBtn) learnBtn.innerHTML = 'Learn more about all services <svg width="9" height="9" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h6M15 3h6m0 0v6m0-6L10 14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     });
   }
 
@@ -7125,7 +7133,7 @@
     dSvcLearnMoreBtn.addEventListener('click', () => {
       const grid = document.getElementById('d-svc-expanded-grid');
       const isExpanded = grid.classList.toggle('show-full-desc');
-      dSvcLearnMoreBtn.textContent = isExpanded ? 'Hide' : 'Learn more about services';
+      dSvcLearnMoreBtn.innerHTML = isExpanded ? 'Hide service details' : `Learn more about all services ${_extLinkSvg}`;
     });
   }
 
