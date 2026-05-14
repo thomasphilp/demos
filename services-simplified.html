@@ -1032,6 +1032,35 @@
     border-radius: 4px 0 0 4px;
   }
 
+  /* ── External label above the new services container ── */
+  .svc-new-ext-label {
+    font-size: 12px;
+    font-weight: 400;
+    color: rgba(9,10,12,0.9);
+    line-height: normal;
+    display: flex;
+    align-items: baseline;
+    gap: 0;
+    margin-bottom: 8px;
+  }
+  .svc-ext-label-muted { color: rgba(9,10,12,0.6); }
+  .svc-ext-label-req { color: #dc2626; margin-left: 2px; }
+
+  /* ── Topbar hint (replaces "Select services" label when recs exist) ── */
+  .svc-topbar-hint {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+  .svc-topbar-hint-text {
+    font-size: 10px;
+    font-weight: 400;
+    color: rgba(9,10,12,0.6);
+    line-height: normal;
+  }
+
   /* ── NEW Services container ── */
   .svc-new-box {
     border: 1px solid rgba(9,10,12,0.1);
@@ -1154,7 +1183,7 @@
   }
 
   /* Pill content area */
-  .svc-pill-content { padding: 12px 16px 16px 20px; padding-top: 0; }
+  .svc-pill-content { padding: 12px 16px 16px 20px; }
   .svc-pill-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
 
   /* Pill */
@@ -4089,10 +4118,18 @@
       </div>
       </div><!-- /svc-box-old -->
 
+      <!-- External label (shown when recommendations exist) -->
+      <div class="svc-new-ext-label" id="svc-new-ext-label" hidden>Select the recommended services <span class="svc-ext-label-muted">(accessorials)</span> to avoid rebills and delays.<span class="svc-ext-label-req"> *</span></div>
       <!-- NEW services container (Demo 2) — pill/grid -->
       <div class="svc-new-box" id="svc-box" hidden>
         <!-- Top bar -->
         <div class="svc-new-topbar">
+          <!-- Hint shown when recommendations exist -->
+          <div class="svc-topbar-hint" id="svc-topbar-hint" hidden>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:rgba(9,10,12,0.6);flex-shrink:0"><path d="M12 8.39995V12.9M22.8 12C22.8 17.9646 17.9646 22.8 12 22.8C6.03528 22.8 1.19995 17.9646 1.19995 12C1.19995 6.03528 6.03528 1.19995 12 1.19995C17.9646 1.19995 22.8 6.03528 22.8 12ZM12 16.5H12.009V16.509H12V16.5Z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="svc-topbar-hint-text">Our data suggest that carriers require them for this location</span>
+          </div>
+          <!-- Label shown when no recs or items selected -->
           <span class="svc-new-topbar-label" id="svc-new-topbar-label">Select services</span>
           <div class="svc-new-toggle-wrap">
             <span class="svc-new-toggle-label-text">View service details</span>
@@ -4105,13 +4142,8 @@
           </div>
         </div>
         <hr class="svc-new-divider">
-        <!-- Inline recommendation feedback (always visible) -->
-        <div class="svc-pill-feedback" style="padding-top:12px; padding-bottom:6px;">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:rgba(9,10,12,0.6)"><path d="M12 8.39995V12.9M22.8 12C22.8 17.9646 17.9646 22.8 12 22.8C6.03528 22.8 1.19995 17.9646 1.19995 12C1.19995 6.03528 6.03528 1.19995 12 1.19995C17.9646 1.19995 22.8 6.03528 22.8 12ZM12 16.5H12.009V16.509H12V16.5Z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span class="svc-pill-feedback-text">Consider adding the recommended services to prevent pickup issues and avoid adjustment charges</span>
-        </div>
         <!-- Default (pill) view -->
-        <div class="svc-pill-content" id="svc-pill-content" style="padding-top:0;">
+        <div class="svc-pill-content" id="svc-pill-content">
           <div class="svc-pill-wrap" id="svc-pill-wrap"></div>
         </div>
         <!-- Expanded (list) view -->
@@ -4603,10 +4635,18 @@
       </div>
       </div><!-- /d-svc-box-old -->
 
+      <!-- External label (shown when recommendations exist) -->
+      <div class="svc-new-ext-label" id="d-svc-new-ext-label" hidden>Select the recommended services <span class="svc-ext-label-muted">(accessorials)</span> to avoid rebills and delays.<span class="svc-ext-label-req"> *</span></div>
       <!-- NEW services container (Demo 2) — pill/grid -->
       <div class="svc-new-box" id="d-svc-box" hidden>
         <!-- Top bar -->
         <div class="svc-new-topbar">
+          <!-- Hint shown when recommendations exist -->
+          <div class="svc-topbar-hint" id="d-svc-topbar-hint" hidden>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:rgba(9,10,12,0.6);flex-shrink:0"><path d="M12 8.39995V12.9M22.8 12C22.8 17.9646 17.9646 22.8 12 22.8C6.03528 22.8 1.19995 17.9646 1.19995 12C1.19995 6.03528 6.03528 1.19995 12 1.19995C17.9646 1.19995 22.8 6.03528 22.8 12ZM12 16.5H12.009V16.509H12V16.5Z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="svc-topbar-hint-text">Our data suggest that carriers require them for this location</span>
+          </div>
+          <!-- Label shown when no recs or items selected -->
           <span class="svc-new-topbar-label" id="d-svc-new-topbar-label">Select services</span>
           <div class="svc-new-toggle-wrap">
             <span class="svc-new-toggle-label-text">View service details</span>
@@ -4619,11 +4659,6 @@
           </div>
         </div>
         <hr class="svc-new-divider">
-        <!-- Inline recommendation feedback (always visible) -->
-        <div class="svc-pill-feedback" style="padding-top:12px; padding-bottom:6px;">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:rgba(9,10,12,0.6)"><path d="M12 8.39995V12.9M22.8 12C22.8 17.9646 17.9646 22.8 12 22.8C6.03528 22.8 1.19995 17.9646 1.19995 12C1.19995 6.03528 6.03528 1.19995 12 1.19995C17.9646 1.19995 22.8 6.03528 22.8 12ZM12 16.5H12.009V16.509H12V16.5Z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span class="svc-pill-feedback-text">Consider adding the recommended services to prevent pickup issues and avoid adjustment charges</span>
-        </div>
         <!-- Default (pill) view -->
         <div class="svc-pill-content" id="d-svc-pill-content" style="padding-top:0;">
           <div class="svc-pill-wrap" id="d-svc-pill-wrap"></div>
@@ -6417,19 +6452,50 @@
   const checkCircleSvg = `<svg width="12" height="12" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12ZM16.4434 9.7673C16.7398 9.35245 16.6437 8.77595 16.2288 8.47963C15.814 8.18331 15.2375 8.2794 14.9412 8.69424L10.9591 14.2691L8.96041 12.2704C8.59992 11.9099 8.01546 11.9099 7.65498 12.2704C7.29449 12.6308 7.29449 13.2153 7.65498 13.5758L10.4242 16.345C10.6161 16.5369 10.8826 16.6346 11.1531 16.6122C11.4235 16.5899 11.6703 16.4496 11.8281 16.2288L16.4434 9.7673Z" fill="#00703a"/></svg>`;
   function updateSvcTopbarLabel() {
     const label = document.getElementById('svc-new-topbar-label');
+    const hint = document.getElementById('svc-topbar-hint');
+    const extLabel = document.getElementById('svc-new-ext-label');
     if (!label) return;
     const n = ACC_ITEMS.filter(i => i.selected).length;
-    label.innerHTML = n > 0
-      ? `<span style="display:inline-flex;align-items:center;gap:8px;padding:4px 0;">${checkCircleSvg}<span style="font-weight:600;color:rgba(9,10,12,0.9);font-size:10px;">${n} selected</span></span>`
-      : 'Select services';
+    const hasRecs = ACC_ITEMS.some(i => i.warn);
+    if (n > 0) {
+      // Items selected — show "N selected", hide hint
+      label.innerHTML = `<span style="display:inline-flex;align-items:center;gap:8px;padding:4px 0;">${checkCircleSvg}<span style="font-weight:600;color:rgba(9,10,12,0.9);font-size:10px;">${n} selected</span></span>`;
+      label.hidden = false;
+      if (hint) hint.hidden = true;
+    } else if (hasRecs) {
+      // No selection but recs exist — show hint, hide label
+      label.hidden = true;
+      if (hint) hint.hidden = false;
+      if (extLabel) extLabel.hidden = false;
+    } else {
+      // No recs — plain "Select services"
+      label.innerHTML = 'Select services';
+      label.hidden = false;
+      if (hint) hint.hidden = true;
+      if (extLabel) extLabel.hidden = true;
+    }
   }
   function updateDSvcTopbarLabel() {
     const label = document.getElementById('d-svc-new-topbar-label');
+    const hint = document.getElementById('d-svc-topbar-hint');
+    const extLabel = document.getElementById('d-svc-new-ext-label');
     if (!label) return;
     const n = DELIVER_ACC_ITEMS.filter(i => i.selected).length;
-    label.innerHTML = n > 0
-      ? `<span style="display:inline-flex;align-items:center;gap:8px;padding:4px 0;">${checkCircleSvg}<span style="font-weight:600;color:rgba(9,10,12,0.9);font-size:10px;">${n} selected</span></span>`
-      : 'Select services';
+    const hasRecs = DELIVER_ACC_ITEMS.some(i => i.warn);
+    if (n > 0) {
+      label.innerHTML = `<span style="display:inline-flex;align-items:center;gap:8px;padding:4px 0;">${checkCircleSvg}<span style="font-weight:600;color:rgba(9,10,12,0.9);font-size:10px;">${n} selected</span></span>`;
+      label.hidden = false;
+      if (hint) hint.hidden = true;
+    } else if (hasRecs) {
+      label.hidden = true;
+      if (hint) hint.hidden = false;
+      if (extLabel) extLabel.hidden = false;
+    } else {
+      label.innerHTML = 'Select services';
+      label.hidden = false;
+      if (hint) hint.hidden = true;
+      if (extLabel) extLabel.hidden = true;
+    }
   }
   if (svcExpandToggle) {
     svcExpandToggle.addEventListener('click', () => {
@@ -9415,6 +9481,8 @@
       if (_new2) _new2.hidden = false;
       const _dNew2 = document.getElementById('d-svc-box');
       if (_dNew2) _dNew2.hidden = false;
+      updateSvcTopbarLabel();
+      updateDSvcTopbarLabel();
       setActive(linkRes2);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
@@ -9428,6 +9496,8 @@
       if (_new4) _new4.hidden = false;
       const _dNew4 = document.getElementById('d-svc-box');
       if (_dNew4) _dNew4.hidden = false;
+      updateSvcTopbarLabel();
+      updateDSvcTopbarLabel();
       // Show loc type picker in dropdown-button mode
       const locPicker4 = document.getElementById('demo3-loc-picker');
       if (locPicker4) {
