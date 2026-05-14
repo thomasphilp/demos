@@ -43,6 +43,9 @@
     --radius-2xl: 16px;
     --border-1: 1px;
     --border-2: 2px;
+    /* ── Description line limits — adjust these to control how many lines show ── */
+    --desc-short-lines: 2;
+    --desc-long-lines: 3;
   }
 
   body {
@@ -1223,10 +1226,10 @@
   .svc-list-item-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
   .svc-list-item-label { font-size: 12px; font-weight: 500; color: var(--color-label-primary); line-height: normal; margin: 0; white-space: nowrap; }
   .svc-list-item.selected .svc-list-item-label { font-weight: 600; }
-  .svc-list-item-desc { font-size: 10px; color: var(--color-label-secondary); line-height: normal; margin: 0; width: 100%; }
-  .svc-list-item-full-desc { display: none; font-size: 10px; color: var(--color-label-secondary); line-height: normal; margin: 0; width: 100%; }
+  .svc-list-item-desc { font-size: 10px; color: var(--color-label-secondary); line-height: normal; margin: 0; width: 100%; display: -webkit-box; -webkit-line-clamp: var(--desc-short-lines); -webkit-box-orient: vertical; overflow: hidden; }
+  .svc-list-item-full-desc { display: none; font-size: 10px; color: var(--color-label-secondary); line-height: normal; margin: 0; width: 100%; -webkit-line-clamp: var(--desc-long-lines); -webkit-box-orient: vertical; overflow: hidden; }
   .svc-expanded-grid.show-full-desc .svc-list-item-desc { display: none; }
-  .svc-expanded-grid.show-full-desc .svc-list-item-full-desc { display: block; }
+  .svc-expanded-grid.show-full-desc .svc-list-item-full-desc { display: -webkit-box; }
   .svc-learn-more-wrap { margin-top: 12px; }
   .svc-learn-more-divider { border: none; border-top: 1px solid rgba(9,10,12,0.06); margin: 0; }
   .svc-learn-more-btn { background: none; border: none; padding: 0; font-size: 10px; color: var(--color-tint); cursor: pointer; font-family: inherit; font-weight: 500; line-height: normal; }
@@ -1595,6 +1598,11 @@
   .acc-item-desc {
     font-size: 10px; font-weight: 400; color: var(--color-label-secondary);
     line-height: normal; margin-top: 1px;
+    display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden;
+    -webkit-line-clamp: var(--desc-short-lines);
+  }
+  .acc-list:not(.desc-off) .acc-item-desc {
+    -webkit-line-clamp: var(--desc-long-lines);
   }
   .acc-item-warn {
     display: inline-flex; align-items: center; gap: 4px;
