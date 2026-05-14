@@ -5957,12 +5957,12 @@
         pill.setAttribute('role', 'checkbox');
         pill.setAttribute('aria-checked', item.selected ? 'true' : 'false');
         pill.setAttribute('tabindex', '0');
-        const pillInfoWrapHtml = item.id === 'liftgate' ? `<div class="svc-info-wrap">
-          <svg class="svc-list-item-info svc-info-outline" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 8.5v3.5M12 15.5h.01" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
-          <svg class="svc-list-item-info svc-info-solid" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.300049 12C0.300049 5.53832 5.53832 0.300049 12 0.300049C18.4618 0.300049 23.7 5.53832 23.7 12C23.7 18.4618 18.4618 23.7 12 23.7C5.53832 23.7 0.300049 18.4618 0.300049 12ZM10.7475 10.2702C12.123 9.58245 13.6718 10.8248 13.2988 12.3167L12.448 15.72L12.4978 15.6951C12.9423 15.4728 13.4829 15.653 13.7052 16.0976C13.9275 16.5422 13.7473 17.0828 13.3027 17.305L13.253 17.3299C11.8775 18.0177 10.3287 16.7753 10.7017 15.2834L11.5525 11.8802L11.5027 11.9051C11.0582 12.1273 10.5176 11.9471 10.2953 11.5026C10.073 11.058 10.2532 10.5174 10.6978 10.2951L10.7475 10.2702ZM12 8.40005C12.4971 8.40005 12.9 7.99711 12.9 7.50005C12.9 7.00299 12.4971 6.60005 12 6.60005C11.503 6.60005 11.1 7.00299 11.1 7.50005C11.1 7.99711 11.503 8.40005 12 8.40005Z" fill="currentColor"/></svg>
+        const pillInfoWrapHtml = `<div class="svc-info-wrap">
+          <svg class="svc-list-item-info svc-info-outline" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 8.5v3.5M12 15.5h.01" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+          <svg class="svc-list-item-info svc-info-solid" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.300049 12C0.300049 5.53832 5.53832 0.300049 12 0.300049C18.4618 0.300049 23.7 5.53832 23.7 12C23.7 18.4618 18.4618 23.7 12 23.7C5.53832 23.7 0.300049 18.4618 0.300049 12ZM10.7475 10.2702C12.123 9.58245 13.6718 10.8248 13.2988 12.3167L12.448 15.72L12.4978 15.6951C12.9423 15.4728 13.4829 15.653 13.7052 16.0976C13.9275 16.5422 13.7473 17.0828 13.3027 17.305L13.253 17.3299C11.8775 18.0177 10.3287 16.7753 10.7017 15.2834L11.5525 11.8802L11.5027 11.9051C11.0582 12.1273 10.5176 11.9471 10.2953 11.5026C10.073 11.058 10.2532 10.5174 10.6978 10.2951L10.7475 10.2702ZM12 8.40005C12.4971 8.40005 12.9 7.99711 12.9 7.50005C12.9 7.00299 12.4971 6.60005 12 6.60005C11.503 6.60005 11.1 7.00299 11.1 7.50005C11.1 7.99711 11.503 8.40005 12 8.40005Z" fill="currentColor"/></svg>
           <div class="svc-dark-tip">${item.desc}</div>
-        </div>` : '';
-        if (item.id === 'liftgate') pill.classList.add('has-info');
+        </div>`;
+        pill.classList.add('has-info');
         pill.innerHTML = `
           <div class="svc-pill-inner">
             <div class="svc-pill-checkbox">${item.selected ? checkIconSVG : ''}</div>
@@ -5996,7 +5996,7 @@
         const labelHtml = item.warn
           ? `${item.label} <span class="svc-pill-sep">·</span> <span class="svc-pill-rec">Recommended</span>`
           : item.label;
-        const infoWrapHtml = `<div class="svc-info-wrap${item.id === 'liftgate' ? ' wide' : ''}">
+        const infoWrapHtml = `<div class="svc-info-wrap wide">
           <svg class="svc-list-item-info svc-info-outline" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 8.5v3.5M12 15.5h.01" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
           <svg class="svc-list-item-info svc-info-solid" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.300049 12C0.300049 5.53832 5.53832 0.300049 12 0.300049C18.4618 0.300049 23.7 5.53832 23.7 12C23.7 18.4618 18.4618 23.7 12 23.7C5.53832 23.7 0.300049 18.4618 0.300049 12ZM10.7475 10.2702C12.123 9.58245 13.6718 10.8248 13.2988 12.3167L12.448 15.72L12.4978 15.6951C12.9423 15.4728 13.4829 15.653 13.7052 16.0976C13.9275 16.5422 13.7473 17.0828 13.3027 17.305L13.253 17.3299C11.8775 18.0177 10.3287 16.7753 10.7017 15.2834L11.5525 11.8802L11.5027 11.9051C11.0582 12.1273 10.5176 11.9471 10.2953 11.5026C10.073 11.058 10.2532 10.5174 10.6978 10.2951L10.7475 10.2702ZM12 8.40005C12.4971 8.40005 12.9 7.99711 12.9 7.50005C12.9 7.00299 12.4971 6.60005 12 6.60005C11.503 6.60005 11.1 7.00299 11.1 7.50005C11.1 7.99711 11.503 8.40005 12 8.40005Z" fill="currentColor"/></svg>
           <div class="svc-dark-tip">${item.desc}</div>
