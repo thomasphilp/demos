@@ -9578,6 +9578,13 @@
     if (linkLocFinder) linkLocFinder.addEventListener('click', () => {
       applyNone();
       applyResidential('your address book');
+      // Clear pre-populated recs — services not recommended until loc type is selected
+      ACC_ITEMS.forEach(item => { item.warn = false; });
+      DELIVER_ACC_ITEMS.forEach(item => { item.warn = false; });
+      renderTooltipTags('tooltip-tags', [], ACC_ITEMS);
+      renderTooltipTags('d-tooltip-tags', [], DELIVER_ACC_ITEMS);
+      renderList();
+      dRenderList();
       // Show new pill container (same as Demo 2)
       const _new4 = document.getElementById('svc-box');
       if (_new4) _new4.hidden = false;
