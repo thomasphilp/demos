@@ -1079,6 +1079,10 @@
     animation: none;
     box-shadow: none;
   }
+  .svc-new-box.svc-gated {
+    opacity: 0.4;
+    pointer-events: none;
+  }
   .svc-new-box.type-selected hr.svc-new-divider:last-of-type,
   .svc-new-box.resolved hr.svc-new-divider:last-of-type { display: none; }
   .svc-new-box.type-selected .svc-new-bottom,
@@ -9198,11 +9202,11 @@
       const _svcBoxOld = document.getElementById('svc-box-old');
       if (_svcBoxOld) _svcBoxOld.hidden = true;
       const _svcBoxNew = document.getElementById('svc-box');
-      if (_svcBoxNew) _svcBoxNew.hidden = true;
+      if (_svcBoxNew) { _svcBoxNew.hidden = true; _svcBoxNew.classList.remove('svc-gated'); }
       const _dSvcBoxOld = document.getElementById('d-svc-box-old');
       if (_dSvcBoxOld) _dSvcBoxOld.hidden = true;
       const _dSvcBoxNew = document.getElementById('d-svc-box');
-      if (_dSvcBoxNew) _dSvcBoxNew.hidden = true;
+      if (_dSvcBoxNew) { _dSvcBoxNew.hidden = true; _dSvcBoxNew.classList.remove('svc-gated'); }
     }
 
     function renderInlineRecTags(containerId, btnTextId, items) {
@@ -9439,7 +9443,9 @@
         const chip = document.getElementById('loc-type-chip');
         if (chip) chip.hidden = false;
         const _pgb = document.getElementById('svc-box');
-        if (_pgb) { _pgb.classList.add('type-selected'); _pgb.classList.remove('resolved'); }
+        if (_pgb) { _pgb.classList.add('type-selected'); _pgb.classList.remove('resolved'); _pgb.classList.remove('svc-gated'); }
+        const _dpgb = document.getElementById('d-svc-box');
+        if (_dpgb) { _dpgb.classList.remove('svc-gated'); }
         // Reset dependent state
         const dockQ = document.getElementById('demo3-dock-q');
         if (dockQ) { dockQ.hidden = true; dockQ.querySelectorAll('.dock-q-btn').forEach(b => b.classList.remove('selected')); }
@@ -9450,9 +9456,17 @@
         if (hasDockQuestion) {
           // Show dock question for types that have dock relevance
           if (dockQ) dockQ.hidden = false;
+          // Default to liftgate recommended (dock not confirmed yet) — update on dock answer
+          const defaultRecs = LOC_REC_PICKUP[type] || ['liftgate'];
+          ACC_ITEMS.forEach(item => { item.warn = defaultRecs.includes(item.id); });
+          const defaultDeliverRecs = LOC_REC_DELIVER[type] || ['d-liftgate'];
+          DELIVER_ACC_ITEMS.forEach(item => { item.warn = defaultDeliverRecs.includes(item.id); });
         } else {
           // Show recommendation directly based on type
           const recs = LOC_REC_PICKUP[type] || [];
+          ACC_ITEMS.forEach(item => { item.warn = recs.includes(item.id); });
+          const deliverRecs = LOC_REC_DELIVER[type] || [];
+          DELIVER_ACC_ITEMS.forEach(item => { item.warn = deliverRecs.includes(item.id); });
           if (recs.length > 0 && recRow) {
             const labels = recs.map(id => { const item = ACC_ITEMS.find(i => i.id === id); return item ? item.label : id; });
             const recService = document.getElementById('demo3-rec-service');
@@ -9463,6 +9477,8 @@
             recRow.hidden = false;
           }
         }
+        renderList(); updateSvcTopbarLabel();
+        dRenderList(); updateDSvcTopbarLabel();
       });
     });
 
@@ -9482,6 +9498,11 @@
         const answer = btn.dataset.answer;
         // yes = has own dock, no liftgate needed; no / unknown = liftgate recommended
         const recs = answer === 'yes' ? [] : ['liftgate'];
+        const deliverRecs = answer === 'yes' ? [] : ['d-liftgate'];
+        ACC_ITEMS.forEach(item => { item.warn = recs.includes(item.id); });
+        DELIVER_ACC_ITEMS.forEach(item => { item.warn = deliverRecs.includes(item.id); });
+        renderList(); updateSvcTopbarLabel();
+        dRenderList(); updateDSvcTopbarLabel();
         const recRow = document.getElementById('demo3-rec-row');
         const appliedRow = document.getElementById('demo3-applied-row');
         if (appliedRow) appliedRow.hidden = true;
@@ -9611,14 +9632,29 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // Demo 3 — "Location Unknown": show services block (no recs until type selected) + loc type picker
+    // Demo 3 — "Location Unknown": show services block collapsed + gated until loc type selected
     linkRebill2.addEventListener('click', () => {
       applyNone(); setActive(linkRebill2);
-      // Show new pill/grid container — no recommendations until loc type is chosen
+      // Show new pill/grid container — gated (disabled) until loc type is chosen
       const _new3 = document.getElementById('svc-box');
-      if (_new3) _new3.hidden = false;
+      if (_new3) { _new3.hidden = false; _new3.classList.add('svc-gated'); }
       const _dNew3 = document.getElementById('d-svc-box');
-      if (_dNew3) _dNew3.hidden = false;
+      if (_dNew3) { _dNew3.hidden = false; _dNew3.classList.add('svc-gated'); }
+      // Switch both pickup and delivery to collapsed (pill) view
+      [['svc-toggle-track','svc-expand-toggle','svc-toggle-state','svc-pill-content','svc-expanded-content'],
+       ['d-svc-toggle-track','d-svc-expand-toggle','d-svc-toggle-state','d-svc-pill-content','d-svc-expanded-content']
+      ].forEach(([trackId, toggleId, stateId, pillId, expId]) => {
+        const track = document.getElementById(trackId);
+        if (track) track.classList.remove('on');
+        const tog = document.getElementById(toggleId);
+        if (tog) tog.setAttribute('aria-pressed', 'false');
+        const state = document.getElementById(stateId);
+        if (state) state.textContent = 'Off';
+        const pill = document.getElementById(pillId);
+        if (pill) pill.hidden = false;
+        const exp = document.getElementById(expId);
+        if (exp) exp.hidden = true;
+      });
       updateSvcTopbarLabel();
       updateDSvcTopbarLabel();
       // Unlock the pickup loc-gated section so address/loc-type picker is accessible
