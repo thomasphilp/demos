@@ -1295,7 +1295,19 @@
     transition: opacity 0.15s ease, transform 0.15s ease;
     white-space: normal;
     z-index: 300;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.28);
+    box-shadow: 0 10px 10px rgba(0,0,0,0.04), 0 20px 25px rgba(0,0,0,0.10);
+  }
+  /* Bottom tail — 16px wide × 8px tall, right-aligned toward the info icon */
+  .svc-dark-tip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    right: 8px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid rgba(9,10,12,0.92);
   }
   .svc-info-wrap:hover .svc-dark-tip { opacity: 1; transform: translateY(0); }
 
