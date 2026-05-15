@@ -9611,18 +9611,20 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // Demo 3 — "Location Unknown": hide services, show loc type picker
+    // Demo 3 — "Location Unknown": show services block (no recs until type selected) + loc type picker
     linkRebill2.addEventListener('click', () => {
       applyNone(); setActive(linkRebill2);
-      // Hide services field wrappers (location not known, services N/A)
-      const _fw3 = document.getElementById('svc-field-wrapper');
-      if (_fw3) _fw3.hidden = true;
-      const _dfw3 = document.getElementById('d-svc-field-wrapper');
-      if (_dfw3) _dfw3.hidden = true;
+      // Show new pill/grid container — no recommendations until loc type is chosen
+      const _new3 = document.getElementById('svc-box');
+      if (_new3) _new3.hidden = false;
+      const _dNew3 = document.getElementById('d-svc-box');
+      if (_dNew3) _dNew3.hidden = false;
+      updateSvcTopbarLabel();
+      updateDSvcTopbarLabel();
       // Unlock the pickup loc-gated section so address/loc-type picker is accessible
       const gated = document.getElementById('loc-gated-pickup');
       if (gated) { gated.classList.remove('loc-gated'); gated.removeAttribute('inert'); }
-      // Show the loc type picker
+      // Show the loc type picker in combo mode (chip style, not button mode)
       const locPicker3 = document.getElementById('demo3-loc-picker');
       if (locPicker3) { locPicker3.hidden = false; resetDemo3Picker(); }
       window.scrollTo({ top: 0, behavior: 'smooth' });
