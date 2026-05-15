@@ -1278,6 +1278,8 @@
   .svc-list-item-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
   .svc-list-item-label { font-size: 12px; font-weight: 500; color: var(--color-label-primary); line-height: normal; margin: 0; white-space: nowrap; }
   .svc-list-item.selected .svc-list-item-label { font-weight: 600; }
+  .svc-label-fullname { display: none; font-weight: 400; color: var(--color-label-secondary); }
+  .svc-expanded-grid.show-full-desc .svc-label-fullname { display: inline; }
   .svc-list-item-desc { font-size: 10px; color: var(--color-label-secondary); line-height: normal; margin: 0; width: 100%; display: -webkit-box; -webkit-line-clamp: var(--desc-short-lines); -webkit-box-orient: vertical; overflow: hidden; }
   .svc-list-item-full-desc { display: none; font-size: 10px; color: var(--color-label-secondary); line-height: normal; margin: 0; width: 100%; -webkit-line-clamp: var(--desc-long-lines); -webkit-box-orient: vertical; overflow: hidden; }
   .svc-expanded-grid.show-full-desc .svc-list-item-desc { display: none; }
@@ -1318,18 +1320,21 @@
     z-index: 300;
     box-shadow: 0 10px 10px rgba(0,0,0,0.04), 0 20px 25px rgba(0,0,0,0.10);
   }
-  /* Bottom tail — 16px wide × 8px tall, centered under the tooltip */
+  /* Bottom tail — 16px wide × 8px tall, aligned to info icon */
   .svc-dark-tip::after {
     content: '';
     position: absolute;
     top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
+    right: 15px; /* aligns tail center over info icon in list item (wide) context */
     width: 0;
     height: 0;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
     border-top: 8px solid rgba(9,10,12,0.92);
+  }
+  /* Pill context: icon is closer to the right edge */
+  .svc-pill.has-info .svc-info-wrap .svc-dark-tip::after {
+    right: 10px;
   }
   .svc-info-wrap:hover .svc-dark-tip { opacity: 1; transform: translateY(0); }
 
@@ -2877,17 +2882,20 @@
 
   /* Loc type dropdown button (Demo 4 button-mode) */
   .loc-type-dropdown-btn {
-    display: none; width: 100%; padding: 9px 12px; border-radius: 8px;
-    border: 1px solid rgba(9,10,12,0.2); background: white;
-    font-family: 'Inter', sans-serif; font-size: 13px;
+    display: none; width: 100%; min-height: 48px; padding: 0 16px;
+    border-radius: var(--radius-base);
+    border: var(--border-1) solid var(--color-control-border);
+    background: var(--color-control-bg);
+    box-shadow: inset 0px 2px 0px rgba(255,255,255,0.5), inset 0px -2px 0px rgba(255,255,255,0.05);
+    font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600;
     color: var(--color-label-primary); cursor: pointer;
     align-items: center; justify-content: space-between; gap: 8px;
-    text-align: left; transition: border-color 0.12s; box-sizing: border-box;
+    text-align: left; transition: border-color 0.15s, border-width 0.15s, background 0.15s; box-sizing: border-box;
   }
-  .loc-type-dropdown-btn:hover { border-color: rgba(9,10,12,0.4); }
-  .loc-type-dropdown-btn.open { border-color: rgba(9,10,12,0.9); }
-  .loc-type-dropdown-btn-text { flex: 1; }
-  .loc-type-dropdown-btn-chevron { width: 12px; height: 12px; flex-shrink: 0; color: rgba(9,10,12,0.45); transition: transform 0.15s; }
+  .loc-type-dropdown-btn:hover { background: rgba(9,10,12,0.06); border-color: rgba(9,10,12,0.08); }
+  .loc-type-dropdown-btn.open { background: var(--color-selected-bg); border: var(--border-2) solid var(--color-selected-border); }
+  .loc-type-dropdown-btn-text { flex: 1; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .loc-type-dropdown-btn-chevron { width: 10px; height: 6px; flex-shrink: 0; color: rgba(9,10,12,0.45); transition: transform 0.15s; }
   .loc-type-dropdown-btn.open .loc-type-dropdown-btn-chevron { transform: rotate(180deg); }
   .loc-type-picker--btn-mode .loc-type-input-row { display: none; }
   .loc-type-picker--btn-mode .loc-type-dropdown-btn { display: flex; }
@@ -5843,6 +5851,7 @@
     {
       id: 'cfs',
       label: 'CFS',
+      fullName: 'Container Freight Station',
       shortDesc: 'Required at a CFS warehouse where international freight is consolidated or broken down.',
       desc: 'CFS locations handle the handoff between ocean/air shipping containers and domestic trucks. Select this if your address is at a port-area warehouse.',
       warn: false,
@@ -5891,6 +5900,7 @@
     {
       id: 'twic',
       label: 'TWIC',
+      fullName: 'Transportation Worker Identification Credential',
       shortDesc: 'A federal credential required at secure ports and marine terminals. No card, no entry.',
       desc: 'Not every driver carries a TWIC card. Selecting this ensures the carrier assigns a credentialed driver so the delivery can actually happen.',
       warn: false,
@@ -6028,9 +6038,10 @@
         el.setAttribute('role', 'checkbox');
         el.setAttribute('aria-checked', item.selected ? 'true' : 'false');
         el.setAttribute('tabindex', '0');
+        const fullNameSpan = item.fullName ? ` <span class="svc-label-fullname">(${item.fullName})</span>` : '';
         const labelHtml = item.warn
-          ? `${item.label} <span class="svc-pill-sep">·</span> <span class="svc-pill-rec">Recommended</span>`
-          : item.label;
+          ? `${item.label}${fullNameSpan} <span class="svc-pill-sep">·</span> <span class="svc-pill-rec">Recommended</span>`
+          : `${item.label}${fullNameSpan}`;
         const infoWrapHtml = `<div class="svc-info-wrap wide">
           <svg class="svc-list-item-info svc-info-outline" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 8.5v3.5M12 15.5h.01" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
           <svg class="svc-list-item-info svc-info-solid" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.300049 12C0.300049 5.53832 5.53832 0.300049 12 0.300049C18.4618 0.300049 23.7 5.53832 23.7 12C23.7 18.4618 18.4618 23.7 12 23.7C5.53832 23.7 0.300049 18.4618 0.300049 12ZM10.7475 10.2702C12.123 9.58245 13.6718 10.8248 13.2988 12.3167L12.448 15.72L12.4978 15.6951C12.9423 15.4728 13.4829 15.653 13.7052 16.0976C13.9275 16.5422 13.7473 17.0828 13.3027 17.305L13.253 17.3299C11.8775 18.0177 10.3287 16.7753 10.7017 15.2834L11.5525 11.8802L11.5027 11.9051C11.0582 12.1273 10.5176 11.9471 10.2953 11.5026C10.073 11.058 10.2532 10.5174 10.6978 10.2951L10.7475 10.2702ZM12 8.40005C12.4971 8.40005 12.9 7.99711 12.9 7.50005C12.9 7.00299 12.4971 6.60005 12 6.60005C11.503 6.60005 11.1 7.00299 11.1 7.50005C11.1 7.99711 11.503 8.40005 12 8.40005Z" fill="currentColor"/></svg>
@@ -6974,14 +6985,14 @@
 
   // ── Deliver-to services ──
   const DELIVER_ACC_ITEMS = [
-    { id: 'd-cfs',            warn: false, label: 'CFS',                shortDesc: 'Required at a CFS warehouse where international freight is consolidated or broken down.', desc: 'CFS locations handle the handoff between ocean/air shipping containers and domestic trucks. Select this if your address is at a port-area warehouse.', selected: false },
+    { id: 'd-cfs',            warn: false, label: 'CFS',  fullName: 'Container Freight Station',                             shortDesc: 'Required at a CFS warehouse where international freight is consolidated or broken down.', desc: 'CFS locations handle the handoff between ocean/air shipping containers and domestic trucks. Select this if your address is at a port-area warehouse.', selected: false },
     { id: 'd-fba',            warn: false, label: 'FBA',                shortDesc: 'Delivery to an Amazon Fulfillment Center — requires an FBA reference number, compliant BOL format, and carrier approval.', desc: 'Delivery to an Amazon fulfillment center — requires a specific BOL format, FBA reference number, and Amazon carrier compliance.', selected: false },
     { id: 'd-liftgate',       warn: false, label: 'Liftgate',           shortDesc: 'Required at any location without a raised loading dock or forklift. All residential locations need a liftgate.', desc: 'A liftgate is a hydraulic platform on the truck that raises or lowers freight to ground level. Required at retail stores, street-level businesses, and all residential addresses.', selected: false },
     { id: 'd-limited-access', warn: false, label: 'Limited Access',     shortDesc: 'Required where trucks can\'t easily access a dock — schools, hospitals, job sites.', desc: 'Covers locations with restricted truck access — tight turns, security gates, narrow roads. Can be charged alongside Residential and Liftgate as separate fees.', selected: false },
     { id: 'd-ltl-inside',     warn: false, label: 'Inside Delivery',    shortDesc: 'Required if freight needs to go past the dock or curb — through a door, down a hallway, or into a room.', desc: 'Standard delivery stops at the first entry point. Anything beyond that — through a door, into a room or hallway — counts as inside delivery and adds cost for the extra time on site.', selected: false },
     { id: 'd-residential',    warn: false, label: 'Residential',        shortDesc: 'Required for any residential address, including home offices. Always requires a liftgate as well.', desc: 'Carriers use smaller trucks and specialized equipment for residential stops, which is why the cost is higher than a commercial delivery.', selected: false },
     { id: 'd-tradeshow',      warn: false, label: 'Tradeshow',          shortDesc: 'Required for delivery to a convention center or trade show; strict receiving windows apply.', desc: 'Drayage from dock to your booth is managed by the venue. They set strict receiving windows and dock assignments; late or unscheduled deliveries are refused.', selected: false },
-    { id: 'd-twic',           warn: false, label: 'TWIC',               shortDesc: 'A federal credential required at secure ports and marine terminals. No card, no entry.', desc: 'Not every driver carries a TWIC card. Selecting this ensures the carrier assigns a credentialed driver so the delivery can actually happen.', selected: false },
+    { id: 'd-twic',           warn: false, label: 'TWIC',  fullName: 'Transportation Worker Identification Credential',    shortDesc: 'A federal credential required at secure ports and marine terminals. No card, no entry.', desc: 'Not every driver carries a TWIC card. Selecting this ensures the carrier assigns a credentialed driver so the delivery can actually happen.', selected: false },
   ];
 
   let dShowDesc = false;
