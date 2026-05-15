@@ -1228,7 +1228,7 @@
 
   /* List item — matches Figma expanded card */
   .svc-list-item {
-    display: flex; align-items: center; gap: 12px;
+    display: flex; align-items: flex-start; gap: 12px;
     padding: 8px 12px;
     min-height: 32px;
     border-radius: 4px;
@@ -1252,6 +1252,7 @@
     display: flex; align-items: center; justify-content: center;
     box-sizing: border-box;
     transition: background 0.1s, border-color 0.1s;
+    margin-top: -1px;
   }
   .svc-list-item.selected .svc-list-item-checkbox { background: #00703a; border-color: #00703a; }
   .svc-list-item-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
@@ -1314,6 +1315,8 @@
   /* Wide hit area: full height + 12px left extension + flush to right edge */
   .svc-list-item .svc-info-wrap.wide {
     align-self: stretch;
+    align-items: flex-start;
+    padding-top: 1px;
     padding-left: 12px;
     margin-right: -12px;
     padding-right: 12px;
@@ -6951,7 +6954,7 @@
   // ── Deliver-to services ──
   const DELIVER_ACC_ITEMS = [
     { id: 'd-cfs',            warn: false, label: 'CFS',                shortDesc: 'Required at a CFS warehouse where international freight is consolidated or broken down.', desc: 'CFS locations handle the handoff between ocean/air shipping containers and domestic trucks. Select this if your address is at a port-area warehouse.', selected: false },
-    { id: 'd-fba',            warn: false, label: 'FBA',                shortDesc: 'Delivery to an Amazon Fulfillment Center (FBA/FFC).', desc: 'Delivery to an Amazon fulfillment center — requires a specific BOL format, FBA reference number, and Amazon carrier compliance.', selected: false },
+    { id: 'd-fba',            warn: false, label: 'FBA',                shortDesc: 'Delivery to an Amazon Fulfillment Center — requires an FBA reference number, compliant BOL format, and carrier approval.', desc: 'Delivery to an Amazon fulfillment center — requires a specific BOL format, FBA reference number, and Amazon carrier compliance.', selected: false },
     { id: 'd-liftgate',       warn: false, label: 'Liftgate',           shortDesc: 'Required at any location without a raised loading dock or forklift. All residential locations need a liftgate.', desc: 'A liftgate is a hydraulic platform on the truck that raises or lowers freight to ground level. Required at retail stores, street-level businesses, and all residential addresses.', selected: false },
     { id: 'd-limited-access', warn: false, label: 'Limited Access',     shortDesc: 'Required where trucks can\'t easily access a dock — schools, hospitals, job sites.', desc: 'Covers locations with restricted truck access — tight turns, security gates, narrow roads. Can be charged alongside Residential and Liftgate as separate fees.', selected: false },
     { id: 'd-ltl-inside',     warn: false, label: 'Inside Delivery',    shortDesc: 'Required if freight needs to go past the dock or curb — through a door, down a hallway, or into a room.', desc: 'Standard delivery stops at the first entry point. Anything beyond that — through a door, into a room or hallway — counts as inside delivery and adds cost for the extra time on site.', selected: false },
