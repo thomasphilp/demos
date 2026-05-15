@@ -1080,8 +1080,25 @@
     box-shadow: none;
   }
   .svc-new-box.svc-gated {
-    opacity: 0.4;
     pointer-events: none;
+  }
+  .svc-new-box.svc-gated .svc-pill {
+    background: rgba(9,10,12,0.08);
+    border-color: transparent;
+    cursor: default;
+  }
+  .svc-new-box.svc-gated .svc-pill-checkbox {
+    background: rgba(9,10,12,0.08);
+    border-color: rgba(9,10,12,0.12);
+  }
+  .svc-new-box.svc-gated .svc-pill-label {
+    color: rgba(9,10,12,0.4);
+  }
+  .svc-new-box.svc-gated .no-svc-btn {
+    background: rgba(9,10,12,0.08);
+    color: rgba(9,10,12,0.4);
+    box-shadow: none;
+    cursor: default;
   }
   .svc-new-box.type-selected hr.svc-new-divider:last-of-type,
   .svc-new-box.resolved hr.svc-new-divider:last-of-type { display: none; }
@@ -1107,7 +1124,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    padding: 10px 16px 16px 20px;
+    padding: 10px 16px 10px 20px;
     gap: 8px;
   }
   .svc-new-topbar-label {
@@ -1232,8 +1249,8 @@
 
   /* List item — matches Figma expanded card */
   .svc-list-item {
-    display: flex; align-items: flex-start; gap: 12px;
-    padding: 8px 12px;
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 8px;
     min-height: 32px;
     border-radius: 4px;
     border: 1px solid rgba(9,10,12,0.12);
@@ -1244,7 +1261,7 @@
     box-sizing: border-box;
   }
   .svc-list-item:hover { background: rgba(9,10,12,0.06); }
-  .svc-list-item.selected { background: var(--controls-selected-bg); border: 2px solid rgba(9,10,12,0.9); padding: 7px 11px; }
+  .svc-list-item.selected { background: var(--controls-selected-bg); border: 2px solid rgba(9,10,12,0.9); padding: 7px; }
   .svc-list-item.warn:not(.selected) { background: #fefce8; }
   .svc-list-item.warn:not(.selected):hover { background: #fef9c3; }
   .svc-list-item-checkbox {
@@ -1256,7 +1273,6 @@
     display: flex; align-items: center; justify-content: center;
     box-sizing: border-box;
     transition: background 0.1s, border-color 0.1s;
-    margin-top: -1px;
   }
   .svc-list-item.selected .svc-list-item-checkbox { background: #00703a; border-color: #00703a; }
   .svc-list-item-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
@@ -1302,12 +1318,13 @@
     z-index: 300;
     box-shadow: 0 10px 10px rgba(0,0,0,0.04), 0 20px 25px rgba(0,0,0,0.10);
   }
-  /* Bottom tail — 16px wide × 8px tall, right-aligned toward the info icon */
+  /* Bottom tail — 16px wide × 8px tall, centered under the tooltip */
   .svc-dark-tip::after {
     content: '';
     position: absolute;
     top: 100%;
-    right: 8px;
+    left: 50%;
+    transform: translateX(-50%);
     width: 0;
     height: 0;
     border-left: 8px solid transparent;
@@ -9207,6 +9224,11 @@
       if (_dSvcBoxOld) _dSvcBoxOld.hidden = true;
       const _dSvcBoxNew = document.getElementById('d-svc-box');
       if (_dSvcBoxNew) { _dSvcBoxNew.hidden = true; _dSvcBoxNew.classList.remove('svc-gated'); }
+      // Re-enable Skip buttons on reset
+      const _skipBtnReset = document.getElementById('no-svc-btn-new');
+      if (_skipBtnReset) _skipBtnReset.disabled = false;
+      const _dSkipBtnReset = document.getElementById('d-no-svc-btn-new');
+      if (_dSkipBtnReset) _dSkipBtnReset.disabled = false;
     }
 
     function renderInlineRecTags(containerId, btnTextId, items) {
@@ -9446,6 +9468,11 @@
         if (_pgb) { _pgb.classList.add('type-selected'); _pgb.classList.remove('resolved'); _pgb.classList.remove('svc-gated'); }
         const _dpgb = document.getElementById('d-svc-box');
         if (_dpgb) { _dpgb.classList.remove('svc-gated'); }
+        // Re-enable Skip buttons now that loc type is selected
+        const _skipBtnU = document.getElementById('no-svc-btn-new');
+        if (_skipBtnU) _skipBtnU.disabled = false;
+        const _dSkipBtnU = document.getElementById('d-no-svc-btn-new');
+        if (_dSkipBtnU) _dSkipBtnU.disabled = false;
         // Reset dependent state
         const dockQ = document.getElementById('demo3-dock-q');
         if (dockQ) { dockQ.hidden = true; dockQ.querySelectorAll('.dock-q-btn').forEach(b => b.classList.remove('selected')); }
@@ -9640,6 +9667,11 @@
       if (_new3) { _new3.hidden = false; _new3.classList.add('svc-gated'); }
       const _dNew3 = document.getElementById('d-svc-box');
       if (_dNew3) { _dNew3.hidden = false; _dNew3.classList.add('svc-gated'); }
+      // Disable Skip buttons while gated
+      const _skipBtn3 = document.getElementById('no-svc-btn-new');
+      if (_skipBtn3) _skipBtn3.disabled = true;
+      const _dSkipBtn3 = document.getElementById('d-no-svc-btn-new');
+      if (_dSkipBtn3) _dSkipBtn3.disabled = true;
       // Switch both pickup and delivery to collapsed (pill) view
       [['svc-toggle-track','svc-expand-toggle','svc-toggle-state','svc-pill-content','svc-expanded-content'],
        ['d-svc-toggle-track','d-svc-expand-toggle','d-svc-toggle-state','d-svc-pill-content','d-svc-expanded-content']
