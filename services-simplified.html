@@ -44,8 +44,8 @@
     --border-1: 1px;
     --border-2: 2px;
     /* ── Description line limits — adjust these to control how many lines show ── */
-    --desc-short-lines: 3;
-    --desc-long-lines: 4;
+    --desc-short-lines: 2;
+    --desc-long-lines: 3;
   }
 
   body {
@@ -5819,7 +5819,7 @@
     {
       id: 'cfs',
       label: 'CFS',
-      shortDesc: 'Required for pickup or delivery at a port or airport warehouse where international shipments are consolidated or broken down.',
+      shortDesc: 'Required at a port or airport warehouse where international shipments are consolidated or broken down.',
       desc: 'CFS locations handle the handoff between ocean/air shipping containers and domestic trucks. Select this if your address is at a port-area warehouse.',
       warn: false,
       selected: false
@@ -5835,8 +5835,8 @@
     {
       id: 'limited-access',
       label: 'Limited Access',
-      shortDesc: 'Required at locations where a 53-ft truck can\'t easily access a dock — schools, churches, hospitals, job sites, military bases. Separate from Residential; carriers can charge both.',
-      desc: 'Covers locations with restricted truck access — tight turns, security gates, narrow roads. One address can be charged Residential, Limited Access, and Liftgate as three separate fees. When in doubt, include it.',
+      shortDesc: 'Required where large trucks can\'t easily dock — schools, hospitals, job sites. Billed separately from Residential.',
+      desc: 'Covers locations with restricted truck access — tight turns, security gates, narrow roads. Can be charged alongside Residential and Liftgate as separate fees.',
       warn: false,
       selected: false
     },
@@ -5844,14 +5844,14 @@
       id: 'ltl-inside',
       label: 'Inside Pickup',
       shortDesc: 'Required if freight can\'t be staged at the dock or curb — the driver goes into the building to retrieve it.',
-      desc: 'Standard pickup stops at the first entry point. If freight can\'t be brought to the dock or curb, the driver retrieves it from inside — adding cost for the extra labor and time on site.',
+      desc: 'Standard pickup stops at the first entry point. If freight can\'t be brought to the dock or curb, the driver retrieves it from inside — adding cost for the extra labor and time.',
       warn: false,
       selected: false
     },
     {
       id: 'residential',
       label: 'Residential',
-      shortDesc: 'Required for any address in a residential area, including home offices and mixed-use buildings. Always requires a liftgate as well.',
+      shortDesc: 'Required for any residential address, including home offices. Always requires a liftgate as well.',
       desc: 'Carriers use smaller trucks and specialized equipment for residential stops, which is why the cost is higher than a commercial delivery.',
       warn: true,
       selected: false
@@ -5860,7 +5860,7 @@
       id: 'tradeshow',
       label: 'Tradeshow',
       shortDesc: 'Required for delivery to a convention center or trade show venue with strict receiving windows and on-site coordination.',
-      desc: 'Drayage — moving freight from the dock to your booth — is managed by the venue on their schedule. They set strict receiving windows and dock assignments; late or unscheduled deliveries are refused.',
+      desc: 'Drayage from dock to your booth is managed by the venue. They set strict receiving windows and dock assignments; late or unscheduled deliveries are refused.',
       warn: false,
       selected: false
     },
@@ -6950,13 +6950,13 @@
 
   // ── Deliver-to services ──
   const DELIVER_ACC_ITEMS = [
-    { id: 'd-cfs',            warn: false, label: 'CFS',                shortDesc: 'Required for pickup or delivery at a port or airport warehouse where international shipments are consolidated or broken down.', desc: 'CFS locations handle the handoff between ocean/air shipping containers and domestic trucks. Select this if your address is at a port-area warehouse.', selected: false },
+    { id: 'd-cfs',            warn: false, label: 'CFS',                shortDesc: 'Required at a port or airport warehouse where international shipments are consolidated or broken down.', desc: 'CFS locations handle the handoff between ocean/air shipping containers and domestic trucks. Select this if your address is at a port-area warehouse.', selected: false },
     { id: 'd-fba',            warn: false, label: 'FBA',                shortDesc: 'Delivery to an Amazon Fulfillment Center (FBA/FFC).', desc: 'Delivery to an Amazon fulfillment center — requires a specific BOL format, FBA reference number, and Amazon carrier compliance.', selected: false },
     { id: 'd-liftgate',       warn: false, label: 'Liftgate',           shortDesc: 'Required at any location without a raised loading dock or forklift. All residential locations need a liftgate.', desc: 'A liftgate is a hydraulic platform on the truck that raises or lowers freight to ground level. Required at retail stores, street-level businesses, and all residential addresses.', selected: false },
-    { id: 'd-limited-access', warn: false, label: 'Limited Access',     shortDesc: 'Required at locations where a 53-ft truck can\'t easily access a dock — schools, churches, hospitals, job sites, military bases. Separate from Residential; carriers can charge both.', desc: 'Covers locations with restricted truck access — tight turns, security gates, narrow roads. One address can be charged Residential, Limited Access, and Liftgate as three separate fees. When in doubt, include it.', selected: false },
-    { id: 'd-ltl-inside',     warn: false, label: 'Inside Delivery',    shortDesc: 'Required if the driver needs to bring freight past the dock or curb — through a door, down a hallway, or into a specific room.', desc: 'Standard delivery stops at the first entry point. Anything beyond that — through a door, into a room or hallway — counts as inside delivery and adds cost for the extra time on site.', selected: false },
-    { id: 'd-residential',    warn: false, label: 'Residential',        shortDesc: 'Required for any address in a residential area, including home offices and mixed-use buildings. Always requires a liftgate as well.', desc: 'Carriers use smaller trucks and specialized equipment for residential stops, which is why the cost is higher than a commercial delivery.', selected: false },
-    { id: 'd-tradeshow',      warn: false, label: 'Tradeshow',          shortDesc: 'Required for delivery to a convention center or trade show venue with strict receiving windows and on-site coordination.', desc: 'Drayage — moving freight from the dock to your booth — is managed by the venue on their schedule. They set strict receiving windows and dock assignments; late or unscheduled deliveries are refused.', selected: false },
+    { id: 'd-limited-access', warn: false, label: 'Limited Access',     shortDesc: 'Required where large trucks can\'t easily dock — schools, hospitals, job sites. Billed separately from Residential.', desc: 'Covers locations with restricted truck access — tight turns, security gates, narrow roads. Can be charged alongside Residential and Liftgate as separate fees.', selected: false },
+    { id: 'd-ltl-inside',     warn: false, label: 'Inside Delivery',    shortDesc: 'Required if freight needs to go past the dock or curb — through a door, down a hallway, or into a room.', desc: 'Standard delivery stops at the first entry point. Anything beyond that — through a door, into a room or hallway — counts as inside delivery and adds cost for the extra time on site.', selected: false },
+    { id: 'd-residential',    warn: false, label: 'Residential',        shortDesc: 'Required for any residential address, including home offices. Always requires a liftgate as well.', desc: 'Carriers use smaller trucks and specialized equipment for residential stops, which is why the cost is higher than a commercial delivery.', selected: false },
+    { id: 'd-tradeshow',      warn: false, label: 'Tradeshow',          shortDesc: 'Required for delivery to a convention center or trade show venue with strict receiving windows and on-site coordination.', desc: 'Drayage from dock to your booth is managed by the venue. They set strict receiving windows and dock assignments; late or unscheduled deliveries are refused.', selected: false },
     { id: 'd-twic',           warn: false, label: 'TWIC',               shortDesc: 'A federal credential required at secure ports, marine terminals, and some chemical facilities. No card, no entry.', desc: 'Not every driver carries a TWIC card. Selecting this ensures the carrier assigns a credentialed driver so the delivery can actually happen.', selected: false },
   ];
 
