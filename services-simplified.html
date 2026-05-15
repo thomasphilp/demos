@@ -4206,21 +4206,21 @@
           <span class="svc-new-topbar-label" id="svc-new-topbar-label">Select services</span>
           <div class="svc-new-toggle-wrap">
             <span class="svc-new-toggle-label-text">View service details</span>
-            <button class="svc-new-toggle" id="svc-expand-toggle" type="button" aria-pressed="false">
-              <div class="svc-new-toggle-track" id="svc-toggle-track">
+            <button class="svc-new-toggle" id="svc-expand-toggle" type="button" aria-pressed="true">
+              <div class="svc-new-toggle-track on" id="svc-toggle-track">
                 <div class="svc-new-toggle-knob"></div>
               </div>
-              <span class="svc-new-toggle-state" id="svc-toggle-state">Off</span>
+              <span class="svc-new-toggle-state" id="svc-toggle-state">On</span>
             </button>
           </div>
         </div>
         <hr class="svc-new-divider">
         <!-- Default (pill) view -->
-        <div class="svc-pill-content" id="svc-pill-content">
+        <div class="svc-pill-content" id="svc-pill-content" hidden>
           <div class="svc-pill-wrap" id="svc-pill-wrap"></div>
         </div>
         <!-- Expanded (list) view -->
-        <div class="svc-expanded-content" id="svc-expanded-content" hidden>
+        <div class="svc-expanded-content" id="svc-expanded-content">
           <div class="svc-expanded-grid" id="svc-expanded-grid"></div>
           <div class="svc-learn-more-wrap">
             <button class="svc-learn-more-btn" id="svc-learn-more-btn" type="button">Learn more about all services <svg width="10" height="10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.09343 24C2.72895 24 1.70342 23.6611 1.01684 22.9832C0.338946 22.314 0 21.3058 0 19.9587V4.04128C0 2.69419 0.338946 1.68604 1.01684 1.01684C1.70342 0.338946 2.72895 0 4.09343 0H19.9066C21.271 0 22.2922 0.338946 22.9701 1.01684C23.6567 1.68604 24 2.69419 24 4.04128V19.9587C24 21.3058 23.6567 22.314 22.9701 22.9832C22.2922 23.6611 21.271 24 19.9066 24H4.09343ZM4.1195 21.9011H19.8805C20.5236 21.9011 21.019 21.7317 21.3666 21.3927C21.723 21.0451 21.9011 20.5323 21.9011 19.8544V4.14557C21.9011 3.46768 21.723 2.95926 21.3666 2.62032C21.019 2.27268 20.5236 2.09886 19.8805 2.09886H4.1195C3.46768 2.09886 2.96795 2.27268 2.62032 2.62032C2.27268 2.95926 2.09886 3.46768 2.09886 4.14557V19.8544C2.09886 20.5323 2.27268 21.0451 2.62032 21.3927C2.96795 21.7317 3.46768 21.9011 4.1195 21.9011ZM17.6382 11.9674C17.3862 11.9674 17.1689 11.8805 16.9864 11.7067C16.8126 11.5242 16.7257 11.3026 16.7257 11.0418V10.4161L16.8561 8.34329L14.0402 11.3156C13.849 11.5155 13.6187 11.6154 13.3493 11.6154C13.0798 11.6154 12.8495 11.5198 12.6583 11.3286C12.4671 11.1374 12.3715 10.9071 12.3715 10.6377C12.3802 10.3596 12.4802 10.1293 12.6714 9.94677L15.6046 7.13091L13.61 7.26127L12.9712 7.27431C12.7192 7.27431 12.5019 7.18305 12.3194 7.00054C12.1369 6.81803 12.0456 6.60076 12.0456 6.34872C12.0456 6.09669 12.1369 5.88376 12.3194 5.70994C12.5019 5.52743 12.7192 5.43618 12.9712 5.43618H17.4818C17.8207 5.43618 18.0858 5.51874 18.277 5.68387C18.4682 5.849 18.5638 6.12276 18.5638 6.50516V11.0418C18.5638 11.3026 18.4726 11.5242 18.2901 11.7067C18.1162 11.8805 17.899 11.9674 17.6382 11.9674ZM11.0549 18.5378H6.53123C6.19229 18.5378 5.92721 18.4552 5.73601 18.2901C5.5535 18.1249 5.46225 17.8512 5.46225 17.4688V12.9321C5.46225 12.6714 5.54916 12.4541 5.72298 12.2803C5.90549 12.0978 6.1271 12.0065 6.38783 12.0065C6.63987 12.0065 6.8528 12.0978 7.02662 12.2803C7.20913 12.4541 7.30038 12.6714 7.30038 12.9321V13.5578L7.17002 15.6306L9.98588 12.6583C10.1771 12.4584 10.4074 12.3585 10.6768 12.3585C10.9462 12.3585 11.1765 12.4541 11.3677 12.6453C11.5589 12.8365 11.6502 13.0712 11.6415 13.3493C11.6415 13.6187 11.5459 13.8446 11.3547 14.0272L8.42151 16.843L10.4161 16.7127L11.0549 16.6996C11.3069 16.6996 11.5198 16.7909 11.6936 16.9734C11.8762 17.1559 11.9674 17.3732 11.9674 17.6252C11.9674 17.8772 11.8762 18.0945 11.6936 18.277C11.5198 18.4508 11.3069 18.5378 11.0549 18.5378Z" fill="currentColor"/></svg></button>
@@ -4722,21 +4722,21 @@
           <span class="svc-new-topbar-label" id="d-svc-new-topbar-label">Select services</span>
           <div class="svc-new-toggle-wrap">
             <span class="svc-new-toggle-label-text">View service details</span>
-            <button class="svc-new-toggle" id="d-svc-expand-toggle" type="button" aria-pressed="false">
-              <div class="svc-new-toggle-track" id="d-svc-toggle-track">
+            <button class="svc-new-toggle" id="d-svc-expand-toggle" type="button" aria-pressed="true">
+              <div class="svc-new-toggle-track on" id="d-svc-toggle-track">
                 <div class="svc-new-toggle-knob"></div>
               </div>
-              <span class="svc-new-toggle-state" id="d-svc-toggle-state">Off</span>
+              <span class="svc-new-toggle-state" id="d-svc-toggle-state">On</span>
             </button>
           </div>
         </div>
         <hr class="svc-new-divider">
         <!-- Default (pill) view -->
-        <div class="svc-pill-content" id="d-svc-pill-content" style="padding-top:0;">
+        <div class="svc-pill-content" id="d-svc-pill-content" style="padding-top:0;" hidden>
           <div class="svc-pill-wrap" id="d-svc-pill-wrap"></div>
         </div>
         <!-- Expanded (list) view -->
-        <div class="svc-expanded-content" id="d-svc-expanded-content" hidden>
+        <div class="svc-expanded-content" id="d-svc-expanded-content">
           <div class="svc-expanded-grid" id="d-svc-expanded-grid"></div>
           <div class="svc-learn-more-wrap">
             <button class="svc-learn-more-btn" id="d-svc-learn-more-btn" type="button">Learn more about all services <svg width="10" height="10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.09343 24C2.72895 24 1.70342 23.6611 1.01684 22.9832C0.338946 22.314 0 21.3058 0 19.9587V4.04128C0 2.69419 0.338946 1.68604 1.01684 1.01684C1.70342 0.338946 2.72895 0 4.09343 0H19.9066C21.271 0 22.2922 0.338946 22.9701 1.01684C23.6567 1.68604 24 2.69419 24 4.04128V19.9587C24 21.3058 23.6567 22.314 22.9701 22.9832C22.2922 23.6611 21.271 24 19.9066 24H4.09343ZM4.1195 21.9011H19.8805C20.5236 21.9011 21.019 21.7317 21.3666 21.3927C21.723 21.0451 21.9011 20.5323 21.9011 19.8544V4.14557C21.9011 3.46768 21.723 2.95926 21.3666 2.62032C21.019 2.27268 20.5236 2.09886 19.8805 2.09886H4.1195C3.46768 2.09886 2.96795 2.27268 2.62032 2.62032C2.27268 2.95926 2.09886 3.46768 2.09886 4.14557V19.8544C2.09886 20.5323 2.27268 21.0451 2.62032 21.3927C2.96795 21.7317 3.46768 21.9011 4.1195 21.9011ZM17.6382 11.9674C17.3862 11.9674 17.1689 11.8805 16.9864 11.7067C16.8126 11.5242 16.7257 11.3026 16.7257 11.0418V10.4161L16.8561 8.34329L14.0402 11.3156C13.849 11.5155 13.6187 11.6154 13.3493 11.6154C13.0798 11.6154 12.8495 11.5198 12.6583 11.3286C12.4671 11.1374 12.3715 10.9071 12.3715 10.6377C12.3802 10.3596 12.4802 10.1293 12.6714 9.94677L15.6046 7.13091L13.61 7.26127L12.9712 7.27431C12.7192 7.27431 12.5019 7.18305 12.3194 7.00054C12.1369 6.81803 12.0456 6.60076 12.0456 6.34872C12.0456 6.09669 12.1369 5.88376 12.3194 5.70994C12.5019 5.52743 12.7192 5.43618 12.9712 5.43618H17.4818C17.8207 5.43618 18.0858 5.51874 18.277 5.68387C18.4682 5.849 18.5638 6.12276 18.5638 6.50516V11.0418C18.5638 11.3026 18.4726 11.5242 18.2901 11.7067C18.1162 11.8805 17.899 11.9674 17.6382 11.9674ZM11.0549 18.5378H6.53123C6.19229 18.5378 5.92721 18.4552 5.73601 18.2901C5.5535 18.1249 5.46225 17.8512 5.46225 17.4688V12.9321C5.46225 12.6714 5.54916 12.4541 5.72298 12.2803C5.90549 12.0978 6.1271 12.0065 6.38783 12.0065C6.63987 12.0065 6.8528 12.0978 7.02662 12.2803C7.20913 12.4541 7.30038 12.6714 7.30038 12.9321V13.5578L7.17002 15.6306L9.98588 12.6583C10.1771 12.4584 10.4074 12.3585 10.6768 12.3585C10.9462 12.3585 11.1765 12.4541 11.3677 12.6453C11.5589 12.8365 11.6502 13.0712 11.6415 13.3493C11.6415 13.6187 11.5459 13.8446 11.3547 14.0272L8.42151 16.843L10.4161 16.7127L11.0549 16.6996C11.3069 16.6996 11.5198 16.7909 11.6936 16.9734C11.8762 17.1559 11.9674 17.3732 11.9674 17.6252C11.9674 17.8772 11.8762 18.0945 11.6936 18.277C11.5198 18.4508 11.3069 18.5378 11.0549 18.5378Z" fill="currentColor"/></svg></button>
