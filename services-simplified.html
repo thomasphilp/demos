@@ -1493,7 +1493,7 @@
   .loc-type-picker { display: flex; flex-direction: column; gap: 8px; }
 
   .loc-type-label-row { display: flex; align-items: baseline; gap: 5px; }
-  .loc-type-label { font-size: 12px; font-weight: 600; color: #1d4ed8; }
+  .loc-type-label { font-size: 12px; font-weight: 400; color: var(--color-label-primary); }
   .loc-type-label-optional { font-size: 12px; color: rgba(9,10,12,0.55); }
 
   .loc-type-card {
@@ -1529,7 +1529,7 @@
   .loc-type-inline-feedback { display: flex; align-items: center; gap: 6px; }
   .loc-type-feedback-icon { width: 12px; height: 12px; flex-shrink: 0; color: rgba(9,10,12,0.42); }
   .loc-type-feedback-text { font-size: 10px; color: rgba(9,10,12,0.6); line-height: 14px; }
-  .loc-type-feedback-blue { font-weight: 600; color: #2563eb; }
+  .loc-type-feedback-blue { font-weight: 400; color: var(--color-label-primary); }
 
   .loc-type-dropdown {
     position: absolute; top: calc(100% + 4px); left: 0; right: 0;
@@ -1543,7 +1543,7 @@
     background: #fff; border-bottom: 1px solid rgba(9,10,12,0.06); line-height: normal;
   }
   .loc-type-dropdown-header {
-    padding: 8px 12px; font-size: 10px; font-weight: 600; color: #1d4ed8;
+    padding: 8px 12px; font-size: 10px; font-weight: 600; color: var(--color-label-primary);
   }
   .loc-type-dropdown-header--alt {
     color: rgba(9,10,12,0.6); border-top: 1px solid rgba(9,10,12,0.06);
@@ -1625,6 +1625,15 @@
   .loc-applied-row strong { font-weight: 600; }
   .loc-applied-row svg { width: 13px; height: 13px; flex-shrink: 0; color: var(--color-tint); }
   .loc-type-hint { font-size: 11px; color: var(--color-label-secondary); line-height: 15px; }
+
+  /* Card inner wrapper: shrinks to hint text width in btn-mode */
+  .loc-type-card-content { display: flex; flex-direction: column; gap: 12px; }
+  .loc-type-picker--btn-mode .loc-type-card-content { width: fit-content; align-self: flex-start; }
+
+  /* Disable services dropdown until loc type selected */
+  #acc-dropdown-btn:disabled, #d-acc-dropdown-btn:disabled {
+    opacity: 0.4; cursor: not-allowed; pointer-events: none;
+  }
 
   .inline-rec-card {
     display: flex; flex-direction: column;
@@ -3557,6 +3566,7 @@
         </div>
         <div class="loc-type-card" id="loc-type-card">
           <div class="loc-type-card-strip"></div>
+          <div class="loc-type-card-content">
           <div class="loc-type-inline-feedback">
             <span class="loc-type-feedback-text">This helps us identify which services will be recommended to <span class="loc-type-feedback-blue">avoid delays or adjustment charges</span>.</span>
           </div>
@@ -4064,6 +4074,7 @@
               </div>
             </div>
           </div>
+          </div><!-- /loc-type-card-content -->
           <div class="loc-type-chip" id="loc-type-chip" hidden>
             <div class="loc-type-chip-left">
               <div class="loc-type-chip-text">
@@ -9439,29 +9450,32 @@
         const isBtnMode = picker && picker.classList.contains('loc-type-picker--btn-mode');
 
         if (isBtnMode) {
-          // Button mode (Demo 4): update button text, close dropdown, immediately show result
+          // Button mode (Demo 4): update button text, close dropdown
           const dBtnText = document.getElementById('loc-type-dropdown-btn-text');
           if (dBtnText) dBtnText.textContent = typeName;
           _setLocDropdownOpen(false);
-          const _pgb = document.getElementById('svc-box');
-          if (_pgb) { _pgb.classList.add('type-selected'); _pgb.classList.remove('resolved'); }
           const dockQ = document.getElementById('demo3-dock-q');
-          if (dockQ) { dockQ.hidden = true; dockQ.querySelectorAll('.dock-q-btn').forEach(b => b.classList.remove('selected')); }
           const appliedRow = document.getElementById('demo3-applied-row');
           if (appliedRow) appliedRow.hidden = true;
-          // For dock types, default to "no dock" (liftgate recommended); otherwise use type-based recs
-          const recs = hasDockQuestion ? ['liftgate'] : (LOC_REC_PICKUP[type] || []);
           const recRow = document.getElementById('demo3-rec-row');
-          if (recs.length > 0 && recRow) {
-            const labels = recs.map(id => { const item = ACC_ITEMS.find(i => i.id === id); return item ? item.label : id; });
-            const recService = document.getElementById('demo3-rec-service');
-            const applyText = document.getElementById('demo3-apply-btn').querySelector('.loc-apply-text');
-            if (recService) recService.textContent = labels.join(', ');
-            if (applyText) applyText.textContent = `Apply ${recs.length} service${recs.length > 1 ? 's' : ''}`;
-            recRow.dataset.recs = JSON.stringify(recs);
-            recRow.hidden = false;
-          } else if (recRow) {
-            recRow.hidden = true;
+          if (recRow) recRow.hidden = true;
+          if (hasDockQuestion) {
+            // Show dock question — recs determined after answer
+            if (dockQ) { dockQ.hidden = false; dockQ.querySelectorAll('.dock-q-btn').forEach(b => b.classList.remove('selected')); }
+          } else {
+            // No dock question: apply type recs and unlock services immediately
+            if (dockQ) { dockQ.hidden = true; dockQ.querySelectorAll('.dock-q-btn').forEach(b => b.classList.remove('selected')); }
+            const recs = LOC_REC_PICKUP[type] || [];
+            const deliverRecs = recs.map(id => 'd-' + id).filter(id => DELIVER_ACC_ITEMS.find(i => i.id === id));
+            ACC_ITEMS.forEach(item => { item.warn = recs.includes(item.id); item.selected = recs.includes(item.id); });
+            DELIVER_ACC_ITEMS.forEach(item => { item.warn = deliverRecs.includes(item.id); item.selected = deliverRecs.includes(item.id); });
+            renderList(); updateBtnLabel(); updatePickupWarning();
+            dRenderList(); dUpdateBtnLabel(); updateDeliverWarning();
+            unlockSvcGate(); unlockDeliverSvcGate();
+            const _aBtn = document.getElementById('acc-dropdown-btn');
+            if (_aBtn) _aBtn.disabled = false;
+            const _dABtn = document.getElementById('d-acc-dropdown-btn');
+            if (_dABtn) _dABtn.disabled = false;
           }
           return;
         }
@@ -9539,6 +9553,21 @@
         const deliverRecs = answer === 'yes' ? [] : ['d-liftgate'];
         ACC_ITEMS.forEach(item => { item.warn = recs.includes(item.id); });
         DELIVER_ACC_ITEMS.forEach(item => { item.warn = deliverRecs.includes(item.id); });
+        // In btn-mode: auto-select recs and unlock the services dropdowns
+        const _dockPicker = document.getElementById('demo3-loc-picker');
+        const _dockBtnMode = _dockPicker && _dockPicker.classList.contains('loc-type-picker--btn-mode');
+        if (_dockBtnMode) {
+          ACC_ITEMS.forEach(item => { if (item.warn) item.selected = true; });
+          DELIVER_ACC_ITEMS.forEach(item => { if (item.warn) item.selected = true; });
+          renderList(); updateBtnLabel(); updatePickupWarning();
+          dRenderList(); dUpdateBtnLabel(); updateDeliverWarning();
+          unlockSvcGate(); unlockDeliverSvcGate();
+          const _aBtn = document.getElementById('acc-dropdown-btn');
+          if (_aBtn) _aBtn.disabled = false;
+          const _dABtn = document.getElementById('d-acc-dropdown-btn');
+          if (_dABtn) _dABtn.disabled = false;
+          return;
+        }
         renderList(); updateSvcTopbarLabel();
         dRenderList(); updateDSvcTopbarLabel();
         const recRow = document.getElementById('demo3-rec-row');
@@ -9636,24 +9665,24 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // Demo 4 — "exposed with location type finder": show new pill container + loc type picker in button mode
+    // Demo 4 — "exposed with location type finder": collapsed services + loc type picker in button mode
     if (linkLocFinder) linkLocFinder.addEventListener('click', () => {
       applyNone();
       applyResidential('your address book');
       // Clear pre-populated recs — services not recommended until loc type is selected
-      ACC_ITEMS.forEach(item => { item.warn = false; });
-      DELIVER_ACC_ITEMS.forEach(item => { item.warn = false; });
-      renderTooltipTags('tooltip-tags', [], ACC_ITEMS);
-      renderTooltipTags('d-tooltip-tags', [], DELIVER_ACC_ITEMS);
-      renderList();
-      dRenderList();
-      // Show new pill container (same as Demo 2)
-      const _new4 = document.getElementById('svc-box');
-      if (_new4) _new4.hidden = false;
-      const _dNew4 = document.getElementById('d-svc-box');
-      if (_dNew4) _dNew4.hidden = false;
-      updateSvcTopbarLabel();
-      updateDSvcTopbarLabel();
+      ACC_ITEMS.forEach(item => { item.warn = false; item.selected = false; });
+      DELIVER_ACC_ITEMS.forEach(item => { item.warn = false; item.selected = false; });
+      renderList(); updateBtnLabel(); updatePickupWarning();
+      dRenderList(); dUpdateBtnLabel(); updateDeliverWarning();
+      // Show collapsed (old dropdown) services — disabled until type selected
+      const _old4 = document.getElementById('svc-box-old');
+      if (_old4) _old4.hidden = false;
+      const _dOld4 = document.getElementById('d-svc-box-old');
+      if (_dOld4) _dOld4.hidden = false;
+      const _accBtn = document.getElementById('acc-dropdown-btn');
+      if (_accBtn) _accBtn.disabled = true;
+      const _dAccBtn = document.getElementById('d-acc-dropdown-btn');
+      if (_dAccBtn) _dAccBtn.disabled = true;
       // Show loc type picker in dropdown-button mode
       const locPicker4 = document.getElementById('demo3-loc-picker');
       if (locPicker4) {
