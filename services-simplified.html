@@ -2908,6 +2908,8 @@
   .loc-type-dropdown-btn.open .loc-type-dropdown-btn-chevron { transform: rotate(180deg); }
   .loc-type-picker--btn-mode .loc-type-input-row { display: none; }
   .loc-type-picker--btn-mode .loc-type-dropdown-btn { display: flex; }
+  /* After type is selected in btn-mode, hide the button (chip takes its place) */
+  .loc-type-picker--btn-mode.loc-type-selected .loc-type-dropdown-btn { display: none; }
   /* !! TOKENS:START !! */
 :root {
   /* Colors » Light */
@@ -9397,6 +9399,9 @@
       if (appliedRow) appliedRow.hidden = true;
       const _pgbReset = document.getElementById('svc-box');
       if (_pgbReset) { _pgbReset.classList.remove('type-selected'); _pgbReset.classList.remove('resolved'); }
+      // Remove btn-mode selected state so button re-appears
+      const _pickerReset = document.getElementById('demo3-loc-picker');
+      if (_pickerReset) _pickerReset.classList.remove('loc-type-selected');
     }
 
     // Open dropdown when user clicks input row (input or search icon)
@@ -9450,32 +9455,50 @@
         const isBtnMode = picker && picker.classList.contains('loc-type-picker--btn-mode');
 
         if (isBtnMode) {
-          // Button mode (Demo 4): update button text, close dropdown
-          const dBtnText = document.getElementById('loc-type-dropdown-btn-text');
-          if (dBtnText) dBtnText.textContent = typeName;
+          // Button mode (loc-finder): close dropdown, mark selected, show chip + dock/rec
           _setLocDropdownOpen(false);
+          picker.classList.add('loc-type-selected');
+          // Populate and show the chip (replaces button, has "Change" link)
+          const chipName = document.getElementById('loc-type-chip-name');
+          if (chipName) chipName.textContent = typeName;
+          const chipDescEl = document.getElementById('loc-type-chip-desc');
+          if (chipDescEl) chipDescEl.textContent = typeDesc;
+          const chip = document.getElementById('loc-type-chip');
+          if (chip) chip.hidden = false;
           const dockQ = document.getElementById('demo3-dock-q');
+          const recRow = document.getElementById('demo3-rec-row');
           const appliedRow = document.getElementById('demo3-applied-row');
           if (appliedRow) appliedRow.hidden = true;
-          const recRow = document.getElementById('demo3-rec-row');
-          if (recRow) recRow.hidden = true;
           if (hasDockQuestion) {
-            // Show dock question — recs determined after answer
+            // Show dock question — rec row shown after user answers
             if (dockQ) { dockQ.hidden = false; dockQ.querySelectorAll('.dock-q-btn').forEach(b => b.classList.remove('selected')); }
+            if (recRow) recRow.hidden = true;
           } else {
-            // No dock question: apply type recs and unlock services immediately
+            // No dock question: show rec row with Apply button directly
             if (dockQ) { dockQ.hidden = true; dockQ.querySelectorAll('.dock-q-btn').forEach(b => b.classList.remove('selected')); }
             const recs = LOC_REC_PICKUP[type] || [];
+            ACC_ITEMS.forEach(item => { item.warn = recs.includes(item.id); });
             const deliverRecs = recs.map(id => 'd-' + id).filter(id => DELIVER_ACC_ITEMS.find(i => i.id === id));
-            ACC_ITEMS.forEach(item => { item.warn = recs.includes(item.id); item.selected = recs.includes(item.id); });
-            DELIVER_ACC_ITEMS.forEach(item => { item.warn = deliverRecs.includes(item.id); item.selected = deliverRecs.includes(item.id); });
+            DELIVER_ACC_ITEMS.forEach(item => { item.warn = deliverRecs.includes(item.id); });
             renderList(); updateBtnLabel(); updatePickupWarning();
             dRenderList(); dUpdateBtnLabel(); updateDeliverWarning();
-            unlockSvcGate(); unlockDeliverSvcGate();
-            const _aBtn = document.getElementById('acc-dropdown-btn');
-            if (_aBtn) _aBtn.disabled = false;
-            const _dABtn = document.getElementById('d-acc-dropdown-btn');
-            if (_dABtn) _dABtn.disabled = false;
+            if (recs.length > 0 && recRow) {
+              const labels = recs.map(id => { const item = ACC_ITEMS.find(i => i.id === id); return item ? item.label : id; });
+              const recService = document.getElementById('demo3-rec-service');
+              const applyText = document.getElementById('demo3-apply-btn').querySelector('.loc-apply-text');
+              if (recService) recService.textContent = labels.join(', ');
+              if (applyText) applyText.textContent = `Apply ${recs.length} service${recs.length > 1 ? 's' : ''}`;
+              recRow.dataset.recs = JSON.stringify(recs);
+              recRow.hidden = false;
+            } else {
+              // No recs for this type — unlock immediately (no Apply step needed)
+              if (recRow) recRow.hidden = true;
+              unlockSvcGate(); unlockDeliverSvcGate();
+              const _aBtn = document.getElementById('acc-dropdown-btn');
+              if (_aBtn) _aBtn.disabled = false;
+              const _dABtn = document.getElementById('d-acc-dropdown-btn');
+              if (_dABtn) _dABtn.disabled = false;
+            }
           }
           return;
         }
@@ -9553,19 +9576,33 @@
         const deliverRecs = answer === 'yes' ? [] : ['d-liftgate'];
         ACC_ITEMS.forEach(item => { item.warn = recs.includes(item.id); });
         DELIVER_ACC_ITEMS.forEach(item => { item.warn = deliverRecs.includes(item.id); });
-        // In btn-mode: auto-select recs and unlock the services dropdowns
+        // In btn-mode: show rec row with Apply button (don't auto-apply)
         const _dockPicker = document.getElementById('demo3-loc-picker');
         const _dockBtnMode = _dockPicker && _dockPicker.classList.contains('loc-type-picker--btn-mode');
         if (_dockBtnMode) {
-          ACC_ITEMS.forEach(item => { if (item.warn) item.selected = true; });
-          DELIVER_ACC_ITEMS.forEach(item => { if (item.warn) item.selected = true; });
           renderList(); updateBtnLabel(); updatePickupWarning();
           dRenderList(); dUpdateBtnLabel(); updateDeliverWarning();
-          unlockSvcGate(); unlockDeliverSvcGate();
-          const _aBtn = document.getElementById('acc-dropdown-btn');
-          if (_aBtn) _aBtn.disabled = false;
-          const _dABtn = document.getElementById('d-acc-dropdown-btn');
-          if (_dABtn) _dABtn.disabled = false;
+          const recRow = document.getElementById('demo3-rec-row');
+          const appliedRow = document.getElementById('demo3-applied-row');
+          if (appliedRow) appliedRow.hidden = true;
+          if (recs.length > 0 && recRow) {
+            // Has recs (e.g. no dock → liftgate needed): show Apply button
+            const labels = recs.map(id => { const item = ACC_ITEMS.find(i => i.id === id); return item ? item.label : id; });
+            const recService = document.getElementById('demo3-rec-service');
+            const applyText = document.getElementById('demo3-apply-btn').querySelector('.loc-apply-text');
+            if (recService) recService.textContent = labels.join(', ');
+            if (applyText) applyText.textContent = `Apply ${recs.length} service${recs.length > 1 ? 's' : ''}`;
+            recRow.dataset.recs = JSON.stringify(recs);
+            recRow.hidden = false;
+          } else {
+            // No recs (e.g. has dock → liftgate not needed): unlock immediately
+            if (recRow) recRow.hidden = true;
+            unlockSvcGate(); unlockDeliverSvcGate();
+            const _aBtn = document.getElementById('acc-dropdown-btn');
+            if (_aBtn) _aBtn.disabled = false;
+            const _dABtn = document.getElementById('d-acc-dropdown-btn');
+            if (_dABtn) _dABtn.disabled = false;
+          }
           return;
         }
         renderList(); updateSvcTopbarLabel();
@@ -9587,7 +9624,7 @@
       });
     });
 
-    // Apply recommended services button (Demo 3)
+    // Apply recommended services button (combo + btn mode)
     const _demo3ApplyBtn = document.getElementById('demo3-apply-btn');
     if (_demo3ApplyBtn) _demo3ApplyBtn.addEventListener('click', () => {
       const recRow = document.getElementById('demo3-rec-row');
@@ -9596,6 +9633,18 @@
         ACC_ITEMS.forEach(item => { item.warn = recs.includes(item.id); if (recs.includes(item.id)) item.selected = true; });
         renderList(); updateBtnLabel(); updatePickupWarning();
         unlockSvcGate();
+        // In btn-mode: also apply delivery recs and unlock delivery gate + enable dropdown buttons
+        const _applyPicker = document.getElementById('demo3-loc-picker');
+        if (_applyPicker && _applyPicker.classList.contains('loc-type-picker--btn-mode')) {
+          const deliverRecs = recs.map(id => 'd-' + id).filter(id => DELIVER_ACC_ITEMS.find(i => i.id === id));
+          DELIVER_ACC_ITEMS.forEach(item => { item.warn = deliverRecs.includes(item.id); if (deliverRecs.includes(item.id)) item.selected = true; });
+          dRenderList(); dUpdateBtnLabel(); updateDeliverWarning();
+          unlockDeliverSvcGate();
+          const _aBtn = document.getElementById('acc-dropdown-btn');
+          if (_aBtn) _aBtn.disabled = false;
+          const _dABtn = document.getElementById('d-acc-dropdown-btn');
+          if (_dABtn) _dABtn.disabled = false;
+        }
       }
       if (recRow) recRow.hidden = true;
       const dockQ = document.getElementById('demo3-dock-q');
@@ -9611,19 +9660,33 @@
       if (appliedRow) appliedRow.hidden = false;
     });
 
-    // Change location type button (Demo 3)
+    // Change location type button (combo + btn mode)
     const _locTypeChangeBtn = document.getElementById('loc-type-change-btn');
     if (_locTypeChangeBtn) _locTypeChangeBtn.addEventListener('click', () => {
-      resetDemo3Picker();
       const picker = document.getElementById('demo3-loc-picker');
+      const _chgIsBtnMode = picker && picker.classList.contains('loc-type-picker--btn-mode');
+      resetDemo3Picker(); // also removes loc-type-selected, hides chip/dock/rec/applied
       if (picker) picker.hidden = false;
       ACC_ITEMS.forEach(item => { item.warn = false; item.selected = false; });
+      DELIVER_ACC_ITEMS.forEach(item => { item.warn = false; item.selected = false; });
       renderList(); updateBtnLabel(); updatePickupWarning();
+      dRenderList(); dUpdateBtnLabel(); updateDeliverWarning();
       const _svcRecRowRestore = document.getElementById('acc-svc-rec-row');
       if (_svcRecRowRestore) _svcRecRowRestore.hidden = false;
-      // Re-open the dropdown so user can immediately pick a new type
-      _setLocDropdownOpen(true);
-      if (_locTypeInput) _locTypeInput.focus();
+      if (_chgIsBtnMode) {
+        // In btn-mode: re-lock services gate so user must re-select and apply
+        lockSvcGate(); lockDeliverSvcGate();
+        const _aBtn = document.getElementById('acc-dropdown-btn');
+        if (_aBtn) _aBtn.disabled = true;
+        const _dABtn = document.getElementById('d-acc-dropdown-btn');
+        if (_dABtn) _dABtn.disabled = true;
+        // Reopen the dropdown button list
+        _setLocDropdownOpen(true);
+      } else {
+        // Combo mode: reopen search and focus input
+        _setLocDropdownOpen(true);
+        if (_locTypeInput) _locTypeInput.focus();
+      }
     });
 
     // Demo 1 — "Location known services": show old dropdown, auto-resolve services
