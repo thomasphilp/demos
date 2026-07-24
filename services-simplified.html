@@ -3442,6 +3442,7 @@
   <button type="button" id="demo-link-loc-type-finder">exposed with location type finder</button>
   <button type="button" id="demo-link-rebill2">Location Unknown</button>
   <button type="button" id="demo-link-residential">Location known services</button>
+  <button type="button" id="demo-link-nmfc" onclick="window.location.href='/nmfc.html'">NMFC</button>
   <button type="button" id="demo-link-rebill" hidden>Location rebill risk</button>
 </div>
 <div id="loc-tile-tooltip-global"></div>
@@ -9724,6 +9725,13 @@
       if (_dNew2) _dNew2.hidden = false;
       updateSvcTopbarLabel();
       updateDSvcTopbarLabel();
+      // Show loc type picker in combo mode (not btn-mode)
+      const locPicker2 = document.getElementById('demo3-loc-picker');
+      if (locPicker2) {
+        locPicker2.hidden = false;
+        resetDemo3Picker();
+        locPicker2.classList.remove('loc-type-picker--btn-mode');
+      }
       setActive(linkRes2);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });

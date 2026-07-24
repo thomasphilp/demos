@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NMFC Code Lookup — Mothership Demo</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f9fafb; color: #1a1a1a; font-size: 14px; line-height: 1.5; padding-top: 48px; }
+a { color: inherit; text-decoration: none; }
+
+/* Demo bar */
+.demo-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 24px; background: #000;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  font-family: 'Inter', sans-serif; font-size: 12px;
+}
+.demo-bar-label { font-weight: 500; margin-right: 4px; background: linear-gradient(to right, #00ffff, #ff00cc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.demo-bar button {
+  padding: 4px 12px; border-radius: 20px;
+  font-weight: 500; font-size: 12px; border: 1px solid rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.08); transition: background 0.12s;
+  cursor: pointer; font-family: inherit;
+}
+.demo-bar button:hover { background: rgba(255,255,255,0.15); }
+.demo-bar button.active { background: #6366f1; color: white; border-color: #6366f1; }
+
+/* Layout */
+.app { display: flex; height: calc(100vh - 48px); overflow: hidden; }
+.sidebar { width: 230px; background: #191b1f; color: #fff; display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; }
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.appbar { height: 48px; background: #fff; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; flex-shrink: 0; }
+.body-content { flex: 1; display: flex; overflow-y: auto; }
+.form-area { flex: 1; padding: 24px 40px; overflow-y: auto; max-width: 860px; }
+.rates-panel { width: 448px; background: #fff; border-left: 1px solid #e5e7eb; overflow-y: auto; flex-shrink: 0; }
+
+/* Sidebar */
+.sidebar-logo { padding: 16px 20px; font-weight: 700; font-size: 15px; letter-spacing: -0.3px; }
+.sidebar-nav { padding: 0 8px; }
+.sidebar-nav a { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; color: #a1a1aa; font-size: 13px; transition: background 0.15s; }
+.sidebar-nav a:hover { background: #2a2d33; color: #fff; }
+.sidebar-nav a.active { background: #2a2d33; color: #fff; }
+.sidebar-nav .icon { width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #3a3d44; border-radius: 4px; color: #fff; font-weight: 600; }
+.sidebar-divider { height: 1px; background: #2a2d33; margin: 8px 8px; }
+.sidebar-section-title { padding: 12px 20px 6px; font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; display: flex; justify-content: space-between; align-items: center; }
+.sidebar-section-title a { color: #6b7280; font-size: 11px; text-transform: none; letter-spacing: 0; }
+.quote-item { padding: 12px 12px; border-left: 4px solid transparent; cursor: pointer; transition: background 0.15s; }
+.quote-item:hover { background: #2a2d33; }
+.quote-item.active { border-left-color: #6366f1; background: #2a2d33; }
+.quote-item .route { font-size: 12px; color: #d1d5db; margin-bottom: 2px; }
+.quote-item .details { font-size: 11px; color: #6b7280; }
+
+/* Appbar */
+.appbar-left { display: flex; align-items: center; gap: 12px; }
+.appbar-left .page-title { font-weight: 600; font-size: 14px; }
+.breadcrumbs { display: flex; align-items: center; gap: 6px; color: #6b7280; font-size: 13px; }
+.breadcrumbs .sep { color: #d1d5db; }
+.breadcrumbs .current { color: #1a1a1a; }
+.appbar-right { display: flex; align-items: center; gap: 12px; }
+.btn-sm { padding: 4px 12px; border-radius: 6px; font-size: 13px; border: 1px solid #e5e7eb; background: #fff; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+.btn-sm:hover { background: #f3f4f6; }
+
+/* Form */
+.form-section { margin-bottom: 32px; }
+.form-section-header { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; padding-bottom: 8px; }
+.form-section-header h2 { font-size: 13px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; }
+.form-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 24px; }
+.form-row { display: flex; gap: 16px; margin-bottom: 16px; }
+.form-row:last-child { margin-bottom: 0; }
+.form-group { flex: 1; }
+.form-group.sm { max-width: 120px; }
+.form-label { display: block; font-size: 12px; font-weight: 500; color: #374151; margin-bottom: 6px; }
+.form-label .required { color: #ef4444; }
+.form-input { width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; outline: none; transition: border-color 0.15s; font-family: inherit; }
+.form-input:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.08); }
+.form-input::placeholder { color: #9ca3af; }
+select.form-input { appearance: none; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5l3 3 3-3' fill='none' stroke='%236b7280' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 10px center; padding-right: 28px; }
+.form-hint { font-size: 11px; color: #6b7280; margin-top: 4px; }
+.form-hint.warning { color: #d97706; }
+.address-display { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 12px; }
+.address-display .name { font-weight: 600; margin-bottom: 4px; }
+.address-display .addr { color: #6b7280; font-size: 13px; }
+
+/* Cargo */
+.cargo-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.cargo-header h3 { font-size: 15px; font-weight: 600; }
+.measurement-toggle { display: flex; background: #f3f4f6; border-radius: 6px; overflow: hidden; }
+.measurement-toggle button { padding: 6px 12px; font-size: 12px; border: none; background: transparent; cursor: pointer; color: #6b7280; font-family: inherit; }
+.measurement-toggle button.active { background: #fff; color: #1a1a1a; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+.cargo-note { font-size: 12px; color: #6b7280; margin-bottom: 16px; }
+.add-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border: 1px dashed #d1d5db; border-radius: 6px; color: #6366f1; font-size: 13px; cursor: pointer; background: transparent; margin-top: 16px; font-family: inherit; }
+.add-btn:hover { background: #f0f0ff; border-color: #6366f1; }
+.hazmat-options { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+.hazmat-option { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+.hazmat-option input[type="checkbox"] { accent-color: #6366f1; }
+.piece-count { margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb; }
+
+/* NMFC lookup */
+.nmfc-lookup-wrap { margin-top: 16px; padding: 20px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; }
+.nmfc-lookup-wrap h4 { font-size: 13px; font-weight: 600; color: #111827; margin-bottom: 4px; }
+.nmfc-lookup-wrap .nmfc-subtitle { font-size: 12px; color: #6b7280; margin-bottom: 16px; }
+.nmfc-search-row { display: flex; gap: 10px; align-items: flex-end; margin-bottom: 16px; }
+.nmfc-search-row .form-group { flex: 1; }
+.nmfc-search-btn { padding: 8px 16px; background: #6366f1; color: #fff; border: none; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; font-family: inherit; }
+.nmfc-search-btn:hover { background: #4f46e5; }
+.nmfc-results { border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; background: #fff; }
+.nmfc-results-header { padding: 10px 14px; background: #f3f4f6; border-bottom: 1px solid #e5e7eb; font-size: 12px; font-weight: 600; color: #6b7280; display: flex; gap: 0; }
+.nmfc-results-header span { flex: 1; }
+.nmfc-results-header span:first-child { flex: 0 0 120px; }
+.nmfc-results-header span:nth-child(2) { flex: 1; }
+.nmfc-results-header span:nth-child(3) { flex: 0 0 80px; text-align: center; }
+.nmfc-results-header span:nth-child(4) { flex: 0 0 100px; text-align: right; }
+.nmfc-result-row { display: flex; align-items: center; padding: 12px 14px; border-bottom: 1px solid #f3f4f6; cursor: pointer; transition: background 0.1s; }
+.nmfc-result-row:last-child { border-bottom: none; }
+.nmfc-result-row:hover { background: #f9fafb; }
+.nmfc-result-row.selected { background: #eef2ff; }
+.nmfc-result-code { flex: 0 0 120px; font-size: 13px; font-weight: 600; color: #6366f1; font-family: 'SF Mono', 'Fira Code', monospace; }
+.nmfc-result-desc { flex: 1; font-size: 13px; color: #374151; }
+.nmfc-result-class { flex: 0 0 80px; text-align: center; }
+.nmfc-result-class .class-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; background: #dbeafe; color: #1d4ed8; }
+.nmfc-result-select { flex: 0 0 100px; text-align: right; }
+.nmfc-result-select button { padding: 4px 12px; border: 1px solid #6366f1; border-radius: 5px; font-size: 12px; color: #6366f1; background: transparent; cursor: pointer; font-family: inherit; }
+.nmfc-result-select button:hover { background: #eef2ff; }
+.nmfc-result-row.selected .nmfc-result-select button { background: #6366f1; color: #fff; }
+.nmfc-applied { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 8px; margin-top: 12px; }
+.nmfc-applied-icon { color: #6366f1; flex-shrink: 0; }
+.nmfc-applied-text { flex: 1; font-size: 13px; }
+.nmfc-applied-text strong { color: #4f46e5; }
+.nmfc-applied-change { font-size: 12px; color: #6366f1; cursor: pointer; }
+.nmfc-applied-change:hover { text-decoration: underline; }
+.nmfc-class-row { display: flex; gap: 16px; align-items: flex-start; margin-top: 16px; }
+.nmfc-class-row .form-group { flex: 1; }
+.class-auto-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #059669; font-weight: 500; margin-top: 4px; }
+
+/* Rates Panel */
+.rates-header { padding: 16px; border-bottom: 1px solid #e5e7eb; }
+.rates-header h3 { font-size: 14px; font-weight: 600; }
+.rate-list { padding: 8px; }
+.rate-item { padding: 12px; border-radius: 8px; margin-bottom: 4px; cursor: pointer; border: 2px solid transparent; transition: all 0.15s; }
+.rate-item:hover { background: #f9fafb; }
+.rate-item.selected { border-color: #6366f1; background: #f0f0ff; }
+.rate-item .rate-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+.rate-item .carrier { font-weight: 600; font-size: 13px; }
+.rate-item .price { font-weight: 700; font-size: 14px; }
+.rate-item .rate-meta { font-size: 12px; color: #6b7280; }
+.rate-item .rate-tags { display: flex; gap: 6px; margin-top: 6px; }
+.rate-item .tag { font-size: 11px; background: #f3f4f6; color: #6b7280; padding: 2px 6px; border-radius: 4px; }
+.rate-item .tag.ltl { background: #fef3c7; color: #92400e; }
+.rate-item .selected-badge { font-size: 11px; background: #6366f1; color: #fff; padding: 2px 8px; border-radius: 4px; font-weight: 500; }
+.rate-item .rate-expiry { font-size: 11px; color: #9ca3af; margin-top: 4px; }
+
+/* Coverage & Checkout */
+.coverage-section { padding: 16px; border-top: 1px solid #e5e7eb; }
+.coverage-section h4 { font-size: 13px; font-weight: 600; margin-bottom: 12px; }
+.coverage-option { border: 1px solid #e5e7eb; border-radius: 8px; padding: 14px; margin-bottom: 8px; cursor: pointer; }
+.coverage-option.selected { border-color: #6366f1; background: #f0f0ff; }
+.coverage-option .opt-title { font-weight: 600; font-size: 13px; margin-bottom: 4px; }
+.coverage-option .opt-desc { font-size: 12px; color: #6b7280; }
+.checkout-section { padding: 16px; border-top: 1px solid #e5e7eb; }
+.checkout-btn { width: 100%; padding: 12px; background: #1a1a1a; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.checkout-btn:hover { background: #333; }
+.unserviceable { padding: 12px 16px; border-top: 1px solid #e5e7eb; }
+.unserviceable a { font-size: 12px; color: #6366f1; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- Demo bar -->
+<div class="demo-bar">
+  <span class="demo-bar-label">You are in demo mode</span>
+  <button type="button" onclick="window.location.href='/services-simplified.html?demo=2'">Location known services exposed</button>
+  <button type="button" onclick="window.location.href='/services-simplified.html?demo=loc-finder'">exposed with location type finder</button>
+  <button type="button" onclick="window.location.href='/services-simplified.html?demo=rebill2'">Location Unknown</button>
+  <button type="button" onclick="window.location.href='/services-simplified.html?demo=1'">Location known services</button>
+  <button type="button" class="active">NMFC</button>
+</div>
+
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">Mothership</div>
+    <nav class="sidebar-nav">
+      <a href="#"><span class="icon">⌕</span> Search</a>
+      <a href="#" class="active"><span class="icon">S</span> Ship</a>
+      <a href="#"><span class="icon">T</span> Track</a>
+      <a href="#"><span class="icon">B</span> Billing</a>
+      <a href="#"><span class="icon">C</span> Claims</a>
+      <div class="sidebar-divider"></div>
+      <a href="#"><span class="icon">R</span> Recent quotes</a>
+    </nav>
+    <div class="sidebar-section-title">
+      <span>Recent quotes</span>
+      <a href="#">View all</a>
+    </div>
+    <div class="quote-item active">
+      <div class="route">16373 Constitutional Ave. → 17253 Ballanca Pkwy</div>
+      <div class="details">Seattle, WA → Austin, TX · 3 pallets</div>
+    </div>
+    <div class="quote-item">
+      <div class="route">16373 Constitutional Ave. → 17253 Ballanca Pkwy</div>
+      <div class="details">Seattle, WA → Austin, TX · 3 pallets</div>
+    </div>
+    <div class="quote-item">
+      <div class="route">16373 Constitutional Ave. → 17253 Ballanca Pkwy</div>
+      <div class="details">Seattle, WA → Austin, TX · 2 locations</div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <header class="appbar">
+      <div class="appbar-left">
+        <span class="page-title">Ship</span>
+        <div class="breadcrumbs">
+          <span class="sep">›</span>
+          <span>Recent quotes</span>
+          <span class="sep">›</span>
+          <span>Details</span>
+          <span class="sep">›</span>
+          <span class="current">Review and book</span>
+        </div>
+      </div>
+      <div class="appbar-right">
+        <button class="btn-sm">Share quote</button>
+        <button class="btn-sm">Feedback</button>
+        <button class="btn-sm">Chat with support</button>
+      </div>
+    </header>
+
+    <div class="body-content">
+      <div class="form-area">
+
+        <!-- Cargo Section -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <h2>Cargo</h2>
+          </div>
+
+          <!-- Cargo Item 1 -->
+          <div class="form-card" style="margin-bottom: 16px;">
+            <div class="cargo-header">
+              <h3>Cargo item 1</h3>
+              <div class="measurement-toggle">
+                <button class="active">Imperial (in / lb)</button>
+                <button>Metric (cm / kg)</button>
+              </div>
+            </div>
+            <p class="cargo-note">All handling units must be identical. If not, add another cargo item below.</p>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Cargo type <span class="required">*</span></label>
+                <select class="form-input"><option>Pallet</option><option>Box</option><option>Crate</option><option>Bundle</option></select>
+              </div>
+              <div class="form-group sm">
+                <label class="form-label">Quantity <span class="required">*</span></label>
+                <input type="number" class="form-input" value="12" min="1">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Weight each (lbs) <span class="required">*</span></label>
+                <input type="text" class="form-input" value="600">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Length (in) <span class="required">*</span></label>
+                <input type="text" class="form-input" value="48">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Width (in) <span class="required">*</span></label>
+                <input type="text" class="form-input" value="48">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Height (in) <span class="required">*</span></label>
+                <input type="text" class="form-input" value="48">
+              </div>
+            </div>
+
+            <!-- Commodity -->
+            <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+              <label class="form-label">What's the content of your pallets?</label>
+              <div class="form-row" style="margin-top: 8px; margin-bottom: 8px;">
+                <div class="form-group">
+                  <label class="form-label">Commodity description <span class="required">*</span></label>
+                  <input type="text" id="commodity-input-1" class="form-input" placeholder='e.g. "Steel auto parts", "Plastic containers"'>
+                </div>
+              </div>
+
+              <!-- NMFC Lookup -->
+              <div class="nmfc-lookup-wrap" id="nmfc-lookup-1">
+                <h4>NMFC code lookup</h4>
+                <p class="nmfc-subtitle">Required by all carriers — enter your commodity to find the correct code and freight class.</p>
+
+                <div class="nmfc-search-row">
+                  <div class="form-group">
+                    <label class="form-label">Search by commodity name or NMFC code</label>
+                    <input type="text" id="nmfc-search-1" class="form-input" placeholder='e.g. "plastic containers" or 34560'>
+                  </div>
+                  <button class="nmfc-search-btn" onclick="searchNMFC(1)">Search</button>
+                </div>
+
+                <div id="nmfc-results-1" style="display:none;">
+                  <div class="nmfc-results">
+                    <div class="nmfc-results-header">
+                      <span>NMFC Code</span>
+                      <span>Description</span>
+                      <span>Class</span>
+                      <span></span>
+                    </div>
+                    <div id="nmfc-rows-1"></div>
+                  </div>
+                </div>
+
+                <div id="nmfc-applied-1" style="display:none;" class="nmfc-applied">
+                  <div class="nmfc-applied-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"/></svg>
+                  </div>
+                  <div class="nmfc-applied-text">
+                    NMFC <strong id="nmfc-applied-code-1"></strong> — <span id="nmfc-applied-desc-1"></span> · Class <strong id="nmfc-applied-class-1"></strong>
+                  </div>
+                  <span class="nmfc-applied-change" onclick="changeNMFC(1)">Change</span>
+                </div>
+
+                <div class="nmfc-class-row">
+                  <div class="form-group">
+                    <label class="form-label">NMFC code</label>
+                    <input type="text" id="nmfc-code-1" class="form-input" placeholder="e.g. 34560-01">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Freight class</label>
+                    <select id="nmfc-class-1" class="form-input">
+                      <option value="">Auto-calculated</option>
+                      <option>50</option><option>55</option><option>60</option><option>65</option>
+                      <option>70</option><option>77.5</option><option>85</option><option>92.5</option>
+                      <option>100</option><option>110</option><option>125</option><option>150</option>
+                      <option>175</option><option>200</option><option>250</option><option>300</option>
+                      <option>400</option><option>500</option>
+                    </select>
+                    <div class="class-auto-badge" id="class-auto-badge-1" style="display:none;">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"/></svg>
+                      Auto-calculated from NMFC code
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Regulated cargo -->
+            <div style="margin-top: 16px;">
+              <label class="form-label">Regulated cargo declaration (optional)</label>
+              <div class="hazmat-options">
+                <label class="hazmat-option"><input type="checkbox"> Hazmat</label>
+                <label class="hazmat-option"><input type="checkbox"> Beer, wine &amp; spirits</label>
+                <label class="hazmat-option"><input type="checkbox"> Nicotine / Tobacco</label>
+              </div>
+            </div>
+
+            <!-- Piece count -->
+            <div class="piece-count">
+              <label class="form-label">Piece count per handling unit (optional)</label>
+              <div class="form-row" style="margin-top: 8px;">
+                <div class="form-group">
+                  <label class="form-label">Container type</label>
+                  <select class="form-input"><option value="">Select type</option><option>Boxes</option><option>Cartons</option><option>Bags</option><option>Drums</option></select>
+                </div>
+                <div class="form-group sm">
+                  <label class="form-label">Quantity</label>
+                  <input type="number" class="form-input" placeholder="0" min="0">
+                </div>
+              </div>
+              <div class="form-hint">Highly recommended in the event of a cargo claim</div>
+            </div>
+
+            <button class="add-btn">+ Add another commodity</button>
+          </div>
+
+          <!-- Cargo Item 2 -->
+          <div class="form-card" style="margin-bottom: 16px;">
+            <div class="cargo-header">
+              <h3>Cargo item 2</h3>
+              <div class="measurement-toggle">
+                <button class="active">Imperial (in / lb)</button>
+                <button>Metric (cm / kg)</button>
+              </div>
+            </div>
+            <p class="cargo-note">All handling units must be identical. If not, add another cargo item below.</p>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Cargo type <span class="required">*</span></label>
+                <select class="form-input"><option>Pallet</option><option>Box</option><option>Crate</option></select>
+              </div>
+              <div class="form-group sm">
+                <label class="form-label">Quantity <span class="required">*</span></label>
+                <input type="number" class="form-input" value="6" min="1">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Weight each (lbs) <span class="required">*</span></label>
+                <input type="text" class="form-input" value="200">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Length (in) <span class="required">*</span></label>
+                <input type="text" class="form-input" value="36">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Width (in) <span class="required">*</span></label>
+                <input type="text" class="form-input" value="36">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Height (in) <span class="required">*</span></label>
+                <input type="text" class="form-input" value="36">
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+              <label class="form-label">What's the content of your pallets?</label>
+              <div class="form-row" style="margin-top: 8px; margin-bottom: 8px;">
+                <div class="form-group">
+                  <label class="form-label">Commodity description <span class="required">*</span></label>
+                  <input type="text" id="commodity-input-2" class="form-input" placeholder='e.g. "Steel auto parts"'>
+                </div>
+              </div>
+
+              <div class="nmfc-lookup-wrap" id="nmfc-lookup-2">
+                <h4>NMFC code lookup</h4>
+                <p class="nmfc-subtitle">Required by all carriers — enter your commodity to find the correct code and freight class.</p>
+
+                <div class="nmfc-search-row">
+                  <div class="form-group">
+                    <label class="form-label">Search by commodity name or NMFC code</label>
+                    <input type="text" id="nmfc-search-2" class="form-input" placeholder='e.g. "electronic components" or 12345'>
+                  </div>
+                  <button class="nmfc-search-btn" onclick="searchNMFC(2)">Search</button>
+                </div>
+
+                <div id="nmfc-results-2" style="display:none;">
+                  <div class="nmfc-results">
+                    <div class="nmfc-results-header">
+                      <span>NMFC Code</span>
+                      <span>Description</span>
+                      <span>Class</span>
+                      <span></span>
+                    </div>
+                    <div id="nmfc-rows-2"></div>
+                  </div>
+                </div>
+
+                <div id="nmfc-applied-2" style="display:none;" class="nmfc-applied">
+                  <div class="nmfc-applied-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"/></svg>
+                  </div>
+                  <div class="nmfc-applied-text">
+                    NMFC <strong id="nmfc-applied-code-2"></strong> — <span id="nmfc-applied-desc-2"></span> · Class <strong id="nmfc-applied-class-2"></strong>
+                  </div>
+                  <span class="nmfc-applied-change" onclick="changeNMFC(2)">Change</span>
+                </div>
+
+                <div class="nmfc-class-row">
+                  <div class="form-group">
+                    <label class="form-label">NMFC code</label>
+                    <input type="text" id="nmfc-code-2" class="form-input" placeholder="e.g. 12345-02">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Freight class</label>
+                    <select id="nmfc-class-2" class="form-input">
+                      <option value="">Auto-calculated</option>
+                      <option>50</option><option>55</option><option>60</option><option>65</option>
+                      <option>70</option><option>77.5</option><option>85</option><option>92.5</option>
+                      <option>100</option><option>110</option><option>125</option><option>150</option>
+                      <option>175</option><option>200</option><option>250</option><option>300</option>
+                    </select>
+                    <div class="class-auto-badge" id="class-auto-badge-2" style="display:none;">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"/></svg>
+                      Auto-calculated from NMFC code
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px;">
+              <label class="form-label">Regulated cargo declaration (optional)</label>
+              <div class="hazmat-options">
+                <label class="hazmat-option"><input type="checkbox"> Hazmat</label>
+                <label class="hazmat-option"><input type="checkbox"> Beer, wine &amp; spirits</label>
+                <label class="hazmat-option"><input type="checkbox"> Nicotine / Tobacco</label>
+              </div>
+            </div>
+
+            <div class="piece-count">
+              <label class="form-label">Piece count per handling unit (optional)</label>
+              <div class="form-row" style="margin-top: 8px;">
+                <div class="form-group">
+                  <label class="form-label">Container type</label>
+                  <select class="form-input"><option value="">Select type</option><option>Boxes</option><option>Cartons</option><option>Bags</option></select>
+                </div>
+                <div class="form-group sm">
+                  <label class="form-label">Quantity</label>
+                  <input type="number" class="form-input" placeholder="0" min="0">
+                </div>
+              </div>
+              <div class="form-hint">Highly recommended in the event of a cargo claim</div>
+            </div>
+
+            <button class="add-btn">+ Add another commodity</button>
+          </div>
+
+          <button class="add-btn">+ Add another cargo item</button>
+        </div>
+
+      </div><!-- /form-area -->
+
+      <!-- Rates Panel -->
+      <aside class="rates-panel">
+        <div class="rates-header">
+          <h3>Choose your carrier</h3>
+        </div>
+        <div class="rate-list">
+          <div class="rate-item selected">
+            <div class="rate-top">
+              <span class="carrier">Arrive</span>
+              <span class="price">$140.03</span>
+            </div>
+            <div class="rate-meta">Estimated 7–10 business days</div>
+            <div class="rate-tags">
+              <span class="tag">LTL</span>
+              <span class="selected-badge">Selected</span>
+            </div>
+            <div class="rate-expiry">Rate expires in 7 days</div>
+          </div>
+          <div class="rate-item">
+            <div class="rate-top">
+              <span class="carrier">Southeastern</span>
+              <span class="price">$180.03</span>
+            </div>
+            <div class="rate-meta">Estimated 7–10 business days</div>
+            <div class="rate-tags"><span class="tag ltl">LTL · Direct</span></div>
+            <div class="rate-expiry">Rate expires in 7 days</div>
+          </div>
+          <div class="rate-item">
+            <div class="rate-top">
+              <span class="carrier">ABF</span>
+              <span class="price">$103.47</span>
+            </div>
+            <div class="rate-meta">Estimated 7–10 business days</div>
+            <div class="rate-tags"><span class="tag ltl">LTL · Direct</span></div>
+            <div class="rate-expiry">Rate expires in 7 days</div>
+          </div>
+          <div class="rate-item">
+            <div class="rate-top">
+              <span class="carrier">XPO</span>
+              <span class="price">$240.72</span>
+            </div>
+            <div class="rate-meta">Estimated 7–10 business days</div>
+            <div class="rate-tags"><span class="tag ltl">LTL · Integrated</span></div>
+            <div class="rate-expiry">Rate expires in 7 days</div>
+          </div>
+          <div class="rate-item">
+            <div class="rate-top">
+              <span class="carrier">SAIA</span>
+              <span class="price">$195.46</span>
+            </div>
+            <div class="rate-meta">Estimated 7–10 business days</div>
+            <div class="rate-tags"><span class="tag ltl">LTL · Direct</span></div>
+            <div class="rate-expiry">Rate expires in 7 days</div>
+          </div>
+        </div>
+
+        <div class="unserviceable">
+          <a href="#">Carriers unable to service this shipment · See why</a>
+        </div>
+
+        <div class="coverage-section">
+          <h4>Coverage</h4>
+          <div class="coverage-option selected">
+            <div class="opt-title">FreightProtect full coverage</div>
+            <div class="opt-desc">Get reimbursed for the true value of your cargo up to $250k</div>
+          </div>
+          <div class="coverage-option">
+            <div class="opt-title">Carrier basic coverage</div>
+            <div class="opt-desc">Rely solely on the carrier's insurance</div>
+          </div>
+        </div>
+
+        <div class="checkout-section">
+          <button class="checkout-btn">Proceed to checkout · $140.03</button>
+        </div>
+      </aside>
+    </div><!-- /body-content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<script>
+// Sample NMFC data for demo
+const NMFC_DATA = [
+  { code: '34560-01', desc: 'Plastics, articles of, NOI', class: '85' },
+  { code: '34560-02', desc: 'Plastics, containers, knocked down', class: '70' },
+  { code: '34560-03', desc: 'Plastics, film or sheeting, rolls', class: '100' },
+  { code: '34560-04', desc: 'Plastics, foam, sheets or slabs', class: '125' },
+  { code: '12345-01', desc: 'Electronic components, NOI', class: '100' },
+  { code: '12345-02', desc: 'Electronic equipment, boxed', class: '85' },
+  { code: '12345-03', desc: 'Electronic parts, loose', class: '150' },
+  { code: '56789-01', desc: 'Steel, auto parts, stamped', class: '55' },
+  { code: '56789-02', desc: 'Steel, sheets or plates', class: '50' },
+  { code: '78901-01', desc: 'Furniture, household, crated', class: '150' },
+  { code: '78901-02', desc: 'Furniture, knocked down, flat-packed', class: '100' },
+  { code: '23456-01', desc: 'Chemicals, dry, bagged', class: '60' },
+  { code: '23456-02', desc: 'Chemicals, liquid, drums', class: '70' },
+  { code: '45678-01', desc: 'Food products, canned, palletized', class: '50' },
+  { code: '45678-02', desc: 'Food products, perishable, refrigerated', class: '65' },
+  { code: '90123-01', desc: 'Machinery, NOI, crated', class: '85' },
+  { code: '90123-02', desc: 'Machinery parts, boxed', class: '77.5' },
+];
+
+function searchNMFC(idx) {
+  const query = document.getElementById('nmfc-search-' + idx).value.trim().toLowerCase();
+  if (!query) return;
+
+  const results = NMFC_DATA.filter(r =>
+    r.desc.toLowerCase().includes(query) ||
+    r.code.includes(query) ||
+    query.split(' ').some(w => r.desc.toLowerCase().includes(w))
+  ).slice(0, 6);
+
+  const rowsEl = document.getElementById('nmfc-rows-' + idx);
+  const resultsEl = document.getElementById('nmfc-results-' + idx);
+
+  rowsEl.innerHTML = results.length
+    ? results.map((r, i) => `
+        <div class="nmfc-result-row" id="nmfc-row-${idx}-${i}" onclick="selectNMFC(${idx}, '${r.code}', '${r.desc}', '${r.class}')">
+          <div class="nmfc-result-code">${r.code}</div>
+          <div class="nmfc-result-desc">${r.desc}</div>
+          <div class="nmfc-result-class"><span class="class-badge">${r.class}</span></div>
+          <div class="nmfc-result-select"><button type="button">Select</button></div>
+        </div>`).join('')
+    : `<div style="padding:20px;text-align:center;color:#6b7280;font-size:13px;">No results for "${query}" — try a different keyword or enter a code manually below.</div>`;
+
+  resultsEl.style.display = 'block';
+}
+
+function selectNMFC(idx, code, desc, cls) {
+  document.querySelectorAll('#nmfc-rows-' + idx + ' .nmfc-result-row').forEach(r => r.classList.remove('selected'));
+  const rows = document.querySelectorAll('#nmfc-rows-' + idx + ' .nmfc-result-row');
+  rows.forEach(r => { if (r.querySelector('.nmfc-result-code').textContent === code) r.classList.add('selected'); });
+
+  // Populate manual fields
+  document.getElementById('nmfc-code-' + idx).value = code;
+  const clsSel = document.getElementById('nmfc-class-' + idx);
+  for (let o of clsSel.options) { if (o.value === cls || o.text === cls) { o.selected = true; break; } }
+
+  // Show applied row
+  document.getElementById('nmfc-applied-code-' + idx).textContent = code;
+  document.getElementById('nmfc-applied-desc-' + idx).textContent = desc;
+  document.getElementById('nmfc-applied-class-' + idx).textContent = cls;
+  document.getElementById('nmfc-applied-' + idx).style.display = 'flex';
+  document.getElementById('nmfc-results-' + idx).style.display = 'none';
+  document.getElementById('class-auto-badge-' + idx).style.display = 'inline-flex';
+}
+
+function changeNMFC(idx) {
+  document.getElementById('nmfc-applied-' + idx).style.display = 'none';
+  document.getElementById('nmfc-results-' + idx).style.display = 'none';
+  document.getElementById('nmfc-search-' + idx).value = '';
+  document.getElementById('nmfc-code-' + idx).value = '';
+  document.getElementById('nmfc-class-' + idx).selectedIndex = 0;
+  document.getElementById('class-auto-badge-' + idx).style.display = 'none';
+}
+
+// Allow pressing Enter to search
+document.querySelectorAll('[id^="nmfc-search-"]').forEach(inp => {
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const idx = inp.id.replace('nmfc-search-', '');
+      searchNMFC(idx);
+    }
+  });
+});
+
+// Measurement toggle
+document.querySelectorAll('.measurement-toggle button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+// Rate selection
+document.querySelectorAll('.rate-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.rate-item').forEach(i => i.classList.remove('selected'));
+    item.classList.add('selected');
+  });
+});
+
+// Coverage selection
+document.querySelectorAll('.coverage-option').forEach(opt => {
+  opt.addEventListener('click', () => {
+    document.querySelectorAll('.coverage-option').forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+  });
+});
+
+// Sidebar nav
+document.querySelectorAll('.sidebar-nav a').forEach(link => {
+  link.addEventListener('click', e => { e.preventDefault(); document.querySelectorAll('.sidebar-nav a').forEach(l => l.classList.remove('active')); link.classList.add('active'); });
+});
+document.querySelectorAll('.quote-item').forEach(item => {
+  item.addEventListener('click', () => { document.querySelectorAll('.quote-item').forEach(i => i.classList.remove('active')); item.classList.add('active'); });
+});
+</script>
+</body>
+</html>
