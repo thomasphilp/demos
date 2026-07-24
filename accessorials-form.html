@@ -129,8 +129,14 @@
 
 
   /* ── Location type picker ── */
-  .loc-picker-wrap {
-    display: flex; flex-direction: column; gap: 6px;
+  .loc-picker-section { display: flex; flex-direction: column; gap: 8px; }
+  .loc-picker-outer {
+    display: flex; flex-direction: column; gap: 12px;
+    background: rgba(9,10,12,0.02);
+    border: 1px solid rgba(9,10,12,0.08);
+    border-radius: 4px;
+    padding: 12px 16px 16px;
+    transition: background 0.15s;
   }
   .loc-field-label {
     display: flex; align-items: center; gap: 4px;
@@ -141,25 +147,29 @@
   .loc-field-label-auto { font-size: 12px; font-weight: 400; color: var(--color-label-primary); }
   .loc-field-label-source { color: #2563eb; font-weight: 400; }
   .loc-picker-block {
-    background: rgba(9,10,12,0.02);
-    border: 1px solid rgba(9,10,12,0.08);
-    border-radius: 4px;
-    padding: 16px;
-    transition: background 0.15s;
     display: flex; flex-direction: column; gap: 0;
   }
   .loc-picker-body { display: flex; flex-direction: column; gap: 12px; transition: opacity 0.1s ease; }
   .loc-picker-body-wrap { overflow: hidden; max-height: 700px; transition: max-height 0.4s ease; padding: 4px; margin: -4px; }
   .loc-picker-body-wrap.collapsed { max-height: 0; }
-  .loc-picker-block:has(.loc-picker-body-wrap.collapsed) { padding: 12px 16px; cursor: pointer; min-height: 48px; justify-content: center; }
-  .loc-picker-block:has(.loc-picker-body-wrap.collapsed):hover { background: rgba(9,10,12,0.04); }
+  .loc-picker-block:has(.loc-picker-body-wrap.collapsed) { cursor: pointer; min-height: 32px; justify-content: center; }
+
   .loc-picker-summary {
     display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    background: white;
+    border: 1px solid var(--color-control-border);
+    border-radius: var(--radius-base);
+    padding: 14px 16px 14px 20px;
+    position: relative; overflow: hidden;
+    box-shadow: inset 0 -1px 0 rgba(9,10,12,0.05), inset 0 1px 0 rgba(255,255,255,0.30);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    cursor: pointer;
   }
-  .loc-picker-summary-autodetect {
-    font-size: 11px; font-weight: 400; color: var(--color-label-secondary);
+  .loc-picker-summary:hover { border-color: rgba(9,10,12,0.25); }
+  .loc-picker-summary::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 6px; background: rgba(9,10,12,0.05);
   }
-  .loc-picker-summary-autodetect .loc-summary-source { color: #2563eb; font-weight: 400; }
   .loc-picker-summary-left { display: flex; align-items: center; gap: 16px; }
   .loc-picker-summary-icon { align-self: center; }
   .loc-picker-summary-icon {
@@ -168,17 +178,22 @@
   }
   .loc-picker-summary-icon svg { width: 16px; height: 16px; max-width: 16px; max-height: 16px; display: block; }
   .loc-picker-summary-text { display: flex; flex-direction: column; gap: 2px; }
-  .loc-picker-summary-label { font-size: 11px; font-weight: 400; color: var(--color-label-secondary); white-space: nowrap; }
-  .loc-summary-source { color: #2563eb; font-weight: 600; }
-  .loc-picker-summary-name { font-size: 14px; font-weight: 600; color: var(--color-label-primary); }
+  .loc-picker-summary-name-row { display: flex; align-items: baseline; gap: 4px; }
+  .loc-picker-summary-name { font-size: 12px; font-weight: 600; color: var(--color-label-primary); white-space: nowrap; }
+  .loc-picker-summary-detail { font-size: 10px; font-weight: 400; color: var(--color-label-secondary); }
   .loc-picker-change {
-    font-size: 12px; font-weight: 400;
-    background: none; border: none; padding: 0; cursor: pointer;
-    font-family: 'Inter', sans-serif; flex-shrink: 0;
+    font-size: 12px; font-weight: 600;
+    background: rgba(9,10,12,0.05); border: 1px solid rgba(9,10,12,0.3); border-radius: var(--radius-base);
+    padding: 0 8px; height: 24px; cursor: pointer;
+    font-family: 'Inter', sans-serif; flex-shrink: 0; color: var(--color-label-primary);
+    box-shadow: inset 0 2px 0 rgba(255,255,255,0.5), inset 0 -2px 0 rgba(9,10,12,0.05);
+    transition: background 0.15s, box-shadow 0.15s;
+    overflow: hidden;
   }
-  .loc-picker-change-q { color: var(--color-label-primary); }
-  .loc-picker-change-link { color: var(--color-tint); font-weight: 600; }
-  .loc-picker-change:hover .loc-picker-change-link { opacity: 0.75; }
+  .loc-picker-change:hover { background: rgba(9,10,12,0.10); }
+  .loc-picker-change:active { background: rgba(9,10,12,0.20); box-shadow: inset 0 0 0 1px rgba(9,10,12,0.5), inset 0 3px 8px rgba(9,10,12,0.5); }
+  .loc-picker-change:focus-visible { outline: none; box-shadow: 0 0 0 1px white, 0 0 0 4px #1d4ed8; }
+  .loc-picker-change-q { display: none; }
 
   /* Help me choose */
   .addr-loc-btn {
@@ -270,7 +285,7 @@
     font-size: 14px; font-weight: 600; cursor: pointer;
     font-family: 'Inter', sans-serif; color: var(--color-label-primary);
     border: 1px solid rgba(9,10,12,0.3); background: rgba(9,10,12,0.05);
-    box-shadow: inset 0px 1px 0px rgba(255,255,255,0.3), inset 0px -2px 0px rgba(9,10,12,0.05);
+    box-shadow: inset 0px 2px 0px rgba(255,255,255,0.5), inset 0px -2px 0px rgba(9,10,12,0.05);
     overflow: hidden; transition: background 0.12s, box-shadow 0.12s;
     display: flex; align-items: center; justify-content: center; gap: 8px;
   }
@@ -322,36 +337,37 @@
   .loc-help-select:focus-visible { outline: none; box-shadow: 0px 0px 0px 1px white, 0px 0px 0px 4px #1d4ed8; }
   .loc-help-confirm-skip {
     min-height: 32px; padding: 0 14px;
-    background: #090a0c; color: white;
+    background: #00703a; color: white;
     border: none; border-radius: var(--radius-base);
     font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;
-    box-shadow: inset 0px 1px 0px rgba(255,255,255,0.3), inset 0px -1px 0px rgba(255,255,255,0.2);
-    overflow: hidden; transition: background 0.15s;
+    box-shadow: inset 0px 1px 0px rgba(255,255,255,0.3), inset 0px -1px 0px rgba(9,10,12,0.1);
+    overflow: hidden; transition: background 0.15s, box-shadow 0.15s;
     display: flex; align-items: center; justify-content: center; gap: 6px;
   }
-  .loc-help-confirm-skip:hover { background: #23262a; }
-  .loc-help-confirm-skip:active { background: #090a0c; box-shadow: inset 0px 0px 0px 1px rgba(9,10,12,0.5), inset 0px 3px 8px rgba(9,10,12,0.5); }
+  .loc-help-confirm-skip:hover { background: #003d20; }
+  .loc-help-confirm-skip:active { background: #002b16; box-shadow: inset 0px 2px 4px rgba(0,0,0,0.3), inset 0px 1px 0px rgba(255,255,255,0.15), inset 0px -1px 0px rgba(9,10,12,0.12); }
+  .loc-help-confirm-skip:focus-visible { outline: none; box-shadow: 0px 0px 0px 1px white, 0px 0px 0px 4px #1d4ed8; }
   .loc-help-skip-actions { display: flex; gap: 8px; justify-content: center; }
   .loc-help-start-again {
     min-height: 32px; padding: 0 14px;
-    background: transparent;
+    background: rgba(9,10,12,0.05);
     border: 1px solid rgba(9,10,12,0.3); border-radius: var(--radius-base);
     font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;
     color: var(--color-label-primary);
-    box-shadow: inset 0px 1px 0px rgba(255,255,255,0.3), inset 0px -2px 0px rgba(9,10,12,0.05);
+    box-shadow: inset 0px 2px 0px rgba(255,255,255,0.5), inset 0px -2px 0px rgba(9,10,12,0.05);
     overflow: hidden; transition: background 0.15s, box-shadow 0.15s;
     display: flex; align-items: center; justify-content: center;
   }
-  .loc-help-start-again:hover { background: rgba(9,10,12,0.06); }
-  .loc-help-start-again:active { background: rgba(9,10,12,0.12); box-shadow: inset 0px 0px 0px 1px rgba(9,10,12,0.5), inset 0px 3px 8px rgba(9,10,12,0.5); }
+  .loc-help-start-again:hover { background: rgba(9,10,12,0.10); }
+  .loc-help-start-again:active { background: rgba(9,10,12,0.20); box-shadow: inset 0px 0px 0px 1px rgba(9,10,12,0.5), inset 0px 3px 8px rgba(9,10,12,0.5); }
   .loc-help-start-again:focus-visible { outline: none; box-shadow: 0px 0px 0px 1px white, 0px 0px 0px 4px #1d4ed8; }
   .loc-picker-question {
     font-size: 14px; font-weight: 600; color: var(--color-label-primary);
     display: flex; align-items: center; gap: 4px;
   }
   .loc-picker-question-sub {
-    font-size: 11px; font-weight: 400; color: var(--color-label-secondary);
-    line-height: 15px;
+    font-size: 10px; font-weight: 400; color: var(--color-label-secondary);
+    line-height: 1.4; margin-top: -4px;
   }
   .loc-picker-grid {
     display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 1fr; gap: 10px;
@@ -424,21 +440,21 @@
   .fba-notes li:last-child { margin-bottom: 0; }
 
   .dock-question {
-    margin-top: 8px;
     padding: 10px 16px 14px 20px;
     background: var(--color-bg);
-    border: var(--border-1) solid #83ebb9;
+    border: 1px solid #83ebb9;
     border-radius: var(--radius-base);
     overflow: hidden;
     display: flex; flex-direction: column; gap: 10px;
     position: relative;
+    box-shadow: 0 0 0 2px #d9fceb;
     animation: dockFadeIn 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both;
   }
   .dock-question::before {
     content: '';
     position: absolute;
     left: 0; top: 0; bottom: 0;
-    width: 5px;
+    width: 6px;
     background: #d9fceb;
   }
   @keyframes dockFadeIn {
@@ -446,15 +462,15 @@
     to   { opacity: 1; transform: translateY(0); }
   }
   .dock-question-header {
-    display: flex; align-items: center; gap: 6px;
+    display: flex; align-items: center; gap: 8px;
   }
   .dock-question-icon {
-    width: 16px; height: 16px; flex-shrink: 0;
-    color: var(--color-label-secondary); display: flex; align-items: center; justify-content: center;
+    width: 10px; height: 10px; flex-shrink: 0;
+    color: var(--color-label-primary); display: flex; align-items: center; justify-content: center;
   }
-  .dock-question-icon svg { width: 16px; height: 16px; max-width: 16px; max-height: 16px; display: block; }
+  .dock-question-icon svg { width: 10px; height: 10px; max-width: 10px; max-height: 10px; display: block; }
   .dock-question-label {
-    font-size: 11px; font-weight: 400; color: var(--color-label-secondary);
+    font-size: 10px; font-weight: 500; color: var(--color-label-secondary);
   }
   .dock-question-rule {
     border: none; border-top: 1px solid var(--color-control-border); margin: 0 -16px 0 -20px;
@@ -468,7 +484,7 @@
     font-size: 14px; font-weight: 600; cursor: pointer;
     font-family: 'Inter', sans-serif; color: var(--color-label-primary);
     border: 1px solid rgba(9,10,12,0.3); background: rgba(9,10,12,0.05);
-    box-shadow: inset 0px 1px 0px rgba(255,255,255,0.3), inset 0px -2px 0px rgba(9,10,12,0.05);
+    box-shadow: inset 0px 2px 0px rgba(255,255,255,0.5), inset 0px -2px 0px rgba(9,10,12,0.05);
     overflow: hidden; transition: background 0.12s, box-shadow 0.12s;
     display: flex; align-items: center; justify-content: flex-start; gap: 8px;
   }
@@ -482,6 +498,13 @@
   }
   .dock-question.pulsing {
     animation: dock-panel-pulse 2.7s ease-in-out infinite;
+  }
+  @keyframes inline-rec-pulse {
+    0%, 100% { border-color: rgba(253,224,71,0.5); box-shadow: 0 0 0 0.4px rgba(253,224,71,0.3); }
+    50%       { border-color: #fde047;             box-shadow: 0 0 0 3px rgba(253,224,71,0.25); }
+  }
+  .inline-rec-card.pulsing {
+    animation: inline-rec-pulse 2.7s ease-in-out infinite;
   }
 
   /* Radio circle inside ghost buttons */
@@ -498,9 +521,10 @@
   .selected .btn-radio { border-color: #00703a; }
   .selected .btn-radio-dot { opacity: 1; }
   .loc-picker-summary-detail {
-    font-size: 11px; font-weight: 400; color: var(--color-label-secondary);
+    font-size: 10px; font-weight: 400; color: var(--color-label-secondary);
   }
-  .loc-picker-summary-auto { font-size: 11px; font-weight: 600; color: #2563eb; }
+  .loc-picker-summary-autodetect { font-size: 10px; font-weight: 400; color: var(--color-label-secondary); white-space: nowrap; }
+  .loc-picker-summary-auto { font-size: 10px; font-weight: 400; color: #2563eb; }
   .loc-option-auto { font-size: 10px; font-weight: 400; color: #2563eb; margin-top: 2px; display: block; }
   .loc-option:has(.loc-tile-info:hover) { z-index: 5; }
   #loc-tile-tooltip-global {
@@ -917,6 +941,66 @@
     font-size: 10px; font-weight: 400; color: var(--color-label-secondary); line-height: normal;
   }
 
+  .inline-rec-card {
+    display: flex; flex-direction: column;
+    background: white;
+    border: 1px solid rgba(9,10,12,0.2);
+    border-radius: var(--radius-base);
+    box-shadow: 0 0 0 2px rgba(9,10,12,0.05);
+    position: relative; overflow: hidden;
+  }
+  .inline-rec-card::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 6px; background: #fef9c3;
+  }
+  .inline-rec-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 16px;
+  }
+  .inline-rec-icon { flex-shrink: 0; width: 10px; height: 10px; color: #a16207; }
+  .inline-rec-heading {
+    font-size: 10px; font-weight: 500; color: #a16207;
+  }
+  .inline-rec-rule { border: none; border-top: 1px solid rgba(9,10,12,0.1); margin: 0; }
+  .inline-rec-body { display: flex; flex-direction: column; gap: 16px; padding: 12px 16px; }
+  .inline-rec-desc-wrap { display: flex; flex-direction: column; gap: 8px; }
+  .inline-rec-desc { font-size: 14px; font-weight: 600; color: var(--color-label-primary); line-height: 1.3; }
+  .inline-rec-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .inline-rec-tag {
+    display: inline-flex; align-items: center; height: 16px;
+    padding: 0 6px; border-radius: 99px;
+    font-size: 10px; font-weight: 400; color: rgba(9,10,12,0.9);
+    background: #fef9c3; border: 1px solid #fde047;
+    white-space: nowrap;
+  }
+  .inline-rec-actions { display: flex; gap: 8px; align-items: center; }
+  .inline-rec-apply-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 32px; padding: 0 12px; border-radius: var(--radius-base);
+    font-size: 14px; font-weight: 600; font-family: 'Inter', sans-serif;
+    background: #00703a; color: white;
+    border: none; cursor: pointer;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), inset 0 -1px 0 rgba(9,10,12,0.1);
+    transition: background 0.15s, box-shadow 0.15s; white-space: nowrap;
+  }
+  .inline-rec-apply-btn:hover { background: #003d20; }
+  .inline-rec-apply-btn:active { background: #002b16; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15), inset 0 -1px 0 rgba(9,10,12,0.12); }
+  .inline-rec-apply-btn:focus-visible { outline: none; box-shadow: 0 0 0 1px white, 0 0 0 4px #1d4ed8; }
+  .inline-rec-plus-icon { width: 12px; height: 12px; flex-shrink: 0; }
+  .inline-rec-skip-btn {
+    display: inline-flex; align-items: center;
+    height: 32px; padding: 0 12px; border-radius: var(--radius-base);
+    font-size: 14px; font-weight: 600; font-family: 'Inter', sans-serif;
+    color: var(--color-label-primary);
+    background: rgba(9,10,12,0.05); border: 1px solid rgba(9,10,12,0.3);
+    box-shadow: inset 0 2px 0 rgba(255,255,255,0.5), inset 0 -2px 0 rgba(9,10,12,0.05);
+    cursor: pointer; white-space: nowrap;
+    transition: background 0.15s, box-shadow 0.15s;
+  }
+  .inline-rec-skip-btn:hover { background: rgba(9,10,12,0.10); }
+  .inline-rec-skip-btn:active { background: rgba(9,10,12,0.20); box-shadow: inset 0 0 0 1px rgba(9,10,12,0.5), inset 0 3px 8px rgba(9,10,12,0.5); }
+  .inline-rec-skip-btn:focus-visible { outline: none; box-shadow: 0 0 0 1px white, 0 0 0 4px #1d4ed8; }
+
   .acc-list { padding: 8px; display: flex; flex-direction: column; gap: 4px; }
   .acc-list-divider {
     font-size: 10px; font-weight: 600; color: rgba(9,10,12,0.6);
@@ -1328,11 +1412,6 @@
     box-shadow: 0px 0px 0px 1px white, 0px 0px 0px 4px #1d4ed8;
   }
   .loc-help-result-back:focus-visible {
-    outline: 2px solid var(--color-focus);
-    outline-offset: 1px;
-    border-radius: 2px;
-  }
-  .loc-picker-change:focus-visible {
     outline: 2px solid var(--color-focus);
     outline-offset: 1px;
     border-radius: 2px;
@@ -2061,6 +2140,529 @@
   }
   .demo-bar button:hover { background: rgba(9,10,12,0.05); }
   .demo-bar button.active { background: var(--color-tint); color: white; border-color: var(--color-tint); }
+  /* !! TOKENS:START !! */
+:root {
+  /* Colors » Light */
+  --controls-tint-bg: rgb(0, 112, 58);
+  --controls-tint-text: rgb(0, 112, 58);
+  --controls-destruction-bg: rgb(220, 38, 38);
+  --controls-destruction-bg-lighter: rgba(241, 46, 46, 0.1);
+  --controls-default-bg: rgba(9, 10, 12, 0.02);
+  --controls-hover-bg: rgba(9, 10, 12, 0.06);
+  --controls-selected-bg: rgb(255, 255, 255);
+  --controls-selected-bg-alternate: rgba(9, 10, 12, 0.05);
+  --controls-disabled-bg: rgba(9, 10, 12, 0.08);
+  --controls-loading-bg: rgba(9, 10, 12, 0.6);
+  --controls-focus: rgb(29, 78, 216);
+  --border-global: rgba(9, 10, 12, 0.05);
+  --border-emphasis: rgba(9, 10, 12, 0.2);
+  --border-global-alternate: rgba(255, 255, 255, 0.16);
+  --border-default-control-border: rgba(9, 10, 12, 0.12);
+  --border-hover-control-border: rgba(9, 10, 12, 0.24);
+  --border-selected-control-border: rgba(9, 10, 12, 0.9);
+  --border-disabled-selected-control-border: rgba(9, 10, 12, 0.04);
+  --border-default-alternate-control-border: rgba(9, 10, 12, 0.3);
+  --border-selected-alternate-control-border: rgba(9, 10, 12, 0.2);
+  --border-disabled-alternate-selected-control-border: rgba(9, 10, 12, 0.04);
+  --fills-primary-surface: rgb(255, 255, 255);
+  --fills-secondary-surface: rgba(9, 10, 12, 0.02);
+  --fills-tertiary-surface: rgba(9, 10, 12, 0.04);
+  --labels-white: rgb(255, 255, 255);
+  --labels-alternate-white: rgba(255, 255, 255, 0.8);
+  --labels-primary: rgba(9, 10, 12, 0.9);
+  --labels-secondary: rgba(9, 10, 12, 0.6);
+  --labels-tertiary: rgba(9, 10, 12, 0.4);
+  --labels-placeholder: rgba(9, 10, 12, 0.3);
+  --labels-disabled: rgba(9, 10, 12, 0.4);
+  --grays-solid-white: rgb(255, 255, 255);
+  --grays-solid-50: rgb(249, 250, 251);
+  --grays-solid-100: rgb(243, 244, 246);
+  --grays-solid-200: rgb(216, 218, 223);
+  --grays-solid-300: rgb(210, 213, 218);
+  --grays-solid-400: rgb(157, 163, 174);
+  --grays-solid-500: rgb(106, 114, 129);
+  --grays-solid-600: rgb(85, 93, 104);
+  --grays-solid-700: rgb(53, 58, 65);
+  --grays-solid-800: rgb(35, 38, 42);
+  --grays-solid-900: rgb(25, 27, 31);
+  --grays-solid-950: rgb(9, 10, 12);
+  --grays-solid-black: rgb(0, 0, 0);
+  --opaque-black-0: rgba(9, 10, 12, 0);
+  --glyphs-neutral-idle: rgba(9, 10, 12, 0.9);
+  --glyphs-neutral-disabled: rgba(9, 10, 12, 0.2);
+  --opaque-black-50: rgba(9, 10, 12, 0.01);
+  --opaque-black-100: rgba(9, 10, 12, 0.02);
+  --opaque-black-200: rgba(9, 10, 12, 0.05);
+  --opaque-black-300: rgba(9, 10, 12, 0.1);
+  --opaque-black-400: rgba(9, 10, 12, 0.2);
+  --opaque-black-500: rgba(9, 10, 12, 0.3);
+  --opaque-black-600: rgba(9, 10, 12, 0.5);
+  --opaque-black-700: rgba(9, 10, 12, 0.6);
+  --opaque-black-800: rgba(9, 10, 12, 0.7);
+  --opaque-black-900: rgba(9, 10, 12, 0.8);
+  --opaque-black-950: rgba(9, 10, 12, 0.9);
+  --opaque-white-0: rgba(255, 255, 255, 0);
+  --opaque-white-50: rgba(255, 255, 255, 0.01);
+  --opaque-white-100: rgba(255, 255, 255, 0.02);
+  --opaque-white-200: rgba(255, 255, 255, 0.05);
+  --opaque-white-300: rgba(255, 255, 255, 0.1);
+  --opaque-white-400: rgba(255, 255, 255, 0.2);
+  --opaque-white-500: rgba(255, 255, 255, 0.3);
+  --opaque-white-600: rgba(255, 255, 255, 0.5);
+  --opaque-white-700: rgba(255, 255, 255, 0.6);
+  --opaque-white-800: rgba(255, 255, 255, 0.7);
+  --opaque-white-900: rgba(255, 255, 255, 0.8);
+  --opaque-white-950: rgba(255, 255, 255, 0.9);
+  --glyphs-primary-idle: rgb(255, 255, 255);
+  --glyphs-primary-disabled: rgba(255, 255, 255, 0.3);
+  --accents-green-50: rgb(235, 255, 245);
+  --accents-blue-50: rgb(239, 246, 255);
+  --accents-purple-50: rgb(245, 243, 255);
+  --accents-yellow-50: rgb(254, 252, 232);
+  --accents-yellow-100: rgb(254, 249, 195);
+  --accents-yellow-200: rgb(254, 240, 138);
+  --accents-yellow-300: rgb(253, 224, 71);
+  --accents-yellow-400: rgb(250, 204, 21);
+  --accents-yellow-500: rgb(234, 179, 8);
+  --accents-yellow-600: rgb(202, 138, 4);
+  --accents-yellow-700: rgb(161, 98, 7);
+  --accents-yellow-800: rgb(133, 77, 14);
+  --accents-yellow-900: rgb(113, 63, 18);
+  --accents-yellow-950: rgb(66, 32, 6);
+  --accents-orange-50: rgb(255, 247, 237);
+  --accents-red-50: rgb(254, 242, 242);
+  --accents-red-100: rgb(254, 226, 226);
+  --accents-red-200: rgb(254, 202, 202);
+  --accents-red-300: rgb(252, 165, 165);
+  --accents-red-400: rgb(248, 113, 113);
+  --accents-red-500: rgb(239, 68, 68);
+  --accents-red-600: rgb(220, 38, 38);
+  --accents-red-700: rgb(185, 28, 28);
+  --accents-red-800: rgb(153, 27, 27);
+  --accents-red-900: rgb(127, 29, 29);
+  --accents-red-950: rgb(69, 10, 10);
+  --accents-orange-100: rgb(255, 237, 213);
+  --accents-orange-200: rgb(254, 215, 170);
+  --accents-orange-300: rgb(253, 186, 116);
+  --accents-orange-400: rgb(251, 146, 60);
+  --accents-orange-500: rgb(249, 115, 22);
+  --accents-orange-600: rgb(234, 88, 12);
+  --accents-orange-700: rgb(194, 65, 12);
+  --accents-orange-800: rgb(154, 52, 18);
+  --accents-orange-900: rgb(124, 45, 18);
+  --accents-orange-950: rgb(67, 20, 7);
+  --accents-teal-50: rgb(240, 253, 250);
+  --accents-teal-100: rgb(204, 251, 241);
+  --accents-teal-200: rgb(153, 246, 228);
+  --accents-teal-300: rgb(94, 234, 212);
+  --accents-teal-400: rgb(45, 212, 191);
+  --accents-teal-500: rgb(20, 184, 166);
+  --accents-teal-600: rgb(13, 148, 136);
+  --accents-teal-700: rgb(15, 118, 110);
+  --accents-teal-800: rgb(17, 94, 89);
+  --accents-teal-900: rgb(19, 78, 74);
+  --accents-teal-950: rgb(4, 47, 46);
+  --accents-indigo-50: rgb(238, 242, 255);
+  --accents-indigo-100: rgb(224, 231, 255);
+  --accents-indigo-200: rgb(199, 210, 254);
+  --accents-indigo-300: rgb(129, 140, 248);
+  --accents-indigo-400: rgb(129, 140, 248);
+  --accents-indigo-500: rgb(99, 102, 241);
+  --accents-indigo-600: rgb(79, 70, 229);
+  --accents-indigo-700: rgb(67, 56, 202);
+  --accents-indigo-800: rgb(55, 48, 163);
+  --accents-indigo-900: rgb(49, 46, 129);
+  --accents-indigo-950: rgb(30, 27, 75);
+  --accents-gold-50: rgb(251, 249, 242);
+  --accents-gold-100: rgb(252, 249, 240);
+  --accents-gold-200: rgb(243, 238, 226);
+  --accents-gold-300: rgb(236, 223, 194);
+  --accents-gold-400: rgb(234, 216, 173);
+  --accents-gold-500: rgb(198, 178, 132);
+  --accents-gold-600: rgb(173, 156, 116);
+  --accents-gold-700: rgb(143, 126, 88);
+  --accents-gold-800: rgb(89, 75, 42);
+  --accents-gold-900: rgb(59, 45, 17);
+  --accents-gold-950: rgb(26, 19, 6);
+  --accents-brown-50: rgb(252, 249, 246);
+  --accents-brown-100: rgb(252, 246, 240);
+  --accents-brown-200: rgb(244, 232, 220);
+  --accents-brown-300: rgb(239, 217, 196);
+  --accents-brown-400: rgb(232, 200, 172);
+  --accents-brown-500: rgb(208, 161, 119);
+  --accents-brown-600: rgb(181, 137, 99);
+  --accents-brown-700: rgb(148, 109, 75);
+  --accents-brown-800: rgb(107, 78, 55);
+  --accents-brown-900: rgb(54, 39, 29);
+  --accents-brown-950: rgb(36, 29, 26);
+  --accents-purple-100: rgb(237, 233, 254);
+  --accents-purple-200: rgb(221, 214, 254);
+  --accents-purple-300: rgb(196, 181, 253);
+  --accents-purple-400: rgb(167, 139, 250);
+  --accents-purple-500: rgb(139, 92, 246);
+  --accents-purple-600: rgb(124, 58, 237);
+  --accents-purple-700: rgb(109, 40, 217);
+  --accents-purple-800: rgb(91, 33, 182);
+  --accents-purple-900: rgb(76, 29, 149);
+  --accents-purple-950: rgb(46, 16, 101);
+  --accents-blue-100: rgb(219, 234, 254);
+  --accents-blue-200: rgb(191, 219, 254);
+  --accents-blue-300: rgb(147, 197, 253);
+  --accents-blue-400: rgb(96, 165, 250);
+  --accents-blue-500: rgb(59, 130, 246);
+  --accents-blue-600: rgb(37, 99, 235);
+  --accents-blue-700: rgb(29, 78, 216);
+  --accents-blue-800: rgb(30, 64, 175);
+  --accents-blue-900: rgb(16, 35, 91);
+  --accents-blue-950: rgb(9, 20, 60);
+  --accents-green-100: rgb(217, 252, 235);
+  --accents-green-200: rgb(186, 245, 216);
+  --accents-green-300: rgb(131, 235, 185);
+  --accents-green-400: rgb(101, 219, 162);
+  --accents-green-500: rgb(50, 195, 125);
+  --accents-green-600: rgb(0, 168, 87);
+  --accents-green-700: rgb(0, 143, 74);
+  --accents-green-800: rgb(0, 112, 58);
+  --accents-green-900: rgb(0, 61, 32);
+  --accents-green-950: rgb(0, 43, 22);
+
+  /* Typography » Default */
+  --family-sans: Inter;
+  --size-text-2xs: 10px;
+  --size-text-xs: 12px;
+  --size-text-sm: 14px;
+  --size-text-base: 16px;
+  --size-text-lg: 18px;
+  --size-text-xl: 20px;
+  --size-text-2xl: 24px;
+  --size-text-3xl: 30px;
+  --size-text-4xl: 36px;
+  --size-text-5xl: 48px;
+  --size-text-6xl: 60px;
+  --size-text-7xl: 72px;
+  --weight-normal: 400px;
+  --weight-medium: 500px;
+  --weight-semibold: 600px;
+  --weight-bold: 700px;
+  --tracking-xtighter: -2.5px;
+  --tracking-tighter: -1.7000000476837158px;
+  --tracking-tight: -0.800000011920929px;
+  --tracking-normal: 0px;
+  --tracking-wide: 0.4000000059604645px;
+  --tracking-wider: 0.800000011920929px;
+  --tracking-widest: 1.600000023841858px;
+  --family-brand: Berthold Akzidenz Grotesk BE;
+  --family-mono: Roboto mono;
+  --leading-3: 12px;
+  --leading-4: 16px;
+  --leading-5: 20px;
+  --leading-6: 24px;
+  --leading-7: 28px;
+  --leading-8: 32px;
+  --leading-9: 36px;
+  --leading-10: 40px;
+  --leading-leading-none: 90%;
+  --leading-leading-normal: 120%;
+  --leading-leading-tight: 100%;
+  /* Dimensions » Default */
+  --border-radius-none: 0px;
+  --border-radius-sm: 2px;
+  --border-radius-base: 4px;
+  --border-radius-md: 6px;
+  --border-radius-lg: 8px;
+  --border-radius-xl: 12px;
+  --border-radius-2xl: 16px;
+  --border-radius-3xl: 24px;
+  --border-radius-full: 9999px;
+  --spacing-0: 0px;
+  --spacing-0-0625: 1px;
+  --spacing-0-125: 2px;
+  --spacing-1: 4px;
+  --spacing-1-5: 6px;
+  --spacing-2: 8px;
+  --spacing-2-5: 10px;
+  --spacing-3: 12px;
+  --spacing-3-5: 14px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-7: 28px;
+  --spacing-8: 32px;
+  --spacing-9: 36px;
+  --spacing-10: 40px;
+  --spacing-11: 44px;
+  --spacing-12: 48px;
+  --spacing-14: 56px;
+  --spacing-16: 64px;
+  --spacing-20: 80px;
+  --spacing-24: 96px;
+  --spacing-28: 112px;
+  --spacing-32: 128px;
+  --spacing-36: 144px;
+  --spacing-40: 160px;
+  --spacing-44: 176px;
+  --spacing-48: 192px;
+  --spacing-52: 208px;
+  --spacing-56: 224px;
+  --spacing-60: 240px;
+  --spacing-64: 256px;
+  --spacing-72: 288px;
+  --spacing-80: 320px;
+  --spacing-96: 384px;
+  --border-width-0: 0px;
+  --border-width-1: 1px;
+  --border-width-2: 2px;
+  --border-width-4: 4px;
+  --border-width-8: 8px;
+  --opacity-0: 0;
+  --opacity-5: 5;
+  --opacity-10: 10;
+  --opacity-20: 20;
+  --opacity-25: 25;
+  --opacity-30: 30;
+  --opacity-40: 40;
+  --opacity-50: 50;
+  --opacity-60: 60;
+  --opacity-70: 70;
+  --opacity-75: 75;
+  --opacity-80: 80;
+  --opacity-90: 90;
+  --opacity-95: 95;
+  --opacity-100: 100;
+  --opacity-15: 15;
+  --opacity-35: 35;
+  --opacity-45: 45;
+  --opacity-55: 55;
+  --opacity-65: 65;
+  --opacity-85: 85;
+  --blur-none: 0px;
+  --screens-sm: 640px;
+  --max-width-0: 0px;
+  --max-width-xs: 320px;
+  --max-width-sm: 384px;
+  --max-width-md: 448px;
+  --max-width-lg: 512px;
+  --max-width-xl: 576px;
+  --max-width-2xl: 672px;
+  --max-width-3xl: 768px;
+  --max-width-4xl: 896px;
+  --max-width-5xl: 1024px;
+  --max-width-6xl: 1152px;
+  --max-width-7xl: 1280px;
+  --screens-md: 768px;
+  --screens-lg: 1024px;
+  --screens-xl: 1280px;
+  --screens-2xl: 1536px;
+  --blur-sm: 4px;
+  --blur-base: 8px;
+  --blur-md: 12px;
+  --blur-lg: 16px;
+  --blur-xl: 24px;
+  --blur-2xl: 40px;
+  --blur-3xl: 64px;
+  /* Effects » Style */
+  --control-states-pressed: inset 0px 3px 8px rgba(9, 10, 12, 0.5), inset 0px 0px 0px 1px rgba(9, 10, 12, 0.5);
+  --inner-box-shadow-heavy: inset 0px -1px 0px rgba(255, 255, 255, 0.2), inset 0px 1px 0px rgba(255, 255, 255, 0.3);
+  --inner-box-shadow-dense: inset 0px -1px 0px rgba(9, 10, 12, 0.1), inset 0px 1px 0px rgba(255, 255, 255, 0.3);
+  --inner-box-shadow-medium: inset 0px -2px 0px rgba(9, 10, 12, 0.05), inset 0px 2px 0px rgba(255, 255, 255, 0.5);
+  --inner-box-shadow-thin: inset 0px -2px 0px rgba(255, 255, 255, 0.3), inset 0px 2px 0px rgba(255, 255, 255, 0.7);
+  --inner-box-shadow-ultra-thin: inset 0px -2px 0px rgba(255, 255, 255, 0.3), inset 0px 2px 0px rgba(255, 255, 255, 0.6);
+  --box-shadow-sm: inset 0px -2px 0px rgba(255, 255, 255, 0.3), inset 0px 2px 0px rgba(255, 255, 255, 0.7), 0px 1px 2px rgba(0, 0, 0, 0.05);
+  --box-shadow-base: inset 0px -2px 0px rgba(255, 255, 255, 0.3), inset 0px 2px 0px rgba(255, 255, 255, 0.7), 0px 1px 2px rgba(0, 0, 0, 0.06), 0px 1px 3px rgba(0, 0, 0, 0.1);
+  --box-shadow-md: inset 0px -2px 0px rgba(255, 255, 255, 0.3), inset 0px 2px 0px rgba(255, 255, 255, 0.7), 0px 2px 4px -1px rgba(0, 0, 0, 0.06), 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --box-shadow-lg: inset 0px -2px 0px rgba(255, 255, 255, 0.3), inset 0px 2px 0px rgba(255, 255, 255, 0.7), 0px 4px 6px -2px rgba(0, 0, 0, 0.05), 0px 10px 20px -3px rgba(0, 0, 0, 0.1);
+  --box-shadow-xl: inset 0px -2px 0px rgba(255, 255, 255, 0.3), inset 0px 2px 0px rgba(255, 255, 255, 0.7), 0px 10px 18px -5px rgba(0, 0, 0, 0.04), 0px 12px 25px -8px rgba(0, 0, 0, 0.1);
+  --box-shadow-2xl: inset 0px -2px 0px rgba(255, 255, 255, 0.3), inset 0px 2px 0px rgba(255, 255, 255, 0.7), 0px 10px 10px rgba(0, 0, 0, 0.04), 0px 20px 25px rgba(0, 0, 0, 0.1);
+  --box-shadow-inner: inset 0px 2px 4px rgba(0, 0, 0, 0.06);
+  --box-shadow-none: 0px 0px 0px rgb(0, 0, 0);
+}
+
+[data-theme="dark"] {
+  /* Colors » Dark */
+    --controls-tint-bg: rgb(0, 148, 71);
+    --controls-tint-text: rgb(0, 148, 71);
+    --controls-destruction-bg: rgb(241, 46, 46);
+    --controls-destruction-bg-lighter: rgba(241, 46, 46, 0.3);
+    --controls-default-bg: rgba(255, 255, 255, 0.03);
+    --controls-hover-bg: rgba(255, 255, 255, 0.06);
+    --controls-selected-bg: rgba(255, 255, 255, 0.1);
+    --controls-selected-bg-alternate: rgba(255, 255, 255, 0.05);
+    --controls-disabled-bg: rgba(255, 255, 255, 0.08);
+    --controls-loading-bg: rgba(255, 255, 255, 0.6);
+    --controls-focus: rgb(96, 165, 250);
+    --border-global: rgba(255, 255, 255, 0.05);
+    --border-emphasis: rgba(255, 255, 255, 0.2);
+    --border-global-alternate: rgba(9, 10, 12, 0.16);
+    --border-default-control-border: rgba(255, 255, 255, 0.12);
+    --border-hover-control-border: rgba(255, 255, 255, 0.24);
+    --border-selected-control-border: rgba(255, 255, 255, 0.9);
+    --border-disabled-selected-control-border: rgba(255, 255, 255, 0.04);
+    --border-default-alternate-control-border: rgba(255, 255, 255, 0.12);
+    --border-selected-alternate-control-border: rgba(255, 255, 255, 0.2);
+    --border-disabled-alternate-selected-control-border: rgba(255, 255, 255, 0.04);
+    --fills-primary-surface: rgb(25, 27, 31);
+    --fills-secondary-surface: rgba(255, 255, 255, 0.04);
+    --fills-tertiary-surface: rgba(255, 255, 255, 0.08);
+    --labels-white: rgb(255, 255, 255);
+    --labels-alternate-white: rgba(255, 255, 255, 0.8);
+    --labels-primary: rgba(255, 255, 255, 0.9);
+    --labels-secondary: rgba(255, 255, 255, 0.6);
+    --labels-tertiary: rgba(255, 255, 255, 0.4);
+    --labels-placeholder: rgba(255, 255, 255, 0.3);
+    --labels-disabled: rgba(255, 255, 255, 0.4);
+    --grays-solid-white: rgb(255, 255, 255);
+    --grays-solid-50: rgba(255, 255, 255, 0.1);
+    --grays-solid-100: rgba(255, 255, 255, 0.12);
+    --grays-solid-200: rgba(255, 255, 255, 0.14);
+    --grays-solid-300: rgba(255, 255, 255, 0.16);
+    --grays-solid-400: rgba(255, 255, 255, 0.18);
+    --grays-solid-500: rgba(255, 255, 255, 0.2);
+    --grays-solid-600: rgba(255, 255, 255, 0.22);
+    --grays-solid-700: rgba(255, 255, 255, 0.24);
+    --grays-solid-800: rgba(255, 255, 255, 0.26);
+    --grays-solid-900: rgba(255, 255, 255, 0.28);
+    --grays-solid-950: rgba(255, 255, 255, 0.3);
+    --grays-solid-black: rgb(255, 255, 255);
+    --opaque-black-0: rgba(255, 255, 255, 0);
+    --glyphs-neutral-idle: rgba(255, 255, 255, 0.9);
+    --glyphs-neutral-disabled: rgba(255, 255, 255, 0.2);
+    --opaque-black-50: rgba(255, 255, 255, 0.01);
+    --opaque-black-100: rgba(255, 255, 255, 0.02);
+    --opaque-black-200: rgba(255, 255, 255, 0.05);
+    --opaque-black-300: rgba(255, 255, 255, 0.1);
+    --opaque-black-400: rgba(255, 255, 255, 0.2);
+    --opaque-black-500: rgba(255, 255, 255, 0.3);
+    --opaque-black-600: rgba(255, 255, 255, 0.5);
+    --opaque-black-700: rgba(255, 255, 255, 0.6);
+    --opaque-black-800: rgba(255, 255, 255, 0.7);
+    --opaque-black-900: rgba(255, 255, 255, 0.8);
+    --opaque-black-950: rgba(255, 255, 255, 0.9);
+    --opaque-white-0: rgba(255, 255, 255, 0);
+    --opaque-white-50: rgba(255, 255, 255, 0.01);
+    --opaque-white-100: rgba(255, 255, 255, 0.02);
+    --opaque-white-200: rgba(255, 255, 255, 0.05);
+    --opaque-white-300: rgba(255, 255, 255, 0.1);
+    --opaque-white-400: rgba(255, 255, 255, 0.2);
+    --opaque-white-500: rgba(255, 255, 255, 0.3);
+    --opaque-white-600: rgba(255, 255, 255, 0.5);
+    --opaque-white-700: rgba(255, 255, 255, 0.6);
+    --opaque-white-800: rgba(255, 255, 255, 0.7);
+    --opaque-white-900: rgba(255, 255, 255, 0.8);
+    --opaque-white-950: rgba(255, 255, 255, 0.9);
+    --glyphs-primary-idle: rgb(255, 255, 255);
+    --glyphs-primary-disabled: rgba(255, 255, 255, 0.3);
+    --accents-green-50: rgb(250, 255, 252);
+    --accents-blue-50: rgb(9, 20, 60);
+    --accents-purple-50: rgb(46, 16, 101);
+    --accents-yellow-50: rgb(66, 32, 6);
+    --accents-yellow-100: rgb(113, 63, 18);
+    --accents-yellow-200: rgb(133, 77, 14);
+    --accents-yellow-300: rgb(161, 98, 7);
+    --accents-yellow-400: rgb(202, 138, 4);
+    --accents-yellow-500: rgb(234, 179, 8);
+    --accents-yellow-600: rgb(250, 204, 21);
+    --accents-yellow-700: rgb(253, 224, 71);
+    --accents-yellow-800: rgb(254, 240, 138);
+    --accents-yellow-900: rgb(254, 249, 195);
+    --accents-yellow-950: rgb(254, 252, 232);
+    --accents-orange-50: rgb(67, 20, 7);
+    --accents-red-50: rgb(255, 250, 250);
+    --accents-red-100: rgb(254, 240, 240);
+    --accents-red-200: rgb(254, 215, 215);
+    --accents-red-300: rgb(253, 191, 191);
+    --accents-red-400: rgb(249, 138, 138);
+    --accents-red-500: rgb(241, 91, 91);
+    --accents-red-600: rgb(224, 62, 62);
+    --accents-red-700: rgb(208, 32, 32);
+    --accents-red-800: rgb(173, 31, 31);
+    --accents-red-900: rgb(149, 34, 34);
+    --accents-red-950: rgb(89, 13, 13);
+    --accents-orange-100: rgb(124, 45, 18);
+    --accents-orange-200: rgb(154, 52, 18);
+    --accents-orange-300: rgb(194, 65, 12);
+    --accents-orange-400: rgb(234, 88, 12);
+    --accents-orange-500: rgb(249, 115, 22);
+    --accents-orange-600: rgb(251, 146, 60);
+    --accents-orange-700: rgb(253, 186, 116);
+    --accents-orange-800: rgb(254, 215, 170);
+    --accents-orange-900: rgb(255, 237, 213);
+    --accents-orange-950: rgb(255, 247, 237);
+    --accents-teal-50: rgb(4, 47, 46);
+    --accents-teal-100: rgb(19, 78, 74);
+    --accents-teal-200: rgb(17, 94, 89);
+    --accents-teal-300: rgb(15, 118, 110);
+    --accents-teal-400: rgb(13, 148, 136);
+    --accents-teal-500: rgb(20, 184, 166);
+    --accents-teal-600: rgb(45, 212, 191);
+    --accents-teal-700: rgb(94, 234, 212);
+    --accents-teal-800: rgb(153, 246, 228);
+    --accents-teal-900: rgb(204, 251, 241);
+    --accents-teal-950: rgb(240, 253, 250);
+    --accents-indigo-50: rgb(30, 27, 75);
+    --accents-indigo-100: rgb(49, 46, 129);
+    --accents-indigo-200: rgb(55, 48, 163);
+    --accents-indigo-300: rgb(67, 56, 202);
+    --accents-indigo-400: rgb(79, 70, 229);
+    --accents-indigo-500: rgb(99, 102, 241);
+    --accents-indigo-600: rgb(129, 140, 248);
+    --accents-indigo-700: rgb(129, 140, 248);
+    --accents-indigo-800: rgb(199, 210, 254);
+    --accents-indigo-900: rgb(224, 231, 255);
+    --accents-indigo-950: rgb(238, 242, 255);
+    --accents-gold-50: rgb(26, 19, 6);
+    --accents-gold-100: rgb(59, 45, 17);
+    --accents-gold-200: rgb(89, 75, 42);
+    --accents-gold-300: rgb(143, 126, 88);
+    --accents-gold-400: rgb(173, 156, 116);
+    --accents-gold-500: rgb(198, 178, 132);
+    --accents-gold-600: rgb(234, 216, 173);
+    --accents-gold-700: rgb(236, 223, 194);
+    --accents-gold-800: rgb(243, 238, 226);
+    --accents-gold-900: rgb(252, 249, 240);
+    --accents-gold-950: rgb(251, 249, 242);
+    --accents-brown-50: rgb(36, 29, 26);
+    --accents-brown-100: rgb(54, 39, 29);
+    --accents-brown-200: rgb(107, 78, 55);
+    --accents-brown-300: rgb(148, 109, 75);
+    --accents-brown-400: rgb(181, 137, 99);
+    --accents-brown-500: rgb(208, 161, 119);
+    --accents-brown-600: rgb(232, 200, 172);
+    --accents-brown-700: rgb(239, 217, 196);
+    --accents-brown-800: rgb(244, 232, 220);
+    --accents-brown-900: rgb(252, 246, 240);
+    --accents-brown-950: rgb(252, 249, 246);
+    --accents-purple-100: rgb(76, 29, 149);
+    --accents-purple-200: rgb(91, 33, 182);
+    --accents-purple-300: rgb(109, 40, 217);
+    --accents-purple-400: rgb(124, 58, 237);
+    --accents-purple-500: rgb(139, 92, 246);
+    --accents-purple-600: rgb(167, 139, 250);
+    --accents-purple-700: rgb(196, 181, 253);
+    --accents-purple-800: rgb(221, 214, 254);
+    --accents-purple-900: rgb(237, 233, 254);
+    --accents-purple-950: rgb(245, 243, 255);
+    --accents-blue-100: rgb(16, 35, 91);
+    --accents-blue-200: rgb(30, 64, 175);
+    --accents-blue-300: rgb(29, 78, 216);
+    --accents-blue-400: rgb(37, 99, 235);
+    --accents-blue-500: rgb(59, 130, 246);
+    --accents-blue-600: rgb(96, 165, 250);
+    --accents-blue-700: rgb(147, 197, 253);
+    --accents-blue-800: rgb(191, 219, 254);
+    --accents-blue-900: rgb(219, 234, 254);
+    --accents-blue-950: rgb(239, 246, 255);
+    --accents-green-100: rgb(231, 253, 243);
+    --accents-green-200: rgb(202, 247, 225);
+    --accents-green-300: rgb(210, 249, 230);
+    --accents-green-400: rgb(123, 224, 175);
+    --accents-green-500: rgb(64, 206, 138);
+    --accents-green-600: rgb(0, 194, 100);
+    --accents-green-700: rgb(0, 168, 87);
+    --accents-green-800: rgb(0, 138, 71);
+    --accents-green-900: rgb(0, 87, 45);
+    --accents-green-950: rgb(0, 66, 34);
+}
+  /* !! TOKENS:END !! */
 </style>
 </head>
 <body>
@@ -2069,6 +2671,7 @@
   <button type="button" id="demo-link-none">No location selected</button>
   <button type="button" id="demo-link-residential">Location pre-selected</button>
   <button type="button" id="demo-link-rebill">Rebill % known</button>
+  <button type="button" id="demo-link-inline-rec">Inline recommendation</button>
 </div>
 <div id="loc-tile-tooltip-global"></div>
 <nav class="page-nav" id="page-nav" aria-label="Form sections">
@@ -2169,23 +2772,26 @@
     </div><!-- /details-group -->
 
     <!-- Location type picker -->
-    <div class="loc-picker-wrap">
+    <div class="loc-picker-section">
     <div class="loc-field-label" id="pickup-loc-label"><span>What type of location is this?</span><span class="req">*</span></div>
+    <p class="loc-picker-question-sub">This helps us identify which services will be recommended to avoid delays or adjustment charges.</p>
+    <div class="loc-picker-outer">
     <div class="loc-picker-block" id="pickup-loc-picker">
       <div class="loc-picker-summary" hidden>
         <div class="loc-picker-summary-left">
           <div class="loc-picker-summary-icon"></div>
           <div class="loc-picker-summary-text">
-            <span class="loc-picker-summary-autodetect" hidden></span>
-            <span class="loc-picker-summary-name"></span>
+            <div class="loc-picker-summary-name-row">
+              <span class="loc-picker-summary-name"></span>
+              <span class="loc-picker-summary-autodetect" hidden></span>
+            </div>
             <span class="loc-picker-summary-detail" hidden></span>
           </div>
         </div>
-        <button class="loc-picker-change" type="button"><span class="loc-picker-change-q">Is this incorrect?</span> <span class="loc-picker-change-link">Change now</span></button>
+        <button class="loc-picker-change" type="button"><span class="loc-picker-change-link">Change selection</span></button>
       </div>
       <div class="loc-picker-body-wrap">
       <div class="loc-picker-body">
-      <p class="loc-picker-question-sub">This helps us identify which services will be <strong style="color:#16a34a;font-weight:400;">recommended</strong> to avoid delays or adjustment charges.</p>
       <div class="loc-picker-grid">
         <button class="loc-option" data-type="residential" data-section="pickup" type="button">
           <div class="loc-option-icon"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M11.47 3.841a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.061l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 1 0 1.061 1.06l8.69-8.689Z"/><path d="m12 5.432 8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75V21a.75.75 0 0 1-.75.75H5.625a1.875 1.875 0 0 1-1.875-1.875v-6.198a2.29 2.29 0 0 0 .091-.086L12 5.432Z"/></svg></div>
@@ -2301,7 +2907,26 @@
       </div><!-- /loc-picker-body -->
       </div><!-- /loc-picker-body-wrap -->
     </div><!-- /loc-picker-block -->
-    </div><!-- /loc-picker-wrap -->
+    <!-- Inline recommendation card (pickup) -->
+    <div class="inline-rec-card" id="inline-rec-pickup" style="display:none;">
+      <div class="inline-rec-header">
+        <svg class="inline-rec-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.3 12C0.3 5.538 5.538 0.3 12 0.3C18.462 0.3 23.7 5.538 23.7 12C23.7 18.462 18.462 23.7 12 23.7C5.538 23.7 0.3 18.462 0.3 12ZM12 7.5C12.497 7.5 12.9 7.903 12.9 8.4V12.9C12.9 13.397 12.497 13.8 12 13.8C11.503 13.8 11.1 13.397 11.1 12.9V8.4C11.1 7.903 11.503 7.5 12 7.5ZM12 17.4C12.497 17.4 12.9 16.997 12.9 16.5C12.9 16.003 12.497 15.6 12 15.6C11.503 15.6 11.1 16.003 11.1 16.5C11.1 16.997 11.503 17.4 12 17.4Z"/></svg>
+        <p class="inline-rec-heading">How to avoid adjustment charges</p>
+      </div>
+      <hr class="inline-rec-rule">
+      <div class="inline-rec-body">
+        <div class="inline-rec-desc-wrap">
+          <p class="inline-rec-desc">The below services should be added to prevent pick-up issues and avoid adjustment charges after pick-up.</p>
+          <div class="inline-rec-tags" id="inline-rec-pickup-tags"></div>
+        </div>
+        <div class="inline-rec-actions">
+          <button class="inline-rec-apply-btn" id="inline-rec-pickup-btn" type="button"><svg class="inline-rec-plus-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span id="inline-rec-pickup-btn-text">Apply recommended services</span></button>
+          <button class="inline-rec-skip-btn" type="button">Skip for now</button>
+        </div>
+      </div>
+    </div>
+    </div><!-- /loc-picker-outer -->
+    </div><!-- /loc-picker-section -->
     <div id="loc-gated-pickup" class="loc-gated" inert>
       <div class="details-group">
 
@@ -2768,23 +3393,26 @@
     </div><!-- /details-group -->
 
     <!-- Location type picker -->
-    <div class="loc-picker-wrap">
+    <div class="loc-picker-section">
     <div class="loc-field-label" id="deliver-loc-label"><span>What type of location is this?</span><span class="req">*</span></div>
+    <p class="loc-picker-question-sub">This helps us identify which services will be recommended to avoid delays or adjustment charges.</p>
+    <div class="loc-picker-outer">
     <div class="loc-picker-block" id="deliver-loc-picker">
       <div class="loc-picker-summary" hidden>
         <div class="loc-picker-summary-left">
           <div class="loc-picker-summary-icon"></div>
           <div class="loc-picker-summary-text">
-            <span class="loc-picker-summary-autodetect" hidden></span>
-            <span class="loc-picker-summary-name"></span>
+            <div class="loc-picker-summary-name-row">
+              <span class="loc-picker-summary-name"></span>
+              <span class="loc-picker-summary-autodetect" hidden></span>
+            </div>
             <span class="loc-picker-summary-detail" hidden></span>
           </div>
         </div>
-        <button class="loc-picker-change" type="button"><span class="loc-picker-change-q">Is this incorrect?</span> <span class="loc-picker-change-link">Change now</span></button>
+        <button class="loc-picker-change" type="button"><span class="loc-picker-change-link">Change selection</span></button>
       </div>
       <div class="loc-picker-body-wrap">
       <div class="loc-picker-body">
-      <p class="loc-picker-question-sub">This helps us identify which services will be <strong style="color:#16a34a;font-weight:400;">recommended</strong> to avoid delays or adjustment charges.</p>
       <div class="loc-picker-grid">
         <button class="loc-option" data-type="residential" data-section="deliver" type="button">
           <div class="loc-option-icon"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M11.47 3.841a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.061l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 1 0 1.061 1.06l8.69-8.689Z"/><path d="m12 5.432 8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75V21a.75.75 0 0 1-.75.75H5.625a1.875 1.875 0 0 1-1.875-1.875v-6.198a2.29 2.29 0 0 0 .091-.086L12 5.432Z"/></svg></div>
@@ -2900,7 +3528,26 @@
       </div><!-- /loc-picker-body -->
       </div><!-- /loc-picker-body-wrap -->
     </div><!-- /loc-picker-block -->
-    </div><!-- /loc-picker-wrap -->
+    <!-- Inline recommendation card (delivery) -->
+    <div class="inline-rec-card" id="inline-rec-deliver" style="display:none;">
+      <div class="inline-rec-header">
+        <svg class="inline-rec-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.3 12C0.3 5.538 5.538 0.3 12 0.3C18.462 0.3 23.7 5.538 23.7 12C23.7 18.462 18.462 23.7 12 23.7C5.538 23.7 0.3 18.462 0.3 12ZM12 7.5C12.497 7.5 12.9 7.903 12.9 8.4V12.9C12.9 13.397 12.497 13.8 12 13.8C11.503 13.8 11.1 13.397 11.1 12.9V8.4C11.1 7.903 11.503 7.5 12 7.5ZM12 17.4C12.497 17.4 12.9 16.997 12.9 16.5C12.9 16.003 12.497 15.6 12 15.6C11.503 15.6 11.1 16.003 11.1 16.5C11.1 16.997 11.503 17.4 12 17.4Z"/></svg>
+        <p class="inline-rec-heading">How to avoid adjustment charges</p>
+      </div>
+      <hr class="inline-rec-rule">
+      <div class="inline-rec-body">
+        <div class="inline-rec-desc-wrap">
+          <p class="inline-rec-desc">The below services should be added to prevent delivery issues and avoid adjustment charges after delivery.</p>
+          <div class="inline-rec-tags" id="inline-rec-deliver-tags"></div>
+        </div>
+        <div class="inline-rec-actions">
+          <button class="inline-rec-apply-btn" id="inline-rec-deliver-btn" type="button"><svg class="inline-rec-plus-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span id="inline-rec-deliver-btn-text">Apply recommended services</span></button>
+          <button class="inline-rec-skip-btn" type="button">Skip for now</button>
+        </div>
+      </div>
+    </div>
+    </div><!-- /loc-picker-outer -->
+    </div><!-- /loc-picker-section -->
     <div id="loc-gated-deliver" class="loc-gated" inert>
       <div class="details-group">
 
@@ -3144,11 +3791,7 @@
             </div>
           </div>
 
-          <!-- Terms link -->
-          <a href="https://help.mothership.com/en/articles/8844292-amazon-fba-appointments-terms-of-service" target="_blank" rel="noopener" class="fba-terms-link">
-            View Fulfillment by Amazon (FBA) terms
-            <svg viewBox="0 0 10 10" fill="none" width="9" height="9"><path d="M3.5 2L6.5 5L3.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
+          <!-- Terms link removed -->
 
         </div>
       </div>
@@ -4186,6 +4829,7 @@
 
   let showDesc = false;
   let REBILL_MODE = false;
+  let INLINE_REC_MODE = false;
   let REBILL_SOURCE = null; // set by applyResidential in rebill demo
 
   // Mock rebill % data keyed by service id (shown when REBILL_MODE is true)
@@ -4276,13 +4920,13 @@
       const labels = deselected.map(i => i.label);
       const serviceList = labels.length === 1 ? labels[0] : labels.slice(0, -1).join(', ') + ' and ' + labels[labels.length - 1];
       const them = labels.length === 1 ? 'it' : 'them';
-      avoidTag.style.display = '';
+      if (!INLINE_REC_MODE) avoidTag.style.display = '';
       alert.style.display = '';
       alert.classList.add('acc-panel-alert--warn');
       title.textContent = 'Are you sure?';
       body.textContent = `Carriers typically charge for ${serviceList} at this type of location. If you skip ${them} now, the carrier may add the charge after pick-up as a re-bill.`;
     } else if (warnItems.length > 0) {
-      avoidTag.style.display = '';
+      if (!INLINE_REC_MODE) avoidTag.style.display = '';
       alert.style.display = '';
       alert.classList.add('acc-panel-alert--warn');
       title.textContent = 'Add to avoid adjustment charges';
@@ -4412,16 +5056,16 @@
     if (summaryDetail && type !== 'skip-rec') {
       const dockAns = dockAnswers[section];
       if (dockAns !== null) {
-        summaryDetail.textContent = dockAns === 'yes' ? 'Has loading dock' : dockAns === 'no' ? 'No loading dock' : 'Loading dock unknown';
+        summaryDetail.textContent = dockAns === 'yes' ? 'Has loading dock or forklift' : dockAns === 'no' ? 'No loading dock or forklift' : 'Loading dock unknown';
         summaryDetail.hidden = false;
       } else {
         summaryDetail.hidden = true;
       }
     }
-    // In auto-detect demos, show auto-detection source above the location name row
+    // In auto-detect demos, show auto-detection source inline after the location name
     if (REBILL_SOURCE) {
       if (summaryAutodetect) {
-        summaryAutodetect.innerHTML = `Auto-detected from <span class="loc-summary-source">${REBILL_SOURCE}</span>`;
+        summaryAutodetect.innerHTML = `— Auto-detected from <span class="loc-summary-source">${REBILL_SOURCE}</span>`;
         summaryAutodetect.hidden = false;
       }
       const autoTile = picker.querySelector(`.loc-option[data-type="${type}"] .loc-option-auto`);
@@ -4445,6 +5089,9 @@
     if (!picker) return;
     picker.querySelector('.loc-picker-body-wrap').classList.remove('collapsed');
     picker.querySelector('.loc-picker-summary').hidden = true;
+    // Hide inline recommendation when picker opens
+    const recCard = document.getElementById(`inline-rec-${section}`);
+    if (recCard) recCard.style.display = 'none';
     // Reset external field label
     const extLabel = document.getElementById(`${section}-loc-label`);
     if (extLabel) extLabel.innerHTML = `<span>${isZH ? '这是什么类型的地点？' : 'What type of location is this?'}</span><span class="req">*</span>`;
@@ -4522,7 +5169,7 @@
         if (selected.dataset.type === 'commercial') {
           const recs = btn.dataset.dock === 'yes' ? [] : ['liftgate'];
           ACC_ITEMS.forEach(item => { item.warn = recs.includes(item.id); });
-          document.getElementById('avoid-tag').style.display = recs.length > 0 ? '' : 'none';
+          if (!INLINE_REC_MODE) document.getElementById('avoid-tag').style.display = recs.length > 0 ? '' : 'none';
           renderTooltipTags('tooltip-tags', recs, ACC_ITEMS);
           updateTooltipState('pickup', true, 'commercial');
           renderList();
@@ -4552,7 +5199,7 @@
         if (selected.dataset.type === 'commercial') {
           const recs = btn.dataset.dock === 'yes' ? [] : ['d-liftgate'];
           DELIVER_ACC_ITEMS.forEach(item => { item.warn = recs.includes(item.id); });
-          document.getElementById('d-avoid-tag').style.display = recs.length > 0 ? '' : 'none';
+          if (!INLINE_REC_MODE) document.getElementById('d-avoid-tag').style.display = recs.length > 0 ? '' : 'none';
           renderTooltipTags('d-tooltip-tags', recs, DELIVER_ACC_ITEMS);
           updateTooltipState('deliver', true, 'commercial');
           dRenderList();
@@ -4584,7 +5231,7 @@
       }
       const recs = LOC_REC_PICKUP[opt.dataset.type] || [];
       ACC_ITEMS.forEach(item => { item.warn = recs.includes(item.id); });
-      document.getElementById('avoid-tag').style.display = recs.length > 0 ? '' : 'none';
+      if (!INLINE_REC_MODE) document.getElementById('avoid-tag').style.display = recs.length > 0 ? '' : 'none';
       const pa = document.getElementById('acc-panel-alert');
       if (opt.dataset.type === 'skip-rec') {
         pa.style.display = '';
@@ -4636,7 +5283,7 @@
       }
       const recs = LOC_REC_DELIVER[opt.dataset.type] || [];
       DELIVER_ACC_ITEMS.forEach(item => { item.warn = recs.includes(item.id); });
-      document.getElementById('d-avoid-tag').style.display = recs.length > 0 ? '' : 'none';
+      if (!INLINE_REC_MODE) document.getElementById('d-avoid-tag').style.display = recs.length > 0 ? '' : 'none';
       const dpa = document.getElementById('d-acc-panel-alert');
       if (opt.dataset.type === 'skip-rec') {
         dpa.style.display = '';
@@ -5143,13 +5790,13 @@
       const labels = deselected.map(i => i.label);
       const serviceList = labels.length === 1 ? labels[0] : labels.slice(0, -1).join(', ') + ' and ' + labels[labels.length - 1];
       const them = labels.length === 1 ? 'it' : 'them';
-      avoidTag.style.display = '';
+      if (!INLINE_REC_MODE) avoidTag.style.display = '';
       alert.style.display = '';
       alert.classList.add('acc-panel-alert--warn');
       title.textContent = 'Are you sure?';
       body.textContent = `Carriers typically charge for ${serviceList} at this type of location. If you skip ${them} now, the carrier may add the charge after delivery as a re-bill.`;
     } else if (warnItems.length > 0) {
-      avoidTag.style.display = '';
+      if (!INLINE_REC_MODE) avoidTag.style.display = '';
       alert.style.display = '';
       alert.classList.add('acc-panel-alert--warn');
       title.textContent = 'Add to avoid adjustment charges';
@@ -6067,8 +6714,8 @@
   function setPickerVisible(pickerId, gatedId, visible) {
     const picker = document.getElementById(pickerId);
     if (!picker) return;
-    // Hide/show the entire wrap (label + picker block together)
-    const wrap = picker.closest('.loc-picker-wrap');
+    // Hide/show the entire section (label + outer container)
+    const wrap = picker.closest('.loc-picker-section') || picker.closest('.loc-picker-outer');
     if (wrap) wrap.style.display = visible ? '' : 'none';
     else picker.style.display = visible ? '' : 'none';
     if (!visible) {
@@ -6516,6 +7163,21 @@
     const picker = document.getElementById(`${section}-loc-picker`);
     if (!picker) return;
     picker.querySelector('.loc-picker-change').addEventListener('click', () => {
+      // Clear selection so user must pick from scratch
+      picker.querySelectorAll('.loc-option').forEach(o => {
+        o.classList.remove('selected', 'pulsing');
+        const al = o.querySelector('.loc-option-auto');
+        if (al) al.hidden = true;
+      });
+      dockAnswers[section] = null;
+      // Re-lock gated fields until a new selection is made
+      const gated = document.getElementById(`loc-gated-${section}`);
+      if (gated) { gated.classList.add('loc-gated'); gated.setAttribute('inert', ''); }
+      // Clear recommended services for this section
+      const items = section === 'pickup' ? ACC_ITEMS : DELIVER_ACC_ITEMS;
+      items.forEach(item => { item.warn = false; item.selected = false; });
+      if (section === 'pickup') { renderList(); updatePickupWarning(); }
+      else { dRenderList(); updateDeliverWarning(); }
       expandLocPicker(section);
     });
     picker.addEventListener('click', (e) => {
@@ -6781,12 +7443,13 @@
 
   // ── Demo bar ──
   (function() {
-    const linkNone   = document.getElementById('demo-link-none');
-    const linkRes    = document.getElementById('demo-link-residential');
-    const linkRebill = document.getElementById('demo-link-rebill');
+    const linkNone      = document.getElementById('demo-link-none');
+    const linkRes       = document.getElementById('demo-link-residential');
+    const linkRebill    = document.getElementById('demo-link-rebill');
+    const linkInlineRec = document.getElementById('demo-link-inline-rec');
 
     function setActive(btn) {
-      [linkNone, linkRes, linkRebill].forEach(b => b.classList.remove('active'));
+      [linkNone, linkRes, linkRebill, linkInlineRec].forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
     }
 
@@ -6800,6 +7463,7 @@
           picker.querySelectorAll('.loc-option').forEach(o => o.classList.remove('selected'));
           opt.classList.add('selected');
         }
+        dockAnswers[section] = 'no';
         collapseLocPicker(section, 'residential', true);
         hideDockQuestion(section);
         const gated = document.getElementById(`loc-gated-${section}`);
@@ -6809,14 +7473,14 @@
       });
       const pickupRecs = LOC_REC_PICKUP['residential'] || [];
       ACC_ITEMS.forEach(item => { item.warn = pickupRecs.includes(item.id); });
-      document.getElementById('avoid-tag').style.display = pickupRecs.length > 0 ? '' : 'none';
+      if (!INLINE_REC_MODE) document.getElementById('avoid-tag').style.display = pickupRecs.length > 0 ? '' : 'none';
       renderTooltipTags('tooltip-tags', pickupRecs, ACC_ITEMS);
       updateTooltipState('pickup', true, 'residential');
       renderList();
       updatePickupWarning();
       const deliverRecs = LOC_REC_DELIVER['residential'] || [];
       DELIVER_ACC_ITEMS.forEach(item => { item.warn = deliverRecs.includes(item.id); });
-      document.getElementById('d-avoid-tag').style.display = deliverRecs.length > 0 ? '' : 'none';
+      if (!INLINE_REC_MODE) document.getElementById('d-avoid-tag').style.display = deliverRecs.length > 0 ? '' : 'none';
       renderTooltipTags('d-tooltip-tags', deliverRecs, DELIVER_ACC_ITEMS);
       updateTooltipState('deliver', true, 'residential');
       dRenderList();
@@ -6854,14 +7518,14 @@
       // dock=no + commercial → liftgate recommended
       const pickupRecs = ['liftgate'];
       ACC_ITEMS.forEach(item => { item.warn = pickupRecs.includes(item.id); });
-      document.getElementById('avoid-tag').style.display = '';
+      if (!INLINE_REC_MODE) document.getElementById('avoid-tag').style.display = '';
       renderTooltipTags('tooltip-tags', pickupRecs, ACC_ITEMS);
       updateTooltipState('pickup', true, 'commercial');
       renderList();
       updatePickupWarning();
       const deliverRecs = ['d-liftgate'];
       DELIVER_ACC_ITEMS.forEach(item => { item.warn = deliverRecs.includes(item.id); });
-      document.getElementById('d-avoid-tag').style.display = '';
+      if (!INLINE_REC_MODE) document.getElementById('d-avoid-tag').style.display = '';
       renderTooltipTags('d-tooltip-tags', deliverRecs, DELIVER_ACC_ITEMS);
       updateTooltipState('deliver', true, 'commercial');
       dRenderList();
@@ -6870,7 +7534,10 @@
 
     function applyNone() {
       REBILL_MODE = false;
+      INLINE_REC_MODE = false;
       REBILL_SOURCE = null;
+      document.getElementById('inline-rec-pickup').style.display = 'none';
+      document.getElementById('inline-rec-deliver').style.display = 'none';
       ['pickup', 'deliver'].forEach(section => {
         const picker = document.getElementById(`${section}-loc-picker`);
         if (!picker) return;
@@ -6908,9 +7575,80 @@
       updateDeliverWarning();
     }
 
+    function renderInlineRecTags(containerId, btnTextId, items) {
+      const el = document.getElementById(containerId);
+      if (!el) return;
+      const warned = items.filter(i => i.warn);
+      el.innerHTML = warned.map(i => `<span class="inline-rec-tag">${i.label}</span>`).join('');
+      const btnText = document.getElementById(btnTextId);
+      if (btnText) {
+        const n = warned.length;
+        btnText.textContent = n > 0 ? `Apply ${n} recommended service${n === 1 ? '' : 's'}` : 'Apply recommended services';
+      }
+    }
+
+    function applyInlineRec() {
+      INLINE_REC_MODE = true;
+      applyCommercial('address');
+      // Hide tooltip-based warning tags — recommendation is shown inline instead
+      document.getElementById('avoid-tag').style.display = 'none';
+      document.getElementById('d-avoid-tag').style.display = 'none';
+      // Populate tags then show cards
+      renderInlineRecTags('inline-rec-pickup-tags', 'inline-rec-pickup-btn-text', ACC_ITEMS);
+      renderInlineRecTags('inline-rec-deliver-tags', 'inline-rec-deliver-btn-text', DELIVER_ACC_ITEMS);
+      // Re-lock gated fields — applyCommercial unlocked them; keep them locked until user resolves each card
+      ['pickup', 'deliver'].forEach(section => {
+        const gated = document.getElementById(`loc-gated-${section}`);
+        if (gated) { gated.classList.add('loc-gated'); gated.setAttribute('inert', ''); }
+      });
+      const pickupCard = document.getElementById('inline-rec-pickup');
+      const deliverCard = document.getElementById('inline-rec-deliver');
+      pickupCard.style.display = '';
+      deliverCard.style.display = '';
+      pickupCard.classList.remove('pulsing');
+      deliverCard.classList.remove('pulsing');
+      setTimeout(() => { pickupCard.classList.add('pulsing'); deliverCard.classList.add('pulsing'); }, 350);
+    }
+
+    function unlockGated(section) {
+      const gated = document.getElementById(`loc-gated-${section}`);
+      if (gated) { gated.classList.remove('loc-gated'); gated.removeAttribute('inert'); }
+    }
+
+    // Apply recommended services buttons
+    document.getElementById('inline-rec-pickup-btn').addEventListener('click', () => {
+      ACC_ITEMS.forEach(i => { if (i.warn) i.selected = true; });
+      renderList(); updateBtnLabel(); updatePickupWarning();
+      const card = document.getElementById('inline-rec-pickup');
+      card.classList.remove('pulsing');
+      card.style.display = 'none';
+      unlockGated('pickup');
+    });
+    document.getElementById('inline-rec-deliver-btn').addEventListener('click', () => {
+      DELIVER_ACC_ITEMS.forEach(i => { if (i.warn) i.selected = true; });
+      dRenderList(); dUpdateBtnLabel(); updateDeliverWarning();
+      const card = document.getElementById('inline-rec-deliver');
+      card.classList.remove('pulsing');
+      card.style.display = 'none';
+      unlockGated('deliver');
+    });
+    document.getElementById('inline-rec-pickup').querySelector('.inline-rec-skip-btn').addEventListener('click', () => {
+      const card = document.getElementById('inline-rec-pickup');
+      card.classList.remove('pulsing');
+      card.style.display = 'none';
+      unlockGated('pickup');
+    });
+    document.getElementById('inline-rec-deliver').querySelector('.inline-rec-skip-btn').addEventListener('click', () => {
+      const card = document.getElementById('inline-rec-deliver');
+      card.classList.remove('pulsing');
+      card.style.display = 'none';
+      unlockGated('deliver');
+    });
+
     linkNone.addEventListener('click', () => { applyNone(); setActive(linkNone); });
     linkRes.addEventListener('click', () => { applyNone(); applyResidential('your address book'); setActive(linkRes); });
     linkRebill.addEventListener('click', () => { applyNone(); REBILL_MODE = true; applyCommercial('the address'); setActive(linkRebill); });
+    linkInlineRec.addEventListener('click', () => { applyNone(); applyInlineRec(); setActive(linkInlineRec); });
 
     // Set initial state from URL param if present, otherwise default to none
     const param = new URLSearchParams(location.search).get('loc');
