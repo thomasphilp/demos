@@ -2415,6 +2415,13 @@
     flex-shrink: 0;
   }
 
+  /* ── Cargo gated fields (disabled until description is filled) ── */
+  .cargo-gated-fields { transition: opacity 0.2s; }
+  .commodity-section.desc-empty .cargo-gated-fields { opacity: 0.4; pointer-events: none; }
+
+  /* ── Find NMFC button inside textarea control ── */
+  .find-nmfc-btn { flex-shrink: 0; white-space: nowrap; }
+
   /* ── Commodity section ── */
   .commodity-section {
     background: white;
@@ -5288,7 +5295,7 @@
       <div class="commodity-section" data-commodity="1">
 
         <div class="commodity-header">
-          <span class="commodity-header-title">Commodity 1</span>
+          <span class="commodity-header-title">Cargo item 1</span>
           <button class="link-green" type="button">Clear</button>
         </div>
 
@@ -5306,6 +5313,7 @@
                 Not NMFC compliant
               </span>
               <button class="clear-btn" id="cargo-desc-clear-btn" type="button" aria-label="Clear"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.805166 0.805166C1.30727 0.303063 2.12134 0.303063 2.62344 0.805166L12 10.1817L21.3766 0.805167C21.8787 0.303065 22.6928 0.303065 23.1949 0.805167C23.697 1.30727 23.697 2.12134 23.1949 2.62344L13.8183 12L23.1949 21.3766C23.697 21.8787 23.697 22.6928 23.1949 23.1949C22.6928 23.697 21.8787 23.697 21.3766 23.1949L12 13.8183L2.62344 23.1949C2.12134 23.697 1.30727 23.697 0.805166 23.1949C0.303063 22.6928 0.303063 21.8787 0.805166 21.3766L10.1817 12L0.805166 2.62344C0.303063 2.12134 0.303063 1.30727 0.805166 0.805166Z"/></svg></button>
+              <button class="dark-btn find-nmfc-btn" type="button">+ Find NMFC code</button>
             </div>
             <div class="nmfc-suggest-panel" id="nmfc-suggest-panel">
               <div class="nmfc-suggest-header">
@@ -5361,12 +5369,12 @@
         </div>
 
         <!-- NMFC + Class -->
+        <div class="cargo-gated-fields">
         <div style="display:flex; gap:16px; align-items:flex-start;">
           <!-- NMFC -->
           <div class="field" style="flex:1;">
             <div class="field-label">
-              <span>NMFC</span>
-              <span class="opt">(optional)</span>
+              <span>NMFC — required by all carriers</span><span class="req"> *</span>
             </div>
             <div class="nmfc-input-wrap">
               <div class="input-control">
@@ -5538,8 +5546,7 @@
           <div class="field" style="flex: 1;">
             <div class="field-label" style="justify-content: space-between;">
               <div style="display:flex; align-items:center; gap:4px;">
-                <span>Class</span>
-                <span class="opt">(optional)</span>
+                <span>Class (auto-calculated or manual selection)</span>
               </div>
               <button class="link-green" id="fc-clear-btn" type="button" style="display:none;">Clear</button>
             </div>
@@ -5744,7 +5751,7 @@
         <!-- Piece count -->
         <div class="field">
           <div class="field-label">
-            <span>Piece count</span>
+            <span>Piece count per pallets</span>
             <span class="opt">(optional)</span>
           </div>
           <div class="reg-card">
@@ -5795,10 +5802,11 @@
             <button class="pc-add-link" type="button">+ Add another</button>
             <div class="field-feedback">
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <span>This informs the carrier what type and quantity of items are on your <span class="hu-type-label">pallets</span> and is helpful in the event of a claim.</span>
+              <span>Highly recommended in the event of a cargo claim</span>
             </div>
           </div>
         </div>
+        </div><!-- /cargo-gated-fields -->
 
         <!-- Agreement -->
         <div class="agreement-outer-card">
@@ -7148,6 +7156,16 @@
     }
   });
 
+  // ── Cargo description gating (enables NMFC/class/regulated/piece count) ──
+  (function() {
+    const section = cargoDescInput.closest('.commodity-section');
+    function updateGated() {
+      section.classList.toggle('desc-empty', !cargoDescInput.value.trim());
+    }
+    updateGated();
+    cargoDescInput.addEventListener('input', updateGated);
+  })();
+
   // ── NMFC field popup item selection ──
   nmfcFieldPopup.addEventListener('mousedown', (e) => {
     const item = e.target.closest('.nmfc-list-item');
@@ -7795,7 +7813,7 @@
     <div class="list-sep"></div>
     <div class="commodity-section" data-commodity="${n}">
       <div class="commodity-header">
-        <span class="commodity-header-title">Commodity ${n}</span>
+        <span class="commodity-header-title">Cargo item ${n}</span>
         <button class="link-destructive commodity-remove-btn" type="button">Remove</button>
       </div>
 
@@ -7804,12 +7822,14 @@
         <div class="textarea-control">
           ${magnifySVG}
           <textarea rows="1" placeholder="Describe your cargo"></textarea>
+          <button class="dark-btn find-nmfc-btn" type="button">+ Find NMFC code</button>
         </div>
       </div>
 
+      <div class="cargo-gated-fields">
       <div style="display:flex; gap:16px;">
         <div class="field" style="flex:1; min-width:0;">
-          <div class="field-label"><span>NMFC code</span></div>
+          <div class="field-label"><span>NMFC — required by all carriers</span><span class="req"> *</span></div>
           <div class="nmfc-input-wrap">
             <div class="input-control">
               ${magnifySVG}
@@ -7821,7 +7841,7 @@
         </div>
         <div class="field" style="flex: 1;">
           <div class="field-label" style="justify-content:space-between;">
-            <div style="display:flex;align-items:center;gap:4px;"><span>Class</span><span class="opt">(optional)</span></div>
+            <div style="display:flex;align-items:center;gap:4px;"><span>Class (auto-calculated or manual selection)</span></div>
             <button class="link-green commodity-fc-clear-${n}" type="button" style="display:none;">Clear</button>
           </div>
           <div class="dropdown-field commodity-fc-field-${n}">
@@ -7935,7 +7955,7 @@
       </div>
 
       <div class="field">
-        <div class="field-label"><span>Piece count</span><span class="opt">(optional)</span></div>
+        <div class="field-label"><span>Piece count per pallets</span><span class="opt">(optional)</span></div>
         <div class="reg-card">
           <div id="pc-rows-c${n}" class="pc-rows">
             <div class="piece-count-row">
@@ -7955,15 +7975,26 @@
           <button class="pc-add-link pc-add-link-c${n}" type="button">+ Add another</button>
           <div class="field-feedback">
             ${infoSVG}
-            <span>This informs the carrier what type and quantity of items are on your <span class="hu-type-label">pallets</span> and is helpful in the event of a claim.</span>
+            <span>Highly recommended in the event of a cargo claim</span>
           </div>
         </div>
       </div>
+      </div><!-- /cargo-gated-fields -->
 
     </div>`;
   }
 
   function initCommoditySection(section, n) {
+    // Cargo description gating
+    const descTextarea = section.querySelector('textarea');
+    if (descTextarea) {
+      function updateGated() {
+        section.classList.toggle('desc-empty', !descTextarea.value.trim());
+      }
+      updateGated();
+      descTextarea.addEventListener('input', updateGated);
+    }
+
     // Class dropdown
     const fcBtn = section.querySelector(`.commodity-fc-btn-${n}`);
     const fcPanel = section.querySelector(`.commodity-fc-panel-${n}`);
@@ -8093,7 +8124,7 @@
   function renumberCommodities() {
     document.querySelectorAll('#commodity-container .commodity-section').forEach((s, i) => {
       const title = s.querySelector('.commodity-header-title');
-      if (title) title.textContent = `Commodity ${i + 1}`;
+      if (title) title.textContent = `Cargo item ${i + 1}`;
       s.dataset.commodity = i + 1;
     });
     commodityCount = document.querySelectorAll('#commodity-container .commodity-section').length;
