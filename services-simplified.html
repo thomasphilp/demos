@@ -9698,13 +9698,6 @@
       if (_dNew2) _dNew2.hidden = false;
       updateSvcTopbarLabel();
       updateDSvcTopbarLabel();
-      // Show loc type picker in combo mode (not btn-mode)
-      const locPicker2 = document.getElementById('demo3-loc-picker');
-      if (locPicker2) {
-        locPicker2.hidden = false;
-        resetDemo3Picker();
-        locPicker2.classList.remove('loc-type-picker--btn-mode');
-      }
       setActive(linkRes2);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
