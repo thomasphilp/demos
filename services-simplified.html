@@ -1219,6 +1219,7 @@
     user-select: none;
   }
   .svc-pill:hover { background: rgba(9,10,12,0.06); border-color: rgba(9,10,12,0.24); }
+  .svc-pill:focus-visible { outline: none; box-shadow: 0 0 0 1px white, 0 0 0 3px var(--color-focus), 0 0 12px 0 #93c5fd; }
   .svc-pill.selected { background: var(--controls-selected-bg); border: 2px solid rgba(9,10,12,0.9); padding: 7px; }
   .svc-pill-inner { display: flex; align-items: center; gap: 8px; }
   .svc-pill-checkbox {
@@ -1519,6 +1520,7 @@
   .loc-type-input-row:focus-within,
   .loc-type-input-row--open {
     border: 2px solid rgba(9,10,12,0.9); background: #fff;
+    box-shadow: 0 0 0 1px white, 0 0 0 3px var(--color-focus), 0 0 12px 0 #93c5fd;
   }
   .loc-type-search-icon { width: 16px; height: 16px; flex-shrink: 0; color: rgba(9,10,12,0.38); }
   .loc-type-input {
@@ -2210,6 +2212,7 @@
   .textarea-control.active {
     background: var(--color-selected-bg);
     border: var(--border-2) solid var(--color-selected-border);
+    box-shadow: 0 0 0 1px white, 0 0 0 3px var(--color-focus), 0 0 12px 0 #93c5fd;
   }
   .textarea-control textarea {
     flex: 1; border: none; background: transparent; outline: none;
@@ -5542,15 +5545,6 @@
             <div class="dropdown-field" id="fc-dropdown-field">
               <button class="dropdown-btn" id="fc-dropdown-btn" type="button" aria-expanded="false">
                 <div class="dropdown-btn-left">
-                  <span class="btn-icon">
-                    <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                      <path fill-rule="nonzero" d="M 16.875 4.262 L 20 3 L 12 0 L 8.883 1.1 L 16.875 4.262 Z"/>
-                      <path fill-rule="nonzero" d="M 4.125 3 L 12 6.188 L 15.375 4.918 L 7.395 1.701 L 4.125 3 Z"/>
-                      <path fill-rule="nonzero" d="M 3.75 4.262 L 11.313 7.395 L 11.313 16.457 L 3.75 12.975 L 3.75 4.262 Z"/>
-                      <path fill-rule="nonzero" d="M 12.688 7.395 L 20.25 4.262 L 20.25 12.975 L 12.688 16.457 L 12.688 7.395 Z"/>
-                      <path fill-rule="nonzero" d="M 21.773 13.875 L 24 15.004 L 24 18.654 L 22.182 19.442 L 20.344 18.654 L 14.025 21.75 L 14.025 23.1 L 12 24 L 9.975 23.1 L 9.975 21.75 L 3.375 18.654 L 1.818 19.442 L 0 18.654 L 0 15 L 2.219 13.875 L 11.418 18.125 C 11.79 18.282 12.21 18.282 12.582 18.125 L 21.773 13.875 Z"/>
-                    </svg>
-                  </span>
                   <div class="fc-dropdown-left">
                     <span class="dropdown-btn-text" id="fc-btn-label">Select class</span>
                     <span class="fc-btn-sub" id="fc-btn-sub"></span>
@@ -5753,17 +5747,13 @@
             <span class="opt">(optional)</span>
           </div>
           <div class="reg-card">
-            <div class="field-feedback">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <span>This informs the carrier what type and quantity of items are on your <span class="hu-type-label">pallets</span> and is helpful in the event of a claim.</span>
-            </div>
             <div id="pc-rows" class="pc-rows">
               <div class="piece-count-row">
                 <div class="field" style="flex:1; min-width:0;">
                   <div class="dropdown-field pc-type-dropdown-field">
                     <button class="dropdown-btn pc-type-btn" type="button" aria-expanded="false">
                       <div class="dropdown-btn-left">
-                        <span class="btn-icon"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M11.373 10.2021V24L8.5 22.6816V8.88379L11.373 10.2021ZM7 8.19531V21.9932L4.5 20.8457V7.04883L7 8.19531ZM3 6.36035V20.1289C1.73047 19.3573 0.750051 17.7143 0.75 16.2656V5.3291L3 6.36035Z"/><path d="M14.8036 7.8851L11.9579 9.19174L1.33484 4.31771L4.07703 3.05893L14.8036 7.8851ZM18.9843 5.96713L16.16 7.26303L5.4325 2.43686L8.25769 1.14096L18.9843 5.96713ZM9.62781 0.524746C11.0723 -0.0192295 13.2092 0.0181803 14.5585 0.63705L22.5809 4.31771L20.3417 5.34408L9.62781 0.524746Z"/><path d="M23.25 16.2661C23.2499 17.8462 22.0856 19.661 20.6494 20.3198L12.627 24.0005V20.8452L23.25 15.481V16.2661ZM23.25 13.8013L12.627 19.1646V15.8403L23.25 10.4761V13.8013ZM23.25 8.79541L12.627 14.1597V10.2026L23.25 5.32959V8.79541Z"/></svg></span>
+                        
                         <span class="dropdown-btn-text pc-type-label">Select piece count type</span>
                       </div>
                       <div class="dropdown-caret">
@@ -5802,6 +5792,10 @@
               </div>
             </div>
             <button class="pc-add-link" type="button">+ Add another</button>
+            <div class="field-feedback">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" overflow="visible"><path d="M11.1 11.1L11.1498 11.0751C11.8375 10.7312 12.6119 11.3524 12.4254 12.0984L11.5746 15.5016C11.3881 16.2476 12.1625 16.8688 12.8502 16.5249L12.9 16.5M22.8 12C22.8 17.9647 17.9647 22.8 12 22.8C6.03532 22.8 1.2 17.9647 1.2 12C1.2 6.03532 6.03532 1.2 12 1.2C17.9647 1.2 22.8 6.03532 22.8 12ZM12 7.5H12.009V7.509H12V7.5Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>This informs the carrier what type and quantity of items are on your <span class="hu-type-label">pallets</span> and is helpful in the event of a claim.</span>
+            </div>
           </div>
         </div>
 
@@ -7832,7 +7826,6 @@
           <div class="dropdown-field commodity-fc-field-${n}">
             <button class="dropdown-btn commodity-fc-btn commodity-fc-btn-${n}" type="button" aria-expanded="false">
               <div class="dropdown-btn-left">
-                <span class="btn-icon">${fcIconSVG}</span>
                 <div class="fc-dropdown-left">
                   <span class="dropdown-btn-text fc-btn-label-${n}">Select class</span>
                   <span class="fc-btn-sub fc-btn-sub-${n}"></span>
@@ -7943,16 +7936,12 @@
       <div class="field">
         <div class="field-label"><span>Piece count</span><span class="opt">(optional)</span></div>
         <div class="reg-card">
-          <div class="field-feedback">
-            ${infoSVG}
-            <span>This informs the carrier what type and quantity of items are on your <span class="hu-type-label">pallets</span> and is helpful in the event of a claim.</span>
-          </div>
           <div id="pc-rows-c${n}" class="pc-rows">
             <div class="piece-count-row">
               <div class="field" style="flex:1;min-width:0;">
                 <div class="dropdown-field pc-type-dropdown-field">
                   <button class="dropdown-btn pc-type-btn" type="button" aria-expanded="false">
-                    <div class="dropdown-btn-left"><span class="btn-icon"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M11.373 10.2021V24L8.5 22.6816V8.88379L11.373 10.2021ZM7 8.19531V21.9932L4.5 20.8457V7.04883L7 8.19531ZM3 6.36035V20.1289C1.73047 19.3573 0.750051 17.7143 0.75 16.2656V5.3291L3 6.36035Z"/><path d="M14.8036 7.8851L11.9579 9.19174L1.33484 4.31771L4.07703 3.05893L14.8036 7.8851ZM18.9843 5.96713L16.16 7.26303L5.4325 2.43686L8.25769 1.14096L18.9843 5.96713ZM9.62781 0.524746C11.0723 -0.0192295 13.2092 0.0181803 14.5585 0.63705L22.5809 4.31771L20.3417 5.34408L9.62781 0.524746Z"/><path d="M23.25 16.2661C23.2499 17.8462 22.0856 19.661 20.6494 20.3198L12.627 24.0005V20.8452L23.25 15.481V16.2661ZM23.25 13.8013L12.627 19.1646V15.8403L23.25 10.4761V13.8013ZM23.25 8.79541L12.627 14.1597V10.2026L23.25 5.32959V8.79541Z"/></svg></span><span class="dropdown-btn-text pc-type-label">Select piece count type</span></div>
+                    <div class="dropdown-btn-left"><span class="dropdown-btn-text pc-type-label">Select piece count type</span></div>
                     <div class="dropdown-caret">${caretSVG}</div>
                   </button>
                   <div class="acc-panel pc-type-panel" style="width:100%;"><div>${pcOpts}</div></div>
@@ -7963,6 +7952,10 @@
             </div>
           </div>
           <button class="pc-add-link pc-add-link-c${n}" type="button">+ Add another</button>
+          <div class="field-feedback">
+            ${infoSVG}
+            <span>This informs the carrier what type and quantity of items are on your <span class="hu-type-label">pallets</span> and is helpful in the event of a claim.</span>
+          </div>
         </div>
       </div>
 
@@ -8134,7 +8127,7 @@
         <div class="dropdown-field pc-type-dropdown-field">
           <button class="dropdown-btn pc-type-btn" type="button" aria-expanded="false">
             <div class="dropdown-btn-left">
-              <span class="btn-icon"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M11.373 10.2021V24L8.5 22.6816V8.88379L11.373 10.2021ZM7 8.19531V21.9932L4.5 20.8457V7.04883L7 8.19531ZM3 6.36035V20.1289C1.73047 19.3573 0.750051 17.7143 0.75 16.2656V5.3291L3 6.36035Z"/><path d="M14.8036 7.8851L11.9579 9.19174L1.33484 4.31771L4.07703 3.05893L14.8036 7.8851ZM18.9843 5.96713L16.16 7.26303L5.4325 2.43686L8.25769 1.14096L18.9843 5.96713ZM9.62781 0.524746C11.0723 -0.0192295 13.2092 0.0181803 14.5585 0.63705L22.5809 4.31771L20.3417 5.34408L9.62781 0.524746Z"/><path d="M23.25 16.2661C23.2499 17.8462 22.0856 19.661 20.6494 20.3198L12.627 24.0005V20.8452L23.25 15.481V16.2661ZM23.25 13.8013L12.627 19.1646V15.8403L23.25 10.4761V13.8013ZM23.25 8.79541L12.627 14.1597V10.2026L23.25 5.32959V8.79541Z"/></svg></span>
+              
               <span class="dropdown-btn-text pc-type-label">Select piece count type</span>
             </div>
             <div class="dropdown-caret">
