@@ -3444,7 +3444,6 @@
   <button type="button" id="demo-link-residential-2">Location known services exposed</button>
   <button type="button" id="demo-link-loc-type-finder">exposed with location type finder</button>
   <button type="button" id="demo-link-rebill2">Location Unknown</button>
-  <button type="button" id="demo-link-residential">Location known services</button>
   <button type="button" id="demo-link-nmfc" onclick="window.location.href='/nmfc.html'">NMFC</button>
   <button type="button" id="demo-link-rebill" hidden>Location rebill risk</button>
 </div>
@@ -9054,13 +9053,12 @@
 
   // ── Demo bar ──
   (function() {
-    const linkRes        = document.getElementById('demo-link-residential');
     const linkRes2       = document.getElementById('demo-link-residential-2');
     const linkRebill     = document.getElementById('demo-link-rebill');
     const linkRebill2    = document.getElementById('demo-link-rebill2');
     const linkLocFinder  = document.getElementById('demo-link-loc-type-finder');
     function setActive(btn) {
-      [linkRes, linkRes2, linkRebill, linkRebill2, linkLocFinder].forEach(b => { if (b) b.classList.remove('active'); });
+      [linkRes2, linkRebill, linkRebill2, linkLocFinder].forEach(b => { if (b) b.classList.remove('active'); });
       btn.classList.add('active');
     }
 
@@ -9690,29 +9688,6 @@
     });
 
     // Demo 1 — "Location known services": show old dropdown, auto-resolve services
-    linkRes.addEventListener('click', () => {
-      applyNone();
-      applyResidential('your address book');
-      // Show old container, keep new hidden
-      const _old1 = document.getElementById('svc-box-old');
-      if (_old1) _old1.hidden = false;
-      const _dOld1 = document.getElementById('d-svc-box-old');
-      if (_dOld1) _dOld1.hidden = false;
-      // Auto-select recommended services so the gate opens
-      ACC_ITEMS.forEach(i => { if (i.warn) i.selected = true; });
-      renderList(); updateBtnLabel(); updatePickupWarning();
-      unlockSvcGate();
-      const _r1 = document.getElementById('acc-svc-rec-row');
-      if (_r1) _r1.hidden = true;
-      DELIVER_ACC_ITEMS.forEach(i => { if (i.warn) i.selected = true; });
-      dRenderList(); dUpdateBtnLabel(); updateDeliverWarning();
-      unlockDeliverSvcGate();
-      const _dr1 = document.getElementById('d-acc-svc-rec-row');
-      if (_dr1) _dr1.hidden = true;
-      setActive(linkRes);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
     // Demo 2 — "Location known services exposed": show new pill container
     if (linkRes2) linkRes2.addEventListener('click', () => {
       applyNone();
@@ -9807,10 +9782,9 @@
       if (locPicker3) { locPicker3.hidden = false; resetDemo3Picker(); }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
-    // Set initial state from URL param if present, otherwise default to Demo 1
+    // Set initial state from URL param if present, otherwise default to Demo 2
     const param = new URLSearchParams(location.search).get('loc');
-    if (param === 'residential') { linkRes.click(); }
-    else if (param === 'rebill') { REBILL_MODE = true; applyCommercial('the address'); setActive(linkRebill); }
+    if (param === 'rebill') { REBILL_MODE = true; applyCommercial('the address'); setActive(linkRebill); }
     else { linkRes2.click(); }
     // Always start at the top on load/refresh
     window.scrollTo({ top: 0, behavior: 'instant' });
