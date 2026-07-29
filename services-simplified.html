@@ -1287,6 +1287,7 @@
   .svc-learn-more-wrap { margin-top: 12px; }
   .svc-learn-more-divider { border: none; border-top: 1px solid rgba(9,10,12,0.06); margin: 0; }
   .svc-learn-more-btn { background: none; border: none; padding: 0; font-size: 10px; color: var(--color-tint); cursor: pointer; font-family: inherit; font-weight: 600; line-height: normal; display: inline-flex; align-items: center; gap: 4px; }
+  .svc-learn-more-btn:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--color-focus), 0 0 10px 3px rgba(29,78,216,0.2); border-radius: 2px; }
   .svc-list-item-info { flex-shrink: 0; color: rgba(9,10,12,0.28); }
 
   /* Info icon wrapper + dark tooltip */
@@ -1553,6 +1554,7 @@
     width: 100%; padding: 12px 16px; border: none; background: none; cursor: pointer; text-align: left;
   }
   .loc-type-option:hover { background: var(--color-control-bg); }
+  .loc-type-option:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--color-focus), 0 0 10px 3px rgba(29,78,216,0.2); }
   .loc-type-option-left { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
   .loc-type-option-icon { width: 16px; height: 16px; flex-shrink: 0; }
   .loc-type-option-text { display: flex; flex-direction: column; }
@@ -1580,6 +1582,7 @@
   .loc-type-chip-desc { font-size: 10px; color: var(--color-label-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .loc-type-change-btn { font-size: 12px; font-weight: 600; color: var(--color-tint); background: none; border: none; cursor: pointer; padding: 0; white-space: nowrap; flex-shrink: 0; }
   .loc-type-change-btn:hover { text-decoration: underline; }
+  .loc-type-change-btn:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--color-focus), 0 0 10px 3px rgba(29,78,216,0.2); border-radius: 2px; }
   .dock-q-block {
     display: flex; align-items: center; justify-content: space-between;
     min-height: 48px; padding: 8px 12px;
@@ -1594,7 +1597,7 @@
     color: var(--color-label-primary); cursor: pointer; font-family: inherit;
   }
   .dock-q-btn:hover { background: rgba(9,10,12,0.06); border-color: rgba(9,10,12,0.24); }
-  .dock-q-btn:focus-visible { outline: 2px solid #1d4ed8; outline-offset: 2px; }
+  .dock-q-btn:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--color-focus), 0 0 10px 3px rgba(29,78,216,0.2); }
   .dock-q-btn.selected { border: 2px solid rgba(9,10,12,0.9); background: #fff; font-weight: 600; }
   .dock-q-radio {
     display: block; flex-shrink: 0; width: 16px; height: 16px; border-radius: 50%;
