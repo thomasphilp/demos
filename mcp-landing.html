@@ -228,6 +228,14 @@ img { display: block; }
 .send { width: 72px; height: 72px; border-radius: 18px; background: var(--gray-950); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .send img { width: 32px; height: 32px; }
 .hero[data-intro="start"] .intro-composer { opacity: 0; transform: translate(-50%, 24px); }
+/* Entrance: rise from slightly below, overshoot a touch, settle */
+.hero[data-intro="composer"] .intro-composer { animation: composer-in 0.9s both; }
+@keyframes composer-in {
+  0%   { opacity: 0; transform: translate(-50%, 28px) scale(0.97); animation-timing-function: cubic-bezier(.2,.7,.3,1); }
+  55%  { opacity: 1; transform: translate(-50%, -5px) scale(1.004); animation-timing-function: ease-in-out; }
+  78%  { transform: translate(-50%, 1.5px) scale(1); animation-timing-function: ease-in-out; }
+  100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
 .hero[data-intro="done"] .intro-composer { opacity: 0; transform: translate(-50%, -40px) scale(0.96); pointer-events: none; }
 .chat-app, .hero-connect { transition: opacity 0.7s ease, transform 0.8s cubic-bezier(.2,.7,.2,1); }
 .hero:not([data-intro="done"]) .chat-app { opacity: 0; transform: translate(-50%, 40px); }
@@ -940,7 +948,7 @@ function playIntro() {
   if (reducedMotion) { hero.dataset.intro = 'done'; return; }
   later(() => { hero.dataset.intro = 'composer'; }, 120);
   // Reveal word by word: each word fades up into place, caret follows
-  const START = 900, RATE = 170;
+  const START = 1050, RATE = 170; // words start once the entrance bounce has settled
   const words = QUESTION.split(' ');
   later(() => composer.classList.add('is-typing'), START);
   words.forEach((word, i) => later(() => {
