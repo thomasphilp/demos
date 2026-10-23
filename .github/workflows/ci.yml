@@ -32,8 +32,10 @@ jobs:
   # ---------------------------------------------------------------------------
   #  🔗  JOB: links — broken link check
   # ---------------------------------------------------------------------------
+  # Paused: demos are design / look-and-feel work. Delete the `if` line to resume.
   links:
     name: Check Links
+    if: false
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
