@@ -166,14 +166,23 @@ img { display: block; }
 .hero-bg video { display: block; width: 100%; height: 100%; object-fit: cover; }
 .hero-fade { position: absolute; left: 0; right: 0; top: 286px; height: 536px; background: linear-gradient(to top, #fff, rgba(255,255,255,0)); }
 
+/* The card's chrome (glass, border, shadow, rail) fades to white behind the connect block;
+   --fade-start/--fade-end are measured from the card top in JS. Content stays fully opaque. */
 .chat-app {
+  --fade-start: 100%; --fade-end: 100%;
+  --chrome-fade: linear-gradient(to bottom, #000 var(--fade-start), transparent var(--fade-end));
   position: relative; margin: 0 auto;
   width: min(1440px, calc(100% - 2 * var(--gutter))); min-height: 830px;
-  display: flex; overflow: hidden; border-radius: 16px;
+  display: flex; border-radius: 16px;
+}
+.chat-app::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
   border: 1px solid var(--gray-300); background: rgba(255,255,255,0.6);
   backdrop-filter: blur(90px); -webkit-backdrop-filter: blur(90px); box-shadow: var(--shadow-float);
+  -webkit-mask: var(--chrome-fade); mask: var(--chrome-fade);
 }
-.chat-rail { width: 65px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 16px 0; background: rgba(0,0,0,0.03); border-right: 1px solid rgba(9,10,12,0.2); }
+.chat-app > * { position: relative; }
+.chat-rail { width: 65px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 16px 0; border-radius: 16px 0 0 16px; background: rgba(0,0,0,0.03); border-right: 1px solid rgba(9,10,12,0.2); -webkit-mask: var(--chrome-fade); mask: var(--chrome-fade); }
 .avatar { width: 26px; height: 26px; border-radius: 13px; background: #e7e3da; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: var(--gray-950); }
 .chat-convo { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; }
 .chat-thread { width: min(1000px, calc(100% - 48px)); display: flex; flex-direction: column; gap: 40px; padding-top: 49px; }
@@ -1109,6 +1118,19 @@ document.getElementById('open-all').addEventListener('click', e => {
     else { card.classList.remove('is-open'); }
   });
 });
+
+/* ── Hero chat card: fade its chrome to white from the top of the connect block ── */
+(() => {
+  const card = document.querySelector('.chat-app');
+  const connect = card.querySelector('.hero-connect');
+  const FADE_SPAN = 0.55; // fully white by ~55% of the way down the connect block
+  const place = () => {
+    const top = connect.offsetTop - card.clientTop;
+    card.style.setProperty('--fade-start', `${top}px`);
+    card.style.setProperty('--fade-end', `${Math.round(top + connect.offsetHeight * FADE_SPAN)}px`);
+  };
+  new ResizeObserver(place).observe(card); place();
+})();
 
 /* ── Scroll reveal: everything after the hero fades up once, as it scrolls into view ── */
 (() => {
