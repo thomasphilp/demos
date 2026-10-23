@@ -105,7 +105,10 @@ img { display: block; }
 .on-dark .display { color: #fff; }
 
 .exchange { width: min(var(--content), calc(100% - 2 * var(--gutter))); margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
-.exchange-user { display: flex; justify-content: flex-end; }
+.exchange-user { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+/* "Sent by you" under user bubbles (Figma: Instrument Sans Medium 14, right-aligned, 8px below) */
+.sent-by { font-size: 14px; font-weight: 500; color: var(--label-primary); white-space: nowrap; }
+.on-dark .sent-by { color: #fff; }
 .exchange-agent { display: flex; flex-direction: column; gap: 24px; align-items: flex-start; }
 .exchange-agent .display { max-width: 1040px; }
 
@@ -196,7 +199,10 @@ img { display: block; }
 .chat-convo { --thread-w: min(1000px, calc(100% - 48px)); }
 .chat-thread { width: var(--thread-w); display: flex; flex-direction: column; gap: 40px; padding-top: 49px; }
 .timestamp { text-align: center; font-size: 13px; font-weight: 500; }
-.hero-user { display: flex; justify-content: flex-end; }
+.hero-user { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.hero-user .sent-by { transition: opacity 0.4s ease; }
+.hero:not([data-intro="done"]) .hero-user .sent-by { opacity: 0; }
+.hero[data-intro="done"] .hero-user .sent-by { transition-delay: 0.85s; }
 .hero { --hero-bubble-w: 534px; }
 .hero-user .page-bubble { width: var(--hero-bubble-w); }
 .hero-reply { display: flex; flex-direction: column; gap: 20px; max-width: 770px; }
@@ -497,6 +503,7 @@ a.app-tile:hover .launch { color: #fff; }
 
 /* User bubbles (black and green) use the bounce instead of the plain fade-up */
 .page-bubble.reveal { translate: none; transition: none; }
+.sent-by.reveal { translate: none; transition: opacity 0.4s ease calc(var(--reveal-delay, 0s) + 0.5s); }
 .page-bubble.reveal.is-visible { animation: bubble-in 0.75s var(--reveal-delay, 0s) both; }
 .ap-row.reveal .ap-card .chat-bubble { opacity: 0; }
 .ap-row.reveal.is-visible .ap-card .chat-bubble { animation: bubble-in 0.75s calc(var(--reveal-delay, 0s) + 0.35s) both; }
@@ -614,7 +621,7 @@ a.app-tile:hover .launch { color: #fff; }
     <div class="chat-convo">
       <div class="chat-thread">
         <p class="timestamp">Today 9:41 AM</p>
-        <div class="hero-user"><p class="page-bubble">Can I just ship freight from my AI chat?</p></div>
+        <div class="hero-user"><p class="page-bubble">Can I just ship freight from my AI chat?</p><span class="sent-by">Sent by you</span></div>
         <div class="hero-reply">
           <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
           <h1 id="hero-title" data-typewriter>Yes. Connect Mothership and just ask</h1>
@@ -656,7 +663,7 @@ a.app-tile:hover .launch { color: #fff; }
 <!-- ═══════════ What can it do ═══════════ -->
 <section class="features" aria-labelledby="features-title">
   <div class="exchange">
-    <div class="exchange-user"><p class="page-bubble">What can it do?</p></div>
+    <div class="exchange-user"><p class="page-bubble">What can it do?</p><span class="sent-by">Sent by you</span></div>
     <div class="exchange-agent">
       <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
       <h2 class="display" id="features-title" data-typewriter data-tw-delay="0.7">Everything the Mothership Dashboard does, and more.</h2>
@@ -680,7 +687,7 @@ a.app-tile:hover .launch { color: #fff; }
 <!-- ═══════════ Devices ═══════════ -->
 <section class="devices-head" aria-labelledby="devices-title">
   <div class="exchange">
-    <div class="exchange-user"><p class="page-bubble">Does it work on my phone?</p></div>
+    <div class="exchange-user"><p class="page-bubble">Does it work on my phone?</p><span class="sent-by">Sent by you</span></div>
     <div class="exchange-agent">
       <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
       <h2 class="display" id="devices-title" style="max-width: 707px" data-typewriter data-tw-delay="0.7">Yes — same chat at your desk or on the dock.</h2>
@@ -787,7 +794,7 @@ a.app-tile:hover .launch { color: #fff; }
 <!-- ═══════════ Autopilot ═══════════ -->
 <section class="autopilot on-dark" aria-labelledby="autopilot-title">
   <div class="exchange">
-    <div class="exchange-user"><p class="page-bubble is-green">Can it do things on its own?</p></div>
+    <div class="exchange-user"><p class="page-bubble is-green">Can it do things on its own?</p><span class="sent-by">Sent by you</span></div>
     <div class="exchange-agent">
       <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
       <h2 class="display" id="autopilot-title" data-typewriter data-tw-delay="0.7">It follows through, and more.<br>Set it once in plain words.</h2>
@@ -848,7 +855,7 @@ a.app-tile:hover .launch { color: #fff; }
 <section class="apps on-dark" aria-labelledby="apps-title">
   <div class="exchange">
     <div style="display: flex; flex-direction: column; gap: 40px">
-      <div class="exchange-user"><p class="page-bubble is-green">Which AI apps work?</p></div>
+      <div class="exchange-user"><p class="page-bubble is-green">Which AI apps work?</p><span class="sent-by">Sent by you</span></div>
       <div class="exchange-agent">
         <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
         <h2 class="display" id="apps-title" data-typewriter data-tw-delay="0.7">These ones, today:</h2>
@@ -871,7 +878,7 @@ a.app-tile:hover .launch { color: #fff; }
   <div class="setup-bg"><img src="assets/mcp-landing/setup-bg.jpg" alt=""></div>
   <div class="exchange">
     <div style="display: flex; flex-direction: column; gap: 40px">
-      <div class="exchange-user"><p class="page-bubble is-green has-shadow">How do I set it up?</p></div>
+      <div class="exchange-user"><p class="page-bubble is-green has-shadow">How do I set it up?</p><span class="sent-by">Sent by you</span></div>
       <div class="exchange-agent">
         <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
         <h2 class="display" id="setup-title" data-typewriter data-tw-delay="0.7">Three steps, in seconds:</h2>
@@ -1249,7 +1256,7 @@ function twType(el, { start = 0, rate = 95 } = {}) {
 (() => {
   // Each group staggers its items slightly, like a section's headline then its body
   const GROUPS = [
-    '.exchange-user .page-bubble, .exchange-agent > :not([data-typewriter]):not(.cursor-block)',
+    '.exchange-user .page-bubble, .exchange-user .sent-by, .exchange-agent > :not([data-typewriter]):not(.cursor-block)',
     '.bracket, .bracket-copy',
     '.examples-photo',
     '.ex-card',
