@@ -161,14 +161,14 @@ img { display: block; }
 .site-nav .right { display: flex; gap: 10px; }
 
 /* ── Hero ── */
-.hero { position: relative; height: 1444px; overflow: hidden; }
+.hero { position: relative; padding: 223px 0 120px; overflow: hidden; }
 .hero-bg { position: absolute; left: 0; right: 0; top: -164px; height: 986px; overflow: hidden; }
 .hero-bg video { display: block; width: 100%; height: 100%; object-fit: cover; }
 .hero-fade { position: absolute; left: 0; right: 0; top: 286px; height: 536px; background: linear-gradient(to top, #fff, rgba(255,255,255,0)); }
 
 .chat-app {
-  position: absolute; left: 50%; top: 223px; transform: translateX(-50%);
-  width: min(1440px, calc(100% - 2 * var(--gutter))); height: 830px;
+  position: relative; margin: 0 auto;
+  width: min(1440px, calc(100% - 2 * var(--gutter))); min-height: 830px;
   display: flex; overflow: hidden; border-radius: 16px;
   border: 1px solid var(--gray-300); background: rgba(255,255,255,0.6);
   backdrop-filter: blur(90px); -webkit-backdrop-filter: blur(90px); box-shadow: var(--shadow-float);
@@ -183,14 +183,20 @@ img { display: block; }
 .hero-reply { display: flex; flex-direction: column; gap: 20px; max-width: 770px; }
 .hero-reply h1 { font-family: var(--font-display); font-weight: 600; font-size: 72px; line-height: 75px; letter-spacing: -0.02em; color: var(--ink); }
 
-.hero-connect { position: absolute; left: 0; right: 0; top: 866px; display: flex; flex-direction: column; align-items: center; gap: 64px; background: linear-gradient(to top, #fff 80%, rgba(255,255,255,0)); }
-.hero-connect .bracket-frame { position: absolute; left: 50%; transform: translateX(-50%); top: 11px; width: min(1112px, calc(100% - 2 * var(--gutter))); height: 472px; pointer-events: none; }
-.hero-connect .bracket-frame img { width: 100%; height: 100%; }
+/* Connect frame: thin outline whose top/bottom edges open around the label and "Powered by" */
+.hero-connect { width: min(1112px, calc(100% - 48px)); margin: 120px auto 56px; display: flex; flex-direction: column; }
+.cf-edge { display: flex; align-items: stretch; gap: 24px; }
+.cf-edge .cf-line { flex: 1; min-width: 24px; border: 0 solid #000; }
+.cf-edge.is-top .cf-line { margin-top: 8.5px; border-top-width: 1px; }
+.cf-edge.is-bottom .cf-line { margin-bottom: 21px; border-bottom-width: 1px; }
+.cf-edge .cf-line:first-child { border-left-width: 1px; }
+.cf-edge .cf-line:last-child { border-right-width: 1px; }
+.cf-edge .lead { font-size: 14px; font-weight: 500; line-height: 17px; text-align: center; }
+.cf-body { border: 0 solid #000; border-left-width: 1px; border-right-width: 1px; padding: 18px 24px 40px; display: flex; flex-direction: column; align-items: center; gap: 64px; }
 .connect-block { position: relative; display: flex; flex-direction: column; align-items: center; gap: 18px; }
-.connect-block .lead { font-size: 14px; font-weight: 500; }
 .hero-copy { position: relative; width: min(696px, calc(100% - 2 * var(--gutter))); text-align: center; font-size: 22px; line-height: 32px; font-weight: 500; }
-.available { position: relative; display: flex; flex-direction: column; align-items: center; gap: 24px; }
-.marquee { width: min(750px, 100vw - 48px); overflow: hidden; -webkit-mask: url(assets/mcp-landing/marquee-mask.svg) center / 100% 100% no-repeat; mask: url(assets/mcp-landing/marquee-mask.svg) center / 100% 100% no-repeat; }
+.available { position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 24px; }
+.marquee { width: min(750px, 100%); overflow: hidden; -webkit-mask: url(assets/mcp-landing/marquee-mask.svg) center / 100% 100% no-repeat; mask: url(assets/mcp-landing/marquee-mask.svg) center / 100% 100% no-repeat; }
 .marquee-track { display: flex; gap: 56px; width: max-content; animation: marquee 20s linear infinite; }
 @keyframes marquee { to { transform: translateX(-929px); } }
 .app-logo { display: flex; align-items: center; gap: 9px; font-family: var(--font-logo); font-weight: 600; font-size: 18px; color: #1b1533; white-space: nowrap; }
@@ -241,7 +247,7 @@ img { display: block; }
 }
 .hero[data-intro="done"] .intro-composer { opacity: 0; transform: translate(-50%, -40px) scale(0.96); pointer-events: none; }
 .chat-app, .hero-connect { transition: opacity 0.7s ease, transform 0.8s cubic-bezier(.2,.7,.2,1); }
-.hero:not([data-intro="done"]) .chat-app { opacity: 0; transform: translate(-50%, 40px); }
+.hero:not([data-intro="done"]) .chat-app { opacity: 0; transform: translateY(40px); }
 .hero:not([data-intro="done"]) .hero-connect { opacity: 0; transform: translateY(24px); }
 .hero[data-intro="done"] .hero-connect { transition-delay: 0.35s; }
 .hero-user .page-bubble, .hero-reply { transition: opacity 0.5s ease, transform 0.6s cubic-bezier(.2,.7,.2,1); }
@@ -462,15 +468,16 @@ a.app-tile:hover .launch { color: #fff; }
   .site-nav .logo { width: 116px; height: 12px; }
   .site-nav .pill:not(.is-dark) { display: none; }
   .site-nav .pill.is-dark { font-size: 13px; padding: 6px 12px; }
-  .hero { height: auto; padding-bottom: 80px; }
-  .chat-app { position: relative; left: auto; transform: none; margin: 140px auto 0; height: auto; }
-  .hero:not([data-intro="done"]) .chat-app { transform: translateY(40px); }
+  .hero { padding: 140px 0 64px; }
+  .chat-app { min-height: 0; }
   .chat-rail { display: none; }
   .chat-thread { padding: 32px 0; gap: 24px; width: calc(100% - 32px); }
   .hero-user .page-bubble { width: auto; }
   .hero-reply h1 { font-size: 40px; line-height: 44px; }
-  .hero-connect { position: relative; top: auto; margin-top: 48px; gap: 40px; background: none; }
-  .hero-connect .bracket-frame { display: none; }
+  .hero-connect { width: calc(100% - 24px); margin: 56px auto 32px; }
+  .cf-edge { gap: 12px; }
+  .cf-edge .cf-line { min-width: 12px; }
+  .cf-body { padding: 18px 12px 32px; gap: 40px; }
   .intro-composer { --bw: 2px; top: 200px; height: 72px; gap: 12px; padding: 8px 8px 8px 20px; }
   .intro-composer .typed { font-size: 20px; }
   .intro-composer .caret { height: 22px; vertical-align: -4px; }
@@ -552,28 +559,34 @@ a.app-tile:hover .launch { color: #fff; }
           <span class="cursor-block"></span>
         </div>
       </div>
-    </div>
-  </div>
 
-  <div class="hero-connect">
-    <div class="bracket-frame"><img src="assets/mcp-landing/hero-bracket.svg" alt=""></div>
-    <div class="connect-block">
-      <p class="lead">Add our MCP server to your AI agent in seconds</p>
-      <div class="mcp-url">
-        <span class="beam"></span><span class="surface"></span>
-        <span class="url">mcp.mothership.com</span>
-        <button type="button" class="copy-btn" data-copy="https://mcp.mothership.com">Copy</button>
+      <!-- Connect block lives inside the conversation, so it always sits within the chat card -->
+      <div class="hero-connect">
+        <div class="cf-edge is-top"><span class="cf-line"></span><p class="lead">Add our MCP server to your AI agent in seconds</p><span class="cf-line"></span></div>
+        <div class="cf-body">
+          <div class="connect-block">
+            <div class="mcp-url">
+              <span class="beam"></span><span class="surface"></span>
+              <span class="url">mcp.mothership.com</span>
+              <button type="button" class="copy-btn" data-copy="https://mcp.mothership.com">Copy</button>
+            </div>
+            <p class="pixel-note">Requires an approved Mothership account</p>
+          </div>
+          <p class="hero-copy">Quote, book, track and pay for LTL, FTL and Same-day local freight in plain words. Everything our Dashboard does now in Claude, ChatGPT and more — on desktop or your phone.</p>
+          <div class="available">
+            <p class="pixel-note">Now available in</p>
+            <div class="marquee"><div class="marquee-track" id="marquee-track"></div></div>
+          </div>
+        </div>
+        <div class="cf-edge is-bottom">
+          <span class="cf-line"></span>
+          <div class="powered">
+            <p class="pixel-note">Powered by</p>
+            <div class="powered-mark"><img src="assets/mcp-landing/mothership-logotype-small.svg" alt="Mothership"><span>SI</span></div>
+          </div>
+          <span class="cf-line"></span>
+        </div>
       </div>
-      <p class="pixel-note">Requires an approved Mothership account</p>
-    </div>
-    <p class="hero-copy">Quote, book, track and pay for LTL, FTL and Same-day local freight in plain words. Everything our Dashboard does now in Claude, ChatGPT and more — on desktop or your phone.</p>
-    <div class="available">
-      <p class="pixel-note">Now available in</p>
-      <div class="marquee"><div class="marquee-track" id="marquee-track"></div></div>
-    </div>
-    <div class="powered">
-      <p class="pixel-note">Powered by</p>
-      <div class="powered-mark"><img src="assets/mcp-landing/mothership-logotype-small.svg" alt="Mothership"><span>SI</span></div>
     </div>
   </div>
 </section>
