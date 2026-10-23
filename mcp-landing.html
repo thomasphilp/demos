@@ -83,6 +83,20 @@ img { display: block; }
 .agent-tag { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--label-primary); white-space: nowrap; }
 .on-dark .agent-tag { color: rgba(255,255,255,0.9); }
 
+/* "Your AI agent": a gray → black sweep runs through the icon and the label as one band, on repeat.
+   The icon is masked to its shape; the label uses background-clip:text. Both read one --sweep-x. */
+@property --sweep-x { syntax: '<length>'; inherits: true; initial-value: 0px; }
+.agent-tag.is-shimmer { --sweep-a: #9a9a9a; --sweep-b: #141414; --sweep-w: 240px; animation: agent-sweep 2.4s linear infinite; }
+.on-dark .agent-tag.is-shimmer { --sweep-a: #6f6f6f; --sweep-b: #fff; }
+.agent-tag.is-shimmer .ic, .agent-tag.is-shimmer .tag-label {
+  background: linear-gradient(90deg, var(--sweep-a) 0%, var(--sweep-b) 50%, var(--sweep-a) 100%) repeat-x;
+  background-size: var(--sweep-w) 100%;
+}
+.agent-tag.is-shimmer .ic { background-position: var(--sweep-x) 0; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; }
+/* label starts 28px in (20px icon + 8px gap), so offset its band to line up with the icon's */
+.agent-tag.is-shimmer .tag-label { background-position: calc(var(--sweep-x) - 28px) 0; -webkit-background-clip: text; background-clip: text; color: transparent; }
+@keyframes agent-sweep { to { --sweep-x: var(--sweep-w); } }
+
 .page-bubble {
   display: inline-flex; padding: 22px 32px;
   border-radius: 36px 36px 10px 36px;
@@ -661,7 +675,7 @@ a.app-tile:hover .launch { color: #fff; }
     </div>
     <div class="chat-convo">
       <div class="chat-thread">
-        <p class="timestamp">Today 9:41 AM</p>
+        <p class="timestamp" id="hero-time">Today 9:41 AM</p>
         <div class="hero-user"><p class="page-bubble">Can I just ship freight from my AI chat?</p><span class="sent-by">Sent by you</span></div>
         <div class="hero-reply">
           <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
@@ -1010,6 +1024,27 @@ document.querySelectorAll('[data-icon]').forEach(el => {
   const icon = ICONS[el.dataset.icon];
   if (icon) el.innerHTML = `<svg viewBox="${icon.viewBox}" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${icon.inner}</svg>`;
 });
+
+/* "Your AI agent" tags: turn the icon into a mask (so the sweep can fill it) and wrap the label */
+document.querySelectorAll('.agent-tag').forEach(tag => {
+  if (!/your ai agent/i.test(tag.textContent)) return;
+  tag.classList.add('is-shimmer');
+  const svg = tag.querySelector('.ic svg');
+  if (svg) {
+    const url = `url("data:image/svg+xml;utf8,${encodeURIComponent(svg.outerHTML)}")`;
+    const ic = svg.parentElement;
+    ic.style.webkitMaskImage = url; ic.style.maskImage = url;
+    svg.remove();
+  }
+  [...tag.childNodes].filter(n => n.nodeType === 3 && n.data.trim()).forEach(n => {
+    const label = document.createElement('span'); label.className = 'tag-label'; label.textContent = n.data.trim();
+    n.replaceWith(label);
+  });
+});
+
+/* Hero timestamp: today's time at page load */
+document.getElementById('hero-time').textContent =
+  `Today ${new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
 
 /* VS Code mark (masked layers, as authored in Figma) */
 document.querySelectorAll('[data-vscode]').forEach(el => {
