@@ -166,10 +166,10 @@ img { display: block; }
   position: absolute; left: 50%; top: 50%; width: 305px; height: 305px; margin: -152.5px 0 0 -152.5px;
   /* Same gradient, speed and direction as the hero input's border shine */
   background: conic-gradient(var(--shine-stops));
-  animation: beam var(--shine-speed) linear infinite;
+  animation: beam calc(var(--shine-speed) * 2) linear infinite; /* half the input's speed */
 }
 @keyframes beam { to { transform: rotate(360deg); } }
-.mcp-url .surface { position: absolute; inset: 1.5px; background: #fff; }
+.mcp-url .surface { position: absolute; inset: 1px; background: #fff; } /* 1px shine border */
 .mcp-url .url { position: relative; font-size: 18px; font-weight: 500; color: var(--label-primary); }
 .copy-btn { position: relative; background: var(--ink); color: #fff; font-family: var(--font-geist); font-size: 12px; padding: 5px 12px; border-radius: 2px; min-width: 53px; }
 .copy-btn:hover { background: #000; }
