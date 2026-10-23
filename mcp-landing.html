@@ -234,10 +234,10 @@ img { display: block; }
   background: conic-gradient(from var(--shine-angle), rgba(255,255,255,0.15) 0deg, #2563eb 30deg, #00ff1a 80deg, rgba(255,255,255,0.15) 120deg, rgba(255,255,255,0.15) 360deg);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor; mask-composite: exclude;
-  animation: shine 1.5s linear infinite;
+  animation: shine 0.75s linear infinite;
 }
 @keyframes shine { to { --shine-angle: 360deg; } }
-.intro-composer .typed .word { display: inline-block; white-space: pre; animation: word-in 0.32s cubic-bezier(.2,.7,.2,1) both; }
+.intro-composer .typed .word { display: inline-block; white-space: pre; animation: word-in 0.16s cubic-bezier(.2,.7,.2,1) both; }
 @keyframes word-in { from { opacity: 0; transform: translateY(8px); filter: blur(4px); } }
 .intro-composer .plus { width: 35px; height: 35px; }
 /* Figma Chat/Composer (245:1442) scaled ×1.95: 36px circle send → 70px, 16px arrow → 31px */
@@ -983,7 +983,7 @@ function playIntro() {
   if (reducedMotion) { hero.dataset.intro = 'done'; return; }
   later(() => { hero.dataset.intro = 'composer'; }, 120);
   // Reveal word by word: each word fades up into place, caret follows
-  const START = 1050, RATE = 170; // words start once the entrance bounce has settled
+  const START = 1050, RATE = 85; // words start once the entrance bounce has settled
   const words = QUESTION.split(' ');
   later(() => composer.classList.add('is-typing'), START);
   words.forEach((word, i) => later(() => {
