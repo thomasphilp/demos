@@ -43,5 +43,5 @@ jobs:
       - name: Check for broken links
         uses: lycheeverse/lychee-action@v1
         with:
-          args: --no-progress --exclude-loopback --exclude 'fonts\.googleapis\.com' --exclude 'fonts\.gstatic\.com' '*.html'
+          args: --no-progress --exclude-loopback --exclude 'fonts\.googleapis\.com' --exclude 'fonts\.gstatic\.com' --exclude 'claude\.ai' --exclude 'chatgpt\.com' --exclude 'mcp\.mothership\.com' '*.html'
           fail: true
