@@ -257,11 +257,27 @@ img { display: block; }
   78%  { transform: translate(-50%, 1.5px) scale(1); animation-timing-function: ease-in-out; }
   100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
 }
-.hero[data-intro="done"] .intro-composer { opacity: 0; transform: translate(-50%, -40px) scale(0.96); pointer-events: none; }
-.chat-app, .hero-connect { transition: opacity 0.7s ease, transform 0.8s cubic-bezier(.2,.7,.2,1); }
-.hero:not([data-intro="done"]) .chat-app { opacity: 0; transform: translateY(40px); }
+/* Send tap: press in, spring back, with a soft ring */
+.intro-composer .send.is-pressed { animation: send-tap 0.34s cubic-bezier(.3,.7,.4,1); }
+@keyframes send-tap {
+  0%   { transform: scale(1); box-shadow: 0 0 0 0 rgba(9,10,12,0.28); }
+  35%  { transform: scale(0.86); background: #000; box-shadow: 0 0 0 4px rgba(9,10,12,0.18); }
+  70%  { transform: scale(1.06); box-shadow: 0 0 0 10px rgba(9,10,12,0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 12px rgba(9,10,12,0); }
+}
+/* Exit: small lift, then sink and fade as the chat grows out of the same spot */
+.hero[data-intro="done"] .intro-composer { animation: composer-out 0.5s both; pointer-events: none; }
+@keyframes composer-out {
+  0%   { opacity: 1; transform: translate(-50%, 0) scale(1); animation-timing-function: cubic-bezier(.3,.7,.4,1); }
+  30%  { opacity: 1; transform: translate(-50%, -6px) scale(1.015); animation-timing-function: cubic-bezier(.5,0,.8,.4); }
+  100% { opacity: 0; transform: translate(-50%, 14px) scale(0.9); }
+}
+/* Chat card: fades in while growing from small to full size, out of the input's position */
+.chat-app { transform-origin: 50% 140px; transition: opacity 0.6s ease 0.12s, transform 0.95s cubic-bezier(.22,1.12,.36,1) 0.12s; }
+.hero-connect { transition: opacity 0.7s ease, transform 0.8s cubic-bezier(.2,.7,.2,1); }
+.hero:not([data-intro="done"]) .chat-app { opacity: 0; transform: scale(0.82); transition-delay: 0s; }
 .hero:not([data-intro="done"]) .hero-connect { opacity: 0; transform: translateY(24px); }
-.hero[data-intro="done"] .hero-connect { transition-delay: 0.35s; }
+.hero[data-intro="done"] .hero-connect { transition-delay: 0.55s; }
 .hero-user .page-bubble, .hero-reply { transition: opacity 0.5s ease, transform 0.6s cubic-bezier(.2,.7,.2,1); }
 .hero:not([data-intro="done"]) .hero-user .page-bubble { opacity: 0; transform: translateY(16px) scale(0.98); }
 .hero:not([data-intro="done"]) .hero-reply { opacity: 0; transform: translateY(16px); }
@@ -994,8 +1010,13 @@ function playIntro() {
   }, START + i * RATE));
   const typed = START + words.length * RATE;
   later(() => composer.classList.remove('is-typing'), typed);
-  later(() => { hero.dataset.intro = 'done'; }, typed + 1000);
+  // A beat after the last word: press send, then the input bounces out as the chat grows in
+  const PRESS = typed + 450;
+  later(() => sendBtn.classList.add('is-pressed'), PRESS);
+  later(() => { hero.dataset.intro = 'done'; }, PRESS + 320);
 }
+const sendBtn = composer.querySelector('.send');
+sendBtn.addEventListener('animationend', () => sendBtn.classList.remove('is-pressed'));
 // Start once the hero photo is ready (fallback after 1.5s) so the first frames aren't stalled by decoding
 const heroVideo = hero.querySelector('.hero-bg video');
 // Started from script (muted) rather than the autoplay attribute; skipped for reduced motion
