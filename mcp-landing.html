@@ -220,7 +220,11 @@ img { display: block; }
 
 /* Hero intro: composer types the question, then hands off to the chat */
 .intro-composer {
-  position: absolute; z-index: 20; left: 50%; top: 361px; width: min(1077px, calc(100% - 2 * var(--gutter))); height: 113px;
+  /* Vertically centered on the cube: the video box is 986px tall at top -164px (center 329px), cropped
+     to cover at 1344×768, and the cube's center sits ~0.6% above the frame's middle */
+  --composer-h: 113px;
+  position: absolute; z-index: 20; left: 50%; width: min(1077px, calc(100% - 2 * var(--gutter))); height: var(--composer-h);
+  top: calc(329px - 0.006 * max(986px, 100vw / 1.75) - var(--composer-h) / 2);
   transform: translateX(-50%); display: flex; align-items: center; gap: 24px; padding: 16px 16px 16px 36px;
   border-radius: 9999px; background: rgba(255,255,255,0.8); border: 6px solid rgba(255,255,255,0.36);
   backdrop-filter: blur(34px); -webkit-backdrop-filter: blur(34px); box-shadow: 0 4px 8px rgba(0,0,0,0.05);
@@ -273,7 +277,7 @@ img { display: block; }
   100% { opacity: 0; transform: translate(-50%, 14px) scale(0.9); }
 }
 /* Chat card: fades in while growing from small to full size, out of the input's position */
-.chat-app { transform-origin: 50% 140px; transition: opacity 0.6s ease 0.12s, transform 0.95s cubic-bezier(.22,1.12,.36,1) 0.12s; }
+.chat-app { transform-origin: 50% 100px; /* the input's center, relative to the card top */ transition: opacity 0.6s ease 0.12s, transform 0.95s cubic-bezier(.22,1.12,.36,1) 0.12s; }
 .hero-connect { transition: opacity 0.7s ease, transform 0.8s cubic-bezier(.2,.7,.2,1); }
 .hero:not([data-intro="done"]) .chat-app { opacity: 0; transform: scale(0.82); transition-delay: 0s; }
 .hero:not([data-intro="done"]) .hero-connect { opacity: 0; transform: translateY(24px); }
@@ -507,7 +511,8 @@ a.app-tile:hover .launch { color: #fff; }
   .cf-edge { gap: 12px; }
   .cf-edge .cf-line { min-width: 12px; }
   .cf-body { padding: 18px 12px 32px; gap: 40px; }
-  .intro-composer { --bw: 2px; top: 200px; height: 72px; gap: 12px; padding: 8px 8px 8px 20px; }
+  .intro-composer { --bw: 2px; --composer-h: 72px; gap: 12px; padding: 8px 8px 8px 20px; }
+  .chat-app { transform-origin: 50% 183px; }
   .intro-composer .typed { font-size: 20px; }
   .intro-composer .caret { height: 22px; vertical-align: -4px; }
   .intro-composer .plus { width: 22px; height: 22px; }
