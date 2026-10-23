@@ -30,6 +30,9 @@
   --font-logo: 'Outfit', sans-serif;
   --content: 1120px;
   --gutter: 24px;
+  /* Shared border shine (hero input + MCP URL boxes): Figma Chat/Composer 245:1442 stroke stops */
+  --shine-stops: #fff 0%, #fff 17.8%, #747474 59.5%, #00e1ff 66.6%, #00ff1a 71.6%, #fff 100%;
+  --shine-speed: 0.75s;
 }
 
 html { scroll-behavior: smooth; }
@@ -145,10 +148,11 @@ img { display: block; }
 }
 .mcp-url .beam {
   position: absolute; left: 50%; top: 50%; width: 305px; height: 305px; margin: -152.5px 0 0 -152.5px;
-  background: conic-gradient(from 90deg, rgb(9,10,12) 0%, rgb(9,10,12) 62%, rgb(8,25,15) 63.125%, rgb(8,41,19) 64.25%, rgb(7,71,26) 66.5%, rgb(6,102,33) 68.75%, rgb(4,132,40) 71%, rgb(2,194,54) 75.5%, rgb(0,255,68) 80%, rgb(2,194,54) 81.5%, rgb(4,132,40) 83%, rgb(6,102,33) 83.75%, rgb(7,71,26) 84.5%, rgb(8,41,19) 85.25%, rgb(8,25,15) 85.625%, rgb(9,10,12) 86%, rgb(9,10,12) 100%);
-  animation: beam 4s linear infinite;
+  /* Same gradient, speed and direction as the hero input's border shine */
+  background: conic-gradient(var(--shine-stops));
+  animation: beam var(--shine-speed) linear infinite;
 }
-@keyframes beam { to { transform: rotate(-360deg); } }
+@keyframes beam { to { transform: rotate(360deg); } }
 .mcp-url .surface { position: absolute; inset: 1.5px; background: #fff; }
 .mcp-url .url { position: relative; font-size: 18px; font-weight: 500; color: var(--label-primary); }
 .copy-btn { position: relative; background: var(--ink); color: #fff; font-family: var(--font-geist); font-size: 12px; padding: 5px 12px; border-radius: 2px; min-width: 53px; }
@@ -250,10 +254,10 @@ img { display: block; }
 .intro-composer { --bw: 1.5px; border-width: var(--bw); border-color: transparent; background-clip: padding-box; }
 .intro-composer::before {
   content: ""; position: absolute; inset: calc(-1 * var(--bw)); padding: var(--bw); border-radius: inherit; pointer-events: none;
-  background: conic-gradient(from var(--shine-angle), #fff 0%, #fff 17.8%, #747474 59.5%, #00e1ff 66.6%, #00ff1a 71.6%, #fff 100%);
+  background: conic-gradient(from var(--shine-angle), var(--shine-stops));
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor; mask-composite: exclude;
-  animation: shine 0.75s linear infinite;
+  animation: shine var(--shine-speed) linear infinite;
 }
 @keyframes shine { to { --shine-angle: 360deg; } }
 .intro-composer .typed .word { display: inline-block; white-space: pre; animation: word-in 0.16s cubic-bezier(.2,.7,.2,1) both; }
@@ -553,12 +557,17 @@ a.app-tile:hover .launch { color: #fff; }
   .cf-edge { gap: 12px; }
   .cf-edge .cf-line { min-width: 12px; }
   .cf-body { padding: 18px 12px 32px; gap: 40px; }
-  .intro-composer { --bw: 1px; --composer-h: 72px; gap: 12px; padding: 8px 8px 8px 20px; }
+  /* Figma Mobile/Chat/Composer (313:6667): taller, 24px radius, question on top, plus + send row below */
+  .intro-composer {
+    --bw: 1px; --composer-h: 150px;
+    display: grid; grid-template-columns: 1fr auto; grid-template-areas: "text text" "plus send";
+    align-items: center; row-gap: 14px; column-gap: 12px; padding: 20px 12px 12px 20px; border-radius: 24px;
+  }
   .chat-app { transform-origin: 50% 183px; }
-  .intro-composer .typed { font-size: 20px; }
-  .intro-composer .caret { height: 22px; vertical-align: -4px; }
-  .intro-composer .plus { width: 22px; height: 22px; }
-  .intro-composer .send { width: 48px; height: 48px; }
+  .intro-composer .typed { grid-area: text; align-self: start; font-size: 22px; line-height: 1.25; white-space: normal; }
+  .intro-composer .caret { height: 24px; vertical-align: -5px; }
+  .intro-composer .plus { grid-area: plus; width: 22px; height: 22px; }
+  .intro-composer .send { grid-area: send; width: 48px; height: 48px; }
   .intro-composer .send img { width: 22px; height: 22px; }
   .page-bubble { font-size: 24px; line-height: 30px; padding: 14px 20px; border-radius: 24px 24px 8px 24px; }
   .display { font-size: 38px; line-height: 42px; }
