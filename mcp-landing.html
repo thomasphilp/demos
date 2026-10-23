@@ -222,7 +222,32 @@ img { display: block; }
 .cf-edge .cf-line:first-child { border-left-width: 1px; }
 .cf-edge .cf-line:last-child { border-right-width: 1px; }
 .cf-edge .lead { font-size: 14px; font-weight: 500; line-height: 17px; text-align: center; }
-.cf-body { border: 0 solid #000; border-left-width: 1px; border-right-width: 1px; padding: 18px 24px 40px; display: flex; flex-direction: column; align-items: center; gap: 64px; }
+.cf-body { position: relative; padding: 18px 25px 40px; display: flex; flex-direction: column; align-items: center; gap: 64px; }
+/* Side lines as their own layers, so the frame can glitch without moving the content */
+.cf-body::before, .cf-body::after { content: ""; position: absolute; top: 0; bottom: 0; width: 1px; background: #000; pointer-events: none; }
+.cf-body::before { left: 0; }
+.cf-body::after { right: 0; }
+
+/* Glitch: each frame piece idles, then jumps a pixel or two, flickers and splits cyan/green for a moment.
+   Pieces run on different cycles so the frame never glitches all at once. */
+@keyframes frame-glitch {
+  0%, 84%, 100% { transform: none; opacity: 1; filter: none; }
+  85% { transform: translate(3px, 0); filter: drop-shadow(-2px 0 #00e1ff) drop-shadow(2px 0 #00ff1a); }
+  86% { transform: translate(-2px, 1px); opacity: 0.45; }
+  87% { transform: translate(1px, -1px) scaleX(1.01); filter: drop-shadow(2px 0 #00e1ff); }
+  88% { transform: none; opacity: 1; filter: none; }
+  92% { transform: translate(-1px, 0); opacity: 0.3; filter: drop-shadow(1px 0 #00ff1a); }
+  93% { transform: none; opacity: 1; filter: none; }
+}
+.hero.is-answered .cf-line, .hero.is-answered .cf-body::before, .hero.is-answered .cf-body::after {
+  animation: frame-glitch 4.2s steps(1, end) infinite;
+}
+.hero.is-answered .cf-edge.is-top .cf-line:first-child { animation-duration: 3.7s; animation-delay: -0.6s; }
+.hero.is-answered .cf-edge.is-top .cf-line:last-child { animation-duration: 4.6s; animation-delay: -2.1s; }
+.hero.is-answered .cf-body::before { animation-duration: 5.3s; animation-delay: -1.4s; }
+.hero.is-answered .cf-body::after { animation-duration: 3.9s; animation-delay: -3.2s; }
+.hero.is-answered .cf-edge.is-bottom .cf-line:first-child { animation-duration: 4.9s; animation-delay: -0.2s; }
+.hero.is-answered .cf-edge.is-bottom .cf-line:last-child { animation-duration: 4.1s; animation-delay: -2.7s; }
 .connect-block { position: relative; display: flex; flex-direction: column; align-items: center; gap: 18px; }
 .hero-copy { position: relative; width: min(696px, 100%); text-align: center; font-size: 22px; line-height: 32px; font-weight: 500; }
 .available { position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 24px; }
