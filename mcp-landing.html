@@ -956,6 +956,9 @@ function playIntro() {
 // Start once the hero photo is ready (fallback after 1.5s) so the first frames aren't stalled by decoding
 const heroVideo = hero.querySelector('.hero-bg video');
 // Started from script (muted) rather than the autoplay attribute; skipped for reduced motion
+const HERO_VIDEO_RATE = 0.5; // half speed
+heroVideo.defaultPlaybackRate = heroVideo.playbackRate = HERO_VIDEO_RATE;
+heroVideo.addEventListener('loadedmetadata', () => { heroVideo.playbackRate = HERO_VIDEO_RATE; });
 if (!reducedMotion) { heroVideo.muted = true; heroVideo.play().catch(() => {}); }
 const heroReady = new Promise(r => heroVideo.readyState >= 2 ? r() : heroVideo.addEventListener('loadeddata', r, { once: true }));
 Promise.race([heroReady, new Promise(r => setTimeout(r, 1500))])
