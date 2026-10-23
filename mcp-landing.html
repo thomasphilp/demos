@@ -89,7 +89,8 @@ img { display: block; }
 .agent-tag.is-shimmer { --sweep-a: #9a9a9a; --sweep-b: #141414; --sweep-w: 240px; animation: agent-sweep 2.4s linear infinite; }
 .on-dark .agent-tag.is-shimmer { --sweep-a: #6f6f6f; --sweep-b: #fff; }
 .agent-tag.is-shimmer .ic, .agent-tag.is-shimmer .tag-label {
-  background: linear-gradient(90deg, var(--sweep-a) 0%, var(--sweep-b) 50%, var(--sweep-a) 100%) repeat-x;
+  /* tight band: mostly gray, with a narrow dark peak (~24% of the 240px cycle) */
+  background: linear-gradient(90deg, var(--sweep-a) 0%, var(--sweep-a) 38%, var(--sweep-b) 50%, var(--sweep-a) 62%, var(--sweep-a) 100%) repeat-x;
   background-size: var(--sweep-w) 100%;
 }
 .agent-tag.is-shimmer .ic { background-position: var(--sweep-x) 0; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; }
