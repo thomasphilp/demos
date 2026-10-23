@@ -1290,14 +1290,10 @@ function twPlace(el, word) {
   const bg = rest ? `background:${getComputedStyle(rest).backgroundColor};` : '';
   tw.caret.style.cssText = `width:${size}px;height:${size}px;${bg}transform:translate(${x}px,${y}px)`;
 }
-// After the last word: glide the caret into the resting square's spot, then hand over to it
+// After the last word: the caret goes and the resting square simply appears in its final spot (no travel)
 function twSettle(el, done) {
-  const tw = el._tw, rest = twRest(el);
-  if (!rest) { tw.caret.classList.remove('is-on'); done(); return; }
-  const host = el.getBoundingClientRect(), rr = rest.getBoundingClientRect();
-  tw.caret.style.transition = 'transform 0.32s cubic-bezier(.3,.7,.3,1)';
-  tw.caret.style.transform = `translate(${rr.left - host.left}px,${rr.top - host.top}px)`;
-  tw.timers.push(setTimeout(() => { tw.caret.classList.remove('is-on'); tw.caret.style.transition = ''; done(); }, 340));
+  el._tw.caret.classList.remove('is-on');
+  done();
 }
 function twType(el, { start = 0, rate = 180, onDone } = {}) {
   const tw = twPrep(el); twReset(el);
