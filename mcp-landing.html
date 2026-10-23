@@ -221,7 +221,10 @@ img { display: block; }
 @keyframes shine { to { --shine-angle: 360deg; } }
 .intro-composer .typed .word { display: inline-block; white-space: pre; animation: word-in 0.32s cubic-bezier(.2,.7,.2,1) both; }
 @keyframes word-in { from { opacity: 0; transform: translateY(8px); filter: blur(4px); } }
-.intro-composer .plus { width: 36px; height: 36px; }
+.intro-composer .plus { width: 35px; height: 35px; }
+/* Figma Chat/Composer (245:1442) scaled ×1.95: 36px circle send → 70px, 16px arrow → 31px */
+.intro-composer .send { width: 70px; height: 70px; border-radius: 50%; }
+.intro-composer .send img { width: 31px; height: 31px; }
 .intro-composer .typed { flex: 1; min-width: 0; font-size: 39px; font-weight: 500; color: #000; white-space: nowrap; overflow: hidden; }
 .intro-composer .caret { display: inline-block; width: 2.5px; height: 38px; background: #000; vertical-align: -7px; margin-left: 2px; animation: blink 0.9s steps(1) infinite; }
 .intro-composer.is-typing .caret { animation: none; }
@@ -466,8 +469,8 @@ a.app-tile:hover .launch { color: #fff; }
   .intro-composer .typed { font-size: 20px; }
   .intro-composer .caret { height: 22px; vertical-align: -4px; }
   .intro-composer .plus { width: 22px; height: 22px; }
-  .send { width: 48px; height: 48px; border-radius: 14px; }
-  .send img { width: 22px; height: 22px; }
+  .intro-composer .send { width: 48px; height: 48px; }
+  .intro-composer .send img { width: 22px; height: 22px; }
   .page-bubble { font-size: 24px; line-height: 30px; padding: 14px 20px; border-radius: 24px 24px 8px 24px; }
   .display { font-size: 38px; line-height: 42px; }
   .bracket-label { font-size: 17px; line-height: 24px; flex-wrap: wrap; justify-content: center; }
