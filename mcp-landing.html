@@ -1130,7 +1130,7 @@ grid.querySelectorAll('.spark[data-icon]').forEach(el => {
   if (icon) el.innerHTML = `<svg viewBox="${icon.viewBox}" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${icon.inner}</svg>`;
 });
 
-const WORD_MS = 45;
+const WORD_MS = 90;
 function typeReply(card) {
   const ex = EXAMPLES[card.dataset.i];
   const hover = card.querySelector('.ex-hover');
@@ -1225,12 +1225,18 @@ function twReset(el) {
 function twPlace(el, word) {
   const tw = el._tw, host = el.getBoundingClientRect();
   const fs = parseFloat(getComputedStyle(el).fontSize), size = Math.round(fs * 0.42);
-  const rects = (word || tw.words[0]).getClientRects(); const r = word ? rects[rects.length - 1] : rects[0];
+  const target = word || tw.words[0];
+  const rects = target.getClientRects(); const r = word ? rects[rects.length - 1] : rects[0];
+  // Sit the square on the baseline (bottom of the x-height): measure it with a zero-size probe beside the word
+  const probe = document.createElement('span');
+  probe.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline';
+  word ? target.after(probe) : target.before(probe);
+  const baseline = probe.getBoundingClientRect().bottom; probe.remove();
   const x = (word ? r.right + fs * 0.12 : r.left) - host.left;
-  const y = r.top - host.top + (r.height - size) / 2;
+  const y = baseline - host.top - size;
   tw.caret.style.cssText = `width:${size}px;height:${size}px;transform:translate(${x}px,${y}px)`;
 }
-function twType(el, { start = 0, rate = 95 } = {}) {
+function twType(el, { start = 0, rate = 180 } = {}) {
   const tw = twPrep(el); twReset(el);
   if (reducedMotion) { tw.words.forEach(w => w.classList.add('is-on')); el.classList.add('is-typed'); return; }
   const at = (fn, ms) => tw.timers.push(setTimeout(fn, ms));
