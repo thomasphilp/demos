@@ -236,12 +236,11 @@ img { display: block; }
 .cf-edge.is-top .cf-line { margin-top: 10.5px; border-top-width: 1px; }
 /* Figma 313:6803: three stacked, open-bottom outlines behind the frame's top edge (40%, 20%, 10% black) */
 .hero-connect { position: relative; }
-/* --tab-gap matches the gap between the first outline and the frame, so all four steps are evenly spaced */
-.cf-stack { --tab-h: 14px; --tab-gap: 8px; position: absolute; left: 0; right: 0; top: calc(10.5px - var(--tab-gap) - 3 * var(--tab-h) - 2 * var(--tab-gap)); height: calc(3 * var(--tab-h) + 2 * var(--tab-gap)); pointer-events: none; }
-.cf-tab { position: absolute; left: 50%; height: var(--tab-h); translate: -50% 0; border: 1px solid #000; border-bottom: 0; }
+.cf-stack { position: absolute; left: 0; right: 0; top: calc(10.5px - 16px - 75px); height: 75px; pointer-events: none; }
+.cf-tab { position: absolute; left: 50%; height: 25px; translate: -50% 0; border: 1px solid #000; border-bottom: 0; }
 .cf-tab:nth-child(1) { bottom: 0; width: 84.5%; opacity: 0.4; }
-.cf-tab:nth-child(2) { bottom: calc(var(--tab-h) + var(--tab-gap)); width: 73.45%; opacity: 0.2; }
-.cf-tab:nth-child(3) { bottom: calc(2 * (var(--tab-h) + var(--tab-gap))); width: 64.8%; opacity: 0.1; }
+.cf-tab:nth-child(2) { bottom: 25px; width: 73.45%; opacity: 0.2; }
+.cf-tab:nth-child(3) { bottom: 50px; width: 64.8%; opacity: 0.1; }
 .cf-edge.is-bottom .cf-line { margin-bottom: 21px; border-bottom-width: 1px; }
 .cf-edge .cf-line:first-child { border-left-width: 1px; }
 .cf-edge .cf-line:last-child { border-right-width: 1px; }
