@@ -613,6 +613,11 @@ a.app-tile:hover .launch { color: #fff; }
   .cf-edge { gap: 12px; }
   .cf-edge .cf-line { min-width: 12px; }
   .cf-body { padding: 18px 12px 32px; gap: 40px; }
+  /* Shorter stacked outlines on phones: 14px each, still flush and 16px above the frame */
+  .cf-stack { top: calc(10.5px - 16px - 42px); height: 42px; }
+  .cf-tab { height: 14px; }
+  .cf-tab:nth-child(2) { bottom: 14px; }
+  .cf-tab:nth-child(3) { bottom: 28px; }
   /* Figma Mobile/Chat/Composer (313:6667): taller, 24px radius, question on top, plus + send row below */
   .intro-composer {
     --bw: 1px; --composer-h: 150px;
