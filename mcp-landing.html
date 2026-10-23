@@ -486,6 +486,15 @@ a.app-tile:hover .launch { color: #fff; }
 /* ── Scroll reveal (below the hero): fade up as each block enters the viewport ── */
 .reveal { opacity: 0; translate: 0 48px; transition: opacity 1s cubic-bezier(.25,.1,.25,1) var(--reveal-delay, 0s), translate 1.3s cubic-bezier(.16,1,.3,1) var(--reveal-delay, 0s); }
 .reveal.is-visible { opacity: 1; translate: 0 0; }
+/* AI replies type in word by word; a square caret leads each new word */
+.tw { position: relative; }
+.tw .tw-w { visibility: hidden; }
+.tw .tw-w.is-on { visibility: visible; animation: tw-in 0.2s ease-out both; }
+@keyframes tw-in { from { opacity: 0; } }
+.tw-caret { position: absolute; left: 0; top: 0; border-radius: 2px; background: currentColor; opacity: 0; pointer-events: none; }
+.tw-caret.is-on { opacity: 1; }
+.tw:not(.is-typed) + .cursor-block { visibility: hidden; }
+
 /* User bubbles (black and green) use the bounce instead of the plain fade-up */
 .page-bubble.reveal { translate: none; transition: none; }
 .page-bubble.reveal.is-visible { animation: bubble-in 0.75s var(--reveal-delay, 0s) both; }
@@ -608,7 +617,7 @@ a.app-tile:hover .launch { color: #fff; }
         <div class="hero-user"><p class="page-bubble">Can I just ship freight from my AI chat?</p></div>
         <div class="hero-reply">
           <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-          <h1 id="hero-title">Yes. Connect Mothership and just ask</h1>
+          <h1 id="hero-title" data-typewriter>Yes. Connect Mothership and just ask</h1>
           <span class="cursor-block"></span>
         </div>
       </div>
@@ -650,7 +659,7 @@ a.app-tile:hover .launch { color: #fff; }
     <div class="exchange-user"><p class="page-bubble">What can it do?</p></div>
     <div class="exchange-agent">
       <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-      <h2 class="display" id="features-title">Everything the Mothership Dashboard does, and more.</h2>
+      <h2 class="display" id="features-title" data-typewriter data-tw-delay="0.7">Everything the Mothership Dashboard does, and more.</h2>
       <span class="cursor-block"></span>
     </div>
   </div>
@@ -674,7 +683,7 @@ a.app-tile:hover .launch { color: #fff; }
     <div class="exchange-user"><p class="page-bubble">Does it work on my phone?</p></div>
     <div class="exchange-agent">
       <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-      <h2 class="display" id="devices-title" style="max-width: 707px">Yes — same chat at your desk or on the dock.</h2>
+      <h2 class="display" id="devices-title" style="max-width: 707px" data-typewriter data-tw-delay="0.7">Yes — same chat at your desk or on the dock.</h2>
       <span class="cursor-block"></span>
     </div>
   </div>
@@ -781,7 +790,7 @@ a.app-tile:hover .launch { color: #fff; }
     <div class="exchange-user"><p class="page-bubble is-green">Can it do things on its own?</p></div>
     <div class="exchange-agent">
       <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-      <h2 class="display" id="autopilot-title">It follows through, and more.<br>Set it once in plain words.</h2>
+      <h2 class="display" id="autopilot-title" data-typewriter data-tw-delay="0.7">It follows through, and more.<br>Set it once in plain words.</h2>
       <span class="cursor-block is-light"></span>
     </div>
   </div>
@@ -804,7 +813,7 @@ a.app-tile:hover .launch { color: #fff; }
           <div class="user-turn"><p class="chat-bubble">Every Monday, quote 6 pallets from Ontario to the Phoenix store.</p><span class="sent">Sent by you</span></div>
           <div class="agent-msg" style="width: 364px; max-width: 100%">
             <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-            <p>Got it. I’ll quote this every Monday at 7 AM and send you the confirmation.</p>
+            <p data-typewriter data-tw-delay="1.15">Got it. I’ll quote this every Monday at 7 AM and send you the confirmation.</p>
           </div>
         </div>
         <p class="ap-note">Every Monday at 7am, quote my Ontario → Phoenix lane and send me the three cheapest options.</p>
@@ -815,7 +824,7 @@ a.app-tile:hover .launch { color: #fff; }
           <div class="user-turn"><p class="chat-bubble">MS482220 is late. Stay on support until it’s sorted.</p><span class="sent">Sent by you</span></div>
           <div class="agent-msg" style="width: 361px; max-width: 100%">
             <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-            <p>Case opened — I’ll check in every 2 hours. Update: new ETA 4:30 PM today.</p>
+            <p data-typewriter data-tw-delay="1.15">Case opened — I’ll check in every 2 hours. Update: new ETA 4:30 PM today.</p>
           </div>
         </div>
         <p class="ap-note">If a pickup gets missed, open a support case and keep chasing it until it’s rescheduled.</p>
@@ -826,7 +835,7 @@ a.app-tile:hover .launch { color: #fff; }
           <div class="user-turn"><p class="chat-bubble">Tell me if anything will deliver late this week.</p><span class="sent">Sent by you</span></div>
           <div class="agent-msg" style="width: 341px; max-width: 100%">
             <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-            <p>Will do. Everything’s on time right now — I’ll message you if that changes.</p>
+            <p data-typewriter data-tw-delay="1.15">Will do. Everything’s on time right now — I’ll message you if that changes.</p>
           </div>
         </div>
         <p class="ap-note">Text me if any shipment is running more than 2 hours late.</p>
@@ -842,7 +851,7 @@ a.app-tile:hover .launch { color: #fff; }
       <div class="exchange-user"><p class="page-bubble is-green">Which AI apps work?</p></div>
       <div class="exchange-agent">
         <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-        <h2 class="display" id="apps-title">These ones, today:</h2>
+        <h2 class="display" id="apps-title" data-typewriter data-tw-delay="0.7">These ones, today:</h2>
         <span class="cursor-block is-light"></span>
       </div>
     </div>
@@ -865,7 +874,7 @@ a.app-tile:hover .launch { color: #fff; }
       <div class="exchange-user"><p class="page-bubble is-green has-shadow">How do I set it up?</p></div>
       <div class="exchange-agent">
         <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-        <h2 class="display" id="setup-title">Three steps, in seconds:</h2>
+        <h2 class="display" id="setup-title" data-typewriter data-tw-delay="0.7">Three steps, in seconds:</h2>
         <span class="cursor-block is-light"></span>
       </div>
     </div>
@@ -1021,7 +1030,8 @@ function playIntro() {
   introTimers.forEach(clearTimeout); introTimers = [];
   typedEl.textContent = '';
   hero.dataset.intro = 'start';
-  if (reducedMotion) { hero.dataset.intro = 'done'; return; }
+  twReset(heroTitle);
+  if (reducedMotion) { hero.dataset.intro = 'done'; twType(heroTitle); return; }
   later(() => { hero.dataset.intro = 'composer'; }, 120);
   // Reveal word by word: each word fades up into place, caret follows
   const START = 1050, RATE = 85; // words start once the entrance bounce has settled
@@ -1039,7 +1049,10 @@ function playIntro() {
   const PRESS = typed + 450;
   later(() => sendBtn.classList.add('is-pressed'), PRESS);
   later(() => { hero.dataset.intro = 'done'; }, PRESS + 320);
+  // The agent's answer types in once the chat has grown in and the bubble has landed
+  later(() => twType(heroTitle), PRESS + 320 + 1100);
 }
+const heroTitle = document.getElementById('hero-title');
 const sendBtn = composer.querySelector('.send');
 sendBtn.addEventListener('animationend', () => sendBtn.classList.remove('is-pressed'));
 // Start once the hero photo is ready (fallback after 1.5s) so the first frames aren't stalled by decoding
@@ -1110,7 +1123,7 @@ grid.querySelectorAll('.spark[data-icon]').forEach(el => {
   if (icon) el.innerHTML = `<svg viewBox="${icon.viewBox}" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${icon.inner}</svg>`;
 });
 
-const CHAR_MS = 6;
+const WORD_MS = 45;
 function typeReply(card) {
   const ex = EXAMPLES[card.dataset.i];
   const hover = card.querySelector('.ex-hover');
@@ -1134,10 +1147,16 @@ function typeReply(card) {
     t += el === box ? 120 : 40;
     const node = document.createTextNode('');
     timers.push(setTimeout(() => el.insertBefore(node, cursor), t - 1));
-    for (let c = 1; c <= text.length; c++) {
-      timers.push(setTimeout(() => { node.data = text.slice(0, c); }, t + c * CHAR_MS));
-    }
-    t += text.length * CHAR_MS + 120;
+    // Word by word: the inline square caret sits right after the newest word
+    const tokens = text.split(/(\s+)/).filter(Boolean);
+    let shown = '', n = 0;
+    tokens.forEach(tok => {
+      shown += tok;
+      if (/^\s+$/.test(tok)) return;
+      const upTo = shown;
+      timers.push(setTimeout(() => { node.data = upTo; }, t + (++n) * WORD_MS));
+    });
+    t += n * WORD_MS + 120;
   });
   timers.push(setTimeout(() => { cursor.remove(); dot.style.visibility = ''; }, t + 100));
 }
@@ -1169,6 +1188,50 @@ document.getElementById('open-all').addEventListener('click', e => {
   });
 });
 
+/* ── Typewriter for AI replies: words appear one at a time, a square caret leads each word ── */
+function twPrep(el) {
+  if (el._tw) return el._tw;
+  el.setAttribute('aria-label', el.textContent.trim());
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  const nodes = []; while (walker.nextNode()) nodes.push(walker.currentNode);
+  nodes.forEach(node => {
+    const frag = document.createDocumentFragment();
+    node.data.split(/(\s+)/).forEach(tok => {
+      if (!tok) return;
+      if (/^\s+$/.test(tok)) { frag.appendChild(document.createTextNode(tok)); return; }
+      const w = document.createElement('span'); w.className = 'tw-w'; w.textContent = tok; frag.appendChild(w);
+    });
+    node.replaceWith(frag);
+  });
+  const caret = document.createElement('span'); caret.className = 'tw-caret'; caret.setAttribute('aria-hidden', 'true');
+  el.appendChild(caret);
+  el.classList.add('tw');
+  return (el._tw = { words: [...el.querySelectorAll('.tw-w')], caret, timers: [] });
+}
+function twReset(el) {
+  const tw = twPrep(el);
+  tw.timers.forEach(clearTimeout); tw.timers = [];
+  tw.words.forEach(w => w.classList.remove('is-on'));
+  tw.caret.classList.remove('is-on');
+  el.classList.remove('is-typed');
+}
+function twPlace(el, word) {
+  const tw = el._tw, host = el.getBoundingClientRect();
+  const fs = parseFloat(getComputedStyle(el).fontSize), size = Math.round(fs * 0.42);
+  const rects = (word || tw.words[0]).getClientRects(); const r = word ? rects[rects.length - 1] : rects[0];
+  const x = (word ? r.right + fs * 0.12 : r.left) - host.left;
+  const y = r.top - host.top + (r.height - size) / 2;
+  tw.caret.style.cssText = `width:${size}px;height:${size}px;transform:translate(${x}px,${y}px)`;
+}
+function twType(el, { start = 0, rate = 95 } = {}) {
+  const tw = twPrep(el); twReset(el);
+  if (reducedMotion) { tw.words.forEach(w => w.classList.add('is-on')); el.classList.add('is-typed'); return; }
+  const at = (fn, ms) => tw.timers.push(setTimeout(fn, ms));
+  at(() => { twPlace(el, null); tw.caret.classList.add('is-on'); }, start);
+  tw.words.forEach((w, i) => at(() => { w.classList.add('is-on'); twPlace(el, w); }, start + 220 + i * rate));
+  at(() => { tw.caret.classList.remove('is-on'); el.classList.add('is-typed'); }, start + 220 + tw.words.length * rate + 280);
+}
+
 /* ── Hero chat card: fade its chrome to white from the top of the connect block ── */
 (() => {
   const card = document.querySelector('.chat-app');
@@ -1186,7 +1249,7 @@ document.getElementById('open-all').addEventListener('click', e => {
 (() => {
   // Each group staggers its items slightly, like a section's headline then its body
   const GROUPS = [
-    '.exchange-user .page-bubble, .exchange-agent > *',
+    '.exchange-user .page-bubble, .exchange-agent > :not([data-typewriter]):not(.cursor-block)',
     '.bracket, .bracket-copy',
     '.examples-photo',
     '.ex-card',
@@ -1213,15 +1276,21 @@ document.getElementById('open-all').addEventListener('click', e => {
       targets.push(el);
     });
   });
-  if (reducedMotion || !('IntersectionObserver' in window)) { targets.forEach(el => el.classList.add('is-visible')); return; }
+  // AI replies below the hero type in once visible, after the user bubble above has landed
+  const writers = [...document.querySelectorAll('[data-typewriter]')].filter(el => !hero.contains(el));
+  writers.forEach(twPrep);
+  if (reducedMotion || !('IntersectionObserver' in window)) { targets.forEach(el => el.classList.add('is-visible')); writers.forEach(el => twType(el)); return; }
   const io = new IntersectionObserver(entries => {
     entries.forEach(e => {
       if (!e.isIntersecting) return;
-      e.target.classList.add('is-visible');
-      io.unobserve(e.target);
+      const el = e.target;
+      if (el.hasAttribute('data-typewriter')) twType(el, { start: parseFloat(el.dataset.twDelay || '0.5') * 1000 });
+      else el.classList.add('is-visible');
+      io.unobserve(el);
     });
   }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
   targets.forEach(el => io.observe(el));
+  writers.forEach(el => io.observe(el));
 })();
 
 /* ── Devices stage: scale the 1548×857 artboard to fit ── */
