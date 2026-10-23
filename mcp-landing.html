@@ -208,12 +208,12 @@ img { display: block; }
   backdrop-filter: blur(34px); -webkit-backdrop-filter: blur(34px); box-shadow: 0 4px 8px rgba(0,0,0,0.05);
   transition: opacity 0.6s ease, transform 0.7s cubic-bezier(.2,.7,.2,1);
 }
-/* Rotating shine on the composer border: white streak over a 15% white ring */
+/* Rotating shine on the composer border: blue → green streak over a 15% white ring */
 @property --shine-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
 .intro-composer { --bw: 3px; border-width: var(--bw); border-color: transparent; background-clip: padding-box; }
 .intro-composer::before {
   content: ""; position: absolute; inset: calc(-1 * var(--bw)); padding: var(--bw); border-radius: inherit; pointer-events: none;
-  background: conic-gradient(from var(--shine-angle), rgba(255,255,255,0.15) 0deg, #fff 50deg, rgba(255,255,255,0.15) 110deg, rgba(255,255,255,0.15) 360deg);
+  background: conic-gradient(from var(--shine-angle), rgba(255,255,255,0.15) 0deg, #2563eb 30deg, #00ff1a 80deg, rgba(255,255,255,0.15) 120deg, rgba(255,255,255,0.15) 360deg);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor; mask-composite: exclude;
   animation: shine 1.5s linear infinite;
