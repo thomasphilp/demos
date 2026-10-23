@@ -422,7 +422,7 @@ img { display: block; }
 .devices .bracket-lines { width: 908px; height: 150px; }
 .devices .bracket-copy { position: relative; width: min(760px, calc(100% - 48px)); margin: 24px auto 0; text-align: center; font-size: 22px; line-height: 32px; font-weight: 500; }
 .stage-wrap { position: relative; width: min(1548px, 100%); margin: 70px auto 0; aspect-ratio: 1548 / 857; overflow: hidden; }
-.stage { position: absolute; left: 0; top: 0; width: 1548px; height: 857px; transform-origin: 0 0; transform: scale(var(--stage-scale, 1)); }
+.stage { position: absolute; left: 0; top: 0; width: 1548px; height: 857px; transform-origin: 0 0; transform: translateX(var(--stage-x, 0px)) scale(var(--stage-scale, 1)); }
 .scene { position: absolute; inset: 0; }
 .scene .photo { position: absolute; inset: 0; width: 1548px; height: 857px; }
 .scene .photo img, .scene .photo canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -614,6 +614,10 @@ a.app-tile:hover .launch { color: #fff; }
   .cf-edge { gap: 12px; }
   .cf-edge .cf-line { min-width: 12px; }
   .br-mobile { display: inline; }
+  /* Desk/dock slider fills 60% of the screen; photos crop to cover, the wide overlays shrink to the visible width */
+  .stage-wrap { aspect-ratio: auto; height: 60vh; height: 60svh; }
+  .scene-a .composer { left: calc(50% - 538.5px); scale: min(1, calc((var(--stage-vis, 1548) - 60) / 1077)); }
+  .desk-window { scale: min(1, calc((var(--stage-vis, 1548) - 60) / 968)); }
   .cf-body { padding: 18px 12px 32px; gap: 40px; }
   /* Shorter stacked outlines on phones: 14px each, still flush and 16px above the frame */
   .cf-stack { top: calc(10.5px - 16px - 42px); height: 42px; }
@@ -1463,7 +1467,13 @@ function twType(el, { start = 0, rate = 180, onDone } = {}) {
 
 /* ── Devices stage: scale the 1548×857 artboard to fit ── */
 const stageWrap = document.getElementById('stage-wrap');
-const fitStage = () => stageWrap.style.setProperty('--stage-scale', stageWrap.clientWidth / 1548);
+// Cover the wrap (it is taller than the artboard ratio on phones), centred; --stage-vis is the visible artboard width
+const fitStage = () => {
+  const { width: w, height: h } = stageWrap.getBoundingClientRect(), s = Math.max(w / 1548, h / 857);
+  stageWrap.style.setProperty('--stage-scale', s);
+  stageWrap.style.setProperty('--stage-x', `${(w - 1548 * s) / 2}px`);
+  stageWrap.style.setProperty('--stage-vis', w / s);
+};
 new ResizeObserver(fitStage).observe(stageWrap); fitStage();
 
 /* ── "Pattern Screen" shader (Figma custom effect, wavy lines) on the device photos ──
