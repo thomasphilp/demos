@@ -1060,9 +1060,13 @@ document.querySelectorAll('.agent-tag').forEach(tag => {
   });
 });
 
-/* Hero timestamp: today's time at page load */
-document.getElementById('hero-time').textContent =
-  `Today ${new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit' })}`;
+/* Hero timestamp: the date and time at page load, e.g. "Friday, Oct 23, 2026 · 2:49 PM" */
+(() => {
+  const now = new Date();
+  const date = now.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
+  const time = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  document.getElementById('hero-time').textContent = `${date} · ${time}`;
+})();
 
 /* VS Code mark (masked layers, as authored in Figma) */
 document.querySelectorAll('[data-vscode]').forEach(el => {
