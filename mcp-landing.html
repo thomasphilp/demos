@@ -188,12 +188,13 @@ img { display: block; }
 .chat-thread { width: min(1000px, calc(100% - 48px)); display: flex; flex-direction: column; gap: 40px; padding-top: 49px; }
 .timestamp { text-align: center; font-size: 13px; font-weight: 500; }
 .hero-user { display: flex; justify-content: flex-end; }
-.hero-user .page-bubble { width: 534px; }
+.hero { --hero-bubble-w: 534px; }
+.hero-user .page-bubble { width: var(--hero-bubble-w); }
 .hero-reply { display: flex; flex-direction: column; gap: 20px; max-width: 770px; }
 .hero-reply h1 { font-family: var(--font-display); font-weight: 600; font-size: 72px; line-height: 75px; letter-spacing: -0.02em; color: var(--ink); }
 
 /* Connect frame: thin outline whose top/bottom edges open around the label and "Powered by" */
-.hero-connect { width: min(1112px, calc(100% - 48px)); margin: 120px auto 56px; display: flex; flex-direction: column; }
+.hero-connect { width: min(var(--hero-bubble-w), calc(100% - 48px)); margin: 120px auto 56px; display: flex; flex-direction: column; }
 .cf-edge { display: flex; align-items: stretch; gap: 24px; }
 .cf-edge .cf-line { flex: 1; min-width: 24px; border: 0 solid #000; }
 .cf-edge.is-top .cf-line { margin-top: 8.5px; border-top-width: 1px; }
@@ -203,7 +204,7 @@ img { display: block; }
 .cf-edge .lead { font-size: 14px; font-weight: 500; line-height: 17px; text-align: center; }
 .cf-body { border: 0 solid #000; border-left-width: 1px; border-right-width: 1px; padding: 18px 24px 40px; display: flex; flex-direction: column; align-items: center; gap: 64px; }
 .connect-block { position: relative; display: flex; flex-direction: column; align-items: center; gap: 18px; }
-.hero-copy { position: relative; width: min(696px, calc(100% - 2 * var(--gutter))); text-align: center; font-size: 22px; line-height: 32px; font-weight: 500; }
+.hero-copy { position: relative; width: min(696px, 100%); text-align: center; font-size: 22px; line-height: 32px; font-weight: 500; }
 .available { position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 24px; }
 .marquee { width: min(750px, 100%); overflow: hidden; -webkit-mask: url(assets/mcp-landing/marquee-mask.svg) center / 100% 100% no-repeat; mask: url(assets/mcp-landing/marquee-mask.svg) center / 100% 100% no-repeat; }
 .marquee-track { display: flex; gap: 56px; width: max-content; animation: marquee 20s linear infinite; }
