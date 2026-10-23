@@ -27,7 +27,7 @@ jobs:
         run: npm install -g html-validate
 
       - name: Validate HTML files
-        run: html-validate services-simplified.html accessorials-form.html
+        run: html-validate services-simplified.html accessorials-form.html mcp-landing.html
 
   # ---------------------------------------------------------------------------
   #  🔗  JOB: links — broken link check

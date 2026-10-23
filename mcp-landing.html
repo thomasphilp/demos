@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mothership MCP — Mothership Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600&family=Bruno+Ace&family=Geist+Pixel&family=Geist:wght@400;600&family=Inter:wght@400;600;700&family=Instrument+Sans:wdth,wght@75..100,400..600&family=Outfit:wght@600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --ink: #141414;
+  --black: #000;
+  --label-primary: rgba(9,10,12,0.9);
+  --label-muted: #787878;
+  --gray-300: #d2d5da;
+  --gray-200: #d8dadf;
+  --gray-500: #6a7281;
+  --gray-950: #090a0c;
+  --green: #00ff1a;
+  --green-copy: #1aff00;
+  --surface-glass: rgba(255,255,255,0.7);
+  --shadow-float: 0 4px 92px 0 rgba(0,0,0,0.1);
+  --font-display: 'Bricolage Grotesque', sans-serif;
+  --font-ui: 'Instrument Sans', sans-serif;
+  --font-geist: 'Geist', sans-serif;
+  --font-pixel: 'Geist Pixel', 'Geist', monospace;
+  --font-logo: 'Outfit', sans-serif;
+  --content: 1120px;
+  --gutter: 24px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-ui);
+  background: #fff;
+  color: var(--label-primary);
+  -webkit-font-smoothing: antialiased;
+  padding-top: 44px;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+img { display: block; }
+
+/* ── Demo bar ── */
+.demo-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 9999; height: 44px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 24px; background: #000;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  font-family: 'Inter', sans-serif; font-size: 12px;
+}
+.demo-bar-label {
+  font-weight: 500; margin-right: 4px;
+  background: linear-gradient(to right, #00ffff, #ff00cc);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.demo-bar button {
+  padding: 4px 12px; border-radius: 20px;
+  font-weight: 500; font-size: 12px; border: 1px solid rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.08); transition: background 0.12s;
+  font-family: inherit;
+}
+.demo-bar button:hover { background: rgba(255,255,255,0.15); }
+.demo-bar-note { margin-left: auto; color: rgba(255,255,255,0.45); }
+
+/* ── Icons (from icons.json) ── */
+.ic { display: inline-flex; flex-shrink: 0; width: 20px; height: 20px; }
+.ic svg { width: 100%; height: 100%; display: block; }
+.ic-24 { width: 24px; height: 24px; }
+
+/* ── Shared chat pieces ── */
+.cursor-block { width: 30px; height: 30px; border-radius: 2px; background: #000; animation: blink 1.1s steps(1) infinite; }
+.cursor-block.is-light { background: #fff; }
+@keyframes blink { 50% { opacity: 0; } }
+
+.agent-tag { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--label-primary); white-space: nowrap; }
+.on-dark .agent-tag { color: rgba(255,255,255,0.9); }
+
+.page-bubble {
+  display: inline-flex; padding: 22px 32px;
+  border-radius: 36px 36px 10px 36px;
+  background: var(--ink); color: #fff;
+  font-family: var(--font-display); font-weight: 500; font-size: 40px; line-height: 48px;
+ 
+}
+.page-bubble.is-green { background: var(--green); color: #000; }
+.page-bubble.has-shadow { filter: drop-shadow(0 4px 18px rgba(0,0,0,0.55)); }
+
+.display {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: 64px; line-height: 67px; letter-spacing: -0.02em; color: var(--ink);
+}
+.on-dark .display { color: #fff; }
+
+.exchange { width: min(var(--content), calc(100% - 2 * var(--gutter))); margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
+.exchange-user { display: flex; justify-content: flex-end; }
+.exchange-agent { display: flex; flex-direction: column; gap: 24px; align-items: flex-start; }
+.exchange-agent .display { max-width: 1040px; }
+
+/* Bracket title: label sits in the gap of a thin outline that drops into the content */
+.bracket { position: relative; display: flex; flex-direction: column; align-items: center; }
+.bracket-label { position: relative; z-index: 1; display: flex; align-items: center; gap: 8px; padding: 8px; font-size: 22px; line-height: 32px; font-weight: 500; text-align: center; }
+.bracket-lines { position: absolute; left: 50%; transform: translateX(-50%); top: 24px; pointer-events: none; }
+.bracket-lines img { width: 100%; height: 100%; }
+
+/* Agent logo stack: Grok bot, ChatGPT, Claude */
+.agent-stack { display: flex; align-items: center; }
+.agent-stack > * { flex-shrink: 0; margin-right: -10px; }
+.agent-stack > *:last-child { margin-right: 0; }
+.agent-stack .sphere { padding: 4px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.27); background: rgba(255,255,255,0.6); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); display: flex; }
+.agent-stack .sphere img { width: 24px; height: 24px; transform: scaleX(-1); }
+.agent-stack.is-dark .sphere { background: rgba(59,59,59,0.6); }
+.agent-stack .mark { width: 34px; height: 34px; }
+
+/* VS Code mark: four masked layers, as authored in Figma */
+.vscode { position: relative; overflow: hidden; flex-shrink: 0; }
+.vscode > div { position: absolute; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-mode: alpha; mask-mode: alpha; }
+.vscode img { position: absolute; display: block; width: 100%; height: 100%; }
+.vscode .v1 { inset: 0.26% 0 24.16% -0.06%; }
+.vscode .v2 { inset: 24.16% 0 0.26% -0.06%; }
+.vscode .v2 img { inset: -34.46% -26.03%; width: auto; height: auto; }
+.vscode .v3 { inset: 0.26% 0 0.26% 68.75%; }
+.vscode .v3 img { inset: -26.18% -83.33%; width: auto; height: auto; }
+.vscode .v4 { inset: 0.26% 0.06% 0.26% -0.06%; mix-blend-mode: overlay; }
+
+/* MCP URL box with rotating border beam */
+.mcp-url {
+  position: relative; overflow: hidden; width: 293px; display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 8px 8px 14px; background: #fff; box-shadow: 4px 4px 0 0 #000;
+}
+.mcp-url .beam {
+  position: absolute; left: 50%; top: 50%; width: 305px; height: 305px; margin: -152.5px 0 0 -152.5px;
+  background: conic-gradient(from 90deg, rgb(9,10,12) 0%, rgb(9,10,12) 62%, rgb(8,25,15) 63.125%, rgb(8,41,19) 64.25%, rgb(7,71,26) 66.5%, rgb(6,102,33) 68.75%, rgb(4,132,40) 71%, rgb(2,194,54) 75.5%, rgb(0,255,68) 80%, rgb(2,194,54) 81.5%, rgb(4,132,40) 83%, rgb(6,102,33) 83.75%, rgb(7,71,26) 84.5%, rgb(8,41,19) 85.25%, rgb(8,25,15) 85.625%, rgb(9,10,12) 86%, rgb(9,10,12) 100%);
+  animation: beam 4s linear infinite;
+}
+@keyframes beam { to { transform: rotate(-360deg); } }
+.mcp-url .surface { position: absolute; inset: 1.5px; background: #fff; }
+.mcp-url .url { position: relative; font-size: 18px; font-weight: 500; color: var(--label-primary); }
+.copy-btn { position: relative; background: var(--ink); color: #fff; font-family: var(--font-geist); font-size: 12px; padding: 5px 12px; border-radius: 2px; min-width: 53px; }
+.copy-btn:hover { background: #000; }
+.pixel-note { font-family: var(--font-pixel); font-size: 12px; color: var(--label-muted); text-align: center; }
+
+/* ── Nav ── */
+.site-nav {
+  position: absolute; top: 44px; left: 0; right: 0; z-index: 50; height: 64px;
+  display: flex; align-items: center; gap: 16px; padding: 0 24px;
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+}
+.site-nav .logo { width: 155px; height: 16px; }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 4px; background: rgba(255,255,255,0.25); font-family: var(--font-geist); font-weight: 600; font-size: 14px; color: var(--label-primary); white-space: nowrap; transition: background 0.15s; }
+.pill:hover { background: rgba(255,255,255,0.5); }
+.pill img { width: 10px; height: 10px; }
+.pill.is-dark { background: #000; color: #fff; }
+.pill.is-dark img { width: 12px; height: 12px; }
+.pill.is-dark:hover { background: #222; }
+.site-nav .spacer { flex: 1; }
+.site-nav .right { display: flex; gap: 10px; }
+
+/* ── Hero ── */
+.hero { position: relative; height: 1444px; overflow: hidden; }
+.hero-bg { position: absolute; left: 0; right: 0; top: -164px; height: 986px; overflow: hidden; }
+.hero-bg img { width: 100%; height: 100%; object-fit: cover; animation: drift 24s ease-in-out infinite alternate; }
+@keyframes drift { from { transform: scale(1.02); } to { transform: scale(1.1) translateY(-12px); } }
+.hero-fade { position: absolute; left: 0; right: 0; top: 286px; height: 536px; background: linear-gradient(to top, #fff, rgba(255,255,255,0)); }
+
+.chat-app {
+  position: absolute; left: 50%; top: 223px; transform: translateX(-50%);
+  width: min(1440px, calc(100% - 2 * var(--gutter))); height: 830px;
+  display: flex; overflow: hidden; border-radius: 16px;
+  border: 1px solid var(--gray-300); background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(90px); -webkit-backdrop-filter: blur(90px); box-shadow: var(--shadow-float);
+}
+.chat-rail { width: 65px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 16px 0; background: rgba(0,0,0,0.03); border-right: 1px solid rgba(9,10,12,0.2); }
+.avatar { width: 26px; height: 26px; border-radius: 13px; background: #e7e3da; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: var(--gray-950); }
+.chat-convo { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; }
+.chat-thread { width: min(1000px, calc(100% - 48px)); display: flex; flex-direction: column; gap: 40px; padding-top: 49px; }
+.timestamp { text-align: center; font-size: 13px; font-weight: 500; }
+.hero-user { display: flex; justify-content: flex-end; }
+.hero-user .page-bubble { width: 534px; }
+.hero-reply { display: flex; flex-direction: column; gap: 20px; max-width: 770px; }
+.hero-reply h1 { font-family: var(--font-display); font-weight: 600; font-size: 72px; line-height: 75px; letter-spacing: -0.02em; color: var(--ink); }
+
+.hero-connect { position: absolute; left: 0; right: 0; top: 866px; display: flex; flex-direction: column; align-items: center; gap: 64px; background: linear-gradient(to top, #fff 80%, rgba(255,255,255,0)); }
+.hero-connect .bracket-frame { position: absolute; left: 50%; transform: translateX(-50%); top: 11px; width: min(1112px, calc(100% - 2 * var(--gutter))); height: 472px; pointer-events: none; }
+.hero-connect .bracket-frame img { width: 100%; height: 100%; }
+.connect-block { position: relative; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+.connect-block .lead { font-size: 14px; font-weight: 500; }
+.hero-copy { position: relative; width: min(696px, calc(100% - 2 * var(--gutter))); text-align: center; font-size: 22px; line-height: 32px; font-weight: 500; }
+.available { position: relative; display: flex; flex-direction: column; align-items: center; gap: 24px; }
+.marquee { width: min(750px, 100vw - 48px); overflow: hidden; -webkit-mask: url(assets/mcp-landing/marquee-mask.svg) center / 100% 100% no-repeat; mask: url(assets/mcp-landing/marquee-mask.svg) center / 100% 100% no-repeat; }
+.marquee-track { display: flex; gap: 56px; width: max-content; animation: marquee 20s linear infinite; }
+@keyframes marquee { to { transform: translateX(-929px); } }
+.app-logo { display: flex; align-items: center; gap: 9px; font-family: var(--font-logo); font-weight: 600; font-size: 18px; color: #1b1533; white-space: nowrap; }
+.app-logo > img, .app-logo > .vscode { width: 24px; height: 24px; }
+.powered { position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.powered-mark { position: relative; width: 143px; height: 13px; }
+.powered-mark img { width: 120px; height: 12.5px; }
+.powered-mark span { position: absolute; left: 124px; top: -1px; font-family: 'Bruno Ace', sans-serif; font-size: 13.5px; letter-spacing: 1.2px; line-height: 1; color: #000; transform: skewX(-10deg); }
+
+/* Hero intro: composer types the question, then hands off to the chat */
+.intro-composer {
+  position: absolute; z-index: 20; left: 50%; top: 361px; width: min(1077px, calc(100% - 2 * var(--gutter))); height: 113px;
+  transform: translateX(-50%); display: flex; align-items: center; gap: 24px; padding: 16px 16px 16px 36px;
+  border-radius: 9999px; background: rgba(255,255,255,0.8); border: 6px solid rgba(255,255,255,0.36);
+  backdrop-filter: blur(34px); -webkit-backdrop-filter: blur(34px); box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  transition: opacity 0.6s ease, transform 0.7s cubic-bezier(.2,.7,.2,1);
+}
+.intro-composer .plus { width: 36px; height: 36px; }
+.intro-composer .typed { flex: 1; min-width: 0; font-size: 39px; font-weight: 500; color: #000; white-space: nowrap; overflow: hidden; }
+.intro-composer .caret { display: inline-block; width: 2.5px; height: 38px; background: #000; vertical-align: -7px; margin-left: 2px; animation: blink 0.9s steps(1) infinite; }
+.intro-composer.is-typing .caret { animation: none; }
+.send { width: 72px; height: 72px; border-radius: 18px; background: var(--gray-950); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.send img { width: 32px; height: 32px; }
+.hero[data-intro="start"] .intro-composer { opacity: 0; transform: translate(-50%, 24px); }
+.hero[data-intro="done"] .intro-composer { opacity: 0; transform: translate(-50%, -40px) scale(0.96); pointer-events: none; }
+.chat-app, .hero-connect { transition: opacity 0.7s ease, transform 0.8s cubic-bezier(.2,.7,.2,1); }
+.hero:not([data-intro="done"]) .chat-app { opacity: 0; transform: translate(-50%, 40px); }
+.hero:not([data-intro="done"]) .hero-connect { opacity: 0; transform: translateY(24px); }
+.hero[data-intro="done"] .hero-connect { transition-delay: 0.35s; }
+.hero-user .page-bubble, .hero-reply { transition: opacity 0.5s ease, transform 0.6s cubic-bezier(.2,.7,.2,1); }
+.hero:not([data-intro="done"]) .hero-user .page-bubble { opacity: 0; transform: translateY(16px) scale(0.98); }
+.hero:not([data-intro="done"]) .hero-reply { opacity: 0; transform: translateY(16px); }
+.hero[data-intro="done"] .hero-user .page-bubble { transition-delay: 0.25s; }
+.hero[data-intro="done"] .hero-reply { transition-delay: 0.7s; }
+
+/* ── Features ── */
+.features { padding: 80px 0; }
+
+/* ── Examples ── */
+.examples { position: relative; padding-bottom: 156px; }
+.examples .bracket-lines { width: 908px; height: 107px; }
+.examples-stage { position: relative; margin-top: 50px; }
+.examples-photo { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: min(1548px, 100%); height: 729px; object-fit: cover; }
+.examples-grid { position: relative; width: min(1272px, calc(100% - 2 * var(--gutter))); margin: 0 auto; padding-top: 26px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 45px 28px; }
+.examples-note { width: 364px; max-width: calc(100% - 48px); margin: 88px auto 0; }
+
+.ex-card {
+  position: relative; height: 411px; border-radius: 16px; overflow: hidden; cursor: default; outline: none;
+  border: 1px solid var(--gray-300); background: var(--surface-glass);
+  backdrop-filter: blur(90px); -webkit-backdrop-filter: blur(90px); box-shadow: var(--shadow-float);
+}
+.ex-card:focus-visible { box-shadow: var(--shadow-float), 0 0 0 3px rgba(0,0,0,0.6); }
+.ex-head { position: absolute; left: 11px; top: 15px; display: flex; align-items: center; gap: 8px; z-index: 3; }
+.ex-rest { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; transition: opacity 0.3s ease, transform 0.45s cubic-bezier(.2,.7,.2,1); }
+.ex-rest .bubble { background: #000; color: #fff; border-radius: 20px 20px 7px 20px; padding: 12px 18px; font-family: var(--font-display); font-size: 24px; letter-spacing: -0.02em; }
+.ex-rest .attachment { background: #000; border-radius: 20px 20px 7px 20px; padding: 26px 29px; width: 295px; }
+.chip { display: inline-flex; border: 1px solid #fff; border-radius: 4px; padding: 8px; color: #fff; font-family: var(--font-display); font-size: 16px; letter-spacing: -0.02em; }
+.ex-rest .caret-down { position: absolute; left: 50%; bottom: 17px; width: 39px; height: 16px; transform: translateX(-50%) rotate(180deg); }
+.ex-rest .caret-down img { position: absolute; inset: 10.74% 9.34% 0 9.34%; width: auto; height: auto; }
+
+.ex-hover { position: absolute; inset: 0; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+.ex-hover .panel { position: absolute; left: 7px; right: 7px; bottom: 7px; height: 333px; background: #fff; border-radius: 8px; }
+.ex-hover .q { position: absolute; right: 48px; bottom: 265px; display: flex; gap: 8px; align-items: flex-end; transform: translateY(10px); transition: transform 0.45s cubic-bezier(.2,.7,.2,1); }
+.ex-hover .q .bubble { background: #000; color: #fff; border-radius: 14px 14px 5px 14px; padding: 8px 12px; font-family: var(--font-display); font-size: 17px; letter-spacing: -0.02em; white-space: pre-line; }
+.ex-hover .q .chip { background: #000; border-radius: 8px; font-size: 16px; }
+.ex-hover .reply { position: absolute; left: 52px; top: 161px; width: min(492px, calc(100% - 80px)); display: flex; flex-direction: column; gap: 16px; }
+.ex-hover .reply .spark { width: 20px; height: 20px; color: #b9b9b9; }
+.ex-hover .reply .body { display: flex; flex-direction: column; gap: 5px; font-family: var(--font-display); font-weight: 600; color: var(--ink); }
+.ex-hover .reply .lead { font-size: 16px; letter-spacing: -0.02em; white-space: pre-line; }
+.ex-hover .reply .box { background: #efefef; border: 1px solid #eaeaea; border-radius: 8px; padding: 16px; font-size: 15px; letter-spacing: -0.02em; white-space: pre-line; transition: opacity 0.2s ease; }
+.ex-hover .reply .ask { font-size: 15px; letter-spacing: -0.02em; }
+.ex-hover .reply .dot { width: 8.65px; height: 8.65px; border-radius: 1.3px; background: #000; }
+.ex-hover .reply .dot.is-inline { display: inline-block; vertical-align: baseline; margin-left: 2px; }
+.ex-hover .reply .dot.is-resting { animation: blink 1.1s steps(1) infinite; }
+.ex-card.is-open .ex-rest { opacity: 0; transform: translateY(-24px) scale(0.96); }
+.ex-card.is-open .ex-hover { opacity: 1; pointer-events: auto; }
+.ex-card.is-open .ex-hover .q { transform: none; }
+
+/* ── Devices ── */
+.devices-head { padding: 80px 0; }
+.devices { position: relative; padding-bottom: 103px; }
+.devices .bracket-lines { width: 908px; height: 150px; }
+.devices .bracket-copy { position: relative; width: min(760px, calc(100% - 48px)); margin: 24px auto 0; text-align: center; font-size: 22px; line-height: 32px; font-weight: 500; }
+.stage-wrap { position: relative; width: min(1548px, 100%); margin: 70px auto 0; aspect-ratio: 1548 / 857; overflow: hidden; }
+.stage { position: absolute; left: 0; top: 0; width: 1548px; height: 857px; transform-origin: 0 0; transform: scale(var(--stage-scale, 1)); }
+.scene { position: absolute; inset: 0; }
+.scene .photo { position: absolute; inset: 0; width: 1548px; height: 857px; }
+.scene .photo img, .scene .photo canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.scene .photo canvas { opacity: 0; }
+.scene .photo.is-shaded canvas { opacity: 1; }
+.scene .photo.is-shaded img { visibility: hidden; }
+.scene-b { opacity: 0; animation: scene-b 20s linear infinite; }
+.scene-c { opacity: 0; animation: scene-c 20s ease-in-out infinite; }
+@keyframes scene-b { 0%, 20% { opacity: 0; animation-timing-function: ease-out; } 23%, 57.24% { opacity: 1; animation-timing-function: step-end; } 57.25%, 100% { opacity: 0; } }
+@keyframes scene-c { 0%, 52.5% { opacity: 0; animation-timing-function: ease-in-out; } 56.5%, 94% { opacity: 1; animation-timing-function: ease-in-out; } 100% { opacity: 0; } }
+.scene-a .composer { animation: comp-a 20s linear infinite; }
+@keyframes comp-a { 0%, 96% { translate: 0 16px; animation-timing-function: ease-out; } 100% { translate: 0 0; } }
+.scene-b .desk-window { animation: win-b 20s linear infinite; }
+@keyframes win-b { 0%, 20% { translate: -50% 32px; animation-timing-function: ease-out; } 24%, 100% { translate: -50% 0; } }
+.scene-c .phone { animation: phone-c 20s linear infinite; }
+@keyframes phone-c { 0%, 52.5% { translate: 0 72px; animation-timing-function: ease-out; } 58%, 100% { translate: 0 0; } }
+
+.scene-a .composer { position: absolute; left: 250px; top: 372px; width: 1077px; height: 113px; display: flex; align-items: center; gap: 24px; padding: 16px 16px 16px 36px; border-radius: 9999px; background: rgba(255,255,255,0.8); border: 6px solid rgba(255,255,255,0.36); backdrop-filter: blur(34px); -webkit-backdrop-filter: blur(34px); filter: drop-shadow(0 4px 8px rgba(0,0,0,0.05)); }
+.scene-a .composer .plus { width: 36px; height: 36px; }
+.scene-a .composer p { flex: 1; min-width: 0; font-size: 78px; font-weight: 500; color: #000; white-space: nowrap; overflow: hidden; line-height: 1.1; }
+
+.desk-window { position: absolute; left: 50%; top: 102px; width: 968px; height: 634px; display: flex; overflow: hidden; background: #fff; border: 1px solid var(--gray-200); border-radius: 18px; }
+.desk-window .rail { width: 57px; background: #f6f6f4; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 16px 0; }
+.desk-window .convo { flex: 1; display: flex; flex-direction: column; }
+.desk-window .thread { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 16px; padding: 16px 32px 0; overflow: hidden; }
+.chat-bubble { background: #000; color: #fff; border-radius: 20px 20px 7px 20px; padding: 12px 18px; font-family: var(--font-display); font-weight: 600; letter-spacing: -0.02em; }
+.agent-msg { display: flex; flex-direction: column; gap: 16px; }
+.agent-msg .body { display: flex; flex-direction: column; gap: 5px; font-family: var(--font-display); font-weight: 600; color: var(--ink); letter-spacing: -0.02em; }
+.agent-msg .box { background: #efefef; border: 1px solid #eaeaea; border-radius: 8px; padding: 16px; white-space: pre-line; }
+.desk-window .user-turn { display: flex; justify-content: flex-end; }
+.desk-window .chat-bubble { font-size: 20px; }
+.desk-window .agent-msg { width: 653px; }
+.desk-window .agent-msg .body { font-size: 20px; }
+.desk-window .dot { width: 15.65px; height: 15.65px; border-radius: 1.3px; background: #000; animation: blink 1.1s steps(1) infinite; }
+.composer-sm { height: 52px; display: flex; align-items: center; gap: 12px; padding: 8px 8px 8px 18px; border-radius: 9999px; background: #fff; border: 1px solid var(--gray-200); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05)); }
+.composer-sm .plus { width: 18px; height: 18px; }
+.composer-sm .placeholder { flex: 1; font-size: 15px; color: var(--gray-500); }
+.tool-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 8px; border-radius: 999px; background: #f2f2f2; border: 1px solid #d9d9d9; font-size: 13px; font-weight: 500; color: #000; }
+.tool-chip img { width: 7px; height: 7px; }
+.send-sm { width: 36px; height: 36px; border-radius: 18px; background: var(--gray-950); opacity: 0.2; display: flex; align-items: center; justify-content: center; }
+.send-sm img { width: 16px; height: 16px; }
+.desk-window .composer-area { padding: 0 24px 20px; }
+
+.phone { position: absolute; left: 596px; top: 63px; width: 356px; height: 731px; padding: 6px; border-radius: 47px; background: #0d0a1a; box-shadow: 0 30px 60px rgba(26,13,51,0.28); display: flex; }
+.phone .screen { flex: 1; display: flex; flex-direction: column; background: #fff; border-radius: 42px; overflow: hidden; }
+.phone .status { display: flex; align-items: center; padding: 14px 26px 6px; color: var(--gray-950); }
+.phone .status b { flex: 1; font-size: 14px; font-weight: 600; }
+.phone .status span { font-size: 10px; }
+.phone .app-head { padding: 8px 18px 10px; border-bottom: 1px solid #bdbdbd; }
+.phone .body { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 38px; padding: 10px 16px 74px; overflow: hidden; }
+.phone .agent-msg .body { font-size: 17px; }
+.phone .agent-msg .box { font-size: 15px; }
+.phone .agent-msg.is-tight { gap: 8px; }
+.phone .user-turn { display: flex; justify-content: flex-end; }
+.phone .chat-bubble { width: 230px; font-size: 17px; }
+.phone .composer-area { padding: 0 12px 20px; }
+.phone .composer-tall { height: 95px; display: flex; flex-direction: column; justify-content: flex-end; gap: 12px; padding: 8px 8px 8px 18px; border-radius: 24px; border: 1px solid var(--gray-200); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05)); }
+.phone .composer-tall .placeholder { font-size: 15px; color: var(--gray-500); }
+.phone .composer-tall .row { display: flex; align-items: flex-end; justify-content: space-between; }
+.phone .composer-tall .row > div { display: flex; align-items: center; gap: 12px; }
+.phone .composer-tall .plus { width: 18px; height: 18px; }
+
+/* ── Dark sections ── */
+.on-dark { background: #000; color: rgba(255,255,255,0.9); }
+.autopilot { padding: 120px 0; display: flex; flex-direction: column; align-items: center; gap: 80px; }
+.autopilot .bracket-lines { width: 816px; height: 45.5px; }
+.autopilot .bracket-label { color: rgba(255,255,255,0.9); }
+.ap-box { position: relative; width: min(var(--content), calc(100% - 2 * var(--gutter))); margin: 13px auto 0; border: 1px solid rgba(209,209,209,0.3); padding: 80px 56px; display: flex; flex-direction: column; gap: 36px; }
+.ap-row { display: flex; gap: 24px; align-items: flex-start; }
+.ap-title { width: 256px; flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; font-size: 22px; line-height: 32px; font-weight: 500; color: rgba(255,255,255,0.9); }
+.ap-title .ic { width: 24px; height: 24px; color: #fff; }
+.ap-card { width: 536px; flex-shrink: 0; background: rgba(255,255,255,0.17); box-shadow: 10px 10px 0 0 rgba(255,255,255,0.08); padding: 40px 24px; display: flex; flex-direction: column; gap: 32px; }
+.ap-card .user-turn { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.ap-card .chat-bubble { width: 300px; background: var(--green); color: #000; font-size: 17px; }
+.ap-card .sent { font-family: var(--font-pixel); font-size: 12px; color: #b0b0b0; }
+.ap-card .agent-msg { gap: 8px; }
+.ap-card .agent-msg .agent-tag { opacity: 0.5; }
+.ap-card .agent-msg p { font-family: var(--font-display); font-weight: 600; font-size: 17px; letter-spacing: -0.02em; color: #fff; }
+.ap-note { width: 174px; flex-shrink: 0; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.7); }
+
+.apps { padding: 60px 0 92px; }
+.apps .exchange { gap: 80px; }
+.apps-grid { display: flex; flex-wrap: wrap; gap: 48px; }
+.app-tile { position: relative; width: 244px; height: 244px; border: 1px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; transition: border-color 0.2s, background 0.2s; }
+a.app-tile:hover { border-color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.04); }
+.app-tile .app-logo { font-size: 26.94px; color: #fff; gap: 13.47px; }
+.app-tile .app-logo > img, .app-tile .app-logo > .vscode { width: 35.93px; height: 35.93px; }
+.app-tile .launch { position: absolute; left: 177px; top: 231px; background: #000; padding: 4px; font-family: var(--font-pixel); font-size: 12px; color: var(--label-muted); }
+a.app-tile:hover .launch { color: #fff; }
+
+.setup { position: relative; padding: 96px 0; overflow: hidden; }
+.setup-bg { position: absolute; left: 0; right: 0; top: -198px; height: 1282px; pointer-events: none; }
+.setup-bg img { width: 100%; height: 100%; object-fit: cover; }
+.setup-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.1) 7.584%, #000 85.393%); }
+.setup .exchange { position: relative; gap: 80px; }
+.setup .bracket-lines { width: 964px; height: 45.5px; }
+.steps { position: relative; margin-top: 13px; border: 1px solid rgba(209,209,209,0.3); background: rgba(255,255,255,0.01); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); padding: 64px 56px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px; }
+.step { position: relative; display: flex; flex-direction: column; gap: 16px; }
+.step .num { font-family: var(--font-display); font-weight: 600; font-size: 64px; line-height: 67px; letter-spacing: -0.02em; color: #fff; }
+.step .what { font-size: 19px; font-weight: 500; color: #fff; max-width: 246px; }
+.step:last-child .what { max-width: none; }
+.step-card { flex: 1; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.54); box-shadow: 4px 4px 0 0 #000; padding: 12px; display: flex; flex-direction: column; justify-content: center; gap: 13px; font-family: 'Inter', sans-serif; color: #fff; }
+.step-card.is-center { align-items: center; }
+.step-card .url-row { display: flex; align-items: center; gap: 8px; font-family: var(--font-ui); font-size: 16px; font-weight: 500; }
+.step-card .url-row .ic { width: 20px; height: 20px; }
+.copy-green { background: var(--green-copy); color: #000; font-family: var(--font-ui); font-weight: 500; font-size: 16px; padding: 5px 12px; border-radius: 2px; }
+.copy-green:hover { filter: brightness(1.1); }
+.step-card .section-label { padding: 0 0 8px 11px; font-size: 12px; font-weight: 600; line-height: 16px; }
+.nav-item { display: flex; align-items: center; gap: 16px; padding: 18px 12px; border-radius: 8px; font-size: 18px; line-height: 24px; }
+.nav-item .ic { width: 24px; height: 24px; }
+.nav-item.is-active { background: rgba(255,255,255,0.14); }
+.step-cursor { position: absolute; width: 34px; height: 54px; pointer-events: none; }
+.step-cursor img { position: absolute; inset: -1.93% -9.13% -9.65% -9.13%; width: auto; height: auto; }
+.auth { flex: none; justify-content: flex-start; gap: 21px; padding: 20px; }
+.auth .eyebrow { font-size: 12px; font-weight: 600; line-height: 16px; }
+.auth h3 { font-size: 20px; font-weight: 700; line-height: 24px; }
+.auth .fine { font-size: 10px; line-height: 12px; color: var(--gray-500); }
+.auth .account { border: 1px solid rgba(255,255,255,0.15); padding: 12px; display: flex; flex-direction: column; gap: 2px; }
+.auth .account b { font-size: 12px; font-weight: 600; line-height: 16px; }
+.auth .actions { display: flex; justify-content: flex-end; gap: 8px; }
+.auth .actions button { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; padding: 6px 10px; border-radius: 4px; background: rgba(255,255,255,0.15); color: #fff; }
+.auth .actions button:hover { background: rgba(255,255,255,0.25); }
+
+/* ── Closing CTA + footer ── */
+.cta { padding: 160px var(--gutter); display: flex; flex-direction: column; align-items: center; gap: 32px; text-align: center; }
+.cta .actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center; }
+.signup { display: inline-flex; align-items: center; gap: 10px; height: 42px; padding: 0 22px 0 20px; border-radius: 8px; background: #000; color: #fff; font-family: var(--font-geist); font-weight: 600; font-size: 16px; transition: background 0.15s; }
+.signup:hover { background: #222; }
+.signup img { width: 14px; height: 14px; }
+.site-footer { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 32px 48px; border-top: 1px solid #e6e6e6; font-family: var(--font-geist); font-size: 14px; color: rgba(9,10,12,0.6); }
+.site-footer .logo { width: 155px; height: 16px; }
+.site-footer nav { display: flex; gap: 28px; }
+.site-footer a:hover { color: var(--label-primary); }
+
+/* ── Responsive ── */
+@media (max-width: 1180px) {
+  .ap-row { flex-wrap: wrap; }
+  .ap-card { width: min(536px, 100%); }
+  .ap-note { width: 100%; max-width: 536px; margin-left: 280px; }
+  .apps-grid { gap: 24px; }
+}
+@media (max-width: 1000px) {
+  .examples-grid { grid-template-columns: 1fr; max-width: 622px; }
+  .steps { grid-template-columns: 1fr; }
+  .bracket-lines { display: none; }
+  .ap-title { width: 100%; }
+  .ap-note { margin-left: 0; }
+}
+@media (max-width: 720px) {
+  :root { --gutter: 16px; }
+  .demo-bar { padding: 10px 16px; }
+  .demo-bar-note { display: none; }
+  .site-nav { padding: 0 16px; gap: 8px; }
+  .site-nav .logo { width: 116px; height: 12px; }
+  .site-nav .pill:not(.is-dark) { display: none; }
+  .site-nav .pill.is-dark { font-size: 13px; padding: 6px 12px; }
+  .hero { height: auto; padding-bottom: 80px; }
+  .chat-app { position: relative; left: auto; transform: none; margin: 140px auto 0; height: auto; }
+  .hero:not([data-intro="done"]) .chat-app { transform: translateY(40px); }
+  .chat-rail { display: none; }
+  .chat-thread { padding: 32px 0; gap: 24px; width: calc(100% - 32px); }
+  .hero-user .page-bubble { width: auto; }
+  .hero-reply h1 { font-size: 40px; line-height: 44px; }
+  .hero-connect { position: relative; top: auto; margin-top: 48px; gap: 40px; background: none; }
+  .hero-connect .bracket-frame { display: none; }
+  .intro-composer { top: 200px; height: 72px; gap: 12px; padding: 8px 8px 8px 20px; border-width: 4px; }
+  .intro-composer .typed { font-size: 20px; }
+  .intro-composer .caret { height: 22px; vertical-align: -4px; }
+  .intro-composer .plus { width: 22px; height: 22px; }
+  .send { width: 48px; height: 48px; border-radius: 14px; }
+  .send img { width: 22px; height: 22px; }
+  .page-bubble { font-size: 24px; line-height: 30px; padding: 14px 20px; border-radius: 24px 24px 8px 24px; }
+  .display { font-size: 38px; line-height: 42px; }
+  .bracket-label { font-size: 17px; line-height: 24px; flex-wrap: wrap; justify-content: center; }
+  .hero-copy, .devices .bracket-copy { font-size: 18px; line-height: 27px; }
+  .ex-card { height: 440px; }
+  .ex-rest .bubble { font-size: 20px; max-width: calc(100% - 48px) !important; }
+  .ex-rest .attachment { width: auto; max-width: calc(100% - 48px); }
+  .ex-hover .q { right: 20px; left: 20px; justify-content: flex-end; flex-wrap: wrap; bottom: auto; top: 76px; }
+  .ex-hover .panel { height: auto; top: 64px; }
+  .ex-hover .reply { left: 24px; right: 24px; width: auto; top: 160px; }
+  .ex-hover .reply .box { font-size: 13px; padding: 12px; }
+  .ap-box { padding: 40px 20px; }
+  .ap-card .chat-bubble { width: auto; max-width: 300px; }
+  .app-tile { width: calc(50% - 12px); height: auto; aspect-ratio: 1; }
+  .app-tile .app-logo { font-size: 20px; }
+  .app-tile .launch { left: auto; right: 12px; top: auto; bottom: -11px; }
+  .steps { padding: 32px 20px; }
+  .site-footer { flex-direction: column; padding: 32px 24px; }
+  .site-footer nav { flex-wrap: wrap; justify-content: center; gap: 16px 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  .scene-b, .scene-c { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="demo-bar" role="region" aria-label="Demo controls">
+  <span class="demo-bar-label">MCP landing</span>
+  <button type="button" id="replay-intro">Replay intro</button>
+  <button type="button" id="open-all">Show all replies</button>
+  <span class="demo-bar-note">Hover a chat example to see the reply</span>
+</div>
+
+<!-- ═══════════ Hero ═══════════ -->
+<header class="site-nav">
+  <a href="#top" aria-label="Mothership home"><img class="logo" src="assets/mcp-landing/mothership-logo.svg" alt="Mothership"></a>
+  <a class="pill" href="#top"><img src="assets/mcp-landing/icon-menu.svg" alt="">All Products</a>
+  <span class="spacer"></span>
+  <div class="right">
+    <a class="pill" href="#top"><img src="assets/mcp-landing/icon-track.svg" alt="">Track</a>
+    <a class="pill" href="#top"><img src="assets/mcp-landing/icon-user.svg" alt="">Log in</a>
+    <a class="pill is-dark" href="#get-started"><img src="assets/mcp-landing/icon-arrow.svg" alt="">Sign up in 60 seconds</a>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero" data-intro="start" aria-labelledby="hero-title">
+  <div class="hero-bg"><img src="assets/mcp-landing/hero-bg.jpg" alt=""></div>
+  <div class="hero-fade"></div>
+
+  <div class="intro-composer" aria-hidden="true">
+    <img class="plus" src="assets/mcp-landing/composer-plus-lg.svg" alt="">
+    <div class="typed"><span class="typed-text"></span><span class="caret"></span></div>
+    <span class="send"><img src="assets/mcp-landing/composer-arrow-lg.svg" alt=""></span>
+  </div>
+
+  <div class="chat-app">
+    <div class="chat-rail">
+      <span class="ic ic-24" data-icon="solid/AI/magic"></span>
+      <span class="avatar">TP</span>
+    </div>
+    <div class="chat-convo">
+      <div class="chat-thread">
+        <p class="timestamp">Today 9:41 AM</p>
+        <div class="hero-user"><p class="page-bubble">Can I just ship freight from my AI chat?</p></div>
+        <div class="hero-reply">
+          <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
+          <h1 id="hero-title">Yes. Connect Mothership and just ask</h1>
+          <span class="cursor-block"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-connect">
+    <div class="bracket-frame"><img src="assets/mcp-landing/hero-bracket.svg" alt=""></div>
+    <div class="connect-block">
+      <p class="lead">Add our MCP server to your AI agent in seconds</p>
+      <div class="mcp-url">
+        <span class="beam"></span><span class="surface"></span>
+        <span class="url">mcp.mothership.com</span>
+        <button type="button" class="copy-btn" data-copy="https://mcp.mothership.com">Copy</button>
+      </div>
+      <p class="pixel-note">Requires an approved Mothership account</p>
+    </div>
+    <p class="hero-copy">Quote, book, track and pay for LTL, FTL and Same-day local freight in plain words. Everything our Dashboard does now in Claude, ChatGPT and more — on desktop or your phone.</p>
+    <div class="available">
+      <p class="pixel-note">Now available in</p>
+      <div class="marquee"><div class="marquee-track" id="marquee-track"></div></div>
+    </div>
+    <div class="powered">
+      <p class="pixel-note">Powered by</p>
+      <div class="powered-mark"><img src="assets/mcp-landing/mothership-logotype-small.svg" alt="Mothership"><span>SI</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ What can it do ═══════════ -->
+<section class="features" aria-labelledby="features-title">
+  <div class="exchange">
+    <div class="exchange-user"><p class="page-bubble">What can it do?</p></div>
+    <div class="exchange-agent">
+      <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
+      <h2 class="display" id="features-title">Everything the Mothership Dashboard does, and more.</h2>
+      <span class="cursor-block"></span>
+    </div>
+  </div>
+</section>
+
+<section class="examples" aria-label="Example questions">
+  <div class="bracket">
+    <div class="bracket-lines"><img src="assets/mcp-landing/examples-bracket.svg" alt=""></div>
+    <p class="bracket-label"><span class="ic ic-24" data-icon="solid/AI chat"></span>Here’s how people ask. No waiting.</p>
+  </div>
+  <div class="examples-stage">
+    <img class="examples-photo" src="assets/mcp-landing/warehouse.jpg" alt="">
+    <div class="examples-grid" id="examples-grid"></div>
+  </div>
+  <p class="pixel-note examples-note">Your agent must have the Mothership MCP server connected and it requires an approved Mothership account</p>
+</section>
+
+<!-- ═══════════ Devices ═══════════ -->
+<section class="devices-head" aria-labelledby="devices-title">
+  <div class="exchange">
+    <div class="exchange-user"><p class="page-bubble">Does it work on my phone?</p></div>
+    <div class="exchange-agent">
+      <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
+      <h2 class="display" id="devices-title" style="max-width: 707px">Yes — same chat at your desk or on the dock.</h2>
+      <span class="cursor-block"></span>
+    </div>
+  </div>
+</section>
+
+<section class="devices" aria-label="Desk and dock example">
+  <div class="bracket">
+    <div class="bracket-lines"><img src="assets/mcp-landing/devices-bracket.svg" alt=""></div>
+    <p class="bracket-label"><span class="ic ic-24" data-icon="solid/AI chat"></span>For example</p>
+  </div>
+  <p class="bracket-copy">Check a delivery from the warehouse floor, book next week’s loads from your laptop. Your AI picks up where you left off.</p>
+
+  <div class="stage-wrap" id="stage-wrap">
+    <div class="stage">
+      <div class="scene scene-a">
+        <div class="photo" data-shader><img src="assets/mcp-landing/desk.jpg" alt="Shipper at a desk"></div>
+        <div class="composer">
+          <img class="plus" src="assets/mcp-landing/composer-plus-lg.svg" alt="">
+          <p>What do I have shipping next week?</p>
+          <span class="send"><img src="assets/mcp-landing/composer-arrow-lg.svg" alt=""></span>
+        </div>
+      </div>
+
+      <div class="scene scene-b">
+        <div class="photo" data-shader><img src="assets/mcp-landing/desk.jpg" alt=""></div>
+        <div class="desk-window">
+          <div class="rail"><span class="ic" data-icon="solid/AI/magic"></span><span class="avatar">TP</span></div>
+          <div class="convo">
+            <div class="thread">
+              <div class="user-turn"><p class="chat-bubble">What do I have shipping next week?</p></div>
+              <div class="agent-msg">
+                <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
+                <div class="body">
+                  <p>You have 4 shipments booked for next week:</p>
+                  <p class="box">1. MS482301 · Ontario → Phoenix · Mon, Oct 26 · 6 pallets · $548
+2. MS482302 · Fontana → Reno · Tue, Oct 27 · Full truckload · $1,940
+3. MS482303 · LA → San Diego · Wed, Oct 28 · Local · $185</p>
+                  <p>Want me to send the pickup schedule to your warehouse team?</p>
+                </div>
+                <span class="dot"></span>
+              </div>
+            </div>
+            <div class="composer-area">
+              <div class="composer-sm">
+                <img class="plus" src="assets/mcp-landing/composer-plus.svg" alt="">
+                <span class="tool-chip"><img src="assets/mcp-landing/chip-dot.svg" alt="">Mothership</span>
+                <span class="placeholder">Reply</span>
+                <span class="send-sm"><img src="assets/mcp-landing/composer-arrow.svg" alt=""></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="scene scene-c">
+        <div class="photo" data-shader><img src="assets/mcp-landing/dock.jpg" alt="Shipper on the dock with a phone"></div>
+        <div class="phone">
+          <div class="screen">
+            <div class="status"><b>9:41</b><span>●●●</span></div>
+            <div class="app-head"><span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span></div>
+            <div class="body">
+              <div class="agent-msg">
+                <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
+                <div class="body">
+                  <p>You have 4 shipments booked for next week:</p>
+                  <p class="box">1. MS482301 · Ontario → Phoenix · Mon, Oct 26 · 6 pallets · $548
+2. MS482302 · Fontana → Reno · Tue, Oct 27 · Full truckload · $1,940
+3. MS482303 · LA → San Diego · Wed, Oct 28 · Local · $185</p>
+                  <p>Want me to send the pickup schedule to your warehouse team?</p>
+                </div>
+              </div>
+              <div class="user-turn"><p class="chat-bubble">Include this in all pickup notes to all shipments to: Carrier must have a TWIC card</p></div>
+              <div class="agent-msg is-tight">
+                <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
+                <div class="body">
+                  <p>All notes have been updated for all shipments listed.</p>
+                  <p>&nbsp;</p>
+                  <p>Want me to send the pickup schedule to your warehouse team?</p>
+                </div>
+              </div>
+            </div>
+            <div class="composer-area">
+              <div class="composer-tall">
+                <p class="placeholder">Reply…</p>
+                <div class="row">
+                  <div>
+                    <img class="plus" src="assets/mcp-landing/composer-plus.svg" alt="">
+                    <span class="tool-chip"><img src="assets/mcp-landing/chip-dot.svg" alt="">Mothership</span>
+                  </div>
+                  <span class="send-sm"><img src="assets/mcp-landing/composer-arrow.svg" alt=""></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ Autopilot ═══════════ -->
+<section class="autopilot on-dark" aria-labelledby="autopilot-title">
+  <div class="exchange">
+    <div class="exchange-user"><p class="page-bubble is-green">Can it do things on its own?</p></div>
+    <div class="exchange-agent">
+      <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
+      <h2 class="display" id="autopilot-title">It follows through, and more.<br>Set it once in plain words.</h2>
+      <span class="cursor-block is-light"></span>
+    </div>
+  </div>
+  <div style="width: 100%">
+    <div class="bracket">
+      <div class="bracket-lines"><img src="assets/mcp-landing/autopilot-bracket.svg" alt=""></div>
+      <div class="bracket-label">
+        <span class="agent-stack is-dark">
+          <span class="sphere"><img src="assets/mcp-landing/agent-sphere-dark.svg" alt=""></span>
+          <img class="mark" src="assets/mcp-landing/agent-openai-dark.svg" alt="">
+          <img class="mark" src="assets/mcp-landing/agent-claude-dark.svg" alt="">
+        </span>
+        Routines, Automations, Scheduled tasks, Reports
+      </div>
+    </div>
+    <div class="ap-box">
+      <div class="ap-row">
+        <div class="ap-title"><span class="ic" data-icon="outline/arrow-path"></span>Recurring quotes</div>
+        <div class="ap-card">
+          <div class="user-turn"><p class="chat-bubble">Every Monday, quote 6 pallets from Ontario to the Phoenix store.</p><span class="sent">Sent by you</span></div>
+          <div class="agent-msg" style="width: 364px; max-width: 100%">
+            <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
+            <p>Got it. I’ll quote this every Monday at 7 AM and send you the confirmation.</p>
+          </div>
+        </div>
+        <p class="ap-note">Every Monday at 7am, quote my Ontario → Phoenix lane and send me the three cheapest options.</p>
+      </div>
+      <div class="ap-row">
+        <div class="ap-title"><span class="ic" data-icon="outline/folder-plus"></span>Stays on support</div>
+        <div class="ap-card">
+          <div class="user-turn"><p class="chat-bubble">MS482220 is late. Stay on support until it’s sorted.</p><span class="sent">Sent by you</span></div>
+          <div class="agent-msg" style="width: 361px; max-width: 100%">
+            <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
+            <p>Case opened — I’ll check in every 2 hours. Update: new ETA 4:30 PM today.</p>
+          </div>
+        </div>
+        <p class="ap-note">If a pickup gets missed, open a support case and keep chasing it until it’s rescheduled.</p>
+      </div>
+      <div class="ap-row">
+        <div class="ap-title"><span class="ic" data-icon="outline/clock"></span>Heads-up on delays</div>
+        <div class="ap-card">
+          <div class="user-turn"><p class="chat-bubble">Tell me if anything will deliver late this week.</p><span class="sent">Sent by you</span></div>
+          <div class="agent-msg" style="width: 341px; max-width: 100%">
+            <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
+            <p>Will do. Everything’s on time right now — I’ll message you if that changes.</p>
+          </div>
+        </div>
+        <p class="ap-note">Text me if any shipment is running more than 2 hours late.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ Apps ═══════════ -->
+<section class="apps on-dark" aria-labelledby="apps-title">
+  <div class="exchange">
+    <div style="display: flex; flex-direction: column; gap: 40px">
+      <div class="exchange-user"><p class="page-bubble is-green">Which AI apps work?</p></div>
+      <div class="exchange-agent">
+        <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
+        <h2 class="display" id="apps-title">These ones, today:</h2>
+        <span class="cursor-block is-light"></span>
+      </div>
+    </div>
+    <div class="apps-grid">
+      <a class="app-tile" href="https://chatgpt.com" target="_blank" rel="noopener"><span class="app-logo"><img src="assets/mcp-landing/apps-chatgpt.svg" alt="">ChatGPT</span><span class="launch">Launch</span></a>
+      <a class="app-tile" href="https://claude.ai" target="_blank" rel="noopener"><span class="app-logo"><img src="assets/mcp-landing/apps-claude.svg" alt="">Claude</span><span class="launch">Launch</span></a>
+      <a class="app-tile" href="https://grok.com" target="_blank" rel="noopener"><span class="app-logo"><img src="assets/mcp-landing/apps-grok.svg" alt="">Grok</span><span class="launch">Launch</span></a>
+      <a class="app-tile" href="https://grok.com" target="_blank" rel="noopener"><span class="app-logo"><img src="assets/mcp-landing/apps-grokbot.svg" alt="">Grok bot</span><span class="launch">Launch</span></a>
+      <div class="app-tile"><span class="app-logo"><span class="vscode" data-vscode="apps"></span>VS Code</span></div>
+      <div class="app-tile"><span class="app-logo"><img src="assets/mcp-landing/apps-windsurf.svg" alt="">Windsurf</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ Setup ═══════════ -->
+<section class="setup on-dark" aria-labelledby="setup-title">
+  <div class="setup-bg"><img src="assets/mcp-landing/setup-bg.jpg" alt=""></div>
+  <div class="exchange">
+    <div style="display: flex; flex-direction: column; gap: 40px">
+      <div class="exchange-user"><p class="page-bubble is-green has-shadow">How do I set it up?</p></div>
+      <div class="exchange-agent">
+        <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
+        <h2 class="display" id="setup-title">Three steps, in seconds:</h2>
+        <span class="cursor-block is-light"></span>
+      </div>
+    </div>
+    <div>
+      <div class="bracket">
+        <div class="bracket-lines"><img src="assets/mcp-landing/setup-bracket.svg" alt=""></div>
+        <div class="bracket-label" style="color: rgba(255,255,255,0.9)">
+          <span class="agent-stack is-dark">
+            <span class="sphere"><img src="assets/mcp-landing/setup-agent-sphere.svg" alt=""></span>
+            <img class="mark" src="assets/mcp-landing/setup-agent-openai.svg" alt="">
+            <img class="mark" src="assets/mcp-landing/setup-agent-claude.svg" alt="">
+          </span>
+          AI agents can vary how you connect MCP servers. Just ask your agent.
+        </div>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <p class="num">1</p>
+          <p class="what">Copy the Mothership MCP server URL:</p>
+          <div class="step-card is-center">
+            <span class="url-row"><span class="ic" data-icon="outline/globe-alt"></span>mcp.mothership.com</span>
+            <button type="button" class="copy-green" data-copy="https://mcp.mothership.com">Copy</button>
+          </div>
+        </div>
+        <div class="step">
+          <p class="num">2</p>
+          <p class="what">In your AI app, add it as a new connector</p>
+          <div class="step-card">
+            <p class="section-label">Customize</p>
+            <div class="nav-item"><span class="ic" data-icon="outline/document-text"></span>Skills</div>
+            <div class="nav-item is-active"><span class="ic" data-icon="outline/squares-plus"></span>Connectors</div>
+            <div class="nav-item"><span class="ic" data-icon="outline/puzzle-piece"></span>Plugins</div>
+            <span class="step-cursor" style="left: 191.67px; top: 152px"><img src="assets/mcp-landing/cursor.svg" alt=""></span>
+          </div>
+        </div>
+        <div class="step">
+          <p class="num">3</p>
+          <p class="what">Sign in with your Mothership account — then just ask</p>
+          <div class="step-card auth">
+            <div>
+              <p class="eyebrow">MCP authorization</p>
+              <h3>Allow your AI agent to access Mothership?</h3>
+              <p class="fine">Review the authorization details before allowing this client to access your Mothership account.</p>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px">
+              <p class="eyebrow">Signed in as</p>
+              <div class="account"><b>name@organization.com</b><span class="fine">Organization name</span></div>
+            </div>
+            <div class="actions"><button type="button">Deny</button><button type="button">Allow access</button></div>
+          </div>
+          <span class="step-cursor" style="left: 235.33px; top: 309px"><img src="assets/mcp-landing/cursor.svg" alt=""></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ Closing CTA ═══════════ -->
+<section class="cta" id="get-started" aria-labelledby="cta-title">
+  <h2 class="display" id="cta-title">Ship freight from your AI chat.</h2>
+  <div class="actions">
+    <div class="mcp-url">
+      <span class="beam"></span><span class="surface"></span>
+      <span class="url">mcp.mothership.com</span>
+      <button type="button" class="copy-btn" data-copy="https://mcp.mothership.com">Copy</button>
+    </div>
+    <a class="signup" href="https://www.mothership.com"><img src="assets/mcp-landing/icon-arrow.svg" alt="">Sign up in 60 seconds</a>
+  </div>
+  <p class="pixel-note">Requires an approved Mothership account</p>
+</section>
+</main>
+
+<footer class="site-footer">
+  <img class="logo" src="assets/mcp-landing/mothership-logo.svg" alt="Mothership">
+  <nav aria-label="Footer">
+    <a href="#top">Product</a><a href="#top">Pricing</a><a href="#top">Support</a><a href="#top">Privacy</a><a href="#top">Terms</a>
+  </nav>
+  <span>© 2026 Mothership</span>
+</footer>
+
+<script>
+/* Icons sourced from icons.json (colors swapped to currentColor) */
+const ICONS = {"solid/AI/magic": {"viewBox": "0 0 24 24", "inner": "<path d=\"M9.99993 23.8718C9.99105 22.5738 9.71911 21.2907 9.20006 20.1C8.20267 17.7027 6.29732 15.7974 3.90001 14.8C2.7089 14.2808 1.42526 14.0088 0.126826 14C0.0845646 14.0003 0.0422884 14.0003 0 14C0.0422893 13.9997 0.0845655 13.9997 0.126826 14C1.42282 13.9919 2.70499 13.7288 3.90001 13.225C5.08384 12.7139 6.16091 11.9845 7.07497 11.075C7.98217 10.1642 8.7039 9.08591 9.20009 7.89998C9.71911 6.70939 9.99105 5.42631 9.99996 4.12842C9.99969 4.08563 9.99969 4.04282 9.99998 4C10.0003 4.04282 10.0003 4.08563 9.99996 4.12842C10.0082 5.4239 10.2714 6.70553 10.7752 7.89998C11.2862 9.08386 12.0155 10.161 12.925 11.075C13.8391 11.9845 14.9161 12.7139 16.1 13.225C17.295 13.7288 18.5772 13.992 19.8732 14C19.9155 13.9997 19.9577 13.9997 20 14C19.9577 14.0003 19.9155 14.0003 19.8732 14C18.5748 14.0088 17.2911 14.2808 16.1 14.8C14.9141 15.2961 13.8358 16.0178 12.925 16.925C12.0155 17.839 11.2862 18.9161 10.7752 20.1C10.2714 21.2945 10.0081 22.5762 9.99993 23.8718C10.0002 23.9145 10.0002 23.9572 9.99995 24C9.99967 23.9572 9.99966 23.9145 9.99993 23.8718Z\" fill=\"currentColor\"/>\n<path d=\"M18 11.9231C17.9946 11.1443 17.8315 10.3744 17.52 9.66001C16.9216 8.22162 15.7784 7.07842 14.34 6.47999C13.6253 6.16849 12.8552 6.00531 12.0761 6.00001C12.0507 6.00017 12.0254 6.00017 12 6C12.0254 5.99984 12.0507 5.99984 12.0761 6.00001C12.8537 5.99517 13.623 5.83725 14.34 5.535C15.0503 5.22833 15.6965 4.79072 16.245 4.24502C16.7893 3.69853 17.2223 3.05155 17.5201 2.33999C17.8315 1.62564 17.9946 0.855787 18 0.0770578C17.9998 0.0513804 17.9998 0.0256939 18 0C18.0002 0.0256945 18.0002 0.0513809 18 0.0770578C18.0049 0.854344 18.1629 1.62332 18.4651 2.33999C18.7717 3.05032 19.2093 3.69658 19.755 4.24502C20.3034 4.79072 20.9497 5.22833 21.66 5.535C22.377 5.83726 23.1463 5.99517 23.9239 6.00001C23.9493 5.99984 23.9746 5.99984 24 6C23.9746 6.00017 23.9493 6.00017 23.9239 6.00001C23.1449 6.0053 22.3747 6.16848 21.66 6.47999C20.9484 6.77767 20.3015 7.21068 19.755 7.75498C19.2093 8.30342 18.7717 8.94969 18.4651 9.66001C18.1628 10.3767 18.0049 11.1457 18 11.9231C18.0001 11.9487 18.0001 11.9743 18 12C17.9998 11.9743 17.9998 11.9487 18 11.9231Z\" fill=\"currentColor\"/>"}, "solid/AI chat": {"viewBox": "0 0 24 24", "inner": "<path d=\"M10.5 5.27246C11.1787 5.42548 11.8441 5.64042 12.4854 5.91992C12.833 6.06456 13.1713 6.22643 13.5 6.40332V22.5C13.4999 23.3282 12.8282 23.9999 12 24C11.1718 23.9999 10.5001 23.3282 10.5 22.5V5.27246ZM6.75 5C7.57823 5.00013 8.24987 5.67177 8.25 6.5V17.5C8.24987 18.3282 7.57823 18.9999 6.75 19C5.92177 18.9999 5.25013 18.3282 5.25 17.5V6.5C5.25013 5.67177 5.92177 5.00013 6.75 5ZM15.75 7.99609C16.9652 9.10173 17.937 10.469 18.5801 12.0146C18.6401 12.1523 18.6958 12.2919 18.75 12.4316V17.5C18.7499 18.3282 18.0782 18.9999 17.25 19C16.4218 18.9999 15.7501 18.3282 15.75 17.5V7.99609ZM1.5 8C2.32823 8.00013 2.99987 8.67177 3 9.5V13.5C2.99987 14.3282 2.32823 14.9999 1.5 15C0.671766 14.9999 0.000131894 14.3282 0 13.5V9.5C0.000132 8.67177 0.671767 8.00013 1.5 8ZM23.1094 8.12988C23.6339 8.36359 23.9999 8.88879 24 9.5V13.5C23.9999 14.3282 23.3282 14.9999 22.5 15C21.6718 14.9999 21.0001 14.3282 21 13.5V10.8086C21.5122 9.91803 22.136 9.09427 22.8633 8.36328C22.9434 8.28344 23.027 8.2072 23.1094 8.12988ZM19 0.0644531C19.0041 0.712111 19.1358 1.35304 19.3877 1.9502C19.6432 2.54205 20.0082 3.08013 20.4629 3.53711C20.9199 3.99181 21.458 4.35675 22.0498 4.6123C22.6473 4.86417 23.2885 4.99595 23.9365 5C23.2873 5.00442 22.6453 5.14081 22.0498 5.40039C21.457 5.64845 20.9182 6.00938 20.4629 6.46289C20.0082 6.91987 19.6432 7.45795 19.3877 8.0498C19.1358 8.64695 19.0041 9.28789 19 9.93555C18.9955 9.28669 18.8591 8.64503 18.5996 8.0498C18.1009 6.8514 17.1486 5.89906 15.9502 5.40039C15.3547 5.14081 14.7127 5.00442 14.0635 5C14.7115 4.99595 15.3527 4.86417 15.9502 4.6123C16.542 4.35675 17.0801 3.9918 17.5371 3.53711C17.9906 3.08179 18.3515 2.54302 18.5996 1.9502C18.8591 1.35497 18.9955 0.713313 19 0.0644531ZM12 0C12.8282 0.000131894 13.4999 0.671766 13.5 1.5V3.61035C13.1703 3.79188 12.832 3.9587 12.4854 4.1084C11.8429 4.37921 11.1776 4.58716 10.5 4.73535V1.5C10.5001 0.671767 11.1718 0.000131984 12 0Z\" fill=\"currentColor\"/>"}, "outline/arrow-path": {"viewBox": "0 0 24 24", "inner": "<path d=\"M16.0228 9.34838H21.0154V9.3466M7.97677 14.6517L2.98413 14.6517V19.6444M2.98413 14.6517L6.16502 17.8347C7.15555 18.827 8.41261 19.58 9.86436 19.969C14.2654 21.1482 18.7892 18.5364 19.9685 14.1353M4.03073 9.86481C5.21 5.46371 9.73377 2.85191 14.1349 4.03118C15.5866 4.42017 16.8437 5.17309 17.8342 6.16547L21.0154 9.3466M21.0154 4.35577V9.3466\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "outline/folder-plus": {"viewBox": "0 0 24 24", "inner": "<g clip-path=\"url(#clip0_1218_6911)\">\n<path d=\"M12 10.6154V17.3846M15.3846 14H8.61538M13.1966 5.88895L10.8034 3.49567C10.486 3.1783 10.0555 3 9.60672 3H3.53846C2.13651 3 1 4.13651 1 5.53846V19.0769C1 20.4789 2.13651 21.6154 3.53846 21.6154H20.4615C21.8635 21.6154 23 20.4789 23 19.0769V8.92308C23 7.52112 21.8635 6.38462 20.4615 6.38462H14.3933C13.9445 6.38462 13.514 6.20632 13.1966 5.88895Z\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n</g>\n<defs>\n<clipPath id=\"clip0_1218_6911\">\n<rect width=\"24\" height=\"24\" fill=\"white\"/>\n</clipPath>\n</defs>"}, "outline/clock": {"viewBox": "0 0 24 24", "inner": "<g clip-path=\"url(#clip0_1218_7109)\">\n<path d=\"M12 4.79995V12L17 16M22.8 12C22.8 17.9646 17.9646 22.8 12 22.8C6.03528 22.8 1.19995 17.9646 1.19995 12C1.19995 6.03528 6.03528 1.19995 12 1.19995C17.9646 1.19995 22.8 6.03528 22.8 12Z\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n</g>\n<defs>\n<clipPath id=\"clip0_1218_7109\">\n<rect width=\"24\" height=\"24\" fill=\"white\"/>\n</clipPath>\n</defs>"}, "outline/globe-alt": {"viewBox": "0 0 24 24", "inner": "<g clip-path=\"url(#clip0_1218_6738)\">\n<path d=\"M12 22.8C17.031 22.8 21.2586 19.3598 22.4588 14.7035M12 22.8C6.96886 22.8 2.74125 19.3598 1.54111 14.7035M12 22.8C14.9823 22.8 17.4 17.9646 17.4 12C17.4 6.03528 14.9823 1.19995 12 1.19995M12 22.8C9.01761 22.8 6.59995 17.9646 6.59995 12C6.59995 6.03528 9.01761 1.19995 12 1.19995M22.4588 14.7035C22.6815 13.8394 22.8 12.9335 22.8 12C22.8 10.0735 22.2956 8.26487 21.4116 6.69889C19.5588 3.41628 16.0382 1.19995 12 1.19995M1.54111 14.7035C1.31841 13.8394 1.19995 12.9335 1.19995 12C1.19995 10.0735 1.70434 8.26487 2.58826 6.69889C4.44114 3.41628 7.96172 1.19995 12 1.19995M21.4116 6.69889C18.8876 8.88042 15.5979 10.2 12 10.2C8.40202 10.2 5.11227 8.88042 2.58826 6.69889M22.4588 14.7035C19.36 16.4216 15.7942 17.4 12 17.4C8.20568 17.4 4.6399 16.4216 1.54111 14.7035\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n</g>\n<defs>\n<clipPath id=\"clip0_1218_6738\">\n<rect width=\"24\" height=\"24\" fill=\"white\"/>\n</clipPath>\n</defs>"}, "outline/document-text": {"viewBox": "0 0 24 24", "inner": "<path d=\"M19.9999 14.4546V11.5909C19.9999 9.55751 18.3515 7.9091 16.318 7.9091H14.6817C14.0039 7.9091 13.4544 7.35963 13.4544 6.68183V5.04547C13.4544 3.01205 11.806 1.36365 9.77259 1.36365H7.72714M7.72714 15.2727H15.909M7.72714 18.5455H11.818M10.1817 1.36365H4.8635C4.1857 1.36365 3.63623 1.91312 3.63623 2.59092V21.4091C3.63623 22.0869 4.1857 22.6364 4.8635 22.6364H18.7726C19.4504 22.6364 19.9999 22.0869 19.9999 21.4091V11.1818C19.9999 5.7594 15.6041 1.36365 10.1817 1.36365Z\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "outline/squares-plus": {"viewBox": "0 0 24 24", "inner": "<g clip-path=\"url(#clip0_1218_6617)\">\n<path d=\"M14 18.5H18.5M18.5 18.5H23M18.5 18.5V14M18.5 18.5V23M4 10H7C8.65685 10 10 8.65685 10 7V4C10 2.34315 8.65685 1 7 1H4C2.34315 1 1 2.34315 1 4V7C1 8.65685 2.34315 10 4 10ZM4 23H7C8.65685 23 10 21.6569 10 20V17C10 15.3431 8.65685 14 7 14H4C2.34315 14 1 15.3431 1 17V20C1 21.6569 2.34315 23 4 23ZM17 10H20C21.6569 10 23 8.65685 23 7V4C23 2.34315 21.6569 1 20 1H17C15.3431 1 14 2.34315 14 4V7C14 8.65685 15.3431 10 17 10Z\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n</g>\n<defs>\n<clipPath id=\"clip0_1218_6617\">\n<rect width=\"24\" height=\"24\" fill=\"white\"/>\n</clipPath>\n</defs>"}, "outline/puzzle-piece": {"viewBox": "0 0 24 24", "inner": "<g clip-path=\"url(#clip0_1218_6668)\">\n<path d=\"M15.143 5.81354C15.143 5.40765 15.3556 5.04077 15.6015 4.71784C15.854 4.3863 16.0001 3.99304 16.0001 3.57132C16.0001 2.38786 14.8489 1.42847 13.4287 1.42847C12.0086 1.42847 10.8573 2.38786 10.8573 3.57132C10.8573 3.99304 11.0035 4.3863 11.2559 4.71784C11.5018 5.04077 11.7144 5.40765 11.7144 5.81354C11.7144 6.22643 11.3763 6.55986 10.9636 6.54797C9.35944 6.50177 7.77253 6.38669 6.20573 6.2056C6.41872 8.04876 6.54035 9.91975 6.56598 11.8139C6.57164 12.2322 6.23205 12.5713 5.81378 12.5713C5.40789 12.5713 5.04101 12.3587 4.71808 12.1128C4.38654 11.8604 3.99328 11.7142 3.57157 11.7142C2.3881 11.7142 1.42871 12.8654 1.42871 14.2856C1.42871 15.7058 2.3881 16.857 3.57157 16.857C3.99328 16.857 4.38654 16.7109 4.71808 16.4584C5.04101 16.2125 5.40789 15.9999 5.81378 15.9999C6.16714 15.9999 6.44764 16.2979 6.42174 16.6503C6.27792 18.6069 6.03148 20.535 5.68777 22.4292C7.42251 22.6464 9.18244 22.7826 10.9636 22.8339C11.3764 22.8457 11.7146 22.5123 11.7146 22.0993C11.7146 21.6934 11.5019 21.3265 11.256 21.0036C11.0036 20.6721 10.8574 20.2788 10.8574 19.8571C10.8574 18.6736 12.0087 17.7142 13.4288 17.7142C14.849 17.7142 16.0003 18.6736 16.0003 19.8571C16.0003 20.2788 15.8541 20.6721 15.6016 21.0036C15.3558 21.3265 15.1431 21.6934 15.1431 22.0993C15.1431 22.4797 15.4609 22.7835 15.8407 22.7612C17.9421 22.6377 20.0118 22.3959 22.0431 22.0424C22.3511 20.273 22.5742 18.4744 22.7083 16.6511C22.7342 16.2983 22.4534 15.9999 22.0996 15.9999C21.6937 15.9999 21.3269 16.2126 21.0039 16.4585C20.6724 16.7109 20.2791 16.8571 19.8574 16.8571C18.6739 16.8571 17.7146 15.7058 17.7146 14.2857C17.7146 12.8655 18.6739 11.7142 19.8574 11.7142C20.2791 11.7142 20.6724 11.8604 21.0039 12.1129C21.3269 12.3588 21.6937 12.5714 22.0996 12.5714C22.5183 12.5714 22.8582 12.2319 22.8526 11.8133C22.8245 9.74176 22.6816 7.69786 22.43 5.68787C20.2747 6.07893 18.0756 6.34407 15.8405 6.47538C15.4607 6.49769 15.143 6.19394 15.143 5.81354Z\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n</g>\n<defs>\n<clipPath id=\"clip0_1218_6668\">\n<rect width=\"24\" height=\"24\" fill=\"white\"/>\n</clipPath>\n</defs>"}};
+document.querySelectorAll('[data-icon]').forEach(el => {
+  const icon = ICONS[el.dataset.icon];
+  if (icon) el.innerHTML = `<svg viewBox="${icon.viewBox}" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${icon.inner}</svg>`;
+});
+
+/* VS Code mark (masked layers, as authored in Figma) */
+document.querySelectorAll('[data-vscode]').forEach(el => {
+  const p = el.dataset.vscode === 'apps' ? 'assets/mcp-landing/apps-vscode-' : 'assets/mcp-landing/vscode-';
+  const mask = el.dataset.vscode === 'apps' ? 'assets/mcp-landing/apps-vscode-mask.svg' : 'assets/mcp-landing/vscode-mask.svg';
+  const layers = [['v1', '0% 0%'], ['v2', '0% 100%'], ['v3', '100% 0%'], ['v4', '0% 0%']];
+  el.innerHTML = layers.map(([c], i) => `<div class="${c}"><img src="${p}${i + 1}.svg" alt=""></div>`).join('');
+  // Mask is the full 24x23.876 glyph; offset per layer so it lines up with the whole mark
+  const s = el.getBoundingClientRect().width || 24;
+  const k = s / 24;
+  const pos = { v1: [0.015, 0], v2: [0.015, -5.737], v3: [-16.5, 0], v4: [0.015, 0] };
+  el.querySelectorAll(':scope > div').forEach(d => {
+    const [x, y] = pos[d.className];
+    const v = `url(${mask})`;
+    d.style.webkitMaskImage = v; d.style.maskImage = v;
+    const size = `${24 * k}px ${23.876 * k}px`;
+    d.style.webkitMaskSize = size; d.style.maskSize = size;
+    const position = `${x * k}px ${y * k}px`;
+    d.style.webkitMaskPosition = position; d.style.maskPosition = position;
+  });
+});
+
+/* Logo marquee: two identical sets, track slides -929px over 20s */
+const LOGOS = [
+  ['logo-claude.svg', 'Claude'], ['logo-chatgpt.svg', 'ChatGPT'], ['logo-grok.svg', 'Grok'],
+  ['logo-grokbot.svg', 'Grok bot'], ['vscode', 'VS Code'], ['logo-windsurf.svg', 'Windsurf'],
+];
+const track = document.getElementById('marquee-track');
+const logoHtml = LOGOS.map(([src, name]) => src === 'vscode'
+  ? `<span class="app-logo"><span class="vscode" data-vscode-hero></span>${name}</span>`
+  : `<span class="app-logo"><img src="assets/mcp-landing/${src}" alt="">${name}</span>`).join('');
+track.innerHTML = logoHtml + logoHtml;
+track.querySelectorAll('[data-vscode-hero]').forEach(el => {
+  el.dataset.vscode = 'hero';
+  const pos = { v1: [0.015, 0], v2: [0.015, -5.737], v3: [-16.5, 0], v4: [0.015, 0] };
+  el.innerHTML = ['v1', 'v2', 'v3', 'v4'].map((c, i) => `<div class="${c}"><img src="assets/mcp-landing/vscode-${i + 1}.svg" alt=""></div>`).join('');
+  el.querySelectorAll(':scope > div').forEach(d => {
+    const [x, y] = pos[d.className];
+    const v = 'url(assets/mcp-landing/vscode-mask.svg)';
+    d.style.webkitMaskImage = v; d.style.maskImage = v;
+    d.style.webkitMaskSize = d.style.maskSize = '24px 23.876px';
+    d.style.webkitMaskPosition = d.style.maskPosition = `${x}px ${y}px`;
+  });
+});
+
+/* Copy buttons */
+document.querySelectorAll('[data-copy]').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const label = btn.textContent;
+    try { await navigator.clipboard.writeText(btn.dataset.copy); btn.textContent = 'Copied'; }
+    catch { btn.textContent = 'Copy failed'; }
+    setTimeout(() => { btn.textContent = label; }, 1400);
+  });
+});
+
+/* ── Hero intro: composer types the question, then hands off to the chat ── */
+const hero = document.querySelector('.hero');
+const typedEl = hero.querySelector('.typed-text');
+const composer = hero.querySelector('.intro-composer');
+const QUESTION = 'Can I just ship freight from my AI chat?';
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let introTimers = [];
+const later = (fn, ms) => introTimers.push(setTimeout(fn, ms));
+function playIntro() {
+  introTimers.forEach(clearTimeout); introTimers = [];
+  typedEl.textContent = '';
+  hero.dataset.intro = 'start';
+  if (reducedMotion) { hero.dataset.intro = 'done'; return; }
+  later(() => { hero.dataset.intro = 'composer'; }, 120);
+  const START = 900, RATE = 40;
+  later(() => composer.classList.add('is-typing'), START);
+  [...QUESTION].forEach((_, i) => later(() => { typedEl.textContent = QUESTION.slice(0, i + 1); }, START + i * RATE));
+  const typed = START + QUESTION.length * RATE;
+  later(() => composer.classList.remove('is-typing'), typed);
+  later(() => { hero.dataset.intro = 'done'; }, typed + 1000);
+}
+// Start once the hero photo is ready (fallback after 1.5s) so the first frames aren't stalled by decoding
+Promise.race([hero.querySelector('.hero-bg img').decode().catch(() => {}), new Promise(r => setTimeout(r, 1500))])
+  .then(() => requestAnimationFrame(() => requestAnimationFrame(playIntro)));
+document.getElementById('replay-intro').addEventListener('click', () => { window.scrollTo({ top: 0 }); playIntro(); });
+
+/* ── Chat examples: Rest → Hover, reply types in led by the cursor ── */
+const EXAMPLES = [
+  { q: 'What do I have shipping next week?', w: 420, hq: 'What do I have shipping next week?',
+    lead: 'You have 4 shipments booked for next week:',
+    box: '1. MS482301 · Ontario → Phoenix · Mon, Oct 26 · $548\n2. MS482302 · Fontana → Reno · Tue, Oct 27 · $1,940\n3. MS482303 · LA → San Diego · Wed, Oct 28 · $185',
+    ask: 'Want me to send the pickup schedule to your warehouse team?' },
+  { q: 'Help me book with Old Dominion quoted for pickup tomorrow at 9am.', w: 362, hq: 'Help me book with Old Dominion quoted\nfor pickup tomorrow at 9am.',
+    lead: 'Here’s your Old Dominion quote:',
+    box: 'Ontario, CA → Phoenix, AZ · 6 pallets\nPickup · Tomorrow · 9:00 AM\nTotal · $548',
+    ask: 'Want me to book it on your saved payment method?' },
+  { q: 'Where’s MS123456? Is it delivering today?', w: 350, hq: 'Where’s MS123456? Is it delivering today?',
+    lead: 'Yes — MS123456 is out for delivery.',
+    box: 'Last scan · Phoenix, AZ terminal · 7:42 AM\nDelivery window · Today, 1–4 PM\nCarrier · Old Dominion · PRO 0841 2273',
+    ask: 'Want a heads-up when it’s delivered?' },
+  { q: 'Send me the BOL and delivery receipt for my last Chicago shipment.', w: 441, hq: 'Send me the BOL and delivery receipt\nfor my last Chicago shipment.',
+    lead: 'Here are the docs for MS481977\n(Ontario → Chicago, delivered Oct 19):',
+    box: 'BOL_MS481977.pdf\nPOD_MS481977.pdf',
+    ask: 'Want me to email them to your AP team?' },
+  { q: 'Which invoices are open?', w: null, hq: 'Which invoices are open?',
+    lead: 'You have 3 open invoices, $2,673 total:',
+    box: 'INV-10482 · MS482290 · $548 · due Oct 30\nINV-10491 · MS482295 · $1,940 · due Nov 2\nINV-10503 · MS482299 · $185 · due Nov 6',
+    ask: 'Want me to pay them now?' },
+  { q: 'Update my address book with this file', w: 296, hq: 'Update my address book with this file', file: 'Contacts.csv',
+    lead: 'Done — 12 locations added, 3 updated:',
+    box: '+ Desert Cold Storage · Phoenix, AZ\n+ Lakeview Distribution · Chicago, IL\nUpdated · Fontana DC dock hours',
+    ask: '2 rows were missing ZIP codes — want me to look them up?' },
+];
+const esc = s => s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+const grid = document.getElementById('examples-grid');
+grid.innerHTML = EXAMPLES.map((ex, i) => `
+  <article class="ex-card" tabindex="0" data-i="${i}" aria-label="Example: ${esc(ex.q)}">
+    <div class="ex-head">
+      <span class="agent-stack">
+        <span class="sphere"><img src="assets/mcp-landing/agent-sphere.svg" alt=""></span>
+        <img class="mark" src="assets/mcp-landing/agent-openai.svg" alt="">
+        <img class="mark" src="assets/mcp-landing/agent-claude.svg" alt="">
+      </span>
+      <span class="agent-tag">Any AI agent</span>
+    </div>
+    <div class="ex-rest">
+      <p class="bubble" style="${ex.w ? `width:${ex.w}px` : 'white-space:nowrap'}">${esc(ex.q)}</p>
+      ${ex.file ? `<div class="attachment"><span class="chip">${ex.file}</span></div>` : ''}
+      <span class="caret-down"><img src="assets/mcp-landing/caret-down.svg" alt=""></span>
+    </div>
+    <div class="ex-hover" aria-live="polite">
+      <div class="panel"></div>
+      <div class="q">${ex.file ? `<span class="chip">${ex.file}</span>` : ''}<p class="bubble">${esc(ex.hq)}</p></div>
+      <div class="reply">
+        <span class="spark ic" data-icon="solid/AI/magic"></span>
+        <div class="body"><p class="lead"></p><p class="box"></p><p class="ask"></p></div>
+        <span class="dot is-resting"></span>
+      </div>
+    </div>
+  </article>`).join('');
+grid.querySelectorAll('.spark[data-icon]').forEach(el => {
+  const icon = ICONS[el.dataset.icon];
+  if (icon) el.innerHTML = `<svg viewBox="${icon.viewBox}" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${icon.inner}</svg>`;
+});
+
+const CHAR_MS = 6;
+function typeReply(card) {
+  const ex = EXAMPLES[card.dataset.i];
+  const hover = card.querySelector('.ex-hover');
+  const [lead, box, ask] = hover.querySelectorAll('.body > p');
+  const dot = hover.querySelector('.reply > .dot');
+  const parts = [[lead, ex.lead], [box, ex.box], [ask, ex.ask]];
+  cancelTyping(card);
+  parts.forEach(([el]) => { el.textContent = ''; });
+  box.style.opacity = '0';
+  const cursor = document.createElement('span');
+  cursor.className = 'dot is-inline';
+  dot.style.visibility = 'hidden';
+  const timers = card._timers = [];
+  if (reducedMotion) { parts.forEach(([el, text]) => { el.textContent = text; }); box.style.opacity = '1'; dot.style.visibility = ''; return; }
+  let t = 280;
+  parts.forEach(([el, text], pi) => {
+    timers.push(setTimeout(() => {
+      if (el === box) box.style.opacity = '1';
+      el.textContent = ''; el.appendChild(cursor);
+    }, t));
+    t += el === box ? 120 : 40;
+    const node = document.createTextNode('');
+    timers.push(setTimeout(() => el.insertBefore(node, cursor), t - 1));
+    for (let c = 1; c <= text.length; c++) {
+      timers.push(setTimeout(() => { node.data = text.slice(0, c); }, t + c * CHAR_MS));
+    }
+    t += text.length * CHAR_MS + 120;
+  });
+  timers.push(setTimeout(() => { cursor.remove(); dot.style.visibility = ''; }, t + 100));
+}
+function cancelTyping(card) { (card._timers || []).forEach(clearTimeout); card._timers = []; }
+function fillReply(card) {
+  const ex = EXAMPLES[card.dataset.i];
+  const [lead, box, ask] = card.querySelectorAll('.ex-hover .body > p');
+  lead.textContent = ex.lead; box.textContent = ex.box; ask.textContent = ex.ask; box.style.opacity = '1';
+  card.querySelector('.reply > .dot').style.visibility = '';
+}
+const openCard = card => { if (card.classList.contains('is-open')) return; card.classList.add('is-open'); typeReply(card); };
+const closeCard = card => { if (document.body.classList.contains('show-all')) return; card.classList.remove('is-open'); cancelTyping(card); };
+grid.querySelectorAll('.ex-card').forEach(card => {
+  card.addEventListener('mouseenter', () => openCard(card));
+  card.addEventListener('mouseleave', () => closeCard(card));
+  card.addEventListener('focus', () => openCard(card));
+  card.addEventListener('blur', () => closeCard(card));
+  card.addEventListener('touchstart', () => {
+    grid.querySelectorAll('.ex-card.is-open').forEach(c => { if (c !== card) closeCard(c); });
+    card.classList.contains('is-open') ? closeCard(card) : openCard(card);
+  }, { passive: true });
+});
+document.getElementById('open-all').addEventListener('click', e => {
+  const on = document.body.classList.toggle('show-all');
+  e.currentTarget.textContent = on ? 'Hide replies' : 'Show all replies';
+  grid.querySelectorAll('.ex-card').forEach(card => {
+    if (on) { card.classList.add('is-open'); cancelTyping(card); fillReply(card); }
+    else { card.classList.remove('is-open'); }
+  });
+});
+
+/* ── Devices stage: scale the 1548×857 artboard to fit ── */
+const stageWrap = document.getElementById('stage-wrap');
+const fitStage = () => stageWrap.style.setProperty('--stage-scale', stageWrap.clientWidth / 1548);
+new ResizeObserver(fitStage).observe(stageWrap); fitStage();
+
+/* ── "Pattern Screen" shader (Figma custom effect, wavy lines) on the device photos ──
+   setup()/render() below are the Figma shader module, copied verbatim (unused param helpers trimmed). */
+const PatternScreen = (() => {
+  function setup(device, frame) {
+    var wgsl = `
+diagnostic(off,derivative_uniformity);
+struct Uniforms {
+  frameData: vec4f,
+  inputDimsData: vec4f,
+  patternMode: vec4f,
+  patternScale: vec4f,
+  tintColor: vec4f,
+  bgColor: vec4f,
+  contrast: vec4f,
+  patternAngle: vec4f,
+};
+@group(0) @binding(0) var<uniform> u: Uniforms;
+@group(0) @binding(1) var samp: sampler;
+@group(0) @binding(2) var inputTex: texture_2d<f32>;
+
+struct VsIn {
+  @location(0) pos: vec2f,
+  @location(1) uv: vec2f,
+};
+struct VsOut {
+  @builtin(position) position: vec4f,
+  @location(0) uv: vec2f,
+};
+
+fn sampleInput(p: vec2f) -> vec4f {
+  return textureSampleLevel(inputTex, samp, clamp(p, vec2f(0.0), vec2f(1.0)), 0.0);
+}
+
+// Like sampleInput but returns transparent (premultiplied zero) outside the
+// input rect instead of repeating the edge texel.
+fn sampleInputOrZero(p: vec2f) -> vec4f {
+  let inside = step(vec2f(0.0), p) * step(p, vec2f(1.0));
+  return sampleInput(p) * (inside.x * inside.y);
+}
+
+fn rotateUV(p: vec2f, angle: f32) -> vec2f {
+
+  let c = cos(angle);
+
+  let s = sin(angle);
+
+  return vec2f(p.x * c - p.y * s, p.x * s + p.y * c);
+
+}
+
+@vertex fn vs_main(in: VsIn) -> VsOut {
+  var out: VsOut;
+  out.position = vec4f(in.pos, 0.0, 1.0);
+  out.uv = in.uv;
+  return out;
+}
+
+@fragment fn fs_main(@location(0) outputUv_in: vec2f) -> @location(0) vec4f {
+  let time = u.frameData.x;
+  let outputUv = outputUv_in;
+  let dims = max(u.frameData.yz, vec2f(1.0));
+  let inputDims = max(u.inputDimsData.xy, vec2f(1.0));
+  let inputTexel = vec2f(1.0) / inputDims;
+  let uv = outputUv;
+  // texel and aspect are input-relative to match uv. Zoom fills rescale texel
+  // alongside their uv redefinition below (see zoomLocal).
+  let texel = inputTexel;
+  let aspect = inputDims.x / max(inputDims.y, 1.0);
+  // patternMode: 0=Vertical lines, 1=Horizontal lines, 2=Crosshatch, 3=Diagonal crosshatch, 4=Square dots, 5=Circle dots, 6=Wavy lines, 7=Diamond checker, 8=Radial lines, 9=Coarse halftone
+  let patternMode = i32(u.patternMode.x + 0.5);
+  let patternScale = u.patternScale.x;
+  let tintColor = u.tintColor;
+  let bgColor = u.bgColor;
+  let contrast = u.contrast.x;
+  let patternAngle = u.patternAngle.x;
+  let inputColor = sampleInput(uv);
+  let lum = dot(inputColor.rgb / max(inputColor.a, 0.0001), vec3f(0.299, 0.587, 0.114));
+  let l = clamp(pow(lum, 1.0 / max(contrast, 0.01)), 0.0, 1.0);
+  let px = uv * dims;
+  let ang = patternAngle * 3.14159265 / 180.0;
+  let center = dims * 0.5;
+  let rp = rotateUV(px - center, ang) + center;
+  let cellSize = patternScale;
+  let cell = rp / cellSize;
+  let cellFrac = fract(cell);
+  var pattern: f32 = 0.0;
+  // patternMode: 0=Vertical lines, 1=Horizontal lines, 2=Crosshatch, 3=Diagonal crosshatch,
+  // 4=Square dots, 5=Circle dots, 6=Wavy lines, 7=Diamond checker, 8=Radial lines, 9=Coarse halftone
+  if (patternMode == 0) {
+    // Vertical lines
+    pattern = select(0.0, 1.0, abs(cellFrac.x - 0.5) < l * 0.5);
+  } else if (patternMode == 1) {
+    // Horizontal lines
+    pattern = select(0.0, 1.0, abs(cellFrac.y - 0.5) < l * 0.5);
+  } else if (patternMode == 2) {
+    // Crosshatch
+    let h = select(0.0, 1.0, abs(cellFrac.x - 0.5) < l * 0.5);
+    let v = select(0.0, 1.0, abs(cellFrac.y - 0.5) < l * 0.5);
+    pattern = max(h, v);
+  } else if (patternMode == 3) {
+    // Diagonal crosshatch — use 45deg rotated coords
+    let dp = rotateUV(px - center, ang + 0.7853981) + center;
+    let dcf = fract(dp / cellSize);
+    let d1 = select(0.0, 1.0, abs(dcf.x - 0.5) < l * 0.5);
+    let d2 = select(0.0, 1.0, abs(dcf.y - 0.5) < l * 0.5);
+    pattern = max(d1, d2);
+  } else if (patternMode == 4) {
+    // Square dots
+    let half = l * 0.5;
+    pattern = select(0.0, 1.0, abs(cellFrac.x - 0.5) < half && abs(cellFrac.y - 0.5) < half);
+  } else if (patternMode == 5) {
+    // Circle dots
+    let dist = length(cellFrac - vec2f(0.5));
+    pattern = select(0.0, 1.0, dist < l * 0.5);
+  } else if (patternMode == 6) {
+    // Wavy lines
+    let wave = sin(cell.x * 3.14159265 * 2.0) * 0.15;
+    let yOff = cellFrac.y + wave;
+    pattern = select(0.0, 1.0, abs(fract(yOff) - 0.5) < l * 0.5);
+  } else if (patternMode == 7) {
+    // Diamond checker
+    let d = abs(cellFrac.x - 0.5) + abs(cellFrac.y - 0.5);
+    pattern = select(0.0, 1.0, d < l * 0.5 + 0.25);
+  } else if (patternMode == 8) {
+    // Radial lines
+    let delta = px - center;
+    let angle2 = atan2(delta.y, delta.x) + ang;
+    let slices = 6.283185 / cellSize;
+    let stripe = fract(angle2 / slices);
+    pattern = select(0.0, 1.0, abs(stripe - 0.5) < l * 0.5);
+  } else {
+    // Coarse halftone — larger dots
+    let bigCell = cellSize * 2.5;
+    let bcf = fract(rp / bigCell);
+    let dist2 = length(bcf - vec2f(0.5));
+    pattern = select(0.0, 1.0, dist2 < l * 0.45);
+  }
+  let fg = tintColor.rgb * tintColor.a;
+  let bg = bgColor.rgb * bgColor.a;
+  let col = mix(bg, fg, pattern);
+  let a = mix(bgColor.a, tintColor.a, pattern);
+  return vec4f(col, a) * inputColor.a;
+}
+`;
+    frame.state.module = device.createShaderModule({ code: wgsl });
+    frame.state.pipeline = null;
+    frame.state.pipelineFormat = null;
+    frame.state.quad = device.createBuffer({
+        size: 6 * 4 * 4,
+        usage: GPUBufferUsage.VERTEX,
+        mappedAtCreation: true,
+    });
+    new Float32Array(frame.state.quad.getMappedRange()).set([
+        -1, -1, 0, 1,
+        1, -1, 1, 1,
+        -1, 1, 0, 0,
+        -1, 1, 0, 0,
+        1, -1, 1, 1,
+        1, 1, 1, 0,
+    ]);
+    frame.state.quad.unmap();
+    frame.state.uniformBuf = device.createBuffer({
+        size: 128,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+    });
+    frame.state.sampler = device.createSampler({
+        magFilter: 'linear',
+        minFilter: 'linear',
+        addressModeU: 'clamp-to-edge',
+        addressModeV: 'clamp-to-edge',
+    });
+    frame.state.placeholder = device.createTexture({
+        size: [1, 1, 1],
+        format: 'rgba8unorm',
+        usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
+    });
+    device.queue.writeTexture({ texture: frame.state.placeholder }, new Uint8Array([0, 0, 0, 0]), { bytesPerRow: 4 }, { width: 1, height: 1, depthOrArrayLayers: 1 });
+  }
+  function render(device, frame) {
+    var params = frame.params || {};
+    function finiteNumber(value, fallback) {
+        var num = Number(value);
+        return Number.isFinite(num) ? num : fallback;
+    }
+    function numberParam(name, fallback) {
+        return finiteNumber(params[name], fallback);
+    }
+    function selectParam(name, count, fallbackIndex) {
+        // A select is a numeric dropdown: params[name] is the chosen option's index.
+        var index = Math.round(Number(params[name]));
+        return Number.isFinite(index) && index >= 0 && index < count ? index : fallbackIndex;
+    }
+    function colorParam(name, fallback) {
+        var value = params[name] || {};
+        return [
+            finiteNumber(value.r, fallback[0]),
+            finiteNumber(value.g, fallback[1]),
+            finiteNumber(value.b, fallback[2]),
+            finiteNumber(value.a, fallback[3]),
+        ];
+    }
+    var output = frame.output || {};
+    var width = Math.max(1, finiteNumber(output.width, 1));
+    var height = Math.max(1, finiteNumber(output.height, 1));
+    var time = 0;
+    var inputWidth = width;
+    var inputHeight = height;
+    device.queue.writeBuffer(frame.state.uniformBuf, 0, new Float32Array([
+        time, width, height, 0,
+        inputWidth, inputHeight, 0, 0,
+        selectParam("patternMode", 10, 5), 0, 0, 0,
+        numberParam("patternScale", 8), 0, 0, 0,
+        ...colorParam("tintColor", [0, 0.898, 0.627, 1]),
+        ...colorParam("bgColor", [0, 0, 0, 1]),
+        numberParam("contrast", 1), 0, 0, 0,
+        numberParam("patternAngle", 0), 0, 0, 0,
+    ]));
+    var inputView = frame.input != null
+        ? frame.input.createView()
+        : frame.state.placeholder.createView();
+    var outputFormat = frame.output.format;
+    if (frame.state.pipeline == null || frame.state.pipelineFormat !== outputFormat) {
+        frame.state.pipeline = device.createRenderPipeline({
+            layout: 'auto',
+            vertex: {
+                module: frame.state.module,
+                entryPoint: 'vs_main',
+                buffers: [{
+                        arrayStride: 16,
+                        attributes: [
+                            { shaderLocation: 0, format: 'float32x2', offset: 0 },
+                            { shaderLocation: 1, format: 'float32x2', offset: 8 },
+                        ],
+                    }],
+            },
+            fragment: {
+                module: frame.state.module,
+                entryPoint: 'fs_main',
+                targets: [{ format: outputFormat }],
+            },
+            primitive: { topology: 'triangle-list' },
+        });
+        frame.state.pipelineFormat = outputFormat;
+    }
+    var bindGroup = device.createBindGroup({
+        layout: frame.state.pipeline.getBindGroupLayout(0),
+        entries: [
+            { binding: 0, resource: { buffer: frame.state.uniformBuf } },
+            { binding: 1, resource: frame.state.sampler },
+            { binding: 2, resource: inputView },
+        ],
+    });
+    var encoder = device.createCommandEncoder();
+    var pass = encoder.beginRenderPass({
+        colorAttachments: [{
+                view: frame.output.createView(),
+                loadOp: 'clear',
+                clearValue: { r: 0, g: 0, b: 0, a: 0 },
+                storeOp: 'store',
+            }],
+    });
+    pass.setPipeline(frame.state.pipeline);
+    pass.setBindGroup(0, bindGroup);
+    pass.setVertexBuffer(0, frame.state.quad);
+    pass.draw(6);
+    pass.end();
+    device.queue.submit([encoder.finish()]);
+  }
+  return { setup, render };
+})();
+
+/* Minimal host: feeds the photo (object-fit: cover at the layer's size) in as the input texture,
+   renders once at the layer's design size. Params match the Figma effect. */
+const SHADER_PARAMS = { patternAngle: 0, contrast: 1, bgColor: { r: 0, g: 0, b: 0, a: 1 }, patternScale: 3.5, tintColor: { r: 1, g: 1, b: 1, a: 1 }, patternMode: 6 };
+async function applyPatternScreen() {
+  if (!navigator.gpu) { console.info('Pattern Screen shader needs WebGPU; showing the unshaded photos.'); return; }
+  const adapter = await navigator.gpu.requestAdapter();
+  if (!adapter) return;
+  const device = await adapter.requestDevice();
+  const format = navigator.gpu.getPreferredCanvasFormat();
+  const W = 1548, H = 857, dpr = Math.min(window.devicePixelRatio || 1, 2);
+  for (const layer of document.querySelectorAll('[data-shader]')) {
+    const img = layer.querySelector('img');
+    await img.decode().catch(() => {});
+    const w = Math.round(W * dpr), h = Math.round(H * dpr);
+    // Cover-crop the photo into an input canvas the size of the layer
+    const src = document.createElement('canvas'); src.width = w; src.height = h;
+    const s = Math.max(w / img.naturalWidth, h / img.naturalHeight);
+    const dw = img.naturalWidth * s, dh = img.naturalHeight * s;
+    src.getContext('2d').drawImage(img, (w - dw) / 2, (h - dh) / 2, dw, dh);
+    const input = device.createTexture({ size: [w, h], format: 'rgba8unorm', usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT });
+    device.queue.copyExternalImageToTexture({ source: src }, { texture: input, premultipliedAlpha: true }, [w, h]);
+    const canvas = document.createElement('canvas'); canvas.width = w; canvas.height = h;
+    layer.appendChild(canvas);
+    const ctx = canvas.getContext('webgpu');
+    ctx.configure({ device, format, alphaMode: 'premultiplied' });
+    // patternScale is in output pixels; scale with dpr so the lines match the 1x design
+    const frame = { state: {}, params: { ...SHADER_PARAMS, patternScale: SHADER_PARAMS.patternScale * dpr }, input, output: null };
+    PatternScreen.setup(device, frame);
+    frame.output = ctx.getCurrentTexture();
+    PatternScreen.render(device, frame);
+    layer.classList.add('is-shaded');
+  }
+}
+// Heavy GPU/canvas work: run after the hero intro has played
+setTimeout(() => applyPatternScreen().catch(err => console.warn('Pattern Screen shader failed:', err)), reducedMotion ? 0 : 3500);
+</script>
+</body>
+</html>
