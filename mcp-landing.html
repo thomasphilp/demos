@@ -296,8 +296,15 @@ img { display: block; }
 .chat-app { transform-origin: 50% 100px; /* the input's center, relative to the card top */ transition: opacity 0.6s ease 0.12s, transform 0.95s cubic-bezier(.22,1.12,.36,1) 0.12s; }
 .hero-connect { transition: opacity 0.7s ease, transform 0.8s cubic-bezier(.2,.7,.2,1); }
 .hero:not([data-intro="done"]) .chat-app { opacity: 0; transform: scale(0.82); transition-delay: 0s; }
-.hero:not([data-intro="done"]) .hero-connect { opacity: 0; transform: translateY(24px); }
-.hero[data-intro="done"] .hero-connect { transition-delay: 0.55s; }
+/* Connect block comes in only after the agent's answer has finished typing, top to bottom */
+.hero:not(.is-answered) .hero-connect { opacity: 0; transform: translateY(24px); }
+.hero-connect > .cf-edge, .cf-body > * { transition: opacity 0.6s ease, translate 0.9s cubic-bezier(.16,1,.3,1); }
+.hero:not(.is-answered) .hero-connect > .cf-edge, .hero:not(.is-answered) .cf-body > * { opacity: 0; translate: 0 16px; transition-delay: 0s; }
+.hero.is-answered .cf-edge.is-top { transition-delay: 0.1s; }
+.hero.is-answered .cf-body > :nth-child(1) { transition-delay: 0.22s; }
+.hero.is-answered .cf-body > :nth-child(2) { transition-delay: 0.34s; }
+.hero.is-answered .cf-body > :nth-child(3) { transition-delay: 0.46s; }
+.hero.is-answered .cf-edge.is-bottom { transition-delay: 0.58s; }
 .hero-reply { transition: opacity 0.5s ease, transform 0.6s cubic-bezier(.2,.7,.2,1); }
 .hero:not([data-intro="done"]) .hero-user .page-bubble { opacity: 0; }
 .hero:not([data-intro="done"]) .hero-reply { opacity: 0; transform: translateY(16px); }
@@ -1038,7 +1045,8 @@ function playIntro() {
   typedEl.textContent = '';
   hero.dataset.intro = 'start';
   twReset(heroTitle);
-  if (reducedMotion) { hero.dataset.intro = 'done'; twType(heroTitle); return; }
+  hero.classList.remove('is-answered');
+  if (reducedMotion) { hero.dataset.intro = 'done'; twType(heroTitle, { onDone: heroAnswered }); return; }
   later(() => { hero.dataset.intro = 'composer'; }, 120);
   // Reveal word by word: each word fades up into place, caret follows
   const START = 1050, RATE = 85; // words start once the entrance bounce has settled
@@ -1057,7 +1065,12 @@ function playIntro() {
   later(() => sendBtn.classList.add('is-pressed'), PRESS);
   later(() => { hero.dataset.intro = 'done'; }, PRESS + 320);
   // The agent's answer types in once the chat has grown in and the bubble has landed
-  later(() => twType(heroTitle), PRESS + 320 + 1100);
+  later(() => twType(heroTitle, { onDone: heroAnswered }), PRESS + 320 + 1100);
+}
+// Once the hero answer is typed: bring in the connect block, then let the rest of the page start revealing
+function heroAnswered() {
+  hero.classList.add('is-answered');
+  document.dispatchEvent(new Event('hero:answered'));
 }
 const heroTitle = document.getElementById('hero-title');
 const sendBtn = composer.querySelector('.send');
@@ -1236,13 +1249,13 @@ function twPlace(el, word) {
   const y = baseline - host.top - size;
   tw.caret.style.cssText = `width:${size}px;height:${size}px;transform:translate(${x}px,${y}px)`;
 }
-function twType(el, { start = 0, rate = 180 } = {}) {
+function twType(el, { start = 0, rate = 180, onDone } = {}) {
   const tw = twPrep(el); twReset(el);
-  if (reducedMotion) { tw.words.forEach(w => w.classList.add('is-on')); el.classList.add('is-typed'); return; }
+  if (reducedMotion) { tw.words.forEach(w => w.classList.add('is-on')); el.classList.add('is-typed'); onDone && onDone(); return; }
   const at = (fn, ms) => tw.timers.push(setTimeout(fn, ms));
   at(() => { twPlace(el, null); tw.caret.classList.add('is-on'); }, start);
   tw.words.forEach((w, i) => at(() => { w.classList.add('is-on'); twPlace(el, w); }, start + 220 + i * rate));
-  at(() => { tw.caret.classList.remove('is-on'); el.classList.add('is-typed'); }, start + 220 + tw.words.length * rate + 280);
+  at(() => { tw.caret.classList.remove('is-on'); el.classList.add('is-typed'); onDone && onDone(); }, start + 220 + tw.words.length * rate + 280);
 }
 
 /* ── Hero chat card: fade its chrome to white from the top of the connect block ── */
@@ -1268,8 +1281,10 @@ function twType(el, { start = 0, rate = 180 } = {}) {
     '.ex-card',
     '.examples-note',
     '.stage-wrap',
+    '.ap-box',
     '.ap-row',
     '.app-tile',
+    '.steps',
     '.step',
     '.cta > *',
     '.site-footer',
@@ -1289,21 +1304,51 @@ function twType(el, { start = 0, rate = 180 } = {}) {
       targets.push(el);
     });
   });
-  // AI replies below the hero type in once visible, after the user bubble above has landed
+  // AI replies below the hero type in word by word
   const writers = [...document.querySelectorAll('[data-typewriter]')].filter(el => !hero.contains(el));
   writers.forEach(twPrep);
   if (reducedMotion || !('IntersectionObserver' in window)) { targets.forEach(el => el.classList.add('is-visible')); writers.forEach(el => twType(el)); return; }
+
+  // Strict top-to-bottom order: one queue in document order. An item plays once it (or anything
+  // below it) has scrolled into view, and never before everything above it has played. A typed
+  // reply holds the queue until its last word lands, so content under it always comes after.
+  const items = [...targets.map(el => ({ el, kind: 'reveal' })), ...writers.map(el => ({ el, kind: 'type' }))]
+    .sort((a, b) => (a.el.compareDocumentPosition(b.el) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
+  items.forEach((it, i) => { it.i = i; it.el._seq = it; });
+  let next = 0, busy = false, open = false;
+  const pump = () => {
+    if (!open || busy) return;
+    while (next < items.length && items[next].ready) {
+      const it = items[next++];
+      // Catch-up: anything already scrolled past (fully above the viewport) appears at once, still in order
+      if (it.el.getBoundingClientRect().bottom < 0) {
+        if (it.kind === 'type') { const tw = twPrep(it.el); twReset(it.el); tw.words.forEach(w => w.classList.add('is-on')); it.el.classList.add('is-typed'); }
+        else it.el.classList.add('is-visible');
+        continue;
+      }
+      if (it.kind === 'reveal') { it.el.classList.add('is-visible'); continue; }
+      busy = true;
+      twType(it.el, { start: parseFloat(it.el.dataset.twDelay || '0.5') * 1000, onDone: () => { busy = false; pump(); } });
+      return;
+    }
+  };
   const io = new IntersectionObserver(entries => {
     entries.forEach(e => {
       if (!e.isIntersecting) return;
-      const el = e.target;
-      if (el.hasAttribute('data-typewriter')) twType(el, { start: parseFloat(el.dataset.twDelay || '0.5') * 1000 });
-      else el.classList.add('is-visible');
-      io.unobserve(el);
+      for (let k = 0; k <= e.target._seq.i; k++) items[k].ready = true; // anything above counts as reached
+      io.unobserve(e.target);
     });
+    pump();
   }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
-  targets.forEach(el => io.observe(el));
-  writers.forEach(el => io.observe(el));
+  items.forEach(it => io.observe(it.el));
+  // At the very bottom the last items (footer) can sit inside the -8% margin, so treat everything as reached
+  const atBottom = () => {
+    if (innerHeight + scrollY < document.documentElement.scrollHeight - 4) return;
+    items.forEach(it => { it.ready = true; }); pump();
+  };
+  addEventListener('scroll', atBottom, { passive: true });
+  // Nothing below the hero starts until the hero's answer and connect block are in
+  document.addEventListener('hero:answered', () => { if (!open) { open = true; setTimeout(pump, 700); } });
 })();
 
 /* ── Devices stage: scale the 1548×857 artboard to fit ── */
