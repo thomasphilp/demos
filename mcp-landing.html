@@ -6,7 +6,7 @@
 <title>Mothership MCP — Mothership Demo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600&family=Bruno+Ace&family=Geist+Pixel&family=Geist:wght@400;600&family=Inter:wght@400;600;700&family=Instrument+Sans:wdth,wght@75..100,400..600&family=Outfit:wght@600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600&family=Bruno+Ace&family=Geist+Pixel&family=Geist:wght@400;600&family=Inter:wght@400;600;700&family=Instrument+Sans:wdth,wght@75..100,400..700&family=Outfit:wght@600&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -230,18 +230,20 @@ img { display: block; }
   backdrop-filter: blur(34px); -webkit-backdrop-filter: blur(34px); box-shadow: 0 4px 8px rgba(0,0,0,0.05);
   transition: opacity 0.6s ease, transform 0.7s cubic-bezier(.2,.7,.2,1);
 }
-/* Rotating shine on the composer border: blue → green streak over a 15% white ring */
+/* Rotating shine on the composer border, using the Figma Chat/Composer (245:1442) stroke gradient:
+   white 0–17.8% → #747474 59.5% → #00e1ff 66.6% → #00ff1a 71.6% → white 100% */
 @property --shine-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
 .intro-composer { --bw: 3px; border-width: var(--bw); border-color: transparent; background-clip: padding-box; }
 .intro-composer::before {
   content: ""; position: absolute; inset: calc(-1 * var(--bw)); padding: var(--bw); border-radius: inherit; pointer-events: none;
-  background: conic-gradient(from var(--shine-angle), rgba(255,255,255,0.15) 0deg, #2563eb 30deg, #00ff1a 80deg, rgba(255,255,255,0.15) 120deg, rgba(255,255,255,0.15) 360deg);
+  background: conic-gradient(from var(--shine-angle), #fff 0%, #fff 17.8%, #747474 59.5%, #00e1ff 66.6%, #00ff1a 71.6%, #fff 100%);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor; mask-composite: exclude;
   animation: shine 0.75s linear infinite;
 }
 @keyframes shine { to { --shine-angle: 360deg; } }
 .intro-composer .typed .word { display: inline-block; white-space: pre; animation: word-in 0.16s cubic-bezier(.2,.7,.2,1) both; }
+.intro-composer .typed .word.is-bold { font-weight: 700; }
 @keyframes word-in { from { opacity: 0; transform: translateY(8px); filter: blur(4px); } }
 .intro-composer .plus { width: 35px; height: 35px; }
 /* Figma Chat/Composer (245:1442) scaled ×1.95: 36px circle send → 70px, 16px arrow → 31px */
@@ -994,6 +996,7 @@ const hero = document.querySelector('.hero');
 const typedEl = hero.querySelector('.typed-text');
 const composer = hero.querySelector('.intro-composer');
 const QUESTION = 'Can I just ship freight from my AI chat?';
+const BOLD_WORDS = new Set(['ship', 'freight']); // Instrument Sans Bold, as in Figma 299:692
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let introTimers = [];
 const later = (fn, ms) => introTimers.push(setTimeout(fn, ms));
@@ -1009,7 +1012,7 @@ function playIntro() {
   later(() => composer.classList.add('is-typing'), START);
   words.forEach((word, i) => later(() => {
     const span = document.createElement('span');
-    span.className = 'word';
+    span.className = BOLD_WORDS.has(word) ? 'word is-bold' : 'word';
     span.textContent = (i ? ' ' : '') + word;
     typedEl.appendChild(span);
   }, START + i * RATE));
