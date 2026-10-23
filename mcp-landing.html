@@ -160,7 +160,7 @@ img { display: block; }
 /* MCP URL box with rotating border beam */
 .mcp-url {
   position: relative; overflow: hidden; width: 293px; display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 8px 8px 14px; background: #ececec; box-shadow: 4px 4px 0 0 #000;
+  padding: 8px 8px 8px 14px; background: #fff; box-shadow: 4px 4px 0 0 #000;
 }
 .mcp-url .beam {
   position: absolute; left: 50%; top: 50%; width: 305px; height: 305px; margin: -152.5px 0 0 -152.5px;
@@ -169,8 +169,7 @@ img { display: block; }
   animation: beam var(--shine-speed) linear infinite;
 }
 @keyframes beam { to { transform: rotate(360deg); } }
-/* Light gray surface so the white stretch of the shine reads as a rim, like on the hero input */
-.mcp-url .surface { position: absolute; inset: 1.5px; background: #ececec; }
+.mcp-url .surface { position: absolute; inset: 1.5px; background: #fff; }
 .mcp-url .url { position: relative; font-size: 18px; font-weight: 500; color: var(--label-primary); }
 .copy-btn { position: relative; background: var(--ink); color: #fff; font-family: var(--font-geist); font-size: 12px; padding: 5px 12px; border-radius: 2px; min-width: 53px; }
 .copy-btn:hover { background: #000; }
