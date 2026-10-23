@@ -510,7 +510,7 @@ a.app-tile:hover .launch { color: #fff; }
 @keyframes tw-in { from { opacity: 0; } }
 .tw-caret { position: absolute; left: 0; top: 0; border-radius: 2px; background: currentColor; opacity: 0; pointer-events: none; }
 .tw-caret.is-on { opacity: 1; }
-.tw:not(.is-typed) + .cursor-block { visibility: hidden; }
+.tw:not(.is-typed) + .cursor-block { visibility: hidden; animation: none; } /* blink restarts "on" at hand-off */
 
 /* User bubbles (black and green) use the bounce instead of the plain fade-up */
 .page-bubble.reveal { translate: none; transition: none; }
@@ -1244,9 +1244,15 @@ function twReset(el) {
   tw.caret.classList.remove('is-on');
   el.classList.remove('is-typed');
 }
+// The resting square under a reply (if any) sets the caret's size and colour, so it never changes size
+function twRest(el) {
+  const next = el.nextElementSibling;
+  return next && next.classList.contains('cursor-block') ? next : null;
+}
 function twPlace(el, word) {
   const tw = el._tw, host = el.getBoundingClientRect();
-  const fs = parseFloat(getComputedStyle(el).fontSize), size = Math.round(fs * 0.42);
+  const fs = parseFloat(getComputedStyle(el).fontSize), rest = twRest(el);
+  const size = rest ? Math.round(rest.getBoundingClientRect().width) : Math.round(fs * 0.42);
   const target = word || tw.words[0];
   const rects = target.getClientRects(); const r = word ? rects[rects.length - 1] : rects[0];
   // Sit the square on the baseline (bottom of the x-height): measure it with a zero-size probe beside the word
@@ -1256,7 +1262,17 @@ function twPlace(el, word) {
   const baseline = probe.getBoundingClientRect().bottom; probe.remove();
   const x = (word ? r.right + fs * 0.12 : r.left) - host.left;
   const y = baseline - host.top - size;
-  tw.caret.style.cssText = `width:${size}px;height:${size}px;transform:translate(${x}px,${y}px)`;
+  const bg = rest ? `background:${getComputedStyle(rest).backgroundColor};` : '';
+  tw.caret.style.cssText = `width:${size}px;height:${size}px;${bg}transform:translate(${x}px,${y}px)`;
+}
+// After the last word: glide the caret into the resting square's spot, then hand over to it
+function twSettle(el, done) {
+  const tw = el._tw, rest = twRest(el);
+  if (!rest) { tw.caret.classList.remove('is-on'); done(); return; }
+  const host = el.getBoundingClientRect(), rr = rest.getBoundingClientRect();
+  tw.caret.style.transition = 'transform 0.32s cubic-bezier(.3,.7,.3,1)';
+  tw.caret.style.transform = `translate(${rr.left - host.left}px,${rr.top - host.top}px)`;
+  tw.timers.push(setTimeout(() => { tw.caret.classList.remove('is-on'); tw.caret.style.transition = ''; done(); }, 340));
 }
 function twType(el, { start = 0, rate = 180, onDone } = {}) {
   const tw = twPrep(el); twReset(el);
@@ -1264,7 +1280,7 @@ function twType(el, { start = 0, rate = 180, onDone } = {}) {
   const at = (fn, ms) => tw.timers.push(setTimeout(fn, ms));
   at(() => { twPlace(el, null); tw.caret.classList.add('is-on'); }, start);
   tw.words.forEach((w, i) => at(() => { w.classList.add('is-on'); twPlace(el, w); }, start + 220 + i * rate));
-  at(() => { tw.caret.classList.remove('is-on'); el.classList.add('is-typed'); onDone && onDone(); }, start + 220 + tw.words.length * rate + 280);
+  at(() => twSettle(el, () => { el.classList.add('is-typed'); onDone && onDone(); }), start + 220 + tw.words.length * rate + 280);
 }
 
 /* ── Hero chat card: fade its chrome to white from the top of the connect block ── */
