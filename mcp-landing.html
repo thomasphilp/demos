@@ -163,8 +163,7 @@ img { display: block; }
 /* ── Hero ── */
 .hero { position: relative; height: 1444px; overflow: hidden; }
 .hero-bg { position: absolute; left: 0; right: 0; top: -164px; height: 986px; overflow: hidden; }
-.hero-bg img { width: 100%; height: 100%; object-fit: cover; animation: drift 24s ease-in-out infinite alternate; }
-@keyframes drift { from { transform: scale(1.02); } to { transform: scale(1.1) translateY(-12px); } }
+.hero-bg video { display: block; width: 100%; height: 100%; object-fit: cover; }
 .hero-fade { position: absolute; left: 0; right: 0; top: 286px; height: 536px; background: linear-gradient(to top, #fff, rgba(255,255,255,0)); }
 
 .chat-app {
@@ -211,13 +210,13 @@ img { display: block; }
 }
 /* Rotating shine on the composer border: white streak over a 15% white ring */
 @property --shine-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
-.intro-composer { --bw: 6px; border-color: transparent; background-clip: padding-box; }
+.intro-composer { --bw: 3px; border-width: var(--bw); border-color: transparent; background-clip: padding-box; }
 .intro-composer::before {
   content: ""; position: absolute; inset: calc(-1 * var(--bw)); padding: var(--bw); border-radius: inherit; pointer-events: none;
   background: conic-gradient(from var(--shine-angle), rgba(255,255,255,0.15) 0deg, #fff 50deg, rgba(255,255,255,0.15) 110deg, rgba(255,255,255,0.15) 360deg);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor; mask-composite: exclude;
-  animation: shine 3s linear infinite;
+  animation: shine 1.5s linear infinite;
 }
 @keyframes shine { to { --shine-angle: 360deg; } }
 .intro-composer .typed .word { display: inline-block; white-space: pre; animation: word-in 0.32s cubic-bezier(.2,.7,.2,1) both; }
@@ -455,7 +454,7 @@ a.app-tile:hover .launch { color: #fff; }
   .hero-reply h1 { font-size: 40px; line-height: 44px; }
   .hero-connect { position: relative; top: auto; margin-top: 48px; gap: 40px; background: none; }
   .hero-connect .bracket-frame { display: none; }
-  .intro-composer { --bw: 4px; top: 200px; height: 72px; gap: 12px; padding: 8px 8px 8px 20px; border-width: 4px; }
+  .intro-composer { --bw: 2px; top: 200px; height: 72px; gap: 12px; padding: 8px 8px 8px 20px; }
   .intro-composer .typed { font-size: 20px; }
   .intro-composer .caret { height: 22px; vertical-align: -4px; }
   .intro-composer .plus { width: 22px; height: 22px; }
@@ -510,7 +509,9 @@ a.app-tile:hover .launch { color: #fff; }
 
 <main id="top">
 <section class="hero" data-intro="start" aria-labelledby="hero-title">
-  <div class="hero-bg"><img src="assets/mcp-landing/hero-bg.jpg" alt=""></div>
+  <div class="hero-bg">
+    <video src="assets/mcp-landing/hero-cube.mp4" poster="assets/mcp-landing/hero-bg.jpg" muted loop playsinline preload="auto" aria-hidden="true"></video>
+  </div>
   <div class="hero-fade"></div>
 
   <div class="intro-composer" aria-hidden="true">
@@ -953,7 +954,11 @@ function playIntro() {
   later(() => { hero.dataset.intro = 'done'; }, typed + 1000);
 }
 // Start once the hero photo is ready (fallback after 1.5s) so the first frames aren't stalled by decoding
-Promise.race([hero.querySelector('.hero-bg img').decode().catch(() => {}), new Promise(r => setTimeout(r, 1500))])
+const heroVideo = hero.querySelector('.hero-bg video');
+// Started from script (muted) rather than the autoplay attribute; skipped for reduced motion
+if (!reducedMotion) { heroVideo.muted = true; heroVideo.play().catch(() => {}); }
+const heroReady = new Promise(r => heroVideo.readyState >= 2 ? r() : heroVideo.addEventListener('loadeddata', r, { once: true }));
+Promise.race([heroReady, new Promise(r => setTimeout(r, 1500))])
   .then(() => requestAnimationFrame(() => requestAnimationFrame(playIntro)));
 document.getElementById('replay-intro').addEventListener('click', () => { window.scrollTo({ top: 0 }); playIntro(); });
 
