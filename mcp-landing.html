@@ -330,7 +330,7 @@ img { display: block; }
    white 0–17.8% → #747474 59.5% → #00e1ff 66.6% → #00ff1a 71.6% → white 100% */
 @property --shine-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
 .intro-composer { --bw: 1.5px; border-width: var(--bw); border-color: transparent; background-clip: padding-box; }
-.intro-composer::before {
+.intro-composer::before, .scene-a .composer::before {
   content: ""; position: absolute; inset: calc(-1 * var(--bw)); padding: var(--bw); border-radius: inherit; pointer-events: none;
   background: conic-gradient(from var(--shine-angle), var(--shine-stops));
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
@@ -338,16 +338,16 @@ img { display: block; }
   animation: shine var(--shine-speed) linear infinite;
 }
 @keyframes shine { to { --shine-angle: 360deg; } }
-.intro-composer .typed .word { display: inline-block; white-space: pre; animation: word-in 0.16s cubic-bezier(.2,.7,.2,1) both; }
-.intro-composer .typed .word.is-bold { font-weight: 700; }
+.intro-composer .typed .word, .scene-a .composer .typed .word { display: inline-block; white-space: pre; animation: word-in 0.16s cubic-bezier(.2,.7,.2,1) both; }
+.intro-composer .typed .word.is-bold, .scene-a .composer .typed .word.is-bold { font-weight: 700; }
 @keyframes word-in { from { opacity: 0; transform: translateY(8px); filter: blur(4px); } }
-.intro-composer .plus { width: 35px; height: 35px; }
+.intro-composer .plus, .scene-a .composer .plus { width: 35px; height: 35px; }
 /* Figma Chat/Composer (245:1442) scaled ×1.95: 36px circle send → 70px, 16px arrow → 31px */
-.intro-composer .send { width: 70px; height: 70px; border-radius: 50%; }
-.intro-composer .send img { width: 31px; height: 31px; }
-.intro-composer .typed { flex: 1; min-width: 0; font-size: 39px; font-weight: 500; color: #000; white-space: nowrap; overflow: hidden; }
-.intro-composer .caret { display: inline-block; width: 2.5px; height: 38px; background: #000; vertical-align: -7px; margin-left: 2px; animation: blink 0.9s steps(1) infinite; }
-.intro-composer.is-typing .caret { animation: none; }
+.intro-composer .send, .scene-a .composer .send { width: 70px; height: 70px; border-radius: 50%; }
+.intro-composer .send img, .scene-a .composer .send img { width: 31px; height: 31px; }
+.intro-composer .typed, .scene-a .composer .typed { flex: 1; min-width: 0; font-size: 39px; font-weight: 500; color: #000; white-space: nowrap; overflow: hidden; }
+.intro-composer .caret, .scene-a .composer .caret { display: inline-block; width: 2.5px; height: 38px; background: #000; vertical-align: -7px; margin-left: 2px; animation: blink 0.9s steps(1) infinite; }
+.intro-composer.is-typing .caret, .scene-a .composer.is-typing .caret { animation: none; }
 .send { width: 72px; height: 72px; border-radius: 18px; background: var(--gray-950); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .send img { width: 32px; height: 32px; }
 .hero[data-intro="start"] .intro-composer { opacity: 0; transform: translate(-50%, 24px); }
@@ -360,7 +360,7 @@ img { display: block; }
   100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
 }
 /* Send tap: press in, spring back, with a soft ring */
-.intro-composer .send.is-pressed { animation: send-tap 0.34s cubic-bezier(.3,.7,.4,1); }
+.intro-composer .send.is-pressed, .scene-a .composer .send.is-pressed { animation: send-tap 0.34s cubic-bezier(.3,.7,.4,1); }
 @keyframes send-tap {
   0%   { transform: scale(1); box-shadow: 0 0 0 0 rgba(9,10,12,0.28); }
   35%  { transform: scale(0.86); background: #000; box-shadow: 0 0 0 4px rgba(9,10,12,0.18); }
@@ -506,9 +506,8 @@ img { display: block; }
 .stage-play .ic-play { margin-left: 3px; }
 .stage-dot:focus-visible, .stage-play:focus-visible { outline: 2px solid #0071e3; outline-offset: 3px; }
 
-.scene-a .composer { position: absolute; left: 250px; top: 372px; width: 1077px; height: 113px; display: flex; align-items: center; gap: 24px; padding: 16px 16px 16px 36px; border-radius: 9999px; background: rgba(255,255,255,0.8); border: 6px solid rgba(255,255,255,0.36); backdrop-filter: blur(34px); -webkit-backdrop-filter: blur(34px); filter: drop-shadow(0 4px 8px rgba(0,0,0,0.05)); }
-.scene-a .composer .plus { width: 36px; height: 36px; }
-.scene-a .composer p { flex: 1; min-width: 0; font-size: 78px; font-weight: 500; color: #000; white-space: nowrap; overflow: hidden; line-height: 1.1; }
+/* Slide 1 input: the hero composer (shine border, typed question, round send), at the same artboard size */
+.scene-a .composer { --bw: 1.5px; position: absolute; left: 250px; top: 372px; width: 1077px; height: 113px; display: flex; align-items: center; gap: 24px; padding: 16px 16px 16px 36px; border-radius: 9999px; background: rgba(255,255,255,0.8); border: var(--bw) solid transparent; background-clip: padding-box; backdrop-filter: blur(34px); -webkit-backdrop-filter: blur(34px); box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
 
 .desk-window { position: absolute; left: 50%; top: 102px; width: 968px; height: 634px; display: flex; overflow: hidden; background: #fff; border: 1px solid var(--gray-200); border-radius: 18px; }
 .desk-window .rail { width: 57px; background: #f6f6f4; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 16px 0; }
@@ -859,9 +858,9 @@ a.app-tile:hover .launch { color: #fff; }
     <div class="stage">
       <div class="scene scene-a is-active" data-dur="5">
         <div class="photo" data-shader><img src="assets/mcp-landing/desk.jpg" alt="Shipper at a desk"></div>
-        <div class="composer">
+        <div class="composer" data-question="What do I have shipping next week?">
           <img class="plus" src="assets/mcp-landing/composer-plus-lg.svg" alt="">
-          <p>What do I have shipping next week?</p>
+          <div class="typed"><span class="typed-text"></span><span class="caret"></span></div>
           <span class="send"><img src="assets/mcp-landing/composer-arrow-lg.svg" alt=""></span>
         </div>
       </div>
@@ -1574,6 +1573,26 @@ new ResizeObserver(fitStage).observe(stageWrap); fitStage();
   const dots = [...nav.querySelectorAll('.stage-dot')];
   const play = nav.querySelector('.stage-play');
   let cur = 0, prevTimer;
+  // Slide 1's input types its question like the hero composer: words rise in, caret follows, then send is tapped
+  const comp = scenes[0].querySelector('.composer');
+  const compText = comp.querySelector('.typed-text'), compSend = comp.querySelector('.send');
+  let typeTimers = [];
+  const typeQuestion = () => {
+    typeTimers.forEach(clearTimeout); typeTimers = [];
+    compText.textContent = ''; compSend.classList.remove('is-pressed'); comp.classList.remove('is-typing');
+    const words = comp.dataset.question.split(' '), START = 700, RATE = 85;
+    const at = (fn, ms) => typeTimers.push(setTimeout(fn, ms));
+    at(() => comp.classList.add('is-typing'), START);
+    words.forEach((word, i) => at(() => {
+      const span = document.createElement('span');
+      span.className = 'word'; span.textContent = (i ? ' ' : '') + word;
+      compText.appendChild(span);
+    }, START + i * RATE));
+    const typed = START + words.length * RATE;
+    at(() => comp.classList.remove('is-typing'), typed);
+    at(() => compSend.classList.add('is-pressed'), typed + 450);
+  };
+  let typedOnce = false;
   const startDot = () => {
     const dot = dots[cur], fill = dot.querySelector('.fill');
     dot.style.setProperty('--slide-dur', `${scenes[cur].dataset.dur}s`);
@@ -1585,6 +1604,7 @@ new ResizeObserver(fitStage).observe(stageWrap); fitStage();
     clearTimeout(prevTimer);
     scenes.forEach(s => s.classList.remove('is-prev'));
     old.classList.remove('is-active'); old.classList.add('is-prev');
+    if (i === 0) typeQuestion();
     scenes[i].classList.add('is-active');
     prevTimer = setTimeout(() => old.classList.remove('is-prev'), 650);
     dots[cur].classList.remove('is-active'); dots[cur].removeAttribute('aria-current');
@@ -1601,7 +1621,21 @@ new ResizeObserver(fitStage).observe(stageWrap); fitStage();
   play.addEventListener('click', () => setPaused(!nav.classList.contains('is-paused')));
   // Hold the timer while the slideshow is off screen
   nav.classList.add('is-idle');
-  new IntersectionObserver(([e]) => nav.classList.toggle('is-idle', !e.isIntersecting), { threshold: 0.35 }).observe(stageWrap);
+  // First time it's in view and revealed: type slide 1's question and restart its timer so the slide gets its full time
+  let inView = false;
+  const firstLook = () => {
+    if (typedOnce || !inView || cur !== 0 || !stageWrap.classList.contains('is-visible')) return;
+    typedOnce = true; typeQuestion(); startDot();
+  };
+  new IntersectionObserver(([e]) => {
+    inView = e.isIntersecting;
+    nav.classList.toggle('is-idle', !inView || !stageWrap.classList.contains('is-visible'));
+    firstLook();
+  }, { threshold: 0.35 }).observe(stageWrap);
+  new MutationObserver(() => {
+    nav.classList.toggle('is-idle', !inView || !stageWrap.classList.contains('is-visible'));
+    firstLook();
+  }).observe(stageWrap, { attributes: true, attributeFilter: ['class'] });
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) setPaused(true);
   startDot();
 })();
