@@ -221,13 +221,24 @@ img { display: block; }
 
 /* ── Hero ── */
 .hero { position: relative; padding: 143px 0 120px; overflow: hidden; }
-/* The clip is placed by script so the cube sits dead centre in the viewport, zoomed in far enough that it
-   always reaches the top of the screen (the cube is high in the frame) */
-.hero-bg { position: absolute; left: 0; right: 0; top: -164px; height: 986px; overflow: hidden; background: #fff; }
+/* The clip is placed by script so the cube sits dead centre in the viewport. The cube is high in the frame,
+   so the space above the clip is a sky fill built from the clip's top edge (sampled across 0–8s),
+   deepening upward, and the clip's top edge fades into it */
+.hero-bg {
+  --sky-h: 0px;
+  position: absolute; left: 0; right: 0; top: -164px; height: 986px; overflow: hidden;
+  /* Sky only above the clip (plus the clip's faded top edge); white below, should the clip end early */
+  background:
+    linear-gradient(to bottom, rgba(38,92,112,0.55), rgba(38,92,112,0) var(--sky-h)) top / 100% calc(var(--sky-h) + 64px) no-repeat,
+    linear-gradient(to right, #7dabb5, #97afb9 16.7%, #90a9b4 33.3%, #799ead 50%, #7a9fad 66.7%, #829fab 83.3%, #598c9c) top / 100% calc(var(--sky-h) + 64px) no-repeat,
+    #fff;
+}
 .hero-bg video { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* After the intro the clip, its sky and the fade glide up together so the cube's top shows above the chat
+   (--cube-lift is set with the clip placement) */
 .hero-bg { transition: transform 0.9s cubic-bezier(.16,1,.3,1); }
 .hero[data-intro="done"] .hero-bg { transform: translateY(var(--cube-lift, 0px)); transition-delay: 0.12s; }
-.hero-bg video.is-placed { position: absolute; object-fit: fill; -webkit-mask: linear-gradient(to bottom, #000 calc(100% - 120px), transparent); mask: linear-gradient(to bottom, #000 calc(100% - 120px), transparent); }
+.hero-bg video.is-placed { position: absolute; object-fit: fill; -webkit-mask: linear-gradient(to bottom, transparent, #000 64px, #000 calc(100% - 120px), transparent); mask: linear-gradient(to bottom, transparent, #000 64px, #000 calc(100% - 120px), transparent); }
 /* White fade over the video: fully white by the chat card's vertical middle, solid white below.
    Placed by script against the chat (which doesn't move), so the lift never shifts it. */
 .hero-fade { --fade-len: 536px; position: absolute; left: 0; right: 0; top: 286px; height: 536px; background: linear-gradient(to bottom, rgba(255,255,255,0), #fff var(--fade-len), #fff); }
@@ -1296,7 +1307,6 @@ sendBtn.addEventListener('animationend', () => sendBtn.classList.remove('is-pres
 // Start once the hero photo is ready (fallback after 1.5s) so the first frames aren't stalled by decoding
 const heroVideo = hero.querySelector('.hero-bg video');
 /* Cube dead centre in the viewport: size the clip to the width (at least a 60%-of-screen cube, up to 300px),
-   zoomed so its top edge always reaches the top of the page,
    then place it so the cube's centre lands on the viewport's centre. The input and the chat's grow-in
    origin follow the cube. */
 (() => {
@@ -1311,16 +1321,14 @@ const heroVideo = hero.querySelector('.hero-bg video');
     const heroTop = hero.getBoundingClientRect().top + scrollY;
     const cubeY = innerHeight / 2 - heroTop;        // hero coords
     const y = cubeY - bg.offsetTop;                 // .hero-bg coords
-    // Desktop (past the 1000px breakpoint) shows the cube 50% bigger; then zoom further if needed so the clip's
-    // top edge reaches the top of the page (cube centre at the viewport's middle, CY of the clip below the top)
-    const s = Math.max(
-      Math.max(w / VW, (w / 2) / ((1 - CX) * VW), (w / 2) / (CX * VW), Math.min(innerWidth * 0.6, 300) / (CUBE_W * VW))
-        * (innerWidth > 1000 ? 1.5 : 1),
-      (innerHeight / 2) / (CY * VH));
+    // Desktop (past the 1000px breakpoint) shows the cube 50% bigger
+    const s = Math.max(w / VW, (w / 2) / ((1 - CX) * VW), (w / 2) / (CX * VW), Math.min(innerWidth * 0.6, 300) / (CUBE_W * VW))
+      * (innerWidth > 1000 ? 1.5 : 1);
     const vw = VW * s, vh = VH * s, top = y - CY * vh;
     Object.assign(heroVideo.style, { left: `${w / 2 - CX * vw}px`, top: `${top}px`, width: `${vw}px`, height: `${vh}px` });
     heroVideo.classList.add('is-placed');
     bg.style.height = `${top + vh}px`;
+    bg.style.setProperty('--sky-h', `${Math.max(0, top)}px`);
     // White fade: fully white at the chat card's middle (over 90% of its top half), solid white down to the clip's end
     const mid = chat.offsetTop + chat.offsetHeight / 2, fadeLen = Math.max(200, (mid - chat.offsetTop) * 0.9);
     fade.style.top = `${mid - fadeLen}px`;
