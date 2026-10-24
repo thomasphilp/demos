@@ -1832,7 +1832,8 @@ const cursorGrid = (host, o) => {
       for (let s = 1; s <= steps; s++) {
         const px = last ? last[0] + (x - last[0]) * s / steps : x, py = last ? last[1] + (y - last[1]) * s / steps : y;
         stamp(px, py, 1);
-        if (o.spread) [[-cell, 0], [cell, 0], [0, -cell], [0, cell]].forEach(([ox, oy]) => stamp(px + ox, py + oy, o.spread));
+        // Spread to all eight neighbours, so a resting pointer shows a square (not a plus)
+        if (o.spread) for (let oy = -1; oy <= 1; oy++) for (let ox = -1; ox <= 1; ox++) if (ox || oy) stamp(px + ox * cell, py + oy * cell, o.spread);
       }
       last = [x, y]; wake();
     }, { passive: true });
