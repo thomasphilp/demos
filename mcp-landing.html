@@ -594,6 +594,13 @@ img { display: block; }
 
 /* ── Dark sections ── */
 .on-dark { background: #000; color: rgba(255,255,255,0.9); }
+/* Cursor grid (script below): a canvas of square cells that light up with a dithered fill under the pointer
+   and ripple out on click. In the hero it sits over the video and fade, under the input and chat; in the dark
+   sections it sits just above the section's own background, under everything else. */
+.cursor-grid { position: absolute; left: 0; top: 0; pointer-events: none; }
+.on-dark { position: relative; isolation: isolate; }
+.on-dark > .cursor-grid { z-index: -1; }
+.setup-bg { z-index: -2; }
 .autopilot { padding: 120px 0; display: flex; flex-direction: column; align-items: center; gap: 80px; }
 .autopilot .bracket-lines { width: 816px; height: 45.5px; }
 .autopilot .bracket-label { color: rgba(255,255,255,0.9); }
@@ -1730,6 +1737,145 @@ new ResizeObserver(fitStage).observe(stageWrap); fitStage();
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) setPaused(true);
   startDot();
 })();
+
+/* ── Cursor grid: cells light up under the pointer with an ordered-dither fill and fade; clicks send a ring ──
+   Mouse/trackpad only for the trail (taps still ripple); off entirely for reduced motion. */
+const cursorGrid = (host, o) => {
+  if (reducedMotion) return null;
+  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const cv = document.createElement('canvas');
+  cv.className = 'cursor-grid'; cv.setAttribute('aria-hidden', 'true');
+  o.mount(cv);
+  const ctx = cv.getContext('2d');
+  const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5], LEVELS = 16;
+  let w = 0, h = 0, cell = 0, cols = 0, rows = 0, heat = new Float32Array(0), out = new Float32Array(0), tiles = [];
+  let rings = [], raf = 0, prevT = 0, last = null, inView = false;
+  // One pre-rendered tile per brightness level: pixels on wherever the Bayer threshold is under the level
+  const buildTiles = () => {
+    const size = Math.ceil(cell) + 1, px = o.px;
+    tiles = [null];
+    for (let l = 1; l <= LEVELS; l++) {
+      const t = document.createElement('canvas'); t.width = t.height = size;
+      const c = t.getContext('2d'); c.fillStyle = o.color;
+      if (l === LEVELS) c.fillRect(0, 0, size, size);
+      else for (let y = 0; y * px < size; y++) for (let x = 0; x * px < size; x++) if (BAYER[(y & 3) * 4 + (x & 3)] < l) c.fillRect(x * px, y * px, px, px);
+      tiles.push(t);
+    }
+  };
+  const layout = () => {
+    const r = host.getBoundingClientRect(), nw = Math.round(r.width), nh = Math.round(r.height);
+    if (!nw || !nh || (nw === w && nh === h)) return;
+    w = nw; h = nh; cols = o.cols(w); cell = w / cols; rows = Math.ceil(h / cell);
+    heat = new Float32Array(cols * rows); out = new Float32Array(cols * rows);
+    cv.width = w; cv.height = h; cv.style.width = `${w}px`; cv.style.height = `${h}px`;
+    buildTiles(); draw();
+  };
+  const draw = () => {
+    ctx.clearRect(0, 0, w, h);
+    if (o.line) { // faint resting grid
+      ctx.fillStyle = o.line;
+      for (let i = 1; i < cols; i++) ctx.fillRect(Math.round(i * cell), 0, 1, h);
+      for (let j = 1; j < rows; j++) ctx.fillRect(0, Math.round(j * cell), w, 1);
+    }
+    for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
+      const v = out[j * cols + i]; if (!v) continue;
+      const x0 = Math.round(i * cell), y0 = Math.round(j * cell), cw = Math.round((i + 1) * cell) - x0, ch = Math.round((j + 1) * cell) - y0;
+      ctx.globalAlpha = o.alpha;
+      ctx.drawImage(tiles[Math.min(LEVELS, Math.ceil(v * LEVELS))], 0, 0, cw - 1, ch - 1, x0 + 1, y0 + 1, cw - 1, ch - 1);
+      ctx.globalAlpha = Math.min(1, v * o.edge); ctx.strokeStyle = o.color; ctx.lineWidth = 1;
+      ctx.strokeRect(x0 + 0.5, y0 + 0.5, cw, ch);
+    }
+    ctx.globalAlpha = 1;
+  };
+  // Ring profile: a bright one-cell band at the wavefront with a soft tail behind it
+  const band = (d) => d < 0 ? Math.max(0, 1 + d / (cell * 0.6)) : Math.exp(-d / (cell * 1.1));
+  const frame = (ts) => {
+    raf = 0; if (!inView) return;
+    const t = ts / 1000, dt = prevT ? Math.min(0.05, t - prevT) : 1 / 60, k = Math.exp(-dt / o.fade);
+    prevT = t;
+    let live = false;
+    for (let n = 0; n < heat.length; n++) { let v = heat[n] * k; if (v < 0.04) v = 0; heat[n] = v; out[n] = v; if (v) live = true; }
+    rings = rings.filter(g => {
+      const rad = (t - g.t) * g.speed, life = rad / g.reach;
+      if (life > 1.15) return false;
+      live = true; if (rad < 0) return true;
+      const amp = g.amp * Math.max(0, 1 - life * life);
+      const j0 = Math.max(0, Math.floor((g.y - rad - cell) / cell)), j1 = Math.min(rows - 1, Math.floor((g.y + rad + cell) / cell));
+      for (let j = j0; j <= j1; j++) for (let i = 0; i < cols; i++) {
+        const dx = (i + 0.5) * cell - g.x, dy = (j + 0.5) * cell - g.y, d = rad - Math.hypot(dx, dy);
+        if (d < -cell || d > cell * 4) continue;
+        const v = band(d) * amp, n = j * cols + i; if (v > out[n]) out[n] = v;
+      }
+      return true;
+    });
+    draw();
+    if (live) raf = requestAnimationFrame(frame); else prevT = 0;
+  };
+  const wake = () => { if (!raf && inView) raf = requestAnimationFrame(frame); };
+  const stamp = (x, y, v) => {
+    const i = Math.floor(x / cell), j = Math.floor(y / cell); if (i < 0 || j < 0 || i >= cols || j >= rows) return;
+    const n = j * cols + i; if (v > heat[n]) heat[n] = v;
+  };
+  const local = (e) => { const r = host.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  const ring = (x, y, amp = 1, reach = o.reach, delay = 0) => {
+    if (!cols) return;
+    rings.push({ x, y, amp, reach: reach * cell, speed: o.speed * cell, t: performance.now() / 1000 + delay });
+    if (rings.length > 6) rings.shift();
+    wake();
+  };
+  if (fine) {
+    host.addEventListener('pointermove', (e) => {
+      if (e.pointerType === 'touch') return;
+      const [x, y] = local(e);
+      // Fill the gap since the last sample so a fast swipe still leaves a continuous trail
+      const steps = last ? Math.min(30, Math.ceil(Math.hypot(x - last[0], y - last[1]) / (cell * 0.5)) || 1) : 1;
+      for (let s = 1; s <= steps; s++) {
+        const px = last ? last[0] + (x - last[0]) * s / steps : x, py = last ? last[1] + (y - last[1]) * s / steps : y;
+        stamp(px, py, 1);
+        if (o.spread) [[-cell, 0], [cell, 0], [0, -cell], [0, cell]].forEach(([ox, oy]) => stamp(px + ox, py + oy, o.spread));
+      }
+      last = [x, y]; wake();
+    }, { passive: true });
+    host.addEventListener('pointerleave', () => { last = null; });
+  }
+  host.addEventListener('click', (e) => { if (!e.detail) return; const [x, y] = local(e); ring(x, y, 1, o.clickReach); }, { passive: true });
+  new IntersectionObserver(([e]) => { inView = e.isIntersecting; if (inView) { layout(); o.onView?.(); wake(); } }, { threshold: 0.15 }).observe(host);
+  new ResizeObserver(layout).observe(host);
+  if (o.idle) setInterval(() => {
+    if (!inView || document.hidden || !cols || rings.length) return;
+    ring((Math.floor(Math.random() * cols) + 0.5) * cell, (Math.floor(Math.random() * rows) + 0.5) * cell, 0.45, 6);
+  }, o.idle);
+  return { ring, size: () => ({ w, h }) };
+};
+
+// Hero: white cells over the video, under the input and chat; a ring leaves the cube as the chat comes in
+const heroGrid = cursorGrid(hero, {
+  mount: (cv) => hero.querySelector('.hero-fade').after(cv),
+  cols: (w) => w >= 1280 ? 36 : w >= 992 ? 30 : w >= 768 ? 22 : 12,
+  px: 3, color: '#fff', alpha: 0.32, edge: 0.45, spread: 0.4, fade: 0.3, speed: 18, reach: 12, clickReach: 10,
+});
+if (heroGrid) new MutationObserver(() => {
+  if (hero.dataset.intro !== 'done') return;
+  const cubeY = parseFloat(hero.style.getPropertyValue('--cube-y')) || heroGrid.size().h / 3;
+  const lift = parseFloat(hero.style.getPropertyValue('--cube-lift')) || 0;
+  heroGrid.ring(heroGrid.size().w / 2, cubeY + lift, 0.6, 14, 0.35);
+}).observe(hero, { attributes: true, attributeFilter: ['data-intro'] });
+
+// Dark sections: accent green cells over a faint resting grid, a ring from the headline when first seen,
+// and an occasional idle ring
+document.querySelectorAll('.on-dark').forEach((sec) => {
+  let seen = false, grid;
+  grid = cursorGrid(sec, {
+    mount: (cv) => sec.prepend(cv),
+    cols: (w) => w >= 992 ? 20 : w >= 768 ? 14 : 9,
+    px: 3, color: '#00ff1a', alpha: 0.45, edge: 0.5, line: 'rgba(255,255,255,0.045)', spread: 0.45, fade: 0.32, speed: 16, reach: 10, clickReach: 12, idle: 5200,
+    onView: () => {
+      if (seen || !grid) return; seen = true;
+      const t = sec.querySelector('.display'), r = t ? t.getBoundingClientRect() : null, s = sec.getBoundingClientRect();
+      grid.ring(r ? r.left - s.left + r.width / 2 : s.width / 2, r ? r.top - s.top + r.height / 2 : s.height / 3, 0.7, 14, 0.4);
+    },
+  });
+});
 
 /* ── "Pattern Screen" shader (Figma custom effect, wavy lines) on the device photos ──
    setup()/render() below are the Figma shader module, copied verbatim (unused param helpers trimmed). */
