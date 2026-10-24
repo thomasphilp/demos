@@ -166,12 +166,13 @@ img { display: block; }
 /* MCP URL box with rotating border beam */
 .mcp-url {
   position: relative; overflow: hidden; width: 293px; display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 8px 8px 14px; background: #fff; box-shadow: 4px 4px 0 0 #000;
+  /* The box itself is the persistent gray 1px rim; the beam's sweep passes over it */
+  padding: 8px 8px 8px 14px; background: var(--gray-300); box-shadow: 4px 4px 0 0 #000;
 }
 .mcp-url .beam {
   position: absolute; left: 50%; top: 50%; width: 305px; height: 305px; margin: -152.5px 0 0 -152.5px;
-  /* Same gradient, speed and direction as the hero input's border shine */
-  background: conic-gradient(var(--shine-stops));
+  /* The hero input's shine stops, with its white stretches made clear so the gray rim shows through */
+  background: conic-gradient(rgba(116,116,116,0) 0%, rgba(116,116,116,0) 17.8%, #747474 59.5%, #00e1ff 66.6%, #00ff1a 71.6%, rgba(0,255,26,0) 100%);
   animation: beam calc(var(--shine-speed) * 2) linear infinite; /* half the input's speed */
 }
 @keyframes beam { to { transform: rotate(360deg); } }
