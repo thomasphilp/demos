@@ -141,6 +141,12 @@ img { display: block; }
 .agent-stack { display: flex; align-items: center; }
 .agent-stack > * { flex-shrink: 0; margin-right: -10px; }
 .agent-stack > *:last-child { margin-right: 0; }
+/* Staggered: the tiles are translucent, so each lower tile is cut away under the next (rounded, 10px overlap)
+   and the stack reads first-at-bottom, last-on-top */
+.agent-stack > :not(:last-child) {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34'%3E%3Cmask id='m'%3E%3Crect width='34' height='34' fill='white'/%3E%3Crect x='24' width='34' height='34' rx='8' fill='black'/%3E%3C/mask%3E%3Crect width='34' height='34' fill='white' mask='url(%23m)'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34'%3E%3Cmask id='m'%3E%3Crect width='34' height='34' fill='white'/%3E%3Crect x='24' width='34' height='34' rx='8' fill='black'/%3E%3C/mask%3E%3Crect width='34' height='34' fill='white' mask='url(%23m)'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+}
 .agent-stack .sphere { padding: 4px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.27); background: rgba(255,255,255,0.6); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); display: flex; }
 .agent-stack .sphere img { width: 24px; height: 24px; transform: scaleX(-1); }
 .agent-stack.is-dark .sphere { background: rgba(59,59,59,0.6); }
