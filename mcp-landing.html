@@ -1757,6 +1757,8 @@ const cursorGrid = (host, o) => {
   const canvases = o.mount().map((cv) => { cv.classList.add('cursor-grid'); cv.setAttribute('aria-hidden', 'true'); return cv; });
   const ctx = canvases[0].getContext('2d'), mirrors = canvases.slice(1).map((cv) => cv.getContext('2d'));
   const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5], LEVELS = 16, VARIANTS = 8;
+  // Cells at half the configured size (twice the columns); ripples keep their on-screen speed and dots shrink to suit
+  const DENSITY = 2;
   const rand = (a, b) => a + Math.random() * (b - a);
   const area = o.area || (() => { const r = host.getBoundingClientRect(); return { x: 0, y: 0, w: r.width, h: r.height }; });
   let box = { x: 0, y: 0, w: 0, h: 0 }, cell = 0, cols = 0, rows = 0, tiles = [];
@@ -1764,7 +1766,7 @@ const cursorGrid = (host, o) => {
   let rings = [], raf = 0, prevT = 0, last = null, inView = false;
   // Dither variants: the 4x4 Bayer pattern shifted by a random phase, some transposed; one tile per level each
   const buildTiles = () => {
-    const size = Math.ceil(cell) + 1, px = o.px;
+    const size = Math.ceil(cell) + 1, px = Math.max(1, Math.round(o.px / DENSITY * 1.4));
     tiles = [];
     for (let v = 0; v < VARIANTS; v++) {
       const ox = Math.floor(rand(0, 4)), oy = Math.floor(rand(0, 4)), flip = Math.random() < 0.5, set = [null];
@@ -1785,7 +1787,7 @@ const cursorGrid = (host, o) => {
     const b = area(), w = Math.round(b.w), h = Math.round(b.h);
     if (!w || !h) return;
     if (w === Math.round(box.w) && h === Math.round(box.h) && b.x === box.x && b.y === box.y) return;
-    box = b; cols = o.cols(w); cell = w / cols; rows = Math.ceil(h / cell);
+    box = b; cols = o.cols(w) * DENSITY; cell = w / cols; rows = Math.ceil(h / cell);
     heat = new Float32Array(cols * rows); out = new Float32Array(cols * rows);
     life = new Float32Array(cols * rows).fill(1); variant = new Uint8Array(cols * rows);
     canvases.forEach((cv) => { cv.width = w; cv.height = h; Object.assign(cv.style, { left: `${b.x}px`, top: `${b.y}px`, width: `${w}px`, height: `${h}px` }); });
@@ -1850,7 +1852,7 @@ const cursorGrid = (host, o) => {
   const point = o.point || ((e) => { const r = host.getBoundingClientRect(); return [e.clientX - r.left - box.x, e.clientY - r.top - box.y]; });
   const ring = (x, y, amp = 1, reach = o.reach, delay = 0) => {
     if (!cols) return;
-    rings.push({ x, y, amp: amp * rand(0.8, 1.15), reach: reach * cell * rand(0.85, 1.15), speed: o.speed * cell * rand(0.8, 1.2), seed: Math.floor(rand(0, VARIANTS)), t: performance.now() / 1000 + delay });
+    rings.push({ x, y, amp: amp * rand(0.8, 1.15), reach: reach * cell * rand(0.85, 1.15), speed: o.speed * DENSITY * cell * rand(0.8, 1.2), seed: Math.floor(rand(0, VARIANTS)), t: performance.now() / 1000 + delay });
     if (rings.length > 6) rings.shift();
     wake();
   };
