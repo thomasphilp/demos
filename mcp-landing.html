@@ -1506,8 +1506,11 @@ function twType(el, { start = 0, rate = 180, onDone } = {}) {
     .sort((a, b) => (a.el.compareDocumentPosition(b.el) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
   items.forEach((it, i) => { it.i = i; it.el._seq = it; });
   let next = 0, busy = false, open = false;
+  // Chat example cards stagger within each batch that comes into view, so every row plays left then right
+  const CARD_STAGGER = 0.25;
   const pump = () => {
     if (!open || busy) return;
+    let cardBatch = 0;
     while (next < items.length && items[next].ready) {
       const it = items[next++];
       // Catch-up: anything already scrolled past (fully above the viewport) appears at once, still in order
@@ -1516,7 +1519,10 @@ function twType(el, { start = 0, rate = 180, onDone } = {}) {
         else it.el.classList.add('is-visible');
         continue;
       }
-      if (it.kind === 'reveal') { it.el.classList.add('is-visible'); continue; }
+      if (it.kind === 'reveal') {
+        if (it.el.matches('.ex-card')) it.el.style.setProperty('--reveal-delay', `${cardBatch++ * CARD_STAGGER}s`);
+        it.el.classList.add('is-visible'); continue;
+      }
       busy = true;
       twType(it.el, { start: parseFloat(it.el.dataset.twDelay || '0.5') * 1000, onDone: () => { busy = false; pump(); } });
       return;
