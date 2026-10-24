@@ -210,6 +210,10 @@ img { display: block; }
     linear-gradient(to right, #7dabb5, #97afb9 16.7%, #90a9b4 33.3%, #799ead 50%, #7a9fad 66.7%, #829fab 83.3%, #598c9c);
 }
 .hero-bg video { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* After the intro the clip, its sky and the fade glide up together so the cube's top shows above the chat
+   (--cube-lift is set with the clip placement) */
+.hero-bg, .hero-fade { transition: transform 0.9s cubic-bezier(.16,1,.3,1); }
+.hero[data-intro="done"] :is(.hero-bg, .hero-fade) { transform: translateY(var(--cube-lift, 0px)); transition-delay: 0.12s; }
 .hero-bg video.is-placed { position: absolute; object-fit: fill; -webkit-mask: linear-gradient(to bottom, transparent, #000 64px); mask: linear-gradient(to bottom, transparent, #000 64px); }
 .hero-fade { position: absolute; left: 0; right: 0; top: 286px; height: 536px; background: linear-gradient(to top, #fff, rgba(255,255,255,0)); }
 
@@ -1273,7 +1277,9 @@ const heroVideo = hero.querySelector('.hero-bg video');
   const VW = 1536, VH = 672;           // clip size
   const CX = 0.535, CY = 0.33;         // cube centre in the clip, averaged over 0–8s
   const CUBE_W = 0.2;                  // cube width as a share of the clip width
+  const CUBE_TOP = 0.12;               // cube's top edge as a share of the clip height
   const bg = hero.querySelector('.hero-bg'), fade = hero.querySelector('.hero-fade'), chat = hero.querySelector('.chat-app');
+  const nav = document.querySelector('.site-nav');
   const place = () => {
     const w = bg.clientWidth;
     const heroTop = hero.getBoundingClientRect().top + scrollY;
@@ -1288,6 +1294,12 @@ const heroVideo = hero.querySelector('.hero-bg video');
     fade.style.top = `${bg.offsetTop + top + vh - fade.offsetHeight}px`;
     hero.style.setProperty('--cube-y', `${cubeY}px`);
     chat.style.transformOrigin = `50% ${cubeY - chat.offsetTop}px`;
+    // Once the chat is in, lift the clip (with its sky and fade) so the cube's top peeks above the card:
+    // a share of the gap between the nav and the card, never sliding it down
+    const navBottom = nav ? nav.getBoundingClientRect().bottom + scrollY - heroTop : 0; // hero coords
+    const peek = Math.min(110, Math.max(24, (chat.offsetTop - navBottom) * 0.6));
+    const cubeTop = cubeY - (CY - CUBE_TOP) * vh;
+    hero.style.setProperty('--cube-lift', `${Math.min(0, chat.offsetTop - peek - cubeTop)}px`);
   };
   addEventListener('resize', place); place();
 })();
