@@ -371,8 +371,9 @@ img { display: block; }
 /* Chat card: fades in while growing from small to full size, out of the input's position */
 .chat-app { transform-origin: 50% 100px; /* the input's center, relative to the card top */ transition: opacity 0.6s ease 0.12s, transform 0.95s cubic-bezier(.22,1.12,.36,1) 0.12s; }
 .hero:not([data-intro="done"]) .chat-app { opacity: 0; transform: scale(0.82); transition-delay: 0s; }
-/* ...with a bounce: overshoot, dip, settle */
-.hero[data-intro="done"] .chat-app { animation: chat-in 1s 0.12s both; }
+/* ...with a bounce: overshoot, dip, settle. Fill backwards only: a held opacity animation makes the card
+   a backdrop root and kills the glass blur, so it has to let go once it lands */
+.hero[data-intro="done"] .chat-app { animation: chat-in 0.6s 0.12s backwards; }
 @keyframes chat-in {
   0%   { opacity: 0; transform: scale(0.82); animation-timing-function: cubic-bezier(.2,.7,.3,1); }
   55%  { opacity: 1; transform: scale(1.025); animation-timing-function: ease-in-out; }
