@@ -272,6 +272,21 @@ img { display: block; }
 .hero.is-answered .cf-body::after { animation-duration: 3.9s; animation-delay: -3.2s; }
 .hero.is-answered .cf-edge.is-bottom .cf-line:first-child { animation-duration: 4.9s; animation-delay: -0.2s; }
 .hero.is-answered .cf-edge.is-bottom .cf-line:last-child { animation-duration: 4.1s; animation-delay: -2.7s; }
+/* Same glitch on the stacked outlines, but flickering through filter so their 40/20/10% opacity holds;
+   positive delays let the top-down reveal finish before the first glitch */
+@keyframes tab-glitch {
+  0%, 84%, 100% { transform: none; filter: none; }
+  85% { transform: translate(3px, 0); filter: drop-shadow(-2px 0 #00e1ff) drop-shadow(2px 0 #00ff1a); }
+  86% { transform: translate(-2px, 1px); filter: opacity(0.45); }
+  87% { transform: translate(1px, -1px) scaleX(1.01); filter: drop-shadow(2px 0 #00e1ff); }
+  88% { transform: none; filter: none; }
+  92% { transform: translate(-1px, 0); filter: opacity(0.3) drop-shadow(1px 0 #00ff1a); }
+  93% { transform: none; filter: none; }
+}
+.hero.is-answered .cf-tab { animation: tab-glitch 4.4s steps(1, end) infinite; }
+.hero.is-answered .cf-tab:nth-child(1) { animation-duration: 4.4s; animation-delay: 0.9s; }
+.hero.is-answered .cf-tab:nth-child(2) { animation-duration: 3.8s; animation-delay: 1.7s; }
+.hero.is-answered .cf-tab:nth-child(3) { animation-duration: 5.1s; animation-delay: 2.6s; }
 .connect-block { position: relative; display: flex; flex-direction: column; align-items: center; gap: 18px; }
 .hero-copy { position: relative; width: min(696px, 100%); text-align: center; font-size: 22px; line-height: 32px; font-weight: 500; }
 .available { position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 24px; }
