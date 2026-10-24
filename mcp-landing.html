@@ -600,6 +600,11 @@ img { display: block; }
 .cursor-grid { position: absolute; left: 0; top: 0; pointer-events: none; }
 .on-dark { position: relative; isolation: isolate; }
 .on-dark > .cursor-grid { z-index: -1; }
+/* White sections: a soft gray grid under everything in the section */
+.has-soft-grid { position: relative; isolation: isolate; }
+.has-soft-grid > .cursor-grid { z-index: -1; }
+/* Hero: the gray grid takes over where the video fades to white (--fade-a/--fade-b follow the fade) */
+.hero > .cursor-grid.is-soft { -webkit-mask: linear-gradient(to bottom, transparent var(--fade-a, 50%), #000 var(--fade-b, 60%)); mask: linear-gradient(to bottom, transparent var(--fade-a, 50%), #000 var(--fade-b, 60%)); }
 .setup-bg { z-index: -2; }
 .autopilot { padding: 120px 0; display: flex; flex-direction: column; align-items: center; gap: 80px; }
 .autopilot .bracket-lines { width: 816px; height: 45.5px; }
@@ -1341,6 +1346,7 @@ const heroVideo = hero.querySelector('.hero-bg video');
     fade.style.top = `${mid - fadeLen}px`;
     fade.style.height = `${Math.max(fadeLen, bg.offsetTop + top + vh - (mid - fadeLen))}px`;
     fade.style.setProperty('--fade-len', `${fadeLen}px`);
+    hero.style.setProperty('--fade-a', `${mid - fadeLen}px`); hero.style.setProperty('--fade-b', `${mid}px`);
     hero.style.setProperty('--cube-y', `${cubeY}px`);
     chat.style.transformOrigin = `50% ${cubeY - chat.offsetTop}px`;
     // Once the chat is in, lift the clip (with its sky and fade) so the cube's top peeks above the card:
@@ -1748,7 +1754,7 @@ new ResizeObserver(fitStage).observe(stageWrap); fitStage();
 const cursorGrid = (host, o) => {
   if (reducedMotion) return null;
   const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
-  const canvases = o.mount().map((cv) => { cv.className = 'cursor-grid'; cv.setAttribute('aria-hidden', 'true'); return cv; });
+  const canvases = o.mount().map((cv) => { cv.classList.add('cursor-grid'); cv.setAttribute('aria-hidden', 'true'); return cv; });
   const ctx = canvases[0].getContext('2d'), mirrors = canvases.slice(1).map((cv) => cv.getContext('2d'));
   const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5], LEVELS = 16, VARIANTS = 8;
   const rand = (a, b) => a + Math.random() * (b - a);
@@ -1910,6 +1916,16 @@ cursorGrid(stageWrap, {
   point: (e) => { const r = deviceStage.getBoundingClientRect(), k = r.width / 1548; return [(e.clientX - r.left) / k, (e.clientY - r.top) / k]; },
   cols: () => 36,
   px: 4, color: '#fff', alpha: 0.32, edge: 0.45, fade: 0.3, speed: 18, reach: 10, clickReach: 10,
+});
+
+// White areas: soft gray cells everywhere else on the page (under the photos' own white grids), and in the
+// hero where the video has faded to white
+const SOFT = { px: 3, color: '#8b929c', alpha: 0.3, edge: 0.35, fade: 0.3, speed: 18, reach: 10, clickReach: 10,
+  cols: (w) => w >= 1280 ? 36 : w >= 992 ? 30 : w >= 768 ? 22 : 12 };
+cursorGrid(hero, { ...SOFT, mount: () => { const cv = document.createElement('canvas'); hero.querySelector('.hero-fade').after(cv); cv.classList.add('is-soft'); return [cv]; } });
+document.querySelectorAll('.features, .examples, .devices-head, .devices, .cta, .site-footer').forEach((sec) => {
+  sec.classList.add('has-soft-grid');
+  cursorGrid(sec, { ...SOFT, mount: () => { const cv = document.createElement('canvas'); sec.prepend(cv); return [cv]; } });
 });
 
 // Dark sections: accent green cells over a faint resting grid, a ring from the headline when first seen,
