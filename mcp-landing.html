@@ -199,8 +199,18 @@ img { display: block; }
 
 /* ── Hero ── */
 .hero { position: relative; padding: 223px 0 120px; overflow: hidden; }
-.hero-bg { position: absolute; left: 0; right: 0; top: -164px; height: 986px; overflow: hidden; }
+/* The clip is placed by script so the cube sits dead centre in the viewport. The cube is high in the frame,
+   so the space above the clip is a sky fill built from the clip's top edge (sampled across 0–8s),
+   deepening upward, and the clip's top edge fades into it */
+.hero-bg {
+  --sky-h: 0px;
+  position: absolute; left: 0; right: 0; top: -164px; height: 986px; overflow: hidden;
+  background:
+    linear-gradient(to bottom, rgba(38,92,112,0.55), rgba(38,92,112,0) var(--sky-h)),
+    linear-gradient(to right, #7dabb5, #97afb9 16.7%, #90a9b4 33.3%, #799ead 50%, #7a9fad 66.7%, #829fab 83.3%, #598c9c);
+}
 .hero-bg video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.hero-bg video.is-placed { position: absolute; object-fit: fill; -webkit-mask: linear-gradient(to bottom, transparent, #000 64px); mask: linear-gradient(to bottom, transparent, #000 64px); }
 .hero-fade { position: absolute; left: 0; right: 0; top: 286px; height: 536px; background: linear-gradient(to top, #fff, rgba(255,255,255,0)); }
 
 /* The card's chrome (glass, border, shadow, rail) fades to white behind the connect block;
@@ -320,7 +330,7 @@ img { display: block; }
      to cover at 1344×768, and the cube's center sits ~0.6% above the frame's middle */
   --composer-h: 113px;
   position: absolute; z-index: 20; left: 50%; width: min(1077px, calc(100% - 2 * var(--gutter))); height: var(--composer-h);
-  top: calc(329px - 0.006 * max(986px, 100vw / 1.75) - var(--composer-h) / 2);
+  top: calc(var(--cube-y, 329px) - var(--composer-h) / 2); /* --cube-y: the cube's centre, set with the video placement */
   transform: translateX(-50%); display: flex; align-items: center; gap: 24px; padding: 16px 16px 16px 36px;
   border-radius: 9999px; background: rgba(255,255,255,0.8); border: 6px solid rgba(255,255,255,0.36);
   backdrop-filter: blur(34px); -webkit-backdrop-filter: blur(34px); box-shadow: 0 4px 8px rgba(0,0,0,0.05);
@@ -377,6 +387,8 @@ img { display: block; }
 /* Chat card: fades in while growing from small to full size, out of the input's position */
 .chat-app { transform-origin: 50% 100px; /* the input's center, relative to the card top */ transition: opacity 0.6s ease 0.12s, transform 0.95s cubic-bezier(.22,1.12,.36,1) 0.12s; }
 .hero:not([data-intro="done"]) .chat-app { opacity: 0; transform: scale(0.82); transition-delay: 0s; }
+/* Chrome still paints the glass's backdrop blur under opacity: 0, smearing the video during the intro */
+.hero:not([data-intro="done"]) .chat-app { visibility: hidden; }
 /* ...with a bounce: overshoot, dip, settle. Opacity on the card or its glass layer switches off the
    backdrop blur, so the card only scales, the glass keeps its blur and fades in just its tint and border,
    and the contents fade on their own */
@@ -1254,6 +1266,31 @@ const sendBtn = composer.querySelector('.send');
 sendBtn.addEventListener('animationend', () => sendBtn.classList.remove('is-pressed'));
 // Start once the hero photo is ready (fallback after 1.5s) so the first frames aren't stalled by decoding
 const heroVideo = hero.querySelector('.hero-bg video');
+/* Cube dead centre in the viewport: size the clip to the width (at least a 60%-of-screen cube, up to 300px),
+   then place it so the cube's centre lands on the viewport's centre. The input and the chat's grow-in
+   origin follow the cube. */
+(() => {
+  const VW = 1536, VH = 672;           // clip size
+  const CX = 0.535, CY = 0.33;         // cube centre in the clip, averaged over 0–8s
+  const CUBE_W = 0.2;                  // cube width as a share of the clip width
+  const bg = hero.querySelector('.hero-bg'), fade = hero.querySelector('.hero-fade'), chat = hero.querySelector('.chat-app');
+  const place = () => {
+    const w = bg.clientWidth;
+    const heroTop = hero.getBoundingClientRect().top + scrollY;
+    const cubeY = innerHeight / 2 - heroTop;        // hero coords
+    const y = cubeY - bg.offsetTop;                 // .hero-bg coords
+    const s = Math.max(w / VW, (w / 2) / ((1 - CX) * VW), (w / 2) / (CX * VW), Math.min(innerWidth * 0.6, 300) / (CUBE_W * VW));
+    const vw = VW * s, vh = VH * s, top = y - CY * vh;
+    Object.assign(heroVideo.style, { left: `${w / 2 - CX * vw}px`, top: `${top}px`, width: `${vw}px`, height: `${vh}px` });
+    heroVideo.classList.add('is-placed');
+    bg.style.height = `${top + vh}px`;
+    bg.style.setProperty('--sky-h', `${Math.max(0, top)}px`);
+    fade.style.top = `${bg.offsetTop + top + vh - fade.offsetHeight}px`;
+    hero.style.setProperty('--cube-y', `${cubeY}px`);
+    chat.style.transformOrigin = `50% ${cubeY - chat.offsetTop}px`;
+  };
+  addEventListener('resize', place); place();
+})();
 // Started from script (muted) rather than the autoplay attribute; skipped for reduced motion
 if (!reducedMotion) { heroVideo.muted = true; heroVideo.play().catch(() => {}); }
 const heroReady = new Promise(r => heroVideo.readyState >= 2 ? r() : heroVideo.addEventListener('loadeddata', r, { once: true }));
