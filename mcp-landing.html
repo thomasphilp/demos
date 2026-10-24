@@ -1738,39 +1738,55 @@ new ResizeObserver(fitStage).observe(stageWrap); fitStage();
   startDot();
 })();
 
-/* ── Cursor grid: cells light up under the pointer with an ordered-dither fill and fade; clicks send a ring ──
-   Mouse/trackpad only for the trail (taps still ripple); off entirely for reduced motion. */
+/* ── Cursor grid: cells light up under the pointer with an ordered-dither fill and fade; clicks send a
+   square ring out across the grid. Every lit cell picks a random dither variant, brightness and fade, and
+   every ring a random speed and strength, so no two passes look the same.
+   Mouse/trackpad only for the trail (taps still ripple); off entirely for reduced motion.
+   o.mount()  → the canvases to draw into (the first is drawn, the rest mirror it)
+   o.area()   → where the canvases sit and their size, in their offset parent's px (default: the host)
+   o.point(e) → pointer position in canvas px (default: relative to the host and area) */
 const cursorGrid = (host, o) => {
   if (reducedMotion) return null;
   const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
-  const cv = document.createElement('canvas');
-  cv.className = 'cursor-grid'; cv.setAttribute('aria-hidden', 'true');
-  o.mount(cv);
-  const ctx = cv.getContext('2d');
-  const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5], LEVELS = 16;
-  let w = 0, h = 0, cell = 0, cols = 0, rows = 0, heat = new Float32Array(0), out = new Float32Array(0), tiles = [];
+  const canvases = o.mount().map((cv) => { cv.className = 'cursor-grid'; cv.setAttribute('aria-hidden', 'true'); return cv; });
+  const ctx = canvases[0].getContext('2d'), mirrors = canvases.slice(1).map((cv) => cv.getContext('2d'));
+  const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5], LEVELS = 16, VARIANTS = 8;
+  const rand = (a, b) => a + Math.random() * (b - a);
+  const area = o.area || (() => { const r = host.getBoundingClientRect(); return { x: 0, y: 0, w: r.width, h: r.height }; });
+  let box = { x: 0, y: 0, w: 0, h: 0 }, cell = 0, cols = 0, rows = 0, tiles = [];
+  let heat = new Float32Array(0), out = new Float32Array(0), life = new Float32Array(0), variant = new Uint8Array(0);
   let rings = [], raf = 0, prevT = 0, last = null, inView = false;
-  // One pre-rendered tile per brightness level: pixels on wherever the Bayer threshold is under the level
+  // Dither variants: the 4x4 Bayer pattern shifted by a random phase, some transposed; one tile per level each
   const buildTiles = () => {
     const size = Math.ceil(cell) + 1, px = o.px;
-    tiles = [null];
-    for (let l = 1; l <= LEVELS; l++) {
-      const t = document.createElement('canvas'); t.width = t.height = size;
-      const c = t.getContext('2d'); c.fillStyle = o.color;
-      if (l === LEVELS) c.fillRect(0, 0, size, size);
-      else for (let y = 0; y * px < size; y++) for (let x = 0; x * px < size; x++) if (BAYER[(y & 3) * 4 + (x & 3)] < l) c.fillRect(x * px, y * px, px, px);
-      tiles.push(t);
+    tiles = [];
+    for (let v = 0; v < VARIANTS; v++) {
+      const ox = Math.floor(rand(0, 4)), oy = Math.floor(rand(0, 4)), flip = Math.random() < 0.5, set = [null];
+      for (let l = 1; l <= LEVELS; l++) {
+        const t = document.createElement('canvas'); t.width = t.height = size;
+        const c = t.getContext('2d'); c.fillStyle = o.color;
+        if (l === LEVELS) c.fillRect(0, 0, size, size);
+        else for (let y = 0; y * px < size; y++) for (let x = 0; x * px < size; x++) {
+          const bx = (x + ox) & 3, by = (y + oy) & 3;
+          if (BAYER[(flip ? bx : by) * 4 + (flip ? by : bx)] < l) c.fillRect(x * px, y * px, px, px);
+        }
+        set.push(t);
+      }
+      tiles.push(set);
     }
   };
   const layout = () => {
-    const r = host.getBoundingClientRect(), nw = Math.round(r.width), nh = Math.round(r.height);
-    if (!nw || !nh || (nw === w && nh === h)) return;
-    w = nw; h = nh; cols = o.cols(w); cell = w / cols; rows = Math.ceil(h / cell);
+    const b = area(), w = Math.round(b.w), h = Math.round(b.h);
+    if (!w || !h) return;
+    if (w === Math.round(box.w) && h === Math.round(box.h) && b.x === box.x && b.y === box.y) return;
+    box = b; cols = o.cols(w); cell = w / cols; rows = Math.ceil(h / cell);
     heat = new Float32Array(cols * rows); out = new Float32Array(cols * rows);
-    cv.width = w; cv.height = h; cv.style.width = `${w}px`; cv.style.height = `${h}px`;
+    life = new Float32Array(cols * rows).fill(1); variant = new Uint8Array(cols * rows);
+    canvases.forEach((cv) => { cv.width = w; cv.height = h; Object.assign(cv.style, { left: `${b.x}px`, top: `${b.y}px`, width: `${w}px`, height: `${h}px` }); });
     buildTiles(); draw();
   };
   const draw = () => {
+    const w = canvases[0].width, h = canvases[0].height;
     ctx.clearRect(0, 0, w, h);
     if (o.line) { // faint resting grid
       ctx.fillStyle = o.line;
@@ -1778,33 +1794,39 @@ const cursorGrid = (host, o) => {
       for (let j = 1; j < rows; j++) ctx.fillRect(0, Math.round(j * cell), w, 1);
     }
     for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
-      const v = out[j * cols + i]; if (!v) continue;
+      const n = j * cols + i, v = out[n]; if (!v) continue;
       const x0 = Math.round(i * cell), y0 = Math.round(j * cell), cw = Math.round((i + 1) * cell) - x0, ch = Math.round((j + 1) * cell) - y0;
       ctx.globalAlpha = o.alpha;
-      ctx.drawImage(tiles[Math.min(LEVELS, Math.ceil(v * LEVELS))], 0, 0, cw - 1, ch - 1, x0 + 1, y0 + 1, cw - 1, ch - 1);
+      ctx.drawImage(tiles[variant[n]][Math.min(LEVELS, Math.ceil(v * LEVELS))], 0, 0, cw - 1, ch - 1, x0 + 1, y0 + 1, cw - 1, ch - 1);
       ctx.globalAlpha = Math.min(1, v * o.edge); ctx.strokeStyle = o.color; ctx.lineWidth = 1;
       ctx.strokeRect(x0 + 0.5, y0 + 0.5, cw, ch);
     }
     ctx.globalAlpha = 1;
+    mirrors.forEach((m) => { m.clearRect(0, 0, w, h); m.drawImage(canvases[0], 0, 0); });
   };
   // Ring profile: a bright one-cell band at the wavefront with a soft tail behind it
   const band = (d) => d < 0 ? Math.max(0, 1 + d / (cell * 0.6)) : Math.exp(-d / (cell * 1.1));
   const frame = (ts) => {
     raf = 0; if (!inView) return;
-    const t = ts / 1000, dt = prevT ? Math.min(0.05, t - prevT) : 1 / 60, k = Math.exp(-dt / o.fade);
+    const t = ts / 1000, dt = prevT ? Math.min(0.05, t - prevT) : 1 / 60;
     prevT = t;
     let live = false;
-    for (let n = 0; n < heat.length; n++) { let v = heat[n] * k; if (v < 0.04) v = 0; heat[n] = v; out[n] = v; if (v) live = true; }
-    rings = rings.filter(g => {
-      const rad = (t - g.t) * g.speed, life = rad / g.reach;
-      if (life > 1.15) return false;
+    for (let n = 0; n < heat.length; n++) {
+      let v = heat[n]; if (v) { v *= Math.exp(-dt / (o.fade * life[n])); if (v < 0.02) v = 0; heat[n] = v; if (v) live = true; }
+      out[n] = v;
+    }
+    rings = rings.filter((g) => {
+      const rad = (t - g.t) * g.speed, age = rad / g.reach;
+      if (age > 1.15) return false;
       live = true; if (rad < 0) return true;
-      const amp = g.amp * Math.max(0, 1 - life * life);
-      const j0 = Math.max(0, Math.floor((g.y - rad - cell) / cell)), j1 = Math.min(rows - 1, Math.floor((g.y + rad + cell) / cell));
+      const amp = g.amp * Math.max(0, 1 - age * age);
+      const j0 = Math.max(0, Math.floor((g.y - rad - cell) / cell)), j1 = Math.min(rows - 1, Math.floor((g.y + rad + cell * 5) / cell));
       for (let j = j0; j <= j1; j++) for (let i = 0; i < cols; i++) {
-        const dx = (i + 0.5) * cell - g.x, dy = (j + 0.5) * cell - g.y, d = rad - Math.hypot(dx, dy);
+        // Square wavefront: distance is the larger of the two axis offsets
+        const dx = (i + 0.5) * cell - g.x, dy = (j + 0.5) * cell - g.y, d = rad - Math.max(Math.abs(dx), Math.abs(dy));
         if (d < -cell || d > cell * 4) continue;
-        const v = band(d) * amp, n = j * cols + i; if (v > out[n]) out[n] = v;
+        const n = j * cols + i, v = band(d) * amp;
+        if (v > out[n]) { out[n] = v; if (!heat[n]) variant[n] = (n * 7 + g.seed) % VARIANTS; }
       }
       return true;
     });
@@ -1814,46 +1836,54 @@ const cursorGrid = (host, o) => {
   const wake = () => { if (!raf && inView) raf = requestAnimationFrame(frame); };
   const stamp = (x, y, v) => {
     const i = Math.floor(x / cell), j = Math.floor(y / cell); if (i < 0 || j < 0 || i >= cols || j >= rows) return;
-    const n = j * cols + i; if (v > heat[n]) heat[n] = v;
+    const n = j * cols + i;
+    if (heat[n] < 0.05) { variant[n] = Math.floor(rand(0, VARIANTS)); life[n] = rand(0.7, 1.4); } // a fresh cell rolls its own look
+    v *= rand(0.8, 1);
+    if (v > heat[n]) heat[n] = v;
   };
-  const local = (e) => { const r = host.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  const point = o.point || ((e) => { const r = host.getBoundingClientRect(); return [e.clientX - r.left - box.x, e.clientY - r.top - box.y]; });
   const ring = (x, y, amp = 1, reach = o.reach, delay = 0) => {
     if (!cols) return;
-    rings.push({ x, y, amp, reach: reach * cell, speed: o.speed * cell, t: performance.now() / 1000 + delay });
+    rings.push({ x, y, amp: amp * rand(0.8, 1.15), reach: reach * cell * rand(0.85, 1.15), speed: o.speed * cell * rand(0.8, 1.2), seed: Math.floor(rand(0, VARIANTS)), t: performance.now() / 1000 + delay });
     if (rings.length > 6) rings.shift();
     wake();
   };
+  // The eight cells around the pointer show at 10% opacity
+  const around = 0.1 / o.alpha;
   if (fine) {
     host.addEventListener('pointermove', (e) => {
       if (e.pointerType === 'touch') return;
-      const [x, y] = local(e);
+      const [x, y] = point(e);
       // Fill the gap since the last sample so a fast swipe still leaves a continuous trail
       const steps = last ? Math.min(30, Math.ceil(Math.hypot(x - last[0], y - last[1]) / (cell * 0.5)) || 1) : 1;
       for (let s = 1; s <= steps; s++) {
         const px = last ? last[0] + (x - last[0]) * s / steps : x, py = last ? last[1] + (y - last[1]) * s / steps : y;
+        for (let oy = -1; oy <= 1; oy++) for (let ox = -1; ox <= 1; ox++) if (ox || oy) stamp(px + ox * cell, py + oy * cell, around);
         stamp(px, py, 1);
-        // Spread to all eight neighbours, so a resting pointer shows a square (not a plus)
-        if (o.spread) for (let oy = -1; oy <= 1; oy++) for (let ox = -1; ox <= 1; ox++) if (ox || oy) stamp(px + ox * cell, py + oy * cell, o.spread);
       }
       last = [x, y]; wake();
     }, { passive: true });
     host.addEventListener('pointerleave', () => { last = null; });
   }
-  host.addEventListener('click', (e) => { if (!e.detail) return; const [x, y] = local(e); ring(x, y, 1, o.clickReach); }, { passive: true });
+  host.addEventListener('click', (e) => {
+    if (!e.detail) return;
+    const [x, y] = point(e); if (x < 0 || y < 0 || x > box.w || y > box.h) return;
+    ring(x, y, 1, o.clickReach);
+  }, { passive: true });
   new IntersectionObserver(([e]) => { inView = e.isIntersecting; if (inView) { layout(); o.onView?.(); wake(); } }, { threshold: 0.15 }).observe(host);
   new ResizeObserver(layout).observe(host);
   if (o.idle) setInterval(() => {
     if (!inView || document.hidden || !cols || rings.length) return;
     ring((Math.floor(Math.random() * cols) + 0.5) * cell, (Math.floor(Math.random() * rows) + 0.5) * cell, 0.45, 6);
-  }, o.idle);
-  return { ring, size: () => ({ w, h }) };
+  }, o.idle * rand(0.8, 1.2));
+  return { ring, size: () => ({ w: box.w, h: box.h }) };
 };
 
 // Hero: white cells over the video, under the input and chat; a ring leaves the cube as the chat comes in
 const heroGrid = cursorGrid(hero, {
-  mount: (cv) => hero.querySelector('.hero-fade').after(cv),
+  mount: () => { const cv = document.createElement('canvas'); hero.querySelector('.hero-fade').after(cv); return [cv]; },
   cols: (w) => w >= 1280 ? 36 : w >= 992 ? 30 : w >= 768 ? 22 : 12,
-  px: 3, color: '#fff', alpha: 0.32, edge: 0.45, spread: 0.4, fade: 0.3, speed: 18, reach: 12, clickReach: 10,
+  px: 3, color: '#fff', alpha: 0.32, edge: 0.45, fade: 0.3, speed: 18, reach: 12, clickReach: 10,
 });
 if (heroGrid) new MutationObserver(() => {
   if (hero.dataset.intro !== 'done') return;
@@ -1862,14 +1892,34 @@ if (heroGrid) new MutationObserver(() => {
   heroGrid.ring(heroGrid.size().w / 2, cubeY + lift, 0.6, 14, 0.35);
 }).observe(hero, { attributes: true, attributeFilter: ['data-intro'] });
 
+// White sections, image backgrounds only: white cells over the warehouse photo (under the example cards)…
+const exStage = document.querySelector('.examples-stage'), exPhoto = exStage?.querySelector('.examples-photo');
+if (exPhoto) cursorGrid(exStage, {
+  mount: () => { const cv = document.createElement('canvas'); exPhoto.after(cv); return [cv]; },
+  // The photo is centred with left: 50% and translateX(-50%), so read its box from offsets
+  area: () => ({ x: exPhoto.offsetLeft - exPhoto.offsetWidth / 2, y: exPhoto.offsetTop, w: exPhoto.offsetWidth, h: exPhoto.offsetHeight }),
+  cols: (w) => w >= 1280 ? 36 : w >= 992 ? 30 : w >= 768 ? 22 : 12,
+  px: 3, color: '#fff', alpha: 0.32, edge: 0.45, fade: 0.3, speed: 18, reach: 10, clickReach: 10,
+});
+// …and over the desk/dock slider photos: one grid mirrored into each slide, between its photo and its chat UI.
+// The slides live in the scaled 1548×857 artboard, so the canvases use artboard px.
+const deviceStage = stageWrap.querySelector('.stage');
+cursorGrid(stageWrap, {
+  mount: () => [...deviceStage.querySelectorAll('.scene .photo')].map((photo) => { const cv = document.createElement('canvas'); photo.after(cv); return cv; }),
+  area: () => ({ x: 0, y: 0, w: 1548, h: 857 }),
+  point: (e) => { const r = deviceStage.getBoundingClientRect(), k = r.width / 1548; return [(e.clientX - r.left) / k, (e.clientY - r.top) / k]; },
+  cols: () => 36,
+  px: 4, color: '#fff', alpha: 0.32, edge: 0.45, fade: 0.3, speed: 18, reach: 10, clickReach: 10,
+});
+
 // Dark sections: accent green cells over a faint resting grid, a ring from the headline when first seen,
 // and an occasional idle ring
 document.querySelectorAll('.on-dark').forEach((sec) => {
   let seen = false, grid;
   grid = cursorGrid(sec, {
-    mount: (cv) => sec.prepend(cv),
+    mount: () => { const cv = document.createElement('canvas'); sec.prepend(cv); return [cv]; },
     cols: (w) => w >= 992 ? 20 : w >= 768 ? 14 : 9,
-    px: 3, color: '#00ff1a', alpha: 0.45, edge: 0.5, line: 'rgba(255,255,255,0.045)', spread: 0.45, fade: 0.32, speed: 16, reach: 10, clickReach: 12, idle: 5200,
+    px: 3, color: '#00ff1a', alpha: 0.45, edge: 0.5, line: 'rgba(255,255,255,0.045)', fade: 0.32, speed: 16, reach: 10, clickReach: 12, idle: 5200,
     onView: () => {
       if (seen || !grid) return; seen = true;
       const t = sec.querySelector('.display'), r = t ? t.getBoundingClientRect() : null, s = sec.getBoundingClientRect();
