@@ -1474,6 +1474,7 @@ function twType(el, { start = 0, rate = 180, onDone } = {}) {
     '.ap-box',
     '.ap-row',
     '.app-tile',
+    '.setup-bg',
     '.steps',
     '.step',
     '.cta > *',
@@ -1506,19 +1507,25 @@ function twType(el, { start = 0, rate = 180, onDone } = {}) {
     .sort((a, b) => (a.el.compareDocumentPosition(b.el) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
   items.forEach((it, i) => { it.i = i; it.el._seq = it; });
   let next = 0, busy = false, open = false;
+  // Nothing below the hero plays until the visitor has actually scrolled (a reload mid-page counts)
+  let scrolled = scrollY > 0;
   // Chat example cards stagger within each batch that comes into view, so every row plays left then right
   const CARD_STAGGER = 0.25;
+  // Items skipped while the queue was busy play on their own once they're back in view
+  const late = new IntersectionObserver(entries => entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    late.unobserve(e.target);
+    const it = e.target._seq;
+    if (it.kind === 'type') twType(it.el, { start: 300 });
+    else { it.el.style.setProperty('--reveal-delay', '0s'); it.el.classList.add('is-visible'); }
+  }), { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
   const pump = () => {
-    if (!open || busy) return;
+    if (!open || !scrolled || busy) return;
     let cardBatch = 0;
     while (next < items.length && items[next].ready) {
       const it = items[next++];
-      // Catch-up: anything already scrolled past (fully above the viewport) appears at once, still in order
-      if (it.el.getBoundingClientRect().bottom < 0) {
-        if (it.kind === 'type') { const tw = twPrep(it.el); twReset(it.el); tw.words.forEach(w => w.classList.add('is-on')); it.el.classList.add('is-typed'); }
-        else it.el.classList.add('is-visible');
-        continue;
-      }
+      // Scrolled past before its turn (fully above the viewport): stay hidden and play when it's seen again
+      if (it.el.getBoundingClientRect().bottom < 0) { late.observe(it.el); continue; }
       if (it.kind === 'reveal') {
         if (it.el.matches('.ex-card')) it.el.style.setProperty('--reveal-delay', `${cardBatch++ * CARD_STAGGER}s`);
         it.el.classList.add('is-visible'); continue;
@@ -1545,6 +1552,8 @@ function twType(el, { start = 0, rate = 180, onDone } = {}) {
   addEventListener('scroll', atBottom, { passive: true });
   // Nothing below the hero starts until the hero's answer and connect block are in
   document.addEventListener('hero:answered', () => { if (!open) { open = true; setTimeout(pump, 700); } });
+  const onFirstScroll = () => { if (scrollY <= 0) return; scrolled = true; removeEventListener('scroll', onFirstScroll); pump(); };
+  if (!scrolled) addEventListener('scroll', onFirstScroll, { passive: true });
 })();
 
 /* ── Devices stage: scale the 1548×857 artboard to fit ── */
