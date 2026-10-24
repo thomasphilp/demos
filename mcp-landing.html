@@ -267,13 +267,13 @@ img { display: block; }
 .cf-edge .cf-line { flex: 1; min-width: 24px; border: 0 solid #000; }
 .cf-edge.is-top .cf-line { margin-top: 10.5px; border-top-width: 1px; }
 .br-mobile { display: none; }
-/* Figma 313:6803: three stacked, open-bottom outlines behind the frame's top edge (40%, 20%, 10% black) */
+/* Figma 313:6803: three stacked, open-bottom outlines behind the frame's top edge (Figma 40/20/10% black, halved here) */
 .hero-connect { position: relative; }
 .cf-stack { position: absolute; left: 0; right: 0; top: calc(10.5px - 16px - 75px); height: 75px; pointer-events: none; }
 .cf-tab { position: absolute; left: 50%; height: 25px; translate: -50% 0; border: 1px solid #000; border-bottom: 0; }
-.cf-tab:nth-child(1) { bottom: 0; width: 84.5%; opacity: 0.4; }
-.cf-tab:nth-child(2) { bottom: 25px; width: 73.45%; opacity: 0.2; }
-.cf-tab:nth-child(3) { bottom: 50px; width: 64.8%; opacity: 0.1; }
+.cf-tab:nth-child(1) { bottom: 0; width: 84.5%; opacity: 0.2; }
+.cf-tab:nth-child(2) { bottom: 25px; width: 73.45%; opacity: 0.1; }
+.cf-tab:nth-child(3) { bottom: 50px; width: 64.8%; opacity: 0.05; }
 .cf-edge.is-bottom .cf-line { margin-bottom: 21px; border-bottom-width: 1px; }
 .cf-edge .cf-line:first-child { border-left-width: 1px; }
 .cf-edge .cf-line:last-child { border-right-width: 1px; }
@@ -304,7 +304,7 @@ img { display: block; }
 .hero.is-answered .cf-body::after { animation-duration: 3.9s; animation-delay: -3.2s; }
 .hero.is-answered .cf-edge.is-bottom .cf-line:first-child { animation-duration: 4.9s; animation-delay: -0.2s; }
 .hero.is-answered .cf-edge.is-bottom .cf-line:last-child { animation-duration: 4.1s; animation-delay: -2.7s; }
-/* Same glitch on the stacked outlines, but flickering through filter so their 40/20/10% opacity holds;
+/* Same glitch on the stacked outlines, but flickering through filter so their 20/10/5% opacity holds;
    positive delays let the top-down reveal finish before the first glitch */
 @keyframes tab-glitch {
   0%, 84%, 100% { transform: none; filter: none; }
