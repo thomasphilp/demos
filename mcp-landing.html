@@ -1285,7 +1285,9 @@ const heroVideo = hero.querySelector('.hero-bg video');
     const heroTop = hero.getBoundingClientRect().top + scrollY;
     const cubeY = innerHeight / 2 - heroTop;        // hero coords
     const y = cubeY - bg.offsetTop;                 // .hero-bg coords
-    const s = Math.max(w / VW, (w / 2) / ((1 - CX) * VW), (w / 2) / (CX * VW), Math.min(innerWidth * 0.6, 300) / (CUBE_W * VW));
+    // Desktop (past the 1000px breakpoint) shows the cube 50% bigger
+    const s = Math.max(w / VW, (w / 2) / ((1 - CX) * VW), (w / 2) / (CX * VW), Math.min(innerWidth * 0.6, 300) / (CUBE_W * VW))
+      * (innerWidth > 1000 ? 1.5 : 1);
     const vw = VW * s, vh = VH * s, top = y - CY * vh;
     Object.assign(heroVideo.style, { left: `${w / 2 - CX * vw}px`, top: `${top}px`, width: `${vw}px`, height: `${vh}px` });
     heroVideo.classList.add('is-placed');
