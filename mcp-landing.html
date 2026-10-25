@@ -6,7 +6,7 @@
 <title>Mothership MCP — Mothership Demo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600&family=Bruno+Ace&family=Geist+Pixel&family=Geist:wght@400;600&family=Inter:wght@400;600;700&family=Instrument+Sans:wdth,wght@75..100,400..700&family=Outfit:wght@600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bruno+Ace&family=Geist+Pixel&family=Geist:wght@400;500;600;700&family=Inter:wght@400;600;700&family=Instrument+Sans:wght@600&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -23,11 +23,13 @@
   --green-copy: #1aff00;
   --surface-glass: rgba(255,255,255,0.7);
   --shadow-float: 0 4px 92px 0 rgba(0,0,0,0.1);
-  --font-display: 'Bricolage Grotesque', sans-serif;
-  --font-ui: 'Instrument Sans', sans-serif;
+  /* Everything outside the nav is Geist, at the weights the original faces used (Bricolage / Instrument Sans / Inter / Outfit) */
+  --font-display: 'Geist', sans-serif;
+  --font-ui: 'Geist', sans-serif;
   --font-geist: 'Geist', sans-serif;
   --font-pixel: 'Geist Pixel', 'Geist', monospace;
-  --font-logo: 'Outfit', sans-serif;
+  --font-logo: 'Geist', sans-serif;
+  --font-nav-title: 'Instrument Sans', sans-serif; /* All Products menu panel titles, as on mothership.com */
   --content: 1120px;
   --gutter: 24px;
   --bg-inset: 50px; /* photo backgrounds (examples, desk/dock slider) stop this far short of the viewport edges */
@@ -135,7 +137,7 @@ img { display: block; }
   display: flex; flex-direction: column; gap: 40px;
 }
 .exchange-user { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
-/* "Sent by you" under user bubbles (Figma: Instrument Sans Medium 14, right-aligned, 8px below) */
+/* "Sent by you" under user bubbles (Figma: Medium 14, right-aligned, 8px below) */
 .sent-by { font-size: 14px; font-weight: 500; color: var(--label-primary); white-space: nowrap; }
 .on-dark .sent-by { color: #fff; }
 .exchange-agent { display: flex; flex-direction: column; gap: 24px; align-items: flex-start; }
@@ -275,7 +277,7 @@ img { display: block; }
 .pm-panel.is-active { display: block; animation: pm-in 0.3s ease; }
 @keyframes pm-in { from { opacity: 0; } }
 .pm-head { padding: 0 2px 18px; }
-.pm-title { font-family: var(--font-ui); font-size: 20px; font-weight: 600; line-height: 26px; }
+.pm-title { font-family: var(--font-nav-title); font-size: 20px; font-weight: 600; line-height: 26px; }
 .pm-title:hover { text-decoration: underline; text-underline-offset: 3px; }
 .pm-head p { margin-top: 4px; font-size: 14px; line-height: 20px; color: var(--gray-500); }
 .pm-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
@@ -837,10 +839,10 @@ a.app-tile:hover .launch { color: #fff; }
 .step .num { font-family: var(--font-display); font-weight: 600; font-size: 64px; line-height: 67px; letter-spacing: -0.02em; color: #fff; }
 .step .what { font-size: 19px; font-weight: 500; color: #fff; max-width: 236px; }
 .step:not(:first-child) .what { max-width: none; }
-.step-card { flex: 1; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); box-shadow: 4px 4px 0 0 #000; padding: 12px; display: flex; flex-direction: column; justify-content: center; gap: 13px; font-family: 'Inter', sans-serif; color: #fff; }
+.step-card { flex: 1; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); box-shadow: 4px 4px 0 0 #000; padding: 12px; display: flex; flex-direction: column; justify-content: center; gap: 13px; font-family: var(--font-geist); color: #fff; }
 .step-card.is-center { align-items: center; }
 /* Figma 288:5067: the URL in its own outlined field */
-.step-card .url-row { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 400; line-height: 24px; }
+.step-card .url-row { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; font-family: var(--font-geist); font-size: 18px; font-weight: 400; line-height: 24px; }
 .step-card .url-row .ic { width: 16px; height: 16px; }
 .copy-green { background: var(--green-copy); color: #000; font-family: var(--font-ui); font-weight: 500; font-size: 16px; padding: 5px 12px; border-radius: 0; }
 .copy-green:hover { filter: brightness(1.1); }
@@ -859,7 +861,7 @@ a.app-tile:hover .launch { color: #fff; }
 .auth .account { border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; padding: 12px; display: flex; flex-direction: column; gap: 2px; }
 .auth .account b { font-size: 12px; font-weight: 600; line-height: 16px; }
 .auth .actions { display: flex; justify-content: flex-end; gap: 8px; opacity: 0.5; }
-.auth .actions button { font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; line-height: 18px; height: 32px; padding: 0 12px; border-radius: 8px; background: rgba(255,255,255,0.14); color: #fff; }
+.auth .actions button { font-family: var(--font-geist); font-size: 14px; font-weight: 600; line-height: 18px; height: 32px; padding: 0 12px; border-radius: 8px; background: rgba(255,255,255,0.14); color: #fff; }
 .auth .actions button:hover { background: rgba(255,255,255,0.24); }
 
 /* ── Closing CTA + footer ── */
@@ -891,6 +893,9 @@ a.app-tile:hover .launch { color: #fff; }
 .tw-caret { position: absolute; left: 0; top: 0; border-radius: 2px; background: currentColor; opacity: 0; pointer-events: none; }
 .tw-caret.is-on { opacity: 1; }
 .tw:not(.is-typed) + .cursor-block { visibility: hidden; animation: none; } /* blink restarts "on" at hand-off */
+/* data-tw-keep (closing CTA): no square under the line; the caret stays after the last word, headline-square size, and blinks */
+[data-tw-keep] { --tw-caret: 30px; }
+.tw-caret.is-resting { animation: blink 1.1s steps(1) infinite; }
 
 /* User bubbles (black and green) use the bounce instead of the plain fade-up */
 .page-bubble.reveal { translate: none; transition: none; }
@@ -1495,7 +1500,7 @@ a.app-tile:hover .launch { color: #fff; }
 
 <!-- ═══════════ Closing CTA ═══════════ -->
 <section class="cta" id="get-started" aria-labelledby="cta-title">
-  <h2 class="display" id="cta-title">Ship freight from your AI chat.</h2>
+  <h2 class="display" id="cta-title" data-typewriter data-tw-delay="0.7" data-tw-keep>Ship freight from your AI chat.</h2>
   <div class="actions">
     <a class="signup" href="https://www.mothership.com"><img src="assets/mcp-landing/icon-arrow.svg" alt="">Sign up in 60 seconds</a>
     <div class="url-col">
@@ -1621,7 +1626,7 @@ const hero = document.querySelector('.hero');
 const typedEl = hero.querySelector('.typed-text');
 const composer = hero.querySelector('.intro-composer');
 const QUESTION = 'Can I just ship freight from my AI chat?';
-const BOLD_WORDS = new Set(['ship', 'freight']); // Instrument Sans Bold, as in Figma 299:692
+const BOLD_WORDS = new Set(['ship', 'freight']); // Bold, as in Figma 299:692
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 // Sticky nav turns frosted as soon as the page leaves the top, and dark while its middle is over a dark
 // section or a dark photo (by position, so light cards passing under a dark photo don't make it flicker)
@@ -1921,7 +1926,7 @@ function twReset(el) {
   const tw = twPrep(el);
   tw.timers.forEach(clearTimeout); tw.timers = [];
   tw.words.forEach(w => w.classList.remove('is-on'));
-  tw.caret.classList.remove('is-on');
+  tw.caret.classList.remove('is-on', 'is-resting');
   el.classList.remove('is-typed');
 }
 // The resting square under a reply (if any) sets the caret's size and colour, so it never changes size
@@ -1933,11 +1938,11 @@ function twPlace(el, word) {
   const tw = el._tw, host = el.getBoundingClientRect();
   // Rects are on-screen px; the caret is placed in the element's own px, so undo any scale on the way (the slider artboard)
   const k = el.offsetWidth ? host.width / el.offsetWidth : 1;
-  const fs = parseFloat(getComputedStyle(el).fontSize), rest = twRest(el);
+  const cs = getComputedStyle(el), fs = parseFloat(cs.fontSize), rest = twRest(el), fixed = parseFloat(cs.getPropertyValue('--tw-caret'));
   // No resting square (the Autopilot replies): the caret is the font's x-height (1ex), measured in the reply's own type
   const exProbe = !rest && Object.assign(document.createElement('span'), { style: 'position:absolute;width:1ex;height:0' });
   if (exProbe) el.appendChild(exProbe);
-  const size = Math.round((rest ? rest.getBoundingClientRect().width : exProbe.getBoundingClientRect().width) / k);
+  const size = fixed || Math.round((rest ? rest.getBoundingClientRect().width : exProbe.getBoundingClientRect().width) / k);
   if (exProbe) exProbe.remove();
   const target = word || tw.words[0];
   const rects = target.getClientRects(); const r = word ? rects[rects.length - 1] : rects[0];
@@ -1953,12 +1958,18 @@ function twPlace(el, word) {
 }
 // After the last word: the caret goes and the resting square simply appears in its final spot (no travel)
 function twSettle(el, done) {
-  el._tw.caret.classList.remove('is-on');
+  if (el.hasAttribute('data-tw-keep')) twKeep(el); else el._tw.caret.classList.remove('is-on');
   done();
+}
+// A kept caret blinks after the last word, and follows it when the line rewraps
+function twKeep(el) {
+  const tw = el._tw, last = tw.words[tw.words.length - 1];
+  twPlace(el, last); tw.caret.classList.add('is-on', 'is-resting');
+  if (!el._twRo) (el._twRo = new ResizeObserver(() => tw.caret.classList.contains('is-resting') && twPlace(el, last))).observe(el);
 }
 function twType(el, { start = 0, rate = 120, onDone } = {}) { // 120ms a word: 50% faster than the original 180
   const tw = twPrep(el); twReset(el);
-  if (reducedMotion) { tw.words.forEach(w => w.classList.add('is-on')); el.classList.add('is-typed'); onDone && onDone(); return; }
+  if (reducedMotion) { tw.words.forEach(w => w.classList.add('is-on')); twSettle(el, () => { el.classList.add('is-typed'); onDone && onDone(); }); return; }
   const at = (fn, ms) => tw.timers.push(setTimeout(fn, ms));
   at(() => { twPlace(el, null); tw.caret.classList.add('is-on'); }, start);
   tw.words.forEach((w, i) => at(() => { w.classList.add('is-on'); twPlace(el, w); }, start + 147 + i * rate));
@@ -1993,7 +2004,7 @@ function twType(el, { start = 0, rate = 120, onDone } = {}) { // 120ms a word: 5
     '.setup-bg',
     '.steps',
     '.step',
-    '.cta > *',
+    '.cta > :not([data-typewriter])',
     '.site-footer',
   ];
   const STAGGER = 0.09;
