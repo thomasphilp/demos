@@ -1042,13 +1042,13 @@ a.app-tile:hover .launch { color: #fff; }
   .scene-a .composer, .scene-ask .composer {
     --k: calc(1 / var(--stage-scale, 1)); --bw: calc(1px * var(--k));
     left: 0; right: 0; margin: 0 auto; width: calc(var(--stage-vis, 1548) * 1px - 40px * var(--k));
-    top: 50%; transform: translateY(-50%); height: auto; min-height: calc(160px * var(--k)); /* as tall as the hero's */
+    top: 50%; transform: translateY(-50%); height: auto; min-height: calc(230px * var(--k)); /* as tall as the hero's */
     display: grid; grid-template-columns: 1fr auto; grid-template-areas: "text text" "plus send";
     align-items: center; row-gap: calc(14px * var(--k)); column-gap: calc(12px * var(--k));
     padding: calc(20px * var(--k)) calc(12px * var(--k)) calc(12px * var(--k)) calc(20px * var(--k)); border-radius: calc(24px * var(--k));
   }
-  .scene-a .composer .typed, .scene-ask .composer .typed { grid-area: text; align-self: start; font-size: calc(26px * var(--k)); line-height: 1.25; letter-spacing: normal; min-height: 0; white-space: normal; }
-  .scene-a .composer .caret, .scene-ask .composer .caret { width: calc(1.5px * var(--k)); height: calc(28px * var(--k)); vertical-align: calc(-6px * var(--k)); }
+  .scene-a .composer .typed, .scene-ask .composer .typed { grid-area: text; align-self: start; font-size: calc(36px * var(--k)); line-height: 1.25; letter-spacing: normal; min-height: 0; white-space: normal; }
+  .scene-a .composer .caret, .scene-ask .composer .caret { width: calc(1.5px * var(--k)); height: calc(39px * var(--k)); vertical-align: calc(-8px * var(--k)); }
   .scene-a .composer .plus, .scene-ask .composer .plus { grid-area: plus; width: calc(22px * var(--k)); height: calc(22px * var(--k)); }
   .scene-a .composer .send, .scene-ask .composer .send { grid-area: send; width: calc(48px * var(--k)); height: calc(48px * var(--k)); }
   .scene-a .composer .send img, .scene-ask .composer .send img { width: calc(22px * var(--k)); height: calc(22px * var(--k)); }
@@ -1061,13 +1061,13 @@ a.app-tile:hover .launch { color: #fff; }
   .cf-tab:nth-child(3) { bottom: 28px; }
   /* Figma Mobile/Chat/Composer (313:6667): taller, 24px radius, question on top, plus + send row below */
   .intro-composer {
-    --bw: 1px; --composer-h: 160px; /* room for two lines of the 26px question */
+    --bw: 1px; --composer-h: 230px; /* room for three lines of the 36px question */
     display: grid; grid-template-columns: 1fr auto; grid-template-areas: "text text" "plus send";
     align-items: center; row-gap: 14px; column-gap: 12px; padding: 20px 12px 12px 20px; border-radius: 24px;
   }
   .chat-app { transform-origin: 50% 183px; }
-  .intro-composer .typed { grid-area: text; align-self: start; font-size: 26px; line-height: 1.25; /* phones: 26px (desktop 39px) */ letter-spacing: normal; white-space: normal; }
-  .intro-composer .caret { height: 28px; vertical-align: -6px; }
+  .intro-composer .typed { grid-area: text; align-self: start; font-size: 36px; line-height: 1.25; /* phones: 36px (desktop 39px) */ letter-spacing: normal; white-space: normal; }
+  .intro-composer .caret { height: 39px; vertical-align: -8px; }
   .intro-composer .plus { grid-area: plus; width: 22px; height: 22px; }
   .intro-composer .send { grid-area: send; width: 48px; height: 48px; }
   .intro-composer .send img { width: 22px; height: 22px; }
