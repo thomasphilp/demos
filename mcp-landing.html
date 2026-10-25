@@ -545,8 +545,8 @@ img { display: block; }
 .examples .bracket-lines { width: min(908px, 100% - 2 * var(--bg-inset)); height: 157px; }
 .examples-stage { position: relative; margin-top: 57px; }
 /* The warehouse photo (and its cursor grid) steps down behind each row of example cards as the page scrolls:
-   --bg-y is set by script to the current row's offset, eased between rows */
-.examples-bg { position: absolute; left: 0; right: 0; top: 0; height: 729px; translate: 0 var(--bg-y, 0px); transition: translate 1.1s cubic-bezier(.65,0,.35,1); pointer-events: none; }
+   --bg-y is set by script to the current row's offset; it moves off fast and settles (ease-out) so it keeps up with the scroll */
+.examples-bg { position: absolute; left: 0; right: 0; top: 0; height: 729px; translate: 0 var(--bg-y, 0px); transition: translate 0.7s cubic-bezier(.22,1,.36,1); pointer-events: none; }
 .examples-photo { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 100%; height: 729px; object-fit: cover; } /* full-bleed, edge to edge */
 /* Cards stay inside the inset photo: a gutter in from its edges (flush with it on phones) */
 .examples-grid { --card-inset: var(--gutter); position: relative; width: min(1272px, 100% - 2 * var(--bg-inset) - 2 * var(--card-inset)); margin: 0 auto; padding-top: 76px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 45px 28px; }
@@ -2437,8 +2437,9 @@ if (exPhoto) cursorGrid(exStage, {
   cols: (w) => w >= 1280 ? 36 : w >= 992 ? 30 : w >= 768 ? 22 : 12,
   px: 3, color: '#fff', alpha: 0.32, edge: 0.45, fade: 0.3, speed: 18, reach: 10, clickReach: 10,
 });
-// Step the photo down with the scroll: it sits behind whichever row of cards is nearest the middle of the viewport,
-// offset from that row as it is from the first; at the last row it hangs 150px below the cards
+// Step the photo down with the scroll: it moves to a row as soon as that row's top comes 30% up from the bottom of the viewport
+// (scrolling down) and back once it drops below, offset from that row as it is from the first; at the last row it hangs
+// 150px below the cards
 if (exBg) {
   const cards = [...exStage.querySelectorAll('.ex-card')];
   let raf = 0;
@@ -2446,9 +2447,9 @@ if (exBg) {
     raf = 0;
     const rows = [...new Set(cards.map(c => c.offsetTop))].sort((a, b) => a - b);
     if (!rows.length) return;
-    const mid = innerHeight / 2, stageTop = exStage.getBoundingClientRect().top, rowH = cards[0].offsetHeight;
+    const line = innerHeight * 0.7, stageTop = exStage.getBoundingClientRect().top;
     let best = 0;
-    rows.forEach((t, i) => { if (Math.abs(stageTop + t + rowH / 2 - mid) < Math.abs(stageTop + rows[best] + rowH / 2 - mid)) best = i; });
+    rows.forEach((t, i) => { if (stageTop + t < line) best = i; });
     const last = Math.max(0, exStage.offsetHeight + 150 - exBg.offsetHeight);
     exStage.style.setProperty('--bg-y', `${best === rows.length - 1 ? last : Math.min(last, rows[best] - rows[0])}px`);
   };
