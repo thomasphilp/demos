@@ -402,8 +402,8 @@ img { display: block; }
 /* Rotating shine on the composer border, using the Figma Chat/Composer (245:1442) stroke gradient:
    white 0–17.8% → #747474 59.5% → #00e1ff 66.6% → #00ff1a 71.6% → white 100% */
 @property --shine-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
-.intro-composer { --bw: 1.5px; border-width: var(--bw); border-color: transparent; background-clip: padding-box; }
-.intro-composer::before, .scene-ask .composer::before {
+.intro-composer, .scene-a .composer { --bw: 1.5px; border-width: var(--bw); border-color: transparent; background-clip: padding-box; }
+.intro-composer::before, .scene-a .composer::before, .scene-ask .composer::before {
   content: ""; position: absolute; inset: calc(-1 * var(--bw)); padding: var(--bw); border-radius: inherit; pointer-events: none;
   background: conic-gradient(from var(--shine-angle), var(--shine-stops));
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
@@ -632,23 +632,23 @@ img { display: block; }
 .stage-play .ic-play { margin-left: 2px; }
 .stage-dot:focus-visible, .stage-play:focus-visible { outline: 2px solid #0071e3; outline-offset: 3px; }
 
-/* Slide 1 input: Figma Chat/Composer (324:7845) — frosted pill with a 6px translucent white rim (no shine),
-   the typed question and a rounded-square send */
-.scene-a .composer { position: absolute; left: 250px; top: 372px; width: 1077px; height: 113px; display: flex; align-items: center; gap: 24px; padding: 16px 16px 16px 36px; border-radius: 9999px; background: rgba(255,255,255,0.8); border: 6px solid rgba(255,255,255,0.36); backdrop-filter: blur(34px); -webkit-backdrop-filter: blur(34px); box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
-.scene-a .composer .send { width: 72px; height: 72px; border-radius: 18px; }
-.scene-a .composer .send img { width: 32px; height: 32px; }
-/* Slide 3 input: Figma Mobile/Chat/Composer (324:7983) — the phone composer at artboard size, centred on the dock photo:
-   question on top (bold first line), plus + round send below, 3px shine rim */
+/* Slide 1 input: the hero composer at the same artboard size — frosted pill, rotating shine rim, typed question, round send */
+.scene-a .composer { position: absolute; left: 250px; top: 372px; width: 1077px; height: 113px; display: flex; align-items: center; gap: 24px; padding: 16px 16px 16px 36px; border-radius: 9999px; background: rgba(255,255,255,0.8); border-style: solid; backdrop-filter: blur(34px); -webkit-backdrop-filter: blur(34px); box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
+/* Slide 3 input: the hero's mobile composer (question on top, plus + round send below, 24px corners, 1px shine rim),
+   scaled up by k = 39/22 to the slide's 39px type and centred on the dock photo (Figma 324:7983 position) */
 .scene-ask .composer {
-  --bw: 3px; position: absolute; left: 408px; top: 306px; width: 732px; display: flex; flex-direction: column; gap: 24px;
-  padding: 37px 16px 16px 36px; border-radius: 24px; background: rgba(255,255,255,0.9); border: var(--bw) solid transparent;
-  background-clip: padding-box; backdrop-filter: blur(34px); -webkit-backdrop-filter: blur(34px); box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  --k: 1.7727; --bw: calc(1px * var(--k)); position: absolute; left: 408px; top: 50%; transform: translateY(-50%); width: 732px;
+  display: grid; grid-template-columns: 1fr auto; grid-template-areas: "text text" "plus send"; align-items: center;
+  row-gap: calc(14px * var(--k)); column-gap: calc(12px * var(--k));
+  padding: calc(20px * var(--k)) calc(12px * var(--k)) calc(12px * var(--k)) calc(20px * var(--k)); border-radius: calc(24px * var(--k));
+  background: rgba(255,255,255,0.8); border: var(--bw) solid transparent; background-clip: padding-box;
+  backdrop-filter: blur(34px); -webkit-backdrop-filter: blur(34px); box-shadow: 0 4px 8px rgba(0,0,0,0.05);
 }
-.scene-ask .composer .typed { flex: none; line-height: 1.22; min-height: 2.44em; white-space: normal; }
-.scene-ask .composer .row { display: flex; align-items: center; justify-content: space-between; }
-.scene-ask .composer .plus { width: 36px; height: 36px; }
-.scene-ask .composer .send { width: 72px; height: 72px; }
-.scene-ask .composer .send img { width: 32px; height: 32px; }
+.scene-ask .composer .typed { grid-area: text; align-self: start; flex: none; line-height: 1.25; min-height: 2.5em; white-space: normal; }
+.scene-ask .composer .caret { height: calc(24px * var(--k)); vertical-align: calc(-5px * var(--k)); }
+.scene-ask .composer .plus { grid-area: plus; width: calc(22px * var(--k)); height: calc(22px * var(--k)); }
+.scene-ask .composer .send { grid-area: send; width: calc(48px * var(--k)); height: calc(48px * var(--k)); }
+.scene-ask .composer .send img { width: calc(22px * var(--k)); height: calc(22px * var(--k)); }
 /* Before the first word: "Reply…" placeholder behind the caret, send disabled (20%, like the phone composer's) */
 .scene-ask .composer .typed { position: relative; }
 .scene-ask .composer .placeholder { position: absolute; left: 6px; top: 0; font-weight: 400; color: var(--gray-500); pointer-events: none; }
@@ -892,8 +892,21 @@ a.app-tile:hover .launch { color: #fff; }
   .br-mobile { display: inline; }
   /* Desk/dock slider fills 60% of the screen; photos crop to cover, the wide overlays shrink to the visible width */
   .stage-wrap { aspect-ratio: auto; height: 60vh; height: 60svh; }
-  .scene-a .composer { left: calc(50% - 538.5px); scale: min(1, calc((var(--stage-vis, 1548) - 60) / 1077)); }
-  .scene-ask .composer { left: calc(50% - 366px); scale: min(1, calc((var(--stage-vis, 1548) - 60) / 732)); }
+  /* Slide inputs on phones: exactly the hero's mobile composer on screen (question on top, plus + send below, 24px
+     corners, 1px shine), sized by dividing by the artboard's scale, 20px in from the slide's edges, centred */
+  .scene-a .composer, .scene-ask .composer {
+    --k: calc(1 / var(--stage-scale, 1)); --bw: calc(1px * var(--k));
+    left: 0; right: 0; margin: 0 auto; width: calc(var(--stage-vis, 1548) * 1px - 40px * var(--k));
+    top: 50%; transform: translateY(-50%); height: auto; min-height: calc(150px * var(--k));
+    display: grid; grid-template-columns: 1fr auto; grid-template-areas: "text text" "plus send";
+    align-items: center; row-gap: calc(14px * var(--k)); column-gap: calc(12px * var(--k));
+    padding: calc(20px * var(--k)) calc(12px * var(--k)) calc(12px * var(--k)) calc(20px * var(--k)); border-radius: calc(24px * var(--k));
+  }
+  .scene-a .composer .typed, .scene-ask .composer .typed { grid-area: text; align-self: start; font-size: calc(22px * var(--k)); line-height: 1.25; min-height: 0; white-space: normal; }
+  .scene-a .composer .caret, .scene-ask .composer .caret { width: calc(1.5px * var(--k)); height: calc(24px * var(--k)); vertical-align: calc(-5px * var(--k)); }
+  .scene-a .composer .plus, .scene-ask .composer .plus { grid-area: plus; width: calc(22px * var(--k)); height: calc(22px * var(--k)); }
+  .scene-a .composer .send, .scene-ask .composer .send { grid-area: send; width: calc(48px * var(--k)); height: calc(48px * var(--k)); }
+  .scene-a .composer .send img, .scene-ask .composer .send img { width: calc(22px * var(--k)); height: calc(22px * var(--k)); }
   .desk-window { scale: min(1, calc((var(--stage-vis, 1548) - 60) / 968)); }
   .cf-body { padding: 18px 12px 32px; gap: 40px; }
   /* Shorter stacked outlines on phones: 14px each, still flush and 16px above the frame */
@@ -1117,10 +1130,8 @@ a.app-tile:hover .launch { color: #fff; }
         <div class="photo" data-shader><img src="assets/mcp-landing/dock-phone.jpg" alt=""></div>
         <div class="composer is-empty" data-bold="Just include this in all pickup notes:" data-question="Carrier must have a TWIC card">
           <div class="typed"><span class="placeholder">Reply…</span><span class="typed-text"></span><span class="caret"></span></div>
-          <div class="row">
-            <img class="plus" src="assets/mcp-landing/composer-plus-lg.svg" alt="">
-            <span class="send"><img src="assets/mcp-landing/composer-arrow-lg.svg" alt=""></span>
-          </div>
+          <img class="plus" src="assets/mcp-landing/composer-plus-lg.svg" alt="">
+          <span class="send"><img src="assets/mcp-landing/composer-arrow-lg.svg" alt=""></span>
         </div>
       </div>
 
@@ -1477,7 +1488,8 @@ function playIntro() {
   words.forEach((word, i) => later(() => {
     const span = document.createElement('span');
     span.className = BOLD_WORDS.has(word) ? 'word is-bold' : 'word';
-    span.textContent = (i ? ' ' : '') + word;
+    span.textContent = word;
+    if (i) typedEl.appendChild(document.createTextNode(' ')); // a plain space between words, so a wrapped line doesn't start with one
     typedEl.appendChild(span);
   }, START + i * RATE));
   const typed = START + words.length * RATE;
@@ -1917,7 +1929,8 @@ new ResizeObserver(fitStage).observe(stageWrap); fitStage();
       if (i && i === bold.length) compText.appendChild(document.createElement('br'));
       const span = document.createElement('span');
       span.className = isBold ? 'word is-bold' : 'word';
-      span.textContent = (i && i !== bold.length ? ' ' : '') + word;
+      span.textContent = word;
+      if (i && i !== bold.length) compText.appendChild(document.createTextNode(' ')); // plain space: wrapped lines don't start with one
       compText.appendChild(span); comp.classList.remove('is-empty');
     }, START + i * RATE));
     const typed = START + words.length * RATE;
