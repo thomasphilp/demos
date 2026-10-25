@@ -2158,9 +2158,10 @@ document.querySelectorAll('.on-dark').forEach((sec) => {
 
 /* ── "Pattern Screen" shader (Figma custom effect, wavy lines) on the device photos ──
    setup()/render() below are the Figma shader module (unused param helpers trimmed), with one addition:
-   an ambient iridescent ripple. Wide rings spread out from the slide-1 input box, rounded to its pill shape, bending the lines and
-   tinting them with a cool thin-film sheen (cyan, blue, violet, mint) and a slight red/blue split along each crest.
-   frameData.x is time, frameData.w the ripple amount; rippleBox is the input box (centre xy, half size zw, output px). */
+   an ambient iridescent ripple. Wide rings spread out from the chat UI on top of the photo (input pill, laptop window, phone),
+   in its rounded-box shape, bending the lines and tinting them with a cool thin-film sheen (cyan, blue, violet, mint) and a slight
+   red/blue split along each crest. frameData.x is time, frameData.w the ripple amount; rippleBox is that object (centre xy,
+   half size zw, output px) and rippleShape.x its corner radius. */
 const PatternScreen = (() => {
   function setup(device, frame) {
     var wgsl = `
@@ -2175,6 +2176,7 @@ struct Uniforms {
   contrast: vec4f,
   patternAngle: vec4f,
   rippleBox: vec4f,
+  rippleShape: vec4f,
 };
 @group(0) @binding(0) var<uniform> u: Uniforms;
 @group(0) @binding(1) var samp: sampler;
@@ -2247,13 +2249,13 @@ fn rotateUV(p: vec2f, angle: f32) -> vec2f {
   let bgColor = u.bgColor;
   let contrast = u.contrast.x;
   let patternAngle = u.patternAngle.x;
-  // Ambient ripple off the input box: rings are distance from a pill the box's size (rounded-box SDF), so they
-  // hug its outline near it and round out further away; distance is in frame heights
+  // Ambient ripple off the object on the slide: rings are distance from a rounded box its size and corner radius (SDF),
+  // so they hug its outline near it and round out further away; distance is in frame heights
   let ripple = u.frameData.w;
   let px0 = uv * dims;
   let bc = u.rippleBox.xy;
   let bh = max(u.rippleBox.zw, vec2f(1.0));
-  let br = min(bh.x, bh.y);
+  let br = min(u.rippleShape.x, min(bh.x, bh.y));
   let bq = abs(px0 - bc) - bh + vec2f(br);
   let sd = length(max(bq, vec2f(0.0))) + min(max(bq.x, bq.y), 0.0) - br;
   let d1 = max(sd, 0.0) / dims.y;
@@ -2335,11 +2337,11 @@ fn rotateUV(p: vec2f, angle: f32) -> vec2f {
   if (hx < 1.0) { irid = mix(cCyan, cBlue, hx); }
   else if (hx < 2.0) { irid = mix(cBlue, cViolet, hx - 1.0); }
   else if (hx < 3.0) { irid = mix(cViolet, cMint, hx - 2.0); }
-  let fg = mix(tintColor.rgb, irid, crest * 0.7) * tintColor.a;
-  let bg = (bgColor.rgb + irid * crest * 0.04) * bgColor.a;
-  // Chromatic split: red and blue lines drift apart from green along the ring crests (up to ~3px at 1x)
+  let fg = mix(tintColor.rgb, irid, crest * 0.35) * tintColor.a;
+  let bg = (bgColor.rgb + irid * crest * 0.02) * bgColor.a;
+  // Chromatic split: red and blue lines drift apart from green along the ring crests (up to ~1.5px at 1x)
   if (patternMode == 6 && ripple > 0.0 && patternAngle == 0.0) {
-    let ca = rdir * pow(abs(w1), 1.2) * (dims.y / 857.0) * 3.0 * ripple;
+    let ca = rdir * pow(abs(w1), 1.2) * (dims.y / 857.0) * 1.5 * ripple;
     let pR = wavyAt(px + ca, cellSize, lumAt(px + ca, dims, contrast));
     let pB = wavyAt(px - ca, cellSize, lumAt(px - ca, dims, contrast));
     let colC = vec3f(mix(bg.r, fg.r, pR), mix(bg.g, fg.g, pattern), mix(bg.b, fg.b, pB));
@@ -2369,7 +2371,7 @@ fn rotateUV(p: vec2f, angle: f32) -> vec2f {
     ]);
     frame.state.quad.unmap();
     frame.state.uniformBuf = device.createBuffer({
-        size: 144,
+        size: 160,
         usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
     });
     frame.state.sampler = device.createSampler({
@@ -2413,7 +2415,7 @@ fn rotateUV(p: vec2f, angle: f32) -> vec2f {
     var height = Math.max(1, finiteNumber(output.height, 1));
     var time = finiteNumber(frame.time, 0);
     var ripple = finiteNumber(frame.ripple, 0);
-    var box = frame.box || [width / 2, height / 2, 0, 0];
+    var box = frame.box || [width / 2, height / 2, 0, 0, 0, 0, 0, 0];
     var inputWidth = width;
     var inputHeight = height;
     device.queue.writeBuffer(frame.state.uniformBuf, 0, new Float32Array([
@@ -2533,14 +2535,14 @@ async function applyPatternScreen() {
   document.addEventListener('visibilitychange', wake);
 }
 const shaded = [];
-// The slide-1 input box in a layer's output pixels (centre, half size); on screen rects, so it tracks the Ken Burns zoom, the
-// box's rise-in and its mobile scale. Every slide's rings take this shape.
-const rippleComposer = document.querySelector('.scene-a .composer');
+// The slide's chat UI in its layer's output pixels (centre, half size, corner radius); from on-screen rects, so it tracks the
+// Ken Burns zoom, the UI's rise-in and its mobile scale.
 function rippleBox(layer, w) {
-  const p = layer.getBoundingClientRect(), c = rippleComposer && rippleComposer.getBoundingClientRect();
-  if (!c || !p.width) return null;
-  const k = w / p.width;
-  return [(c.left + c.width / 2 - p.left) * k, (c.top + c.height / 2 - p.top) * k, c.width / 2 * k, c.height / 2 * k];
+  const obj = layer.closest('.scene').querySelector('.composer, .desk-window, .phone');
+  const p = layer.getBoundingClientRect(), c = obj && obj.getBoundingClientRect();
+  if (!c || !p.width || !obj.offsetWidth) return null;
+  const k = w / p.width, r = parseFloat(getComputedStyle(obj).borderTopLeftRadius) * (c.width / obj.offsetWidth);
+  return [(c.left + c.width / 2 - p.left) * k, (c.top + c.height / 2 - p.top) * k, c.width / 2 * k, c.height / 2 * k, r * k, 0, 0, 0];
 }
 // Heavy GPU/canvas work: run after the hero intro has played
 setTimeout(() => applyPatternScreen().catch(err => console.warn('Pattern Screen shader failed:', err)), reducedMotion ? 0 : 3500);
