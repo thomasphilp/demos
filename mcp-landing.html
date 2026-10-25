@@ -433,7 +433,8 @@ img { display: block; }
   100% { transform: scale(1); box-shadow: 0 0 0 12px rgba(9,10,12,0); }
 }
 /* Exit: small lift, then sink and fade as the chat grows out of the same spot */
-.hero[data-intro="done"] .intro-composer { animation: composer-out 0.5s both; pointer-events: none; }
+/* The input starts leaving (.is-leaving) a beat before the chat comes in (data-intro="done") */
+.hero[data-intro] .intro-composer.is-leaving, .hero[data-intro="done"] .intro-composer { animation: composer-out 0.5s both; pointer-events: none; }
 @keyframes composer-out {
   0%   { opacity: 1; transform: translate(-50%, 0) scale(1); animation-timing-function: cubic-bezier(.3,.7,.4,1); }
   30%  { opacity: 1; transform: translate(-50%, -6px) scale(1.015); animation-timing-function: cubic-bezier(.5,0,.8,.4); }
@@ -1370,6 +1371,7 @@ function playIntro() {
   introTimers.forEach(clearTimeout); introTimers = [];
   typedEl.textContent = '';
   hero.dataset.intro = 'start';
+  composer.classList.remove('is-leaving');
   twReset(heroTitle);
   hero.classList.remove('is-answered');
   if (reducedMotion) { hero.dataset.intro = 'done'; twType(heroTitle, { onDone: heroAnswered }); return; }
@@ -1389,9 +1391,12 @@ function playIntro() {
   // A beat after the last word: press send, then the input bounces out as the chat grows in
   const PRESS = typed + 450;
   later(() => sendBtn.classList.add('is-pressed'), PRESS);
-  later(() => { hero.dataset.intro = 'done'; }, PRESS + 320);
+  // The input starts leaving first; the chat grows in a beat later, once the input is on its way out
+  const LEAVE = PRESS + 320, LEAD = 380; // the input is mostly faded by the time the chat starts growing in
+  later(() => composer.classList.add('is-leaving'), LEAVE);
+  later(() => { hero.dataset.intro = 'done'; }, LEAVE + LEAD);
   // The agent's answer types in once the chat has grown in and the bubble has landed
-  later(() => twType(heroTitle, { onDone: heroAnswered }), PRESS + 320 + 1100);
+  later(() => twType(heroTitle, { onDone: heroAnswered }), LEAVE + LEAD + 1100);
 }
 // Once the hero answer is typed: bring in the connect block, then let the rest of the page start revealing
 function heroAnswered() {
@@ -1641,13 +1646,13 @@ function twSettle(el, done) {
   el._tw.caret.classList.remove('is-on');
   done();
 }
-function twType(el, { start = 0, rate = 180, onDone } = {}) {
+function twType(el, { start = 0, rate = 120, onDone } = {}) { // 120ms a word: 50% faster than the original 180
   const tw = twPrep(el); twReset(el);
   if (reducedMotion) { tw.words.forEach(w => w.classList.add('is-on')); el.classList.add('is-typed'); onDone && onDone(); return; }
   const at = (fn, ms) => tw.timers.push(setTimeout(fn, ms));
   at(() => { twPlace(el, null); tw.caret.classList.add('is-on'); }, start);
-  tw.words.forEach((w, i) => at(() => { w.classList.add('is-on'); twPlace(el, w); }, start + 220 + i * rate));
-  at(() => twSettle(el, () => { el.classList.add('is-typed'); onDone && onDone(); }), start + 220 + tw.words.length * rate + 280);
+  tw.words.forEach((w, i) => at(() => { w.classList.add('is-on'); twPlace(el, w); }, start + 147 + i * rate));
+  at(() => twSettle(el, () => { el.classList.add('is-typed'); onDone && onDone(); }), start + 147 + tw.words.length * rate + 187);
 }
 
 /* ── Hero chat card: fade its chrome to white from the top of the connect block ── */
