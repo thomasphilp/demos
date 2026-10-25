@@ -1295,9 +1295,10 @@ document.querySelectorAll('[data-icon]').forEach(el => {
   if (icon) el.innerHTML = `<svg viewBox="${icon.viewBox}" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${icon.inner}</svg>`;
 });
 
-/* "Your AI agent" tags: turn the icon into a mask (so the sweep can fill it) and wrap the label */
+/* "Your AI agent" tags: turn the icon into a mask (so the sweep can fill it) and wrap the label.
+   The phone app's title bar stays still. */
 document.querySelectorAll('.agent-tag').forEach(tag => {
-  if (!/your ai agent/i.test(tag.textContent)) return;
+  if (!/your ai agent/i.test(tag.textContent) || tag.closest('.phone .app-head')) return;
   tag.classList.add('is-shimmer');
   const svg = tag.querySelector('.ic svg');
   if (svg) {
