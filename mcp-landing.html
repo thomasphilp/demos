@@ -189,8 +189,18 @@ img { display: block; }
 }
 @keyframes beam { to { transform: rotate(360deg); } }
 .mcp-url .surface { position: absolute; inset: 1px; background: #fff; } /* 1px shine border */
-.hero-connect .mcp-url .surface { inset: 1.5px; } /* Figma 297:685 */
-.hero-connect .mcp-url .url { font-weight: 400; color: #000; } /* Figma 288:5275: Geist Regular, black */
+.hero-connect .mcp-url .url { font-size: 16px; font-weight: 400; color: #000; } /* Figma 288:5275: Geist Regular 16, black */
+/* Hero URL box (Figma 288:5274): 278 wide, a light gray 1px rim with two fading green streaks orbiting it once every 4s */
+.hero-connect .mcp-url { width: 278px; background: #cfcfcf; }
+.hero-connect .mcp-url .beam {
+  background: conic-gradient(from 90deg,
+    rgba(4,132,40,0.5) 0.43%, rgba(3,163,47,0.625) 5.59%, rgba(2,194,54,0.75) 10.76%, rgba(1,224,61,0.875) 15.92%, #00ff44 21.09%,
+    rgba(1,224,61,0.875) 22.12%, rgba(3,163,47,0.625) 24.18%, rgba(6,102,33,0.375) 26.23%, rgba(7,71,26,0.25) 27.26%, rgba(9,10,12,0) 29.32%,
+    rgba(7,71,26,0.25) 40.95%, rgba(6,102,33,0.375) 46.77%, rgba(4,132,40,0.5) 52.58%, rgba(3,163,47,0.625) 58.4%, rgba(2,194,54,0.75) 64.22%,
+    rgba(1,224,61,0.875) 70.03%, #00ff44 75.85%, rgba(2,194,54,0.75) 76.83%, rgba(4,132,40,0.5) 77.81%, rgba(7,71,26,0.25) 78.79%, rgba(9,10,12,0) 79.76%,
+    rgba(7,71,26,0.25) 90.1%, rgba(6,102,33,0.375) 95.26%, rgba(4,132,40,0.5) 100%);
+  animation-duration: 4s;
+}
 .hero-connect .copy-btn { font-weight: 600; } /* Figma 288:5277: Geist SemiBold */
 .mcp-url .url { position: relative; font-size: 18px; font-weight: 500; color: var(--label-primary); }
 .copy-btn { position: relative; background: var(--ink); color: #fff; font-family: var(--font-geist); font-size: 12px; line-height: 16px; padding: 5px 12px; border-radius: 0; min-width: 54px; } /* Figma 288:5276: 54×26 */
@@ -919,7 +929,7 @@ a.app-tile:hover .launch { color: #fff; }
    this URL box's beam is the dark-to-green sweep */
 .cta .actions { display: flex; align-items: flex-start; gap: 32px; flex-wrap: wrap; justify-content: center; }
 .cta .url-col { display: flex; flex-direction: column; align-items: center; gap: 14px; }
-.hero-connect .mcp-url .beam, .cta .mcp-url .beam {
+.cta .mcp-url .beam {
   background: conic-gradient(from 90deg, #090a0c 0%, #090a0c 62%, #08190f 63.125%, #082913 64.25%, #07471a 66.5%, #066621 68.75%, #048428 71%,
     #02c236 75.5%, #00ff44 80%, #02c236 81.5%, #048428 83%, #066621 83.75%, #07471a 84.5%, #082913 85.25%, #08190f 85.625%, #090a0c 86%, #090a0c 100%);
 }
