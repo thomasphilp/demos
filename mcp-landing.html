@@ -515,13 +515,16 @@ img { display: block; }
 .ex-hover .reply { position: absolute; left: 52px; top: 161px; width: min(492px, calc(100% - 80px)); display: flex; flex-direction: column; gap: 16px; }
 .ex-hover .reply .spark { width: 20px; height: 20px; color: #b9b9b9; transition: color 0.3s ease; }
 /* Before the reply: the star turns and pulses, and a "thinking" line under it runs the "Your AI agent" sweep */
-/* Thinking star: drifts up and fades out, then a fresh one rises in from below to its place, on a loop */
-.ex-hover .reply.is-thinking .spark { color: #141414; animation: spark-think 1.1s infinite; }
+/* Thinking stars: two stars hand off on a loop. Each rises in from below, holds, then drifts up and fades;
+   the next one starts rising in 0.1s after the last starts leaving, so they overlap but stay distinct. */
+.ex-hover .reply .sparks { position: relative; display: block; width: 20px; height: 20px; }
+.ex-hover .reply .spark.is-next { position: absolute; inset: 0; opacity: 0; }
+.ex-hover .reply.is-thinking .spark { color: #141414; animation: spark-think 1.2s infinite; }
+.ex-hover .reply.is-thinking .spark:not(.is-next) { animation-delay: -0.6s; } /* the resting star leaves first */
 @keyframes spark-think {
-  0%     { transform: translateY(0); opacity: 1; animation-timing-function: cubic-bezier(.5,0,.75,0); }
-  42%    { transform: translateY(-10px); opacity: 0; }
-  42.01% { transform: translateY(10px); opacity: 0; animation-timing-function: cubic-bezier(.25,1,.5,1); }
-  85%, 100% { transform: translateY(0); opacity: 1; }
+  0%, 8%    { transform: translateY(10px); opacity: 0; animation-timing-function: cubic-bezier(.25,1,.5,1); }
+  33%, 50%  { transform: translateY(0); opacity: 1; animation-timing-function: cubic-bezier(.5,0,.75,0); }
+  75%, 100% { transform: translateY(-10px); opacity: 0; }
 }
 .ex-hover .reply .think { display: none; font-size: 15px; }
 .ex-hover .reply.is-thinking .think { display: flex; animation: think-in 0.3s ease-out both, agent-sweep 2.4s linear infinite; }
@@ -1494,7 +1497,7 @@ grid.innerHTML = EXAMPLES.map((ex, i) => `
       <div class="panel"></div>
       <div class="q">${ex.file ? `<span class="chip">${ex.file}</span>` : ''}<p class="bubble">${esc(ex.hq)}</p></div>
       <div class="reply">
-        <span class="spark ic" data-icon="solid/AI/magic"></span>
+        <span class="sparks"><span class="spark ic" data-icon="solid/AI/magic"></span><span class="spark ic is-next" data-icon="solid/AI/magic" aria-hidden="true"></span></span>
         <div class="body"><span class="agent-tag is-shimmer think" aria-hidden="true"><span class="tag-label"></span></span><p class="lead"></p><p class="box"></p><p class="ask"></p></div>
         <span class="dot is-resting"></span>
       </div>
