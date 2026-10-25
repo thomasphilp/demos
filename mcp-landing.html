@@ -656,19 +656,23 @@ img { display: block; }
 .scene-ask .composer .send { transition: opacity 0.25s ease; }
 .scene-ask .composer.is-empty .send { opacity: 0.2; }
 
-.desk-window { position: absolute; left: 50%; top: 102px; width: 968px; height: 634px; display: flex; overflow: hidden; background: #fff; border: 1px solid var(--gray-200); border-radius: 18px; }
+/* Slide 2: Figma Chat window / Desktop (324:8015) — 864px window, larger type, the reply box 697px and centred */
+.desk-window { position: absolute; left: 50%; top: 102px; width: 864px; height: 634px; display: flex; overflow: hidden; background: #fff; border: 1px solid var(--gray-200); border-radius: 18px; }
 .desk-window .rail { width: 57px; background: #f6f6f4; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 16px 0; }
 .desk-window .convo { flex: 1; display: flex; flex-direction: column; }
-.desk-window .thread { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 16px; padding: 16px 32px 0; overflow: hidden; }
+.desk-window .thread { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 16px; padding: 16px 56px 0; overflow: hidden; }
 .chat-bubble { background: #000; color: #fff; border-radius: 20px 20px 7px 20px; padding: 12px 18px; font-family: var(--font-display); font-weight: 600; letter-spacing: -0.02em; }
 .agent-msg { display: flex; flex-direction: column; gap: 16px; }
 .agent-msg .body { display: flex; flex-direction: column; gap: 5px; font-family: var(--font-display); font-weight: 600; color: var(--ink); letter-spacing: -0.02em; }
 .agent-msg .box { background: #efefef; border: 1px solid #eaeaea; border-radius: 8px; padding: 16px; white-space: pre-line; }
 .desk-window .user-turn { display: flex; justify-content: flex-end; }
-.desk-window .chat-bubble { font-size: 20px; }
-.desk-window .agent-msg { width: 653px; }
-.desk-window .agent-msg .body { font-size: 20px; }
-.desk-window .dot { width: 15.65px; height: 15.65px; border-radius: 1.3px; background: #000; animation: blink 1.1s steps(1) infinite; }
+.desk-window .chat-bubble { padding: 14.7px 22.1px; border-radius: 24.5px 24.5px 8.6px 24.5px; font-size: 30.1px; }
+.desk-window .agent-msg { width: 612px; gap: 19.6px; }
+.desk-window .agent-msg .agent-tag { gap: 9.8px; font-size: 17.2px; }
+.desk-window .agent-msg .agent-tag .ic { width: 24.5px; height: 24.5px; }
+.desk-window .agent-msg .body { gap: 16px; font-size: 24.5px; }
+.desk-window .agent-msg .box { padding: 19.6px; border-width: 1.2px; border-radius: 9.8px; font-size: 18px; }
+.desk-window .dot { width: 19.2px; height: 19.2px; border-radius: 1.6px; background: #000; animation: blink 1.1s steps(1) infinite; }
 .composer-sm { height: 52px; display: flex; align-items: center; gap: 12px; padding: 8px 8px 8px 18px; border-radius: 9999px; background: #fff; border: 1px solid var(--gray-200); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05)); }
 .composer-sm .plus { width: 18px; height: 18px; }
 .composer-sm .placeholder { flex: 1; font-size: 15px; color: var(--gray-500); }
@@ -676,7 +680,8 @@ img { display: block; }
 .tool-chip img { width: 7px; height: 7px; }
 .send-sm { width: 36px; height: 36px; border-radius: 18px; background: var(--gray-950); opacity: 0.2; display: flex; align-items: center; justify-content: center; }
 .send-sm img { width: 16px; height: 16px; }
-.desk-window .composer-area { padding: 0 24px 20px; }
+.desk-window .composer-area { display: flex; justify-content: center; padding: 0 24px 20px; }
+.desk-window .composer-sm { width: 697px; max-width: 100%; }
 
 /* Slide 3 phone: Figma "Phone / Hero chat" (324:7553), 488×806, centred and running off the bottom of the frame;
    one white status + title block casting a shadow over the chat, then a 500px chat body (no composer) */
@@ -907,7 +912,7 @@ a.app-tile:hover .launch { color: #fff; }
   .scene-a .composer .plus, .scene-ask .composer .plus { grid-area: plus; width: calc(22px * var(--k)); height: calc(22px * var(--k)); }
   .scene-a .composer .send, .scene-ask .composer .send { grid-area: send; width: calc(48px * var(--k)); height: calc(48px * var(--k)); }
   .scene-a .composer .send img, .scene-ask .composer .send img { width: calc(22px * var(--k)); height: calc(22px * var(--k)); }
-  .desk-window { scale: min(1, calc((var(--stage-vis, 1548) - 60) / 968)); }
+  .desk-window { scale: min(1, calc((var(--stage-vis, 1548) - 60) / 864)); }
   .cf-body { padding: 18px 12px 32px; gap: 40px; }
   /* Shorter stacked outlines on phones: 14px each, still flush and 16px above the frame */
   .cf-stack { top: calc(10.5px - 16px - 42px); height: 42px; }
