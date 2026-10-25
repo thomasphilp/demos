@@ -323,6 +323,7 @@ img { display: block; }
 /* Figma 313:6803: three stacked, open-bottom outlines behind the frame's top edge (Figma 40/20/10% black, halved here) */
 .hero-connect { position: relative; }
 .cf-stack { position: absolute; left: 0; right: 0; top: calc(10.5px - 16px - 75px); height: 75px; pointer-events: none; }
+.cf-stack { display: none; } /* Hidden for now; delete this line to bring the stacked outlines back */
 .cf-tab { position: absolute; left: 50%; height: 25px; translate: -50% 0; border: 1px solid #000; border-bottom: 0; }
 .cf-tab:nth-child(1) { bottom: 0; width: 84.5%; opacity: 0.2; }
 .cf-tab:nth-child(2) { bottom: 25px; width: 73.45%; opacity: 0.1; }
