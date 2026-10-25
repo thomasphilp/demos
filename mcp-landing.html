@@ -932,6 +932,25 @@ a.app-tile:hover .launch { color: #fff; }
    this URL box's beam is the dark-to-green sweep */
 .cta .actions { display: flex; align-items: flex-start; gap: 32px; flex-wrap: wrap; justify-content: center; }
 .cta .url-col { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+/* Figma 343:2780: two light gray brackets frame the buttons and "Powered by" — a 31px stub level with the buttons' middle,
+   down the side, then along the bottom to 110px either side of centre, where "Powered by" sits */
+.cta-frame { position: relative; width: min(689px, 100%); display: flex; flex-direction: column; align-items: center; gap: 32px; }
+.cta-frame::before, .cta-frame::after {
+  content: ""; position: absolute; top: 21px; bottom: 19px; width: calc(50% - 110px); pointer-events: none;
+  opacity: 0; transition: opacity 0.5s ease;
+}
+.cta-frame::before {
+  left: 0;
+  background: linear-gradient(#c0c0c0, #c0c0c0) left top / 31px 1px no-repeat, linear-gradient(#c0c0c0, #c0c0c0) left top / 1px 100% no-repeat,
+    linear-gradient(#c0c0c0, #c0c0c0) left bottom / 100% 1px no-repeat;
+}
+.cta-frame::after {
+  right: 0;
+  background: linear-gradient(#c0c0c0, #c0c0c0) right top / 31px 1px no-repeat, linear-gradient(#c0c0c0, #c0c0c0) right top / 1px 100% no-repeat,
+    linear-gradient(#c0c0c0, #c0c0c0) right bottom / 100% 1px no-repeat;
+}
+/* The frame draws in with the buttons */
+.cta-frame:has(.actions > .is-visible)::before, .cta-frame:has(.actions > .is-visible)::after, .cta-frame:not(:has(.reveal))::before, .cta-frame:not(:has(.reveal))::after { opacity: 1; }
 .cta .mcp-url .beam {
   background: conic-gradient(from 90deg, #090a0c 0%, #090a0c 62%, #08190f 63.125%, #082913 64.25%, #07471a 66.5%, #066621 68.75%, #048428 71%,
     #02c236 75.5%, #00ff44 80%, #02c236 81.5%, #048428 83%, #066621 83.75%, #07471a 84.5%, #082913 85.25%, #08190f 85.625%, #090a0c 86%, #090a0c 100%);
@@ -1565,15 +1584,21 @@ a.app-tile:hover .launch { color: #fff; }
 <!-- ═══════════ Closing CTA ═══════════ -->
 <section class="cta" id="get-started" aria-labelledby="cta-title">
   <h2 class="display" id="cta-title" data-typewriter data-tw-delay="0.4" data-tw-keep>Ship freight from your AI chat.</h2>
-  <div class="actions">
-    <a class="signup" href="https://www.mothership.com"><img src="assets/mcp-landing/icon-arrow.svg" alt="">Sign up in 60 seconds</a>
-    <div class="url-col">
-      <div class="mcp-url">
-        <span class="beam"></span><span class="surface"></span>
-        <span class="url">mcp.mothership.com</span>
-        <button type="button" class="copy-btn" data-copy="https://mcp.mothership.com">Copy</button>
+  <div class="cta-frame">
+    <div class="actions">
+      <a class="signup" href="https://www.mothership.com"><img src="assets/mcp-landing/icon-arrow.svg" alt="">Sign up in 60 seconds</a>
+      <div class="url-col">
+        <div class="mcp-url">
+          <span class="beam"></span><span class="surface"></span>
+          <span class="url">mcp.mothership.com</span>
+          <button type="button" class="copy-btn" data-copy="https://mcp.mothership.com">Copy</button>
+        </div>
+        <p class="pixel-note">Requires an approved Mothership account</p>
       </div>
-      <p class="pixel-note">Requires an approved Mothership account</p>
+    </div>
+    <div class="powered">
+      <p class="pixel-note">Powered by</p>
+      <img class="powered-mark" src="assets/mcp-landing/powered-mark.svg" alt="Mothership SI">
     </div>
   </div>
 </section>
@@ -2061,7 +2086,8 @@ function twType(el, { start = 0, rate = 120, onDone } = {}) { // 120ms a word: 5
 
 /* ── Scroll reveal: everything after the hero fades up once, as it scrolls into view ── */
 (() => {
-  // Each group staggers its items slightly, like a section's headline then its body; [selector, stagger] sets its own gap
+  // Each group staggers its items slightly, like a section's headline then its body; [selector, stagger] sets its own gap,
+  // and [selector, stagger, true] staggers all its matches as one run instead of per parent
   const GROUPS = [
     '.exchange-user .page-bubble, .exchange-user .sent-by, .exchange-agent > :not([data-typewriter]):not(.cursor-block)',
     '.bracket, .bracket-copy',
@@ -2074,7 +2100,7 @@ function twType(el, { start = 0, rate = 120, onDone } = {}) { // 120ms a word: 5
     '.setup-bg',
     '.steps',
     '.step',
-    ['.cta .actions > *', 0.35], // after the typed headline: Sign up, then the URL box
+    ['.cta .actions > *, .cta-frame > .powered', 0.35, true], // after the typed headline: Sign up, the URL box, then Powered by
     '.site-footer',
   ];
   const STAGGER = 0.06;
@@ -2083,11 +2109,11 @@ function twType(el, { start = 0, rate = 120, onDone } = {}) { // 120ms a word: 5
   const hero = document.querySelector('.hero');
   const targets = [];
   GROUPS.forEach(group => {
-    const [sel, gap] = Array.isArray(group) ? group : [group, STAGGER];
+    const [sel, gap, flat] = Array.isArray(group) ? group : [group, STAGGER];
     const byParent = new Map();
     document.querySelectorAll(sel).forEach(el => {
       if (hero.contains(el)) return;
-      const key = el.parentElement;
+      const key = flat ? sel : el.parentElement;
       const i = byParent.get(key) || 0;
       byParent.set(key, i + 1);
       el.classList.add('reveal');
