@@ -533,6 +533,7 @@ img { display: block; }
 .ex-hover .q .attachment { width: 91px; padding: 11px; background: #000; border-radius: 12.2px 12.2px 4.3px 12.2px; }
 .ex-hover .q .chip { border-width: 0.6px; border-radius: 2.4px; padding: 4.9px; font-size: 9.75px; }
 .ex-card.has-file .ex-hover .reply { top: 186px; }
+.ex-card.has-file .ex-hover .q .sent { top: calc(100% + 25px); } /* Figma keeps it just above the reply (185px) */
 .ex-hover .reply { position: absolute; left: 52px; top: 161px; width: min(492px, calc(100% - 80px)); display: flex; flex-direction: column; gap: 16px; }
 .ex-hover .reply .spark { width: 20px; height: 20px; color: #141414; } /* black while thinking and after */
 /* Before the reply: the star turns and pulses, and a "thinking" line under it runs the "Your AI agent" sweep */
@@ -1201,7 +1202,7 @@ a.app-tile:hover .launch { color: #fff; }
     <div class="exchange-user"><p class="page-bubble is-green">Can it do things on its own?</p><span class="sent-by">Sent by you</span></div>
     <div class="exchange-agent">
       <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-      <h2 class="display" id="autopilot-title" data-typewriter data-tw-delay="0.7">It follows through, and more.<br>Set it once in plain words.</h2>
+      <h2 class="display" id="autopilot-title" data-typewriter data-tw-delay="0.7">It follows through, and more. Set it once in plain words.</h2>
       <span class="cursor-block is-light"></span>
     </div>
   </div>
@@ -1597,7 +1598,7 @@ const EXAMPLES = [
     lead: 'You have 3 open invoices, $2,673 total:',
     box: 'INV-10482 · MS482290 · $548 · due Oct 30\nINV-10491 · MS482295 · $1,940 · due Nov 2\nINV-10503 · MS482299 · $185 · due Nov 6',
     ask: 'Want me to pay them now?' },
-  { q: 'Update my address book with this file', w: 296, hq: 'Update my address\nbook with this file', file: 'Contacts.csv',
+  { q: 'Update my address book with this file', w: 296, hq: 'Update my address book with this file', file: 'Contacts.csv',
     lead: 'Done — 12 locations added, 3 updated:',
     box: '+ Desert Cold Storage · Phoenix, AZ\n+ Lakeview Distribution · Chicago, IL\nUpdated · Fontana DC dock hours',
     ask: '2 rows were missing ZIP codes — want me to look them up?' },
