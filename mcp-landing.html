@@ -33,6 +33,8 @@
   /* Shared border shine (hero input + MCP URL boxes): Figma Chat/Composer 245:1442 stroke stops */
   --shine-stops: #fff 0%, #fff 17.8%, #747474 59.5%, #00e1ff 66.6%, #00ff1a 71.6%, #fff 100%;
   --shine-speed: 0.75s;
+  /* The shine with its white stretches clear, for beams that run over a gray rim (URL box, paginator) */
+  --beam-stops: rgba(116,116,116,0) 0%, rgba(116,116,116,0) 17.8%, #747474 59.5%, #00e1ff 66.6%, #00ff1a 71.6%, rgba(0,255,26,0) 100%;
 }
 
 html { scroll-behavior: smooth; }
@@ -172,7 +174,7 @@ img { display: block; }
 .mcp-url .beam {
   position: absolute; left: 50%; top: 50%; width: 305px; height: 305px; margin: -152.5px 0 0 -152.5px;
   /* The hero input's shine stops, with its white stretches made clear so the gray rim shows through */
-  background: conic-gradient(rgba(116,116,116,0) 0%, rgba(116,116,116,0) 17.8%, #747474 59.5%, #00e1ff 66.6%, #00ff1a 71.6%, rgba(0,255,26,0) 100%);
+  background: conic-gradient(var(--beam-stops));
   animation: beam calc(var(--shine-speed) * 2) linear infinite; /* half the input's speed */
 }
 @keyframes beam { to { transform: rotate(360deg); } }
@@ -546,22 +548,32 @@ img { display: block; }
 /* Paginator (Apple-style): dots in a pill, the current one stretches and fills over the slide's duration;
    play/pause beside it */
 .stage-nav { position: relative; display: flex; justify-content: center; align-items: center; gap: 16px; margin-top: 28px; }
-.stage-dots, .stage-play { height: 56px; border-radius: 9999px; background: rgba(38,38,40,0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
-.stage-dots { display: flex; align-items: center; gap: 16px; padding: 0 24px; }
-.stage-dot { position: relative; width: 8px; height: 8px; padding: 0; border: 0; border-radius: 9999px; background: rgba(255,255,255,0.42); overflow: hidden; cursor: pointer; transition: width 0.5s cubic-bezier(.4,0,.25,1), background-color 0.3s ease; }
-.stage-dot::before { content: ""; position: absolute; inset: -12px -8px; }
-.stage-dot:hover:not(.is-active) { background: rgba(255,255,255,0.7); }
-.stage-dot.is-active { width: 48px; cursor: default; }
-.stage-dot .fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: inherit; background: #f5f5f7; }
+/* Same build as the MCP URL box: sharp white box, 1px gray rim with the rotating shine beam over it,
+   black offset shadow. Dots are squares; the current one stretches into a bar that fills black. */
+.stage-dots, .stage-play {
+  --beam: 200px; position: relative; overflow: hidden; height: 44px; border-radius: 0;
+  background: var(--gray-300); box-shadow: 4px 4px 0 0 #000;
+}
+.stage-dots::before, .stage-play::before {
+  content: ""; position: absolute; left: 50%; top: 50%; width: var(--beam); height: var(--beam); margin: calc(var(--beam) / -2) 0 0 calc(var(--beam) / -2);
+  background: conic-gradient(var(--beam-stops)); animation: beam calc(var(--shine-speed) * 2) linear infinite; pointer-events: none;
+}
+.stage-dots::after, .stage-play::after { content: ""; position: absolute; inset: 1px; background: #fff; pointer-events: none; transition: background-color 0.2s ease; }
+.stage-dots { display: flex; align-items: center; gap: 12px; padding: 0 18px; }
+.stage-dot { position: relative; z-index: 1; width: 8px; height: 8px; padding: 0; border: 0; border-radius: 0; background: rgba(9,10,12,0.22); overflow: hidden; cursor: pointer; transition: width 0.5s cubic-bezier(.4,0,.25,1), background-color 0.3s ease; }
+.stage-dot::before { content: ""; position: absolute; inset: -12px -6px; }
+.stage-dot:hover:not(.is-active) { background: rgba(9,10,12,0.45); }
+.stage-dot.is-active { width: 44px; background: rgba(9,10,12,0.12); cursor: default; }
+.stage-dot .fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: #000; }
 .stage-dot.is-active .fill { animation: dot-fill var(--slide-dur, 6s) linear forwards; }
 .stage-nav:is(.is-paused, .is-idle) .stage-dot.is-active .fill { animation-play-state: paused; }
 @keyframes dot-fill { from { width: 8px; } to { width: 100%; } }
-.stage-play { display: flex; align-items: center; justify-content: center; width: 56px; padding: 0; border: 0; color: #f5f5f7; cursor: pointer; transition: background-color 0.2s ease; }
-.stage-play:hover { background: rgba(58,58,60,0.92); }
-.stage-play .ic { width: 18px; height: 20px; }
-.stage-play .ic-pause { width: 15px; }
+.stage-play { --beam: 90px; display: flex; align-items: center; justify-content: center; width: 44px; padding: 0; border: 0; color: #000; cursor: pointer; }
+.stage-play:hover::after { background: #f2f2f2; }
+.stage-play .ic { position: relative; z-index: 1; width: 14px; height: 16px; }
+.stage-play .ic-pause { width: 12px; }
 .stage-nav:not(.is-paused) .stage-play .ic-play, .stage-nav.is-paused .stage-play .ic-pause { display: none; }
-.stage-play .ic-play { margin-left: 3px; }
+.stage-play .ic-play { margin-left: 2px; }
 .stage-dot:focus-visible, .stage-play:focus-visible { outline: 2px solid #0071e3; outline-offset: 3px; }
 
 /* Slide 1 input: the hero composer (shine border, typed question, round send), at the same artboard size */
