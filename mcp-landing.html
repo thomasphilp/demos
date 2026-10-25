@@ -124,7 +124,7 @@ img { display: block; }
 
 .display {
   font-family: var(--font-display); font-weight: 600;
-  font-size: 64px; line-height: 67px; letter-spacing: -0.02em; color: var(--ink);
+  font-size: 64px; line-height: 67px; letter-spacing: -0.04em; color: var(--ink); /* Figma 311:853: tracking -2.56px at 64px */
 }
 .on-dark .display { color: #fff; }
 
@@ -358,7 +358,7 @@ img { display: block; }
 .hero-user .page-bubble { width: var(--hero-bubble-w); }
 .hero-reply { display: flex; flex-direction: column; gap: 20px; max-width: 840px; }
 /* Two lines in Geist: 72px fits "Yes. Connect Mothership" in 822px; narrower threads scale the type down to keep it there */
-.hero-reply h1 { font-family: var(--font-display); font-weight: 600; font-size: min(72px, 8.5cqi); line-height: 1.04; letter-spacing: -0.02em; color: var(--ink); }
+.hero-reply h1 { font-family: var(--font-display); font-weight: 600; font-size: min(72px, 8.5cqi); line-height: 1.04; letter-spacing: -0.04em; color: var(--ink); }
 
 /* Connect frame: thin outline whose top/bottom edges open around the label and "Powered by" */
 /* Spans the chat column: headline's left edge to the bubble's right edge */
@@ -873,7 +873,6 @@ a.app-tile:hover .launch { color: #fff; }
 
 /* ── Closing CTA + footer ── */
 .cta { padding: 160px var(--gutter); display: flex; flex-direction: column; align-items: center; gap: 32px; text-align: center; }
-.cta .display { letter-spacing: -0.04em; } /* Figma 311:853: Geist SemiBold 64/67, tracking -2.56px */
 /* Figma Closing CTA (311:852): square Sign up block, then the URL box with its note 14px under it, 32px apart;
    this URL box's beam is the dark-to-green sweep */
 .cta .actions { display: flex; align-items: flex-start; gap: 32px; flex-wrap: wrap; justify-content: center; }
