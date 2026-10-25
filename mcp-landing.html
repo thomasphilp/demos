@@ -623,7 +623,7 @@ img { display: block; }
 .hero > .cursor-grid.is-soft { -webkit-mask: linear-gradient(to bottom, transparent var(--fade-a, 50%), #000 var(--fade-b, 60%)); mask: linear-gradient(to bottom, transparent var(--fade-a, 50%), #000 var(--fade-b, 60%)); }
 .setup-bg { z-index: -2; }
 .autopilot { padding: 120px 0; display: flex; flex-direction: column; align-items: center; gap: 80px; }
-.autopilot .bracket-lines { width: 816px; height: 39px; } /* ends exactly on the box's top border, not across it */
+.autopilot .bracket-lines { width: min(1053px, calc(100% - 2 * var(--gutter))); height: 39px; } /* ends exactly on the box's top border, not across it */
 .autopilot .bracket-label { color: rgba(255,255,255,0.9); }
 .ap-box { position: relative; width: min(var(--content), calc(100% - 2 * var(--gutter))); margin: 13px auto 0; border: 1px solid rgba(209,209,209,0.3); padding: 80px 56px; display: flex; flex-direction: column; gap: 36px; }
 .ap-row { display: flex; gap: 24px; align-items: flex-start; }
@@ -1054,7 +1054,7 @@ a.app-tile:hover .launch { color: #fff; }
           <img class="mark" src="assets/mcp-landing/agent-openai-dark.svg" alt="">
           <img class="mark" src="assets/mcp-landing/agent-claude-dark.svg" alt="">
         </span>
-        Routines, Automations, Scheduled tasks, Reports
+        Routines, schedules and reports that run on their own. You just check in.
       </div>
     </div>
     <div class="ap-box">
