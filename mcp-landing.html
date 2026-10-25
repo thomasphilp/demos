@@ -386,9 +386,12 @@ img { display: block; }
   -webkit-background-clip: text; background-clip: text; color: transparent; filter: blur(0.16em); opacity: 0.85;
 }
 .hero.is-answered .hero-reply h1 .iri-glow::before { animation: iri-wave 1.8s cubic-bezier(.45,0,.25,1) 0.25s both; }
-.hero.is-answered .hero-reply h1 .iri::before, .hero.is-answered .hero-reply h1 .iri::after { animation: iri-split 1.8s cubic-bezier(.45,0,.25,1) 0.25s both; }
+.hero.is-answered .hero-reply h1 .iri::before { animation: iri-split-red 1.8s cubic-bezier(.45,0,.25,1) 0.25s both; }
+.hero.is-answered .hero-reply h1 .iri::after { animation: iri-split-cyan 1.8s cubic-bezier(.45,0,.25,1) 0.25s both; }
 @keyframes iri-wave { from { background-position: 100% 0; } to { background-position: 0 0; } }
-@keyframes iri-split { from { -webkit-mask-position: 100% 0; mask-position: 100% 0; } to { -webkit-mask-position: 0 0; mask-position: 0 0; } }
+/* As the band travels the two copies trade places: red starts below-left and cyan above-right, and they end swapped */
+@keyframes iri-split-red { from { -webkit-mask-position: 100% 0; mask-position: 100% 0; translate: -0.012em 0.012em; } to { -webkit-mask-position: 0 0; mask-position: 0 0; translate: 0.012em -0.012em; } }
+@keyframes iri-split-cyan { from { -webkit-mask-position: 100% 0; mask-position: 100% 0; translate: 0.012em -0.012em; } to { -webkit-mask-position: 0 0; mask-position: 0 0; translate: -0.012em 0.012em; } }
 /* Phones break the two words over two lines, which one-line copies can't follow: the band plays without the split */
 @media (max-width: 720px) { .hero-reply h1 .iri::before, .hero-reply h1 .iri::after, .hero-reply h1 .iri-glow { display: none; } }
 @media (prefers-reduced-motion: reduce) { .hero.is-answered .hero-reply h1 .iri-fill, .hero.is-answered .hero-reply h1 .iri::before, .hero.is-answered .hero-reply h1 .iri::after, .hero.is-answered .hero-reply h1 .iri-glow::before { animation: none; } }
