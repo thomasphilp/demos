@@ -867,7 +867,7 @@ a.app-tile:hover .launch { color: #fff; }
 }
 /* Narrow two-column range: question bubbles never wider than the card, and the compact card the phones use
    (taller, smaller list) so the longest reply still fits */
-.ex-rest .bubble { max-width: calc(100% - 48px); }
+.ex-rest > .bubble, .ex-rest > .rest-q { max-width: calc(100% - 48px); } /* the file card's bubble fills its own wrapper */
 @media (min-width: 1080px) and (max-width: 1279px) {
   .ex-card { height: 440px; }
   .ex-hover .q { bottom: 294px; } /* the question keeps its spot above the reply in the taller card */
