@@ -501,7 +501,7 @@ img { display: block; }
 /* The warehouse photo (and its cursor grid) steps down behind each row of example cards as the page scrolls:
    --bg-y is set by script to the current row's offset, eased between rows */
 .examples-bg { position: absolute; left: 0; right: 0; top: 0; height: 729px; translate: 0 var(--bg-y, 0px); transition: translate 1.1s cubic-bezier(.65,0,.35,1); pointer-events: none; }
-.examples-photo { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: min(1548px, 100% - 2 * var(--bg-inset)); height: 729px; object-fit: cover; }
+.examples-photo { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 100%; height: 729px; object-fit: cover; } /* full-bleed, edge to edge */
 /* Cards stay inside the inset photo: a gutter in from its edges (flush with it on phones) */
 .examples-grid { --card-inset: var(--gutter); position: relative; width: min(1272px, 100% - 2 * var(--bg-inset) - 2 * var(--card-inset)); margin: 0 auto; padding-top: 76px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 45px 28px; }
 
