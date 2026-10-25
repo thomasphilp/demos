@@ -730,21 +730,14 @@ img { display: block; }
 }
 .ap-card .user-turn, .ap-card .agent-msg, .ap-row .ap-note { transition: opacity 0.2s ease, transform 0.25s ease; }
 .ap-card.is-switching .user-turn, .ap-card.is-switching .agent-msg, .ap-row.is-switching .ap-note { opacity: 0; transform: translateY(-6px); }
-/* Example dots: the slider paginator at a tiny size — white box, 1px gray rim with the shine beam, hard black
-   shadow, square dots, the current one a black bar */
-.ap-dots {
-  --beam: 90px; position: relative; overflow: hidden; display: flex; align-items: center; gap: 5px; height: 20px; padding: 0 8px;
-  align-self: center; margin-top: auto; background: var(--gray-300); box-shadow: 2px 2px 0 0 #000;
-}
-.ap-dots::before {
-  content: ""; position: absolute; left: 50%; top: 50%; width: var(--beam); height: var(--beam); margin: calc(var(--beam) / -2) 0 0 calc(var(--beam) / -2);
-  background: conic-gradient(var(--beam-stops)); animation: beam calc(var(--shine-speed) * 2) linear infinite; pointer-events: none;
-}
-.ap-dots::after { content: ""; position: absolute; inset: 1px; background: #fff; pointer-events: none; }
-.ap-dot { position: relative; z-index: 1; width: 4px; height: 4px; padding: 0; border: 0; border-radius: 0; background: rgba(9,10,12,0.22); cursor: pointer; transition: width 0.4s cubic-bezier(.4,0,.25,1), background-color 0.3s ease; }
+/* Example dots: the slider paginator's square dots at a tiny size, no box, pinned to the card's bottom-right corner;
+   light on the dark card, the current one a white bar */
+.ap-card.is-carousel { position: relative; }
+.ap-dots { position: absolute; right: 20px; bottom: 18px; display: flex; align-items: center; gap: 5px; }
+.ap-dot { position: relative; width: 4px; height: 4px; padding: 0; border: 0; border-radius: 0; background: rgba(255,255,255,0.3); cursor: pointer; transition: width 0.4s cubic-bezier(.4,0,.25,1), background-color 0.3s ease; }
 .ap-dot::before { content: ""; position: absolute; inset: -8px -3px; }
-.ap-dot:hover:not(.is-active) { background: rgba(9,10,12,0.45); }
-.ap-dot.is-active { width: 16px; background: #000; cursor: default; }
+.ap-dot:hover:not(.is-active) { background: rgba(255,255,255,0.6); }
+.ap-dot.is-active { width: 16px; background: #fff; cursor: default; }
 .ap-dot:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
 
 .apps { padding: 60px 0 92px; }
