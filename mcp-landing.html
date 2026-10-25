@@ -928,7 +928,7 @@ a.app-tile:hover .launch { color: #fff; }
 .site-footer a:hover { color: var(--label-primary); }
 
 /* ── Scroll reveal (below the hero): fade up as each block enters the viewport ── */
-.reveal { opacity: 0; translate: 0 48px; transition: opacity 1s cubic-bezier(.25,.1,.25,1) var(--reveal-delay, 0s), translate 1.3s cubic-bezier(.16,1,.3,1) var(--reveal-delay, 0s); }
+.reveal { opacity: 0; translate: 0 48px; transition: opacity 0.5s cubic-bezier(.25,.1,.25,1) var(--reveal-delay, 0s), translate 0.7s cubic-bezier(.16,1,.3,1) var(--reveal-delay, 0s); }
 .reveal.is-visible { opacity: 1; translate: 0 0; }
 /* AI replies type in word by word; a square caret leads each new word */
 .tw { position: relative; }
@@ -2056,7 +2056,7 @@ function twType(el, { start = 0, rate = 120, onDone } = {}) { // 120ms a word: 5
     ['.cta .actions > *', 0.35], // after the typed headline: Sign up, then the URL box
     '.site-footer',
   ];
-  const STAGGER = 0.09;
+  const STAGGER = 0.06;
   const hero = document.querySelector('.hero');
   const targets = [];
   GROUPS.forEach(group => {
@@ -2087,7 +2087,7 @@ function twType(el, { start = 0, rate = 120, onDone } = {}) { // 120ms a word: 5
   // Nothing below the hero plays until the visitor has actually scrolled (a reload mid-page counts)
   let scrolled = scrollY > 0;
   // Chat example cards stagger within each batch that comes into view, so every row plays left then right
-  const CARD_STAGGER = 0.25;
+  const CARD_STAGGER = 0.15;
   // Items skipped while the queue was busy play on their own once they're back in view
   const late = new IntersectionObserver(entries => entries.forEach(e => {
     if (!e.isIntersecting) return;
@@ -2095,7 +2095,7 @@ function twType(el, { start = 0, rate = 120, onDone } = {}) { // 120ms a word: 5
     const it = e.target._seq;
     if (it.kind === 'type') twType(it.el, { start: 300 });
     else { it.el.style.setProperty('--reveal-delay', '0s'); it.el.classList.add('is-visible'); }
-  }), { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+  }), { threshold: 0.1, rootMargin: '0px 0px -4% 0px' });
   const pump = () => {
     if (!open || !scrolled || busy) return;
     let cardBatch = 0;
@@ -2119,9 +2119,9 @@ function twType(el, { start = 0, rate = 120, onDone } = {}) { // 120ms a word: 5
       io.unobserve(e.target);
     });
     pump();
-  }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+  }, { threshold: 0.1, rootMargin: '0px 0px -4% 0px' });
   items.forEach(it => io.observe(it.el));
-  // At the very bottom the last items (footer) can sit inside the -8% margin, so treat everything as reached
+  // At the very bottom the last items (footer) can sit inside the -4% margin, so treat everything as reached
   const atBottom = () => {
     if (innerHeight + scrollY < document.documentElement.scrollHeight - 4) return;
     items.forEach(it => { it.ready = true; }); pump();
