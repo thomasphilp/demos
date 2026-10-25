@@ -711,29 +711,32 @@ a.app-tile:hover .launch { color: #fff; }
 .steps { position: relative; margin-top: 13px; border: 1px solid rgba(209,209,209,0.3); background: rgba(255,255,255,0.01); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); padding: 64px 56px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px; }
 .step { position: relative; display: flex; flex-direction: column; gap: 16px; }
 .step .num { font-family: var(--font-display); font-weight: 600; font-size: 64px; line-height: 67px; letter-spacing: -0.02em; color: #fff; }
-.step .what { font-size: 19px; font-weight: 500; color: #fff; max-width: 246px; }
-.step:last-child .what { max-width: none; }
-.step-card { flex: 1; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.54); box-shadow: 4px 4px 0 0 #000; padding: 12px; display: flex; flex-direction: column; justify-content: center; gap: 13px; font-family: 'Inter', sans-serif; color: #fff; }
+.step .what { font-size: 19px; font-weight: 500; color: #fff; max-width: 236px; }
+.step:not(:first-child) .what { max-width: none; }
+.step-card { flex: 1; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); box-shadow: 4px 4px 0 0 #000; padding: 12px; display: flex; flex-direction: column; justify-content: center; gap: 13px; font-family: 'Inter', sans-serif; color: #fff; }
 .step-card.is-center { align-items: center; }
-.step-card .url-row { display: flex; align-items: center; gap: 8px; font-family: var(--font-ui); font-size: 16px; font-weight: 500; }
-.step-card .url-row .ic { width: 20px; height: 20px; }
+/* Figma 288:5067: the URL in its own outlined field */
+.step-card .url-row { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 400; line-height: 24px; }
+.step-card .url-row .ic { width: 16px; height: 16px; }
 .copy-green { background: var(--green-copy); color: #000; font-family: var(--font-ui); font-weight: 500; font-size: 16px; padding: 5px 12px; border-radius: 2px; }
 .copy-green:hover { filter: brightness(1.1); }
-.step-card .section-label { padding: 0 0 8px 11px; font-size: 12px; font-weight: 600; line-height: 16px; }
+.step-card .section-label { padding: 0 0 8px 11px; font-size: 12px; font-weight: 600; line-height: 16px; opacity: 0.5; }
 .nav-item { display: flex; align-items: center; gap: 16px; padding: 18px 12px; border-radius: 8px; font-size: 18px; line-height: 24px; }
-.nav-item .ic { width: 24px; height: 24px; }
-.nav-item.is-active { background: rgba(255,255,255,0.14); }
+.nav-item .ic { width: 22px; height: 22px; }
+.nav-item.is-active { background: rgba(255,255,255,0.14); border-radius: 4px; }
 .step-cursor { position: absolute; width: 34px; height: 54px; pointer-events: none; }
 .step-cursor img { position: absolute; inset: -1.93% -9.13% -9.65% -9.13%; width: auto; height: auto; }
 .auth { flex: none; justify-content: flex-start; gap: 21px; padding: 20px; }
-.auth .eyebrow { font-size: 12px; font-weight: 600; line-height: 16px; }
-.auth h3 { font-size: 20px; font-weight: 700; line-height: 24px; }
-.auth .fine { font-size: 10px; line-height: 12px; color: var(--gray-500); }
-.auth .account { border: 1px solid rgba(255,255,255,0.15); padding: 12px; display: flex; flex-direction: column; gap: 2px; }
+/* Figma 288:5358 */
+.auth > div:first-child { display: flex; flex-direction: column; gap: 4px; }
+.auth .eyebrow { font-size: 12px; font-weight: 600; line-height: 16px; opacity: 0.5; }
+.auth h3 { font-size: 18px; font-weight: 400; line-height: 24px; max-width: 227px; }
+.auth .fine { font-size: 10px; line-height: 12px; color: #5a5a5a; }
+.auth .account { border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; padding: 12px; display: flex; flex-direction: column; gap: 2px; }
 .auth .account b { font-size: 12px; font-weight: 600; line-height: 16px; }
-.auth .actions { display: flex; justify-content: flex-end; gap: 8px; }
-.auth .actions button { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; padding: 6px 10px; border-radius: 4px; background: rgba(255,255,255,0.15); color: #fff; }
-.auth .actions button:hover { background: rgba(255,255,255,0.25); }
+.auth .actions { display: flex; justify-content: flex-end; gap: 8px; opacity: 0.5; }
+.auth .actions button { font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; line-height: 18px; height: 32px; padding: 0 12px; border-radius: 8px; background: rgba(255,255,255,0.14); color: #fff; }
+.auth .actions button:hover { background: rgba(255,255,255,0.24); }
 
 /* ── Closing CTA + footer ── */
 .cta { padding: 160px var(--gutter); display: flex; flex-direction: column; align-items: center; gap: 32px; text-align: center; }
@@ -1190,7 +1193,7 @@ a.app-tile:hover .launch { color: #fff; }
       <div class="steps">
         <div class="step">
           <p class="num">1</p>
-          <p class="what">Copy the Mothership MCP server URL:</p>
+          <p class="what">Copy the MCP URL</p>
           <div class="step-card is-center">
             <span class="url-row"><span class="ic" data-icon="outline/globe-alt"></span>mcp.mothership.com</span>
             <button type="button" class="copy-green" data-copy="https://mcp.mothership.com">Copy</button>
@@ -1198,7 +1201,7 @@ a.app-tile:hover .launch { color: #fff; }
         </div>
         <div class="step">
           <p class="num">2</p>
-          <p class="what">In your AI app, add it as a new connector</p>
+          <p class="what">Add it as a connector in your AI</p>
           <div class="step-card">
             <p class="section-label">Customize</p>
             <div class="nav-item"><span class="ic" data-icon="outline/document-text"></span>Skills</div>
@@ -1209,12 +1212,11 @@ a.app-tile:hover .launch { color: #fff; }
         </div>
         <div class="step">
           <p class="num">3</p>
-          <p class="what">Sign in with your Mothership account — then just ask</p>
+          <p class="what">Sign in with your Mothership account when your AI asks you</p>
           <div class="step-card auth">
             <div>
               <p class="eyebrow">MCP authorization</p>
               <h3>Allow your AI agent to access Mothership?</h3>
-              <p class="fine">Review the authorization details before allowing this client to access your Mothership account.</p>
             </div>
             <div style="display: flex; flex-direction: column; gap: 4px">
               <p class="eyebrow">Signed in as</p>
@@ -1222,7 +1224,6 @@ a.app-tile:hover .launch { color: #fff; }
             </div>
             <div class="actions"><button type="button">Deny</button><button type="button">Allow access</button></div>
           </div>
-          <span class="step-cursor" style="left: 235.33px; top: 309px"><img src="assets/mcp-landing/cursor.svg" alt=""></span>
         </div>
       </div>
     </div>
