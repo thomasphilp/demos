@@ -366,12 +366,11 @@ img { display: block; }
 /* Two lines in Geist: 72px fits "Yes. Connect Mothership" in 822px; narrower threads scale the type down to keep it there */
 /* "Connect Mothership": once the headline has typed, a single iridescent band sweeps across it, left to right
    (an upright band).
-   Its colours are the hero clip's: the cube's teal and steel blue catching the sunset's peach and sand, with a white
-   glint on its leading (right) edge for shine.
+   Its colours are the hero clip's: the cube's teal and steel blue catching the sunset's peach and sand.
    The text is painted by the gradient throughout (ink either side of the band), so nothing swaps colour.
    On top of the band: a soft glow in its colours and a tight RGB split, both riding along with it */
 .hero-reply h1 .iri-fill {
-  background: linear-gradient(90deg, var(--ink) 0 44%, #2f5a5c 46.5%, #4a6f8a 48.25%, #8ea5a7 50%, #d2b293 51.75%, #a8907a 53%, #fff 54% 55.2%, var(--ink) 56.5% 100%) 100% 0 / 300% 100%;
+  background: linear-gradient(90deg, var(--ink) 0 44%, #2f5a5c 46.5%, #4a6f8a 48.25%, #8ea5a7 50%, #d2b293 51.75%, #a8907a 53%, var(--ink) 56.5% 100%) 100% 0 / 300% 100%;
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 /* RGB split riding the band: a soft (blurred) red and cyan copy of the words sit just behind them, pulled a hair apart along the line,
@@ -384,7 +383,7 @@ img { display: block; }
 }
 .hero-reply h1 .iri::before { color: rgba(255,40,60,0.8); translate: -0.017em 0; filter: blur(1.5px); }
 .hero-reply h1 .iri::after { color: rgba(0,200,255,0.8); translate: 0.017em 0; filter: blur(1.5px); }
-.hero.is-answered .hero-reply h1 .iri-fill { animation: iri-wave 1.8s cubic-bezier(.45,0,.25,1) 0.25s both; }
+.hero.is-answered .hero-reply h1 .iri-fill { animation: iri-wave 2.7s cubic-bezier(.45,0,.25,1) 0.25s both; }
 /* Glow: a blurred copy painted with the band's colours only (clear either side), moving with it, behind everything */
 .hero-reply h1 .iri-glow { position: absolute; left: 0; top: 0; z-index: -2; pointer-events: none; }
 .hero-reply h1 .iri-glow::before {
@@ -392,9 +391,9 @@ img { display: block; }
   background: linear-gradient(90deg, transparent 44%, #2f5a5c 46.5%, #4a6f8a 48.25%, #8ea5a7 50%, #d2b293 51.75%, #a8907a 53%, transparent 56.5%) 100% 0 / 300% 100%;
   -webkit-background-clip: text; background-clip: text; color: transparent; filter: blur(0.16em); opacity: 0.85;
 }
-.hero.is-answered .hero-reply h1 .iri-glow::before { animation: iri-wave 1.8s cubic-bezier(.45,0,.25,1) 0.25s both; }
-.hero.is-answered .hero-reply h1 .iri::before { animation: iri-split-red 1.8s cubic-bezier(.45,0,.25,1) 0.25s both; }
-.hero.is-answered .hero-reply h1 .iri::after { animation: iri-split-cyan 1.8s cubic-bezier(.45,0,.25,1) 0.25s both; }
+.hero.is-answered .hero-reply h1 .iri-glow::before { animation: iri-wave 2.7s cubic-bezier(.45,0,.25,1) 0.25s both; }
+.hero.is-answered .hero-reply h1 .iri::before { animation: iri-split-red 2.7s cubic-bezier(.45,0,.25,1) 0.25s both; }
+.hero.is-answered .hero-reply h1 .iri::after { animation: iri-split-cyan 2.7s cubic-bezier(.45,0,.25,1) 0.25s both; }
 @keyframes iri-wave { from { background-position: 100% 0; } to { background-position: 0 0; } }
 /* As the band travels the two copies trade places: red starts below-left and cyan above-right, and they end swapped */
 @keyframes iri-split-red { from { -webkit-mask-position: 100% 0; mask-position: 100% 0; translate: -0.017em 0; } to { -webkit-mask-position: 0 0; mask-position: 0 0; translate: 0.017em 0; } }
