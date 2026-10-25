@@ -759,11 +759,18 @@ img { display: block; }
 .apps { padding: 60px 0 92px; }
 .apps .exchange { gap: 80px; }
 .apps-grid { display: flex; flex-wrap: wrap; gap: 48px; }
-.app-tile { position: relative; width: 244px; height: 244px; border: 1px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; transition: border-color 0.2s, background 0.2s; }
-a.app-tile:hover { border-color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.04); }
+/* Each tile is frosted like the setup steps box: translucent dark fill with a background blur over the cursor grid.
+   --tile-solid is roughly that fill over the black page: the Launch label's top half, so it masks the border
+   without leaving a black patch inside the tile (its bottom half is the page black). */
+.app-tile {
+  --tile-solid: #080808; position: relative; width: 244px; height: 244px; border: 1px solid rgba(255,255,255,0.3);
+  display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); transition: border-color 0.2s, background-color 0.2s;
+}
+a.app-tile:hover { --tile-solid: #121212; border-color: rgba(255,255,255,0.7); background-color: rgba(255,255,255,0.07); }
 .app-tile .app-logo { font-size: 26.94px; color: #fff; gap: 13.47px; }
 .app-tile .app-logo > img, .app-tile .app-logo > .vscode { width: 35.93px; height: 35.93px; }
-.app-tile .launch { position: absolute; left: 177px; top: 231px; background: #000; padding: 4px; font-family: var(--font-pixel); font-size: 12px; color: var(--label-muted); }
+.app-tile .launch { position: absolute; left: 177px; top: 231px; background: linear-gradient(var(--tile-solid) 0 12.5px, #000 12.5px); padding: 4px; font-family: var(--font-pixel); font-size: 12px; color: var(--label-muted); }
 a.app-tile:hover .launch { color: #fff; }
 
 .setup { position: relative; padding: 96px 0; overflow: hidden; }
@@ -924,6 +931,7 @@ a.app-tile:hover .launch { color: #fff; }
   .app-tile .app-logo { font-size: 20px; }
   .app-tile .launch { left: auto; right: 12px; top: auto; bottom: -11px; }
   .steps { padding: 32px 20px; }
+  .app-tile .app-logo > img, .app-tile .app-logo > .vscode { width: 26px; height: 26px; }
   .site-footer { flex-direction: column; padding: 32px 24px; }
   .site-footer nav { flex-wrap: wrap; justify-content: center; gap: 16px 24px; }
 }
