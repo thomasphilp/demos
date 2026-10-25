@@ -525,8 +525,8 @@ img { display: block; }
 .ex-hover .q .bubble { background: #000; color: #fff; border-radius: 14px 14px 5px 14px; padding: 8px 12px; font-family: var(--font-display); font-size: 17px; letter-spacing: -0.02em; white-space: pre-line; }
 /* Figma "Address book" hover (309:993): the question, then the file in a small bubble right-aligned 4px under it;
    the reply starts lower to clear them */
-/* Figma "Sent by you" (313:6600): 10px pixel type, 4px under the question, inset 12px from its right edge */
-.ex-hover .q .sent { position: absolute; top: calc(100% + 4px); right: 12px; font-family: var(--font-pixel); font-size: 10px; line-height: 13px; color: #808080; white-space: nowrap; }
+/* Figma "Sent by you" (313:6600): 10px, 4px under the question, inset 12px from its right edge; same type as "Your AI agent" */
+.ex-hover .q .sent { position: absolute; top: calc(100% + 4px); right: 12px; font-family: var(--font-ui); font-weight: 500; font-size: 10px; line-height: 13px; color: #808080; white-space: nowrap; }
 .ex-card.has-file .ex-hover .q { top: 75px; bottom: auto; right: 49px; flex-direction: column; align-items: flex-end; gap: 4px; }
 .ex-hover .q .attachment { width: 91px; padding: 11px; background: #000; border-radius: 12.2px 12.2px 4.3px 12.2px; }
 .ex-hover .q .chip { border-width: 0.6px; border-radius: 2.4px; padding: 4.9px; font-size: 9.75px; }
@@ -716,7 +716,7 @@ img { display: block; }
 .ap-card { width: 536px; flex-shrink: 0; background: #2b2b2b; box-shadow: 10px 10px 0 0 #141414; /* opaque (the 17% / 8% white they were, over black) so the cursor grid doesn't show through */ padding: 40px 24px; display: flex; flex-direction: column; gap: 32px; }
 .ap-card .user-turn { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
 .ap-card .chat-bubble { width: 300px; background: var(--green); color: #000; font-size: 17px; }
-.ap-card .sent { font-family: var(--font-pixel); font-size: 12px; color: #b0b0b0; }
+.ap-card .sent { font-family: var(--font-ui); font-weight: 500; font-size: 12px; color: #b0b0b0; } /* same type as "Your AI agent" */
 .ap-card .agent-msg { gap: 8px; }
 .ap-card .agent-msg .agent-tag { opacity: 0.5; }
 .ap-card .agent-msg p { font-family: var(--font-display); font-weight: 600; font-size: 17px; letter-spacing: -0.02em; color: #fff; }
