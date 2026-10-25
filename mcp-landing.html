@@ -403,7 +403,7 @@ img { display: block; }
    white 0–17.8% → #747474 59.5% → #00e1ff 66.6% → #00ff1a 71.6% → white 100% */
 @property --shine-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
 .intro-composer { --bw: 1.5px; border-width: var(--bw); border-color: transparent; background-clip: padding-box; }
-.intro-composer::before {
+.intro-composer::before, .scene-ask .composer::before {
   content: ""; position: absolute; inset: calc(-1 * var(--bw)); padding: var(--bw); border-radius: inherit; pointer-events: none;
   background: conic-gradient(from var(--shine-angle), var(--shine-stops));
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
@@ -411,16 +411,16 @@ img { display: block; }
   animation: shine var(--shine-speed) linear infinite;
 }
 @keyframes shine { to { --shine-angle: 360deg; } }
-.intro-composer .typed .word, .scene-a .composer .typed .word { display: inline-block; white-space: pre; animation: word-in 0.16s cubic-bezier(.2,.7,.2,1) both; }
-.intro-composer .typed .word.is-bold, .scene-a .composer .typed .word.is-bold { font-weight: 700; }
+.intro-composer .typed .word, .scene .composer .typed .word { display: inline-block; white-space: pre; animation: word-in 0.16s cubic-bezier(.2,.7,.2,1) both; }
+.intro-composer .typed .word.is-bold, .scene .composer .typed .word.is-bold { font-weight: 700; }
 @keyframes word-in { from { opacity: 0; transform: translateY(8px); filter: blur(4px); } }
-.intro-composer .plus, .scene-a .composer .plus { width: 35px; height: 35px; }
+.intro-composer .plus, .scene .composer .plus { width: 35px; height: 35px; }
 /* Figma Chat/Composer (245:1442) scaled ×1.95: 36px circle send → 70px, 16px arrow → 31px */
-.intro-composer .send, .scene-a .composer .send { width: 70px; height: 70px; border-radius: 50%; }
-.intro-composer .send img, .scene-a .composer .send img { width: 31px; height: 31px; }
-.intro-composer .typed, .scene-a .composer .typed { flex: 1; min-width: 0; font-size: 39px; font-weight: 500; color: #000; white-space: nowrap; overflow: hidden; }
-.intro-composer .caret, .scene-a .composer .caret { display: inline-block; width: 2.5px; height: 38px; background: #000; vertical-align: -7px; margin-left: 2px; animation: blink 0.9s steps(1) infinite; }
-.intro-composer.is-typing .caret, .scene-a .composer.is-typing .caret { animation: none; }
+.intro-composer .send, .scene .composer .send { width: 70px; height: 70px; border-radius: 50%; }
+.intro-composer .send img, .scene .composer .send img { width: 31px; height: 31px; }
+.intro-composer .typed, .scene .composer .typed { flex: 1; min-width: 0; font-size: 39px; font-weight: 500; color: #000; white-space: nowrap; overflow: hidden; }
+.intro-composer .caret, .scene .composer .caret { display: inline-block; width: 2.5px; height: 38px; background: #000; vertical-align: -7px; margin-left: 2px; animation: blink 0.9s steps(1) infinite; }
+.intro-composer.is-typing .caret, .scene .composer.is-typing .caret { animation: none; }
 .send { width: 72px; height: 72px; border-radius: 18px; background: var(--gray-950); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .send img { width: 32px; height: 32px; }
 .hero[data-intro="start"] .intro-composer { opacity: 0; transform: translate(-50%, 24px); }
@@ -433,7 +433,7 @@ img { display: block; }
   100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
 }
 /* Send tap: press in, spring back, with a soft ring */
-.intro-composer .send.is-pressed, .scene-a .composer .send.is-pressed { animation: send-tap 0.34s cubic-bezier(.3,.7,.4,1); }
+.intro-composer .send.is-pressed, .scene .composer .send.is-pressed { animation: send-tap 0.34s cubic-bezier(.3,.7,.4,1); }
 @keyframes send-tap {
   0%   { transform: scale(1); box-shadow: 0 0 0 0 rgba(9,10,12,0.28); }
   35%  { transform: scale(0.86); background: #000; box-shadow: 0 0 0 4px rgba(9,10,12,0.18); }
@@ -580,7 +580,7 @@ img { display: block; }
 @keyframes ken-burns { from { transform: scale(1); } to { transform: scale(1.08); } }
 .scene .photo img, .scene .photo canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 /* Slide 3 photo sits where Figma placed it (Rectangle 38: 153.75% × 153.94%, offset up and left); the shader host draws it at this box */
-.scene-c .photo img { left: -24.55%; top: -30.94%; width: 153.75%; height: 153.94%; }
+:is(.scene-ask, .scene-c) .photo img { left: -24.55%; top: -30.94%; width: 153.75%; height: 153.94%; }
 .scene .photo canvas { opacity: 0; }
 .scene .photo.is-shaded canvas { opacity: 1; }
 .scene .photo.is-shaded img { visibility: hidden; }
@@ -589,11 +589,11 @@ img { display: block; }
 .scene { opacity: 0; visibility: hidden; transition: opacity 0.6s ease, visibility 0s 0.6s; }
 .scene.is-active { z-index: 2; opacity: 1; visibility: visible; transition: opacity 0.6s ease; }
 .scene.is-prev { z-index: 1; opacity: 1; visibility: visible; transition: none; }
-.scene-a .composer { translate: 0 16px; }
+.scene .composer { translate: 0 16px; }
 .scene-b .desk-window { translate: -50% 32px; }
 .scene-c .phone { translate: 0 72px; }
-.scene-a .composer, .scene-b .desk-window, .scene-c .phone { transition: translate 0.9s cubic-bezier(.16,1,.3,1) 0.15s; }
-.scene-a:is(.is-active, .is-prev) .composer, .scene-c:is(.is-active, .is-prev) .phone { translate: 0 0; }
+.scene .composer, .scene-b .desk-window, .scene-c .phone { transition: translate 0.9s cubic-bezier(.16,1,.3,1) 0.15s; }
+.scene:is(.is-active, .is-prev) .composer, .scene-c:is(.is-active, .is-prev) .phone { translate: 0 0; }
 .scene-b:is(.is-active, .is-prev) .desk-window { translate: -50% 0; }
 .scene.is-prev :is(.composer, .desk-window, .phone) { transition: none; }
 
@@ -637,6 +637,18 @@ img { display: block; }
 .scene-a .composer { position: absolute; left: 250px; top: 372px; width: 1077px; height: 113px; display: flex; align-items: center; gap: 24px; padding: 16px 16px 16px 36px; border-radius: 9999px; background: rgba(255,255,255,0.8); border: 6px solid rgba(255,255,255,0.36); backdrop-filter: blur(34px); -webkit-backdrop-filter: blur(34px); box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
 .scene-a .composer .send { width: 72px; height: 72px; border-radius: 18px; }
 .scene-a .composer .send img { width: 32px; height: 32px; }
+/* Slide 3 input: Figma Mobile/Chat/Composer (324:7983) — the phone composer at artboard size, centred on the dock photo:
+   question on top (bold first line), plus + round send below, 3px shine rim */
+.scene-ask .composer {
+  --bw: 3px; position: absolute; left: 408px; top: 306px; width: 732px; display: flex; flex-direction: column; gap: 24px;
+  padding: 37px 16px 16px 36px; border-radius: 24px; background: rgba(255,255,255,0.9); border: var(--bw) solid transparent;
+  background-clip: padding-box; backdrop-filter: blur(34px); -webkit-backdrop-filter: blur(34px); box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+.scene-ask .composer .typed { flex: none; line-height: 1.22; min-height: 2.44em; white-space: normal; }
+.scene-ask .composer .row { display: flex; align-items: center; justify-content: space-between; }
+.scene-ask .composer .plus { width: 36px; height: 36px; }
+.scene-ask .composer .send { width: 72px; height: 72px; }
+.scene-ask .composer .send img { width: 32px; height: 32px; }
 
 .desk-window { position: absolute; left: 50%; top: 102px; width: 968px; height: 634px; display: flex; overflow: hidden; background: #fff; border: 1px solid var(--gray-200); border-radius: 18px; }
 .desk-window .rail { width: 57px; background: #f6f6f4; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 16px 0; }
@@ -871,6 +883,7 @@ a.app-tile:hover .launch { color: #fff; }
   /* Desk/dock slider fills 60% of the screen; photos crop to cover, the wide overlays shrink to the visible width */
   .stage-wrap { aspect-ratio: auto; height: 60vh; height: 60svh; }
   .scene-a .composer { left: calc(50% - 538.5px); scale: min(1, calc((var(--stage-vis, 1548) - 60) / 1077)); }
+  .scene-ask .composer { left: calc(50% - 366px); scale: min(1, calc((var(--stage-vis, 1548) - 60) / 732)); }
   .desk-window { scale: min(1, calc((var(--stage-vis, 1548) - 60) / 968)); }
   .cf-body { padding: 18px 12px 32px; gap: 40px; }
   /* Shorter stacked outlines on phones: 14px each, still flush and 16px above the frame */
@@ -1089,6 +1102,17 @@ a.app-tile:hover .launch { color: #fff; }
         </div>
       </div>
 
+      <div class="scene scene-ask" data-dur="3.75">
+        <div class="photo" data-shader><img src="assets/mcp-landing/dock-phone.jpg" alt=""></div>
+        <div class="composer" data-bold="Just include this in all pickup notes:" data-question="Carrier must have a TWIC card">
+          <div class="typed"><span class="typed-text"></span><span class="caret"></span></div>
+          <div class="row">
+            <img class="plus" src="assets/mcp-landing/composer-plus-lg.svg" alt="">
+            <span class="send"><img src="assets/mcp-landing/composer-arrow-lg.svg" alt=""></span>
+          </div>
+        </div>
+      </div>
+
       <div class="scene scene-c" data-dur="7.875">
         <div class="photo" data-shader><img src="assets/mcp-landing/dock-phone.jpg" alt="Shipper on the dock checking a phone"></div>
         <div class="phone">
@@ -1140,7 +1164,8 @@ a.app-tile:hover .launch { color: #fff; }
     <div class="stage-dots">
       <button type="button" class="stage-dot is-active" aria-label="Slide 1: ask from your desk" aria-current="true"><span class="fill"></span></button>
       <button type="button" class="stage-dot" aria-label="Slide 2: the answer on your laptop"><span class="fill"></span></button>
-      <button type="button" class="stage-dot" aria-label="Slide 3: follow up from the dock"><span class="fill"></span></button>
+      <button type="button" class="stage-dot" aria-label="Slide 3: ask from the dock"><span class="fill"></span></button>
+      <button type="button" class="stage-dot" aria-label="Slide 4: the answer on your phone"><span class="fill"></span></button>
     </div>
     <button type="button" class="stage-play" aria-label="Pause slideshow"><span class="ic ic-pause" data-icon="solid/pause"></span><span class="ic ic-play" data-icon="solid/play"></span></button>
   </div>
@@ -1872,19 +1897,24 @@ new ResizeObserver(fitStage).observe(stageWrap); fitStage();
   const dots = [...nav.querySelectorAll('.stage-dot')];
   const play = nav.querySelector('.stage-play');
   let cur = 0, prevTimer;
-  // Slide 1's input types its question like the hero composer: words rise in, caret follows, then send is tapped
-  const comp = scenes[0].querySelector('.composer');
-  const compText = comp.querySelector('.typed-text'), compSend = comp.querySelector('.send');
+  // Slide inputs type their question like the hero composer: words rise in, caret follows, then send is tapped.
+  // data-bold is an optional bold first line (slide 3), typed before data-question on the line below.
   let typeTimers = [];
-  const typeQuestion = () => {
+  const typeQuestion = (scene) => {
+    const comp = scene.querySelector('.composer[data-question]');
+    if (!comp) return;
+    const compText = comp.querySelector('.typed-text'), compSend = comp.querySelector('.send');
     typeTimers.forEach(clearTimeout); typeTimers = [];
     compText.textContent = ''; compSend.classList.remove('is-pressed'); comp.classList.remove('is-typing');
-    const words = comp.dataset.question.split(' '), START = 700, RATE = 85;
+    const bold = comp.dataset.bold ? comp.dataset.bold.split(' ') : [];
+    const words = [...bold.map(w => [w, true]), ...comp.dataset.question.split(' ').map(w => [w, false])], START = 700, RATE = 85;
     const at = (fn, ms) => typeTimers.push(setTimeout(fn, ms));
     at(() => comp.classList.add('is-typing'), START);
-    words.forEach((word, i) => at(() => {
+    words.forEach(([word, isBold], i) => at(() => {
+      if (i && i === bold.length) compText.appendChild(document.createElement('br'));
       const span = document.createElement('span');
-      span.className = 'word'; span.textContent = (i ? ' ' : '') + word;
+      span.className = isBold ? 'word is-bold' : 'word';
+      span.textContent = (i && i !== bold.length ? ' ' : '') + word;
       compText.appendChild(span);
     }, START + i * RATE));
     const typed = START + words.length * RATE;
@@ -1903,7 +1933,7 @@ new ResizeObserver(fitStage).observe(stageWrap); fitStage();
     clearTimeout(prevTimer);
     scenes.forEach(s => s.classList.remove('is-prev'));
     old.classList.remove('is-active'); old.classList.add('is-prev');
-    if (i === 0) typeQuestion();
+    typeQuestion(scenes[i]);
     scenes[i].classList.add('is-active');
     prevTimer = setTimeout(() => old.classList.remove('is-prev'), 650);
     dots[cur].classList.remove('is-active'); dots[cur].removeAttribute('aria-current');
@@ -1924,7 +1954,7 @@ new ResizeObserver(fitStage).observe(stageWrap); fitStage();
   let inView = false;
   const firstLook = () => {
     if (typedOnce || !inView || cur !== 0 || !stageWrap.classList.contains('is-visible')) return;
-    typedOnce = true; typeQuestion(); startDot();
+    typedOnce = true; typeQuestion(scenes[0]); startDot();
   };
   new IntersectionObserver(([e]) => {
     inView = e.isIntersecting;
