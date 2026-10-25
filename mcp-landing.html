@@ -125,7 +125,14 @@ img { display: block; }
 }
 .on-dark .display { color: #fff; }
 
-.exchange { width: min(var(--content), calc(100% - 2 * var(--gutter))); margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
+/* Same column as the hero's chat thread: the chat card is min(1440px, page - gutters), its thread is
+   min(1000px, card - 65px rail - 48px) centred in the area right of the rail. So bubbles end and headlines
+   start exactly where the hero's do. */
+.exchange {
+  --app: min(1440px, 100% - 2 * var(--gutter)); --col: min(1000px, var(--app) - 113px);
+  width: var(--col); margin: 0 auto 0 calc((100% - var(--app)) / 2 + 65px + (var(--app) - 65px - var(--col)) / 2);
+  display: flex; flex-direction: column; gap: 40px;
+}
 .exchange-user { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
 /* "Sent by you" under user bubbles (Figma: Instrument Sans Medium 14, right-aligned, 8px below) */
 .sent-by { font-size: 14px; font-weight: 500; color: var(--label-primary); white-space: nowrap; }
@@ -780,6 +787,8 @@ a.app-tile:hover .launch { color: #fff; }
   .hero { padding: 140px 0 64px; }
   .chat-app { min-height: 0; }
   .chat-rail { display: none; }
+  /* No rail on phones: the hero thread is the card less 48px, centred */
+  .exchange { width: calc(100% - 2 * var(--gutter) - 48px); margin: 0 auto; }
   .chat-convo { --thread-w: calc(100% - 48px); }
   .chat-thread { padding: 32px 0; gap: 24px; }
   .hero-user .page-bubble { width: auto; }
