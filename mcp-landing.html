@@ -187,7 +187,7 @@ img { display: block; }
 @keyframes beam { to { transform: rotate(360deg); } }
 .mcp-url .surface { position: absolute; inset: 1px; background: #fff; } /* 1px shine border */
 .mcp-url .url { position: relative; font-size: 18px; font-weight: 500; color: var(--label-primary); }
-.copy-btn { position: relative; background: var(--ink); color: #fff; font-family: var(--font-geist); font-size: 12px; padding: 5px 12px; border-radius: 2px; min-width: 53px; }
+.copy-btn { position: relative; background: var(--ink); color: #fff; font-family: var(--font-geist); font-size: 12px; padding: 5px 12px; border-radius: 0; min-width: 53px; }
 .copy-btn:hover { background: #000; }
 /* Copy feedback: the send-button tap, then "Copy" lifts out and "Copied ✓" rises in (the typed words' motion),
    the button turns accent green and the URL box's rim flashes green with it */
@@ -739,7 +739,7 @@ a.app-tile:hover .launch { color: #fff; }
 /* Figma 288:5067: the URL in its own outlined field */
 .step-card .url-row { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 400; line-height: 24px; }
 .step-card .url-row .ic { width: 16px; height: 16px; }
-.copy-green { background: var(--green-copy); color: #000; font-family: var(--font-ui); font-weight: 500; font-size: 16px; padding: 5px 12px; border-radius: 2px; }
+.copy-green { background: var(--green-copy); color: #000; font-family: var(--font-ui); font-weight: 500; font-size: 16px; padding: 5px 12px; border-radius: 0; }
 .copy-green:hover { filter: brightness(1.1); }
 .step-card .section-label { padding: 0 0 8px 11px; font-size: 12px; font-weight: 600; line-height: 16px; opacity: 0.5; }
 .nav-item { display: flex; align-items: center; gap: 16px; padding: 18px 12px; border-radius: 8px; font-size: 18px; line-height: 24px; }
