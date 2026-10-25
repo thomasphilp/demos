@@ -600,6 +600,9 @@ img { display: block; }
 .stage-nav:is(.is-paused, .is-idle) .stage-dot.is-active .fill { animation-play-state: paused; }
 @keyframes dot-fill { from { width: 8px; } to { width: 100%; } }
 .stage-play::before { content: none; } /* plain gray rim: the shine plays on the dots box only */
+/* Paused: the shine fades away, leaving the plain gray rim */
+.stage-dots::before { transition: opacity 0.3s ease; }
+.stage-nav.is-paused .stage-dots::before { opacity: 0; }
 .stage-play { display: flex; align-items: center; justify-content: center; width: 44px; padding: 0; border: 0; color: #000; cursor: pointer; }
 .stage-play:hover::after { background: #f2f2f2; }
 .stage-play .ic { position: relative; z-index: 1; width: 14px; height: 16px; }
