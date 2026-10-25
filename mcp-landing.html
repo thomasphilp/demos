@@ -348,7 +348,7 @@ img { display: block; }
 .avatar { width: 26px; height: 26px; border-radius: 13px; background: #e7e3da; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: var(--gray-950); }
 .chat-convo { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; }
 .chat-convo { --thread-w: min(1000px, calc(100% - 48px)); }
-.chat-thread { width: var(--thread-w); display: flex; flex-direction: column; gap: 40px; padding-top: 49px; }
+.chat-thread { width: var(--thread-w); container-type: inline-size; display: flex; flex-direction: column; gap: 40px; padding-top: 49px; }
 .timestamp { text-align: center; font-size: 13px; font-weight: 500; }
 .hero-user { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
 .hero-user .sent-by { transition: opacity 0.4s ease; }
@@ -356,8 +356,9 @@ img { display: block; }
 .hero[data-intro="done"] .hero-user .sent-by { transition-delay: 0.85s; }
 .hero { --hero-bubble-w: 534px; }
 .hero-user .page-bubble { width: var(--hero-bubble-w); }
-.hero-reply { display: flex; flex-direction: column; gap: 20px; max-width: 770px; }
-.hero-reply h1 { font-family: var(--font-display); font-weight: 600; font-size: 72px; line-height: 75px; letter-spacing: -0.02em; color: var(--ink); }
+.hero-reply { display: flex; flex-direction: column; gap: 20px; max-width: 840px; }
+/* Two lines in Geist: 72px fits "Yes. Connect Mothership" in 822px; narrower threads scale the type down to keep it there */
+.hero-reply h1 { font-family: var(--font-display); font-weight: 600; font-size: min(72px, 8.5cqi); line-height: 1.04; letter-spacing: -0.02em; color: var(--ink); }
 
 /* Connect frame: thin outline whose top/bottom edges open around the label and "Powered by" */
 /* Spans the chat column: headline's left edge to the bubble's right edge */
