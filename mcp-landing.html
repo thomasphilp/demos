@@ -515,11 +515,13 @@ img { display: block; }
 .ex-hover .reply { position: absolute; left: 52px; top: 161px; width: min(492px, calc(100% - 80px)); display: flex; flex-direction: column; gap: 16px; }
 .ex-hover .reply .spark { width: 20px; height: 20px; color: #b9b9b9; transition: color 0.3s ease; }
 /* Before the reply: the star turns and pulses, and a "thinking" line under it runs the "Your AI agent" sweep */
-.ex-hover .reply.is-thinking .spark { color: #141414; animation: spark-think 1.2s ease-in-out infinite; }
+/* Thinking star: drifts up and fades out, then a fresh one rises in from below to its place, on a loop */
+.ex-hover .reply.is-thinking .spark { color: #141414; animation: spark-think 1.1s infinite; }
 @keyframes spark-think {
-  0%   { transform: rotate(0deg) scale(1); }
-  50%  { transform: rotate(45deg) scale(0.78); opacity: 0.7; }
-  100% { transform: rotate(90deg) scale(1); }
+  0%     { transform: translateY(0); opacity: 1; animation-timing-function: cubic-bezier(.5,0,.75,0); }
+  42%    { transform: translateY(-10px); opacity: 0; }
+  42.01% { transform: translateY(10px); opacity: 0; animation-timing-function: cubic-bezier(.25,1,.5,1); }
+  85%, 100% { transform: translateY(0); opacity: 1; }
 }
 .ex-hover .reply .think { display: none; font-size: 15px; }
 .ex-hover .reply.is-thinking .think { display: flex; animation: think-in 0.3s ease-out both, agent-sweep 2.4s linear infinite; }
