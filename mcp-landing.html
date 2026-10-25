@@ -2149,7 +2149,7 @@ document.querySelectorAll('.on-dark').forEach((sec) => {
 /* ── "Pattern Screen" shader (Figma custom effect, wavy lines) on the device photos ──
    setup()/render() below are the Figma shader module (unused param helpers trimmed), with one addition:
    an ambient iridescent ripple. Wide rings spread from the centre of the photo, bending the lines and
-   tinting them with a cool thin-film sheen (cyan, blue, violet, mint) along each crest. frameData.x is time, frameData.w the ripple amount. */
+   tinting them with a cool thin-film sheen (cyan, blue, violet, mint) and a slight red/blue split along each crest. frameData.x is time, frameData.w the ripple amount. */
 const PatternScreen = (() => {
   function setup(device, frame) {
     var wgsl = `
@@ -2186,6 +2186,18 @@ fn sampleInput(p: vec2f) -> vec4f {
 fn sampleInputOrZero(p: vec2f) -> vec4f {
   let inside = step(vec2f(0.0), p) * step(p, vec2f(1.0));
   return sampleInput(p) * (inside.x * inside.y);
+}
+
+// Chromatic split helpers: brightness and the wavy-line pattern at any pixel position
+fn lumAt(p: vec2f, dims: vec2f, contrast: f32) -> f32 {
+  let c = sampleInput(p / dims);
+  let lum = dot(c.rgb / max(c.a, 0.0001), vec3f(0.299, 0.587, 0.114));
+  return clamp(pow(lum, 1.0 / max(contrast, 0.01)), 0.0, 1.0);
+}
+fn wavyAt(p: vec2f, cellSize: f32, l: f32) -> f32 {
+  let cell = p / cellSize;
+  let yOff = fract(cell.y) + sin(cell.x * 6.2831853) * 0.15;
+  return select(0.0, 1.0, abs(fract(yOff) - 0.5) < l * 0.5);
 }
 
 fn rotateUV(p: vec2f, angle: f32) -> vec2f {
@@ -2230,7 +2242,8 @@ fn rotateUV(p: vec2f, angle: f32) -> vec2f {
   let d1 = length(px0 - c0) / dims.y;
   let ph1 = d1 * 10.0 - time * 1.1;
   let w1 = sin(ph1) * exp(-d1 * 0.9);
-  let px = px0 + normalize(px0 - c0 + vec2f(0.001)) * w1 * (dims.y / 857.0) * 4.0 * ripple;
+  let rdir = normalize(px0 - c0 + vec2f(0.001));
+  let px = px0 + rdir * w1 * (dims.y / 857.0) * 4.0 * ripple;
   let inputColor = sampleInput(px / dims);
   let lum = dot(inputColor.rgb / max(inputColor.a, 0.0001), vec3f(0.299, 0.587, 0.114));
   let l = clamp(pow(lum, 1.0 / max(contrast, 0.01)), 0.0, 1.0);
@@ -2307,6 +2320,15 @@ fn rotateUV(p: vec2f, angle: f32) -> vec2f {
   else if (hx < 3.0) { irid = mix(cViolet, cMint, hx - 2.0); }
   let fg = mix(tintColor.rgb, irid, crest * 0.7) * tintColor.a;
   let bg = (bgColor.rgb + irid * crest * 0.04) * bgColor.a;
+  // Chromatic split: red and blue lines drift apart from green along the ring crests (up to ~3px at 1x)
+  if (patternMode == 6 && ripple > 0.0 && patternAngle == 0.0) {
+    let ca = rdir * pow(abs(w1), 1.2) * (dims.y / 857.0) * 3.0 * ripple;
+    let pR = wavyAt(px + ca, cellSize, lumAt(px + ca, dims, contrast));
+    let pB = wavyAt(px - ca, cellSize, lumAt(px - ca, dims, contrast));
+    let colC = vec3f(mix(bg.r, fg.r, pR), mix(bg.g, fg.g, pattern), mix(bg.b, fg.b, pB));
+    let aC = mix(bgColor.a, tintColor.a, max(pattern, max(pR, pB)));
+    return vec4f(colC, aC) * inputColor.a;
+  }
   let col = mix(bg, fg, pattern);
   let a = mix(bgColor.a, tintColor.a, pattern);
   return vec4f(col, a) * inputColor.a;
