@@ -515,16 +515,17 @@ img { display: block; }
 .ex-hover .reply { position: absolute; left: 52px; top: 161px; width: min(492px, calc(100% - 80px)); display: flex; flex-direction: column; gap: 16px; }
 .ex-hover .reply .spark { width: 20px; height: 20px; color: #b9b9b9; transition: color 0.3s ease; }
 /* Before the reply: the star turns and pulses, and a "thinking" line under it runs the "Your AI agent" sweep */
-/* Thinking stars: two stars hand off on a loop. Each rises in from below, holds, then drifts up and fades;
-   the next one starts rising in 0.1s after the last starts leaving, so they overlap but stay distinct. */
+/* Thinking stars: two stars take turns on a 3.2s loop and are never visible together. Each rises in from
+   below (0.5s), holds (0.5s), drifts up and fades (0.5s); the next starts ~0.16s after the last has gone. */
 .ex-hover .reply .sparks { position: relative; display: block; width: 20px; height: 20px; }
 .ex-hover .reply .spark.is-next { position: absolute; inset: 0; opacity: 0; }
-.ex-hover .reply.is-thinking .spark { color: #141414; animation: spark-think 1.2s infinite; }
-.ex-hover .reply.is-thinking .spark:not(.is-next) { animation-delay: -0.6s; } /* the resting star leaves first */
+.ex-hover .reply.is-thinking .spark { color: #141414; animation: spark-think 3.2s infinite; }
+.ex-hover .reply.is-thinking .spark:not(.is-next) { animation-delay: -0.48s; } /* the resting star holds, then leaves first */
+.ex-hover .reply.is-thinking .spark.is-next { animation-delay: 1.12s; }        /* …and the next arrives after it's gone */
 @keyframes spark-think {
-  0%, 8%    { transform: translateY(10px); opacity: 0; animation-timing-function: cubic-bezier(.25,1,.5,1); }
-  33%, 50%  { transform: translateY(0); opacity: 1; animation-timing-function: cubic-bezier(.5,0,.75,0); }
-  75%, 100% { transform: translateY(-10px); opacity: 0; }
+  0%        { transform: translateY(10px); opacity: 0; animation-timing-function: cubic-bezier(.25,1,.5,1); }
+  15%, 30%  { transform: translateY(0); opacity: 1; animation-timing-function: cubic-bezier(.5,0,.75,0); }
+  45%, 100% { transform: translateY(-10px); opacity: 0; }
 }
 .ex-hover .reply .think { display: none; font-size: 15px; }
 .ex-hover .reply.is-thinking .think { display: flex; animation: think-in 0.3s ease-out both, agent-sweep 2.4s linear infinite; }
@@ -1534,7 +1535,7 @@ function typeReply(card) {
   // Think first: the star works and a random line sweeps, for a random beat, then the reply starts typing
   let pick; do { pick = THINKING[Math.floor(Math.random() * THINKING.length)]; } while (THINKING.length > 1 && pick === card._lastThink);
   card._lastThink = pick; think.textContent = pick;
-  const thinkMs = 1100 + Math.random() * 700;
+  const thinkMs = 2200 + Math.random() * 800; // long enough for at least one full star handoff
   timers.push(setTimeout(() => reply.classList.add('is-thinking'), 200));
   timers.push(setTimeout(() => reply.classList.remove('is-thinking'), 200 + thinkMs));
   let t = 200 + thinkMs + 160;
