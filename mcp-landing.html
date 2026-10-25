@@ -774,8 +774,10 @@ a.app-tile:hover { --tile-solid: #121212; border-color: rgba(255,255,255,0.7); b
 a.app-tile:hover .launch { color: #fff; }
 
 .setup { position: relative; padding: 96px 0; overflow: hidden; }
-.setup-bg { position: absolute; left: 0; right: 0; top: -198px; height: 1282px; pointer-events: none; }
-.setup-bg img { width: 100%; height: 100%; object-fit: cover; }
+.setup-bg { position: absolute; left: 0; right: 0; top: -198px; height: 1282px; pointer-events: none; overflow: hidden; }
+/* Slow Ken Burns: a 40s drift in toward the cube and back out, on a loop */
+.setup-bg img { width: 100%; height: 100%; object-fit: cover; transform-origin: 50% 40%; animation: setup-kb 40s ease-in-out infinite alternate; }
+@keyframes setup-kb { from { transform: scale(1); } to { transform: scale(1.1); } }
 .setup-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.1) 7.584%, #000 85.393%); }
 .setup .exchange { position: relative; gap: 80px; }
 .setup .bracket-lines { width: 964px; height: 39px; } /* ends exactly on the steps box's top border */
