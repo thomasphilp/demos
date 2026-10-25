@@ -1752,11 +1752,11 @@ const heroVideo = hero.querySelector('.hero-bg video');
     hero.style.setProperty('--cube-y', `${cubeY}px`);
     chat.style.transformOrigin = `50% ${cubeY - chat.offsetTop}px`;
     // Once the chat is in, lift the clip (with its sky and fade) so the cube's top peeks above the card:
-    // a share of the gap between the nav and the card, never sliding it down
+    // a share of the gap between the nav and the card, never sliding it down, plus 10px more
     const navBottom = nav ? nav.getBoundingClientRect().bottom + scrollY - heroTop : 0; // hero coords
     const peek = Math.min(110, Math.max(24, (chat.offsetTop - navBottom) * 0.6));
     const cubeTop = cubeY - (CY - CUBE_TOP) * vh;
-    hero.style.setProperty('--cube-lift', `${Math.min(0, chat.offsetTop - peek - cubeTop)}px`);
+    hero.style.setProperty('--cube-lift', `${Math.min(0, chat.offsetTop - peek - cubeTop) - 10}px`);
   };
   addEventListener('resize', place); new ResizeObserver(place).observe(chat); place();
 })();
