@@ -216,6 +216,15 @@ img { display: block; }
   background: rgba(255,255,255,0.78); border-bottom-color: rgba(9,10,12,0.08);
   backdrop-filter: blur(20px) saturate(1.4); -webkit-backdrop-filter: blur(20px) saturate(1.4);
 }
+/* Over dark sections and dark photos the nav turns dark: white logo and labels, the black pill flips to white */
+.site-nav .logo, .site-nav .pill img { transition: filter 0.3s ease; }
+.site-nav .pill { transition: background-color 0.3s ease, color 0.3s ease; }
+.site-nav.is-dark.is-stuck { background: rgba(12,12,13,0.72); border-bottom-color: rgba(255,255,255,0.08); }
+.site-nav.is-dark .logo, .site-nav.is-dark .pill:not(.is-dark) img { filter: invert(1); }
+.site-nav.is-dark .pill:not(.is-dark) { background: rgba(255,255,255,0.12); color: #fff; }
+.site-nav.is-dark .pill:not(.is-dark):hover { background: rgba(255,255,255,0.22); }
+.site-nav.is-dark .pill.is-dark { background: #fff; color: #000; }
+.site-nav.is-dark .pill.is-dark:hover { background: #e6e6e6; }
 .site-nav .logo { width: 155px; height: 16px; }
 .pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 4px; background: rgba(255,255,255,0.25); font-family: var(--font-geist); font-weight: 600; font-size: 14px; color: var(--label-primary); white-space: nowrap; transition: background 0.15s; }
 .pill:hover { background: rgba(255,255,255,0.5); }
@@ -710,6 +719,11 @@ a.app-tile:hover .launch { color: #fff; }
 .sent-by.reveal { translate: none; transition: opacity 0.4s ease calc(var(--reveal-delay, 0s) + 0.5s); }
 .page-bubble.reveal.is-visible { animation: bubble-in 0.75s var(--reveal-delay, 0s) both; }
 .ap-row.reveal .ap-card .chat-bubble { opacity: 0; }
+/* In order: bubble bounces in, then "Sent by you", then "Your AI agent", then the reply types (tw-delay 1.15s) */
+.ap-row.reveal:not(.is-visible) .ap-card .sent, .ap-row.reveal:not(.is-visible) .ap-card .agent-msg .agent-tag { opacity: 0; }
+.ap-row.reveal.is-visible .ap-card .sent { animation: ap-label-in 0.3s ease-out calc(var(--reveal-delay, 0s) + 0.75s) both; }
+.ap-row.reveal.is-visible .ap-card .agent-msg .agent-tag { animation: ap-label-in 0.3s ease-out calc(var(--reveal-delay, 0s) + 0.95s) both; }
+@keyframes ap-label-in { from { opacity: 0; transform: translateY(4px); } }
 .ap-row.reveal.is-visible .ap-card .chat-bubble { animation: bubble-in 0.75s calc(var(--reveal-delay, 0s) + 0.35s) both; }
 .ex-card.reveal .ex-rest .bubble, .ex-card.reveal .ex-rest .attachment { opacity: 0; }
 .ex-card.reveal.is-visible .ex-rest .bubble { animation: bubble-in 0.75s calc(var(--reveal-delay, 0s) + 0.35s) both; }
@@ -1296,11 +1310,20 @@ const composer = hero.querySelector('.intro-composer');
 const QUESTION = 'Can I just ship freight from my AI chat?';
 const BOLD_WORDS = new Set(['ship', 'freight']); // Instrument Sans Bold, as in Figma 299:692
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-// Sticky nav turns frosted as soon as the page leaves the top
+// Sticky nav turns frosted as soon as the page leaves the top, and dark while its middle is over a dark
+// section or a dark photo (by position, so light cards passing under a dark photo don't make it flicker)
 {
   const nav = document.querySelector('.site-nav');
-  const stick = () => nav.classList.toggle('is-stuck', scrollY > 8);
-  addEventListener('scroll', stick, { passive: true }); stick();
+  const zones = document.querySelectorAll('.on-dark, .examples-photo, .stage-wrap');
+  let queued = false;
+  const update = () => {
+    queued = false;
+    nav.classList.toggle('is-stuck', scrollY > 8);
+    const n = nav.getBoundingClientRect(), y = n.top + n.height / 2;
+    nav.classList.toggle('is-dark', [...zones].some(z => { const r = z.getBoundingClientRect(); return r.top <= y && r.bottom >= y; }));
+  };
+  const schedule = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+  addEventListener('scroll', schedule, { passive: true }); addEventListener('resize', schedule); update();
 }
 let introTimers = [];
 const later = (fn, ms) => introTimers.push(setTimeout(fn, ms));
@@ -1822,8 +1845,10 @@ new ResizeObserver(fitStage).observe(stageWrap); fitStage();
         reply.classList.remove('tw', 'is-typed'); reply.textContent = ex.a;
         twPrep(reply);
         card.classList.remove('is-switching'); row.classList.remove('is-switching');
-        bubble.getAnimations().forEach(a => { a.cancel(); a.play(); }); // replay the bubble's bounce-in
-        twType(reply, { start: 650 });
+        // Replay the entrance in order: bubble bounce, "Sent by you", "Your AI agent", then the reply types
+        [bubble, card.querySelector('.sent'), card.querySelector('.agent-msg .agent-tag')]
+          .forEach(el => el && el.getAnimations().forEach(a => { if (a.animationName) { a.cancel(); a.play(); } }));
+        twType(reply, { start: 1150 });
       }, 220);
     };
     card.addEventListener('click', (e) => {
