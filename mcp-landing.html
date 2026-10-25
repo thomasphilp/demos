@@ -723,13 +723,28 @@ img { display: block; }
 .ap-note { width: 174px; flex-shrink: 0; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.7); }
 /* Each card holds three examples: click it (or a dot) for the next; the dots are the slider paginator in miniature */
 .ap-card.is-carousel { cursor: pointer; }
+/* Hover: the MCP URL box's raised-key lift in dark — the card moves 2px up-left as its hard shadow grows by 2px */
+.ap-card { transition: transform 0.2s cubic-bezier(.2,.7,.3,1), box-shadow 0.2s cubic-bezier(.2,.7,.3,1); }
+@media (hover: hover) {
+  .ap-card.is-carousel:hover { transform: translate(-2px, -2px); box-shadow: 12px 12px 0 0 #141414; }
+}
 .ap-card .user-turn, .ap-card .agent-msg, .ap-row .ap-note { transition: opacity 0.2s ease, transform 0.25s ease; }
 .ap-card.is-switching .user-turn, .ap-card.is-switching .agent-msg, .ap-row.is-switching .ap-note { opacity: 0; transform: translateY(-6px); }
-.ap-dots { display: flex; align-items: center; gap: 6px; align-self: center; margin-top: auto; }
-.ap-dot { position: relative; width: 6px; height: 6px; padding: 0; border: 0; border-radius: 9999px; background: rgba(255,255,255,0.3); cursor: pointer; transition: width 0.4s cubic-bezier(.4,0,.25,1), background-color 0.3s ease; }
-.ap-dot::before { content: ""; position: absolute; inset: -9px -4px; }
-.ap-dot:hover:not(.is-active) { background: rgba(255,255,255,0.6); }
-.ap-dot.is-active { width: 18px; background: #fff; cursor: default; }
+/* Example dots: the slider paginator at a tiny size — white box, 1px gray rim with the shine beam, hard black
+   shadow, square dots, the current one a black bar */
+.ap-dots {
+  --beam: 90px; position: relative; overflow: hidden; display: flex; align-items: center; gap: 5px; height: 20px; padding: 0 8px;
+  align-self: center; margin-top: auto; background: var(--gray-300); box-shadow: 2px 2px 0 0 #000;
+}
+.ap-dots::before {
+  content: ""; position: absolute; left: 50%; top: 50%; width: var(--beam); height: var(--beam); margin: calc(var(--beam) / -2) 0 0 calc(var(--beam) / -2);
+  background: conic-gradient(var(--beam-stops)); animation: beam calc(var(--shine-speed) * 2) linear infinite; pointer-events: none;
+}
+.ap-dots::after { content: ""; position: absolute; inset: 1px; background: #fff; pointer-events: none; }
+.ap-dot { position: relative; z-index: 1; width: 4px; height: 4px; padding: 0; border: 0; border-radius: 0; background: rgba(9,10,12,0.22); cursor: pointer; transition: width 0.4s cubic-bezier(.4,0,.25,1), background-color 0.3s ease; }
+.ap-dot::before { content: ""; position: absolute; inset: -8px -3px; }
+.ap-dot:hover:not(.is-active) { background: rgba(9,10,12,0.45); }
+.ap-dot.is-active { width: 16px; background: #000; cursor: default; }
 .ap-dot:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
 
 .apps { padding: 60px 0 92px; }
