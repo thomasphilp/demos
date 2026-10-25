@@ -193,13 +193,16 @@ img { display: block; }
 .hero-connect .mcp-url .url { font-weight: 400; color: #000; } /* Figma 288:5275: Geist Regular, black */
 .hero-connect .copy-btn { font-weight: 600; } /* Figma 288:5277: Geist SemiBold */
 .mcp-url .url { position: relative; font-size: 18px; font-weight: 500; color: var(--label-primary); }
-.copy-btn { position: relative; background: var(--ink); color: #fff; font-family: var(--font-geist); font-size: 12px; padding: 5px 12px; border-radius: 0; min-width: 53px; }
+.copy-btn { position: relative; background: var(--ink); color: #fff; font-family: var(--font-geist); font-size: 12px; line-height: 16px; padding: 5px 12px; border-radius: 0; min-width: 54px; } /* Figma 288:5276: 54×26 */
 .copy-btn:hover { background: #000; }
 /* Copy feedback: the send-button tap, then "Copy" lifts out and "Copied ✓" rises in (the typed words' motion),
    the button turns accent green and the URL box's rim flashes green with it */
-[data-copy] { transition: background-color 0.25s ease, color 0.25s ease; }
-.copy-stack { display: inline-grid; }
-.copy-stack .lbl { grid-area: 1 / 1; display: inline-flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap;
+[data-copy] { transition: background-color 0.25s ease, color 0.25s ease, min-width 0.3s cubic-bezier(.2,.7,.2,1); }
+/* The button is sized by "Copy" alone; "Copied" sits over it and the button widens to fit it (--done-w, set on click) */
+[data-copy].is-copied { min-width: var(--done-w, 0px); }
+.copy-stack { position: relative; display: inline-flex; justify-content: center; }
+.copy-stack .lbl-done { position: absolute; left: 50%; top: 0; bottom: 0; translate: -50% 0; }
+.copy-stack .lbl { display: inline-flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap;
   transition: opacity 0.22s ease, transform 0.38s cubic-bezier(.2,.7,.2,1), filter 0.22s ease; }
 .copy-stack .lbl-done { opacity: 0; transform: translateY(8px); filter: blur(4px); }
 .copy-stack .lbl-done svg { width: 0.95em; height: 0.85em; }
@@ -893,7 +896,7 @@ a.app-tile:hover .launch { color: #fff; }
 /* Figma 288:5067: the URL in its own outlined field */
 .step-card .url-row { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; font-family: var(--font-geist); font-size: 18px; font-weight: 400; line-height: 24px; }
 .step-card .url-row .ic { width: 16px; height: 16px; }
-.copy-green { background: var(--green-copy); color: #000; font-family: var(--font-ui); font-weight: 500; font-size: 16px; padding: 5px 12px; border-radius: 0; }
+.copy-green { background: var(--green-copy); color: #000; font-family: var(--font-ui); font-weight: 500; font-size: 16px; padding: 5px 12px; border-radius: 0; min-width: 0; }
 .copy-green:hover { filter: brightness(1.1); }
 .step-card .section-label { padding: 0 0 8px 11px; font-size: 12px; font-weight: 600; line-height: 16px; opacity: 0.5; }
 .nav-item { display: flex; align-items: center; gap: 16px; padding: 18px 12px; border-radius: 8px; font-size: 18px; line-height: 24px; }
@@ -1655,7 +1658,7 @@ track.querySelectorAll('[data-vscode-hero]').forEach(el => {
 /* Copy buttons */
 const checkIcon = `<svg viewBox="${ICONS['outline/check'].viewBox}" fill="none" aria-hidden="true">${ICONS['outline/check'].inner}</svg>`;
 document.querySelectorAll('[data-copy]').forEach(btn => {
-  // Both labels share one grid cell, so the button keeps its width while they swap
+  // "Copy" sizes the button; "Copied" overlays it and the button widens to fit while it shows
   const label = btn.textContent.trim();
   btn.innerHTML = `<span class="copy-stack" aria-hidden="true"><span class="lbl lbl-copy">${label}</span><span class="lbl lbl-done">${checkIcon}Copied</span></span>`;
   const done = btn.querySelector('.lbl-done'), name = `${label} MCP server URL`;
@@ -1665,6 +1668,8 @@ document.querySelectorAll('[data-copy]').forEach(btn => {
     btn.classList.remove('is-tapped'); void btn.offsetWidth; btn.classList.add('is-tapped');
     try { await navigator.clipboard.writeText(btn.dataset.copy); done.innerHTML = `${checkIcon}Copied`; btn.setAttribute('aria-label', 'Copied'); }
     catch { done.textContent = 'Copy failed'; btn.setAttribute('aria-label', 'Copy failed'); }
+    const cs = getComputedStyle(btn);
+    btn.style.setProperty('--done-w', `${done.offsetWidth + parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight)}px`);
     btn.classList.add('is-copied');
     clearTimeout(timer);
     timer = setTimeout(() => { btn.classList.remove('is-copied'); btn.setAttribute('aria-label', name); }, 1600);
