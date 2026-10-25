@@ -2139,7 +2139,9 @@ document.querySelectorAll('.on-dark').forEach((sec) => {
 });
 
 /* ── "Pattern Screen" shader (Figma custom effect, wavy lines) on the device photos ──
-   setup()/render() below are the Figma shader module, copied verbatim (unused param helpers trimmed). */
+   setup()/render() below are the Figma shader module (unused param helpers trimmed), with one addition:
+   an ambient iridescent ripple. Two slow-drifting sources send rings across the photo that bend the lines
+   and tint them with a thin-film rainbow along each crest. frameData.x is time, frameData.w the ripple amount. */
 const PatternScreen = (() => {
   function setup(device, frame) {
     var wgsl = `
@@ -2213,10 +2215,22 @@ fn rotateUV(p: vec2f, angle: f32) -> vec2f {
   let bgColor = u.bgColor;
   let contrast = u.contrast.x;
   let patternAngle = u.patternAngle.x;
-  let inputColor = sampleInput(uv);
+  // Ambient ripple: two sources drifting on slow Lissajous paths; distances are in frame heights
+  let ripple = u.frameData.w;
+  let px0 = uv * dims;
+  let s1 = dims * vec2f(0.30 + 0.12 * sin(time * 0.13), 0.40 + 0.15 * cos(time * 0.11));
+  let s2 = dims * vec2f(0.72 + 0.10 * cos(time * 0.09), 0.62 + 0.12 * sin(time * 0.15));
+  let d1 = length(px0 - s1) / dims.y;
+  let d2 = length(px0 - s2) / dims.y;
+  let ph1 = d1 * 26.0 - time * 1.3;
+  let ph2 = d2 * 20.0 - time * 1.0;
+  let w1 = sin(ph1) * exp(-d1 * 1.5);
+  let w2 = sin(ph2) * exp(-d2 * 1.7);
+  let dir = normalize(px0 - s1 + vec2f(0.001)) * w1 + normalize(px0 - s2 + vec2f(0.001)) * w2;
+  let px = px0 + dir * (dims.y / 857.0) * 3.0 * ripple;
+  let inputColor = sampleInput(px / dims);
   let lum = dot(inputColor.rgb / max(inputColor.a, 0.0001), vec3f(0.299, 0.587, 0.114));
   let l = clamp(pow(lum, 1.0 / max(contrast, 0.01)), 0.0, 1.0);
-  let px = uv * dims;
   let ang = patternAngle * 3.14159265 / 180.0;
   let center = dims * 0.5;
   let rp = rotateUV(px - center, ang) + center;
@@ -2275,8 +2289,12 @@ fn rotateUV(p: vec2f, angle: f32) -> vec2f {
     let dist2 = length(bcf - vec2f(0.5));
     pattern = select(0.0, 1.0, dist2 < l * 0.45);
   }
-  let fg = tintColor.rgb * tintColor.a;
-  let bg = bgColor.rgb * bgColor.a;
+  // Iridescence along the ring crests: a cosine rainbow whose hue shifts with phase, brightness and time
+  let crest = pow(clamp(abs(w1 + w2) * 0.8, 0.0, 1.0), 3.0) * ripple;
+  let hue = fract((ph1 + ph2) * 0.08 + l * 0.35 + time * 0.03);
+  let irid = vec3f(0.55) + 0.45 * cos(6.2831853 * (vec3f(hue) + vec3f(0.0, 0.33, 0.67)));
+  let fg = mix(tintColor.rgb, irid, crest * 0.7) * tintColor.a;
+  let bg = (bgColor.rgb + irid * crest * 0.04) * bgColor.a;
   let col = mix(bg, fg, pattern);
   let a = mix(bgColor.a, tintColor.a, pattern);
   return vec4f(col, a) * inputColor.a;
@@ -2342,11 +2360,12 @@ fn rotateUV(p: vec2f, angle: f32) -> vec2f {
     var output = frame.output || {};
     var width = Math.max(1, finiteNumber(output.width, 1));
     var height = Math.max(1, finiteNumber(output.height, 1));
-    var time = 0;
+    var time = finiteNumber(frame.time, 0);
+    var ripple = finiteNumber(frame.ripple, 0);
     var inputWidth = width;
     var inputHeight = height;
     device.queue.writeBuffer(frame.state.uniformBuf, 0, new Float32Array([
-        time, width, height, 0,
+        time, width, height, ripple,
         inputWidth, inputHeight, 0, 0,
         selectParam("patternMode", 10, 5), 0, 0, 0,
         numberParam("patternScale", 8), 0, 0, 0,
@@ -2409,8 +2428,9 @@ fn rotateUV(p: vec2f, angle: f32) -> vec2f {
   return { setup, render };
 })();
 
-/* Minimal host: feeds the photo (object-fit: cover at the layer's size) in as the input texture,
-   renders once at the layer's design size. Params match the Figma effect. */
+/* Minimal host: feeds the photo (object-fit: cover at the layer's size) in as the input texture at the
+   layer's design size. Params match the Figma effect. The ripple re-renders ~30fps, only the slide on show,
+   only while the slider is on screen; reduced motion gets the still frame. */
 const SHADER_PARAMS = { patternAngle: 0, contrast: 1, bgColor: { r: 0, g: 0, b: 0, a: 1 }, patternScale: 3.5, tintColor: { r: 1, g: 1, b: 1, a: 1 }, patternMode: 6 };
 async function applyPatternScreen() {
   if (!navigator.gpu) { console.info('Pattern Screen shader needs WebGPU; showing the unshaded photos.'); return; }
@@ -2435,13 +2455,30 @@ async function applyPatternScreen() {
     const ctx = canvas.getContext('webgpu');
     ctx.configure({ device, format, alphaMode: 'premultiplied' });
     // patternScale is in output pixels; scale with dpr so the lines match the 1x design
-    const frame = { state: {}, params: { ...SHADER_PARAMS, patternScale: SHADER_PARAMS.patternScale * dpr }, input, output: null };
+    const frame = { state: {}, params: { ...SHADER_PARAMS, patternScale: SHADER_PARAMS.patternScale * dpr }, input, output: null, time: 0, ripple: reducedMotion ? 0 : 1 };
     PatternScreen.setup(device, frame);
     frame.output = ctx.getCurrentTexture();
     PatternScreen.render(device, frame);
     layer.classList.add('is-shaded');
+    shaded.push({ frame, ctx, scene: layer.closest('.scene'), last: 0 });
   }
+  if (reducedMotion || !shaded.length) return;
+  let inView = false, raf = 0;
+  const tick = (ts) => {
+    raf = 0;
+    if (!inView || document.hidden) return;
+    shaded.forEach((s) => {
+      if (!s.scene || !s.scene.matches('.is-active, .is-prev') || ts - s.last < 33) return;
+      s.last = ts; s.frame.time = ts / 1000; s.frame.output = s.ctx.getCurrentTexture();
+      PatternScreen.render(device, s.frame);
+    });
+    raf = requestAnimationFrame(tick);
+  };
+  const wake = () => { if (!raf && inView && !document.hidden) raf = requestAnimationFrame(tick); };
+  new IntersectionObserver(([e]) => { inView = e.isIntersecting; wake(); }).observe(stageWrap);
+  document.addEventListener('visibilitychange', wake);
 }
+const shaded = [];
 // Heavy GPU/canvas work: run after the hero intro has played
 setTimeout(() => applyPatternScreen().catch(err => console.warn('Pattern Screen shader failed:', err)), reducedMotion ? 0 : 3500);
 </script>
