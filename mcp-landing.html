@@ -360,11 +360,12 @@ img { display: block; }
 /* Two lines in Geist: 72px fits "Yes. Connect Mothership" in 822px; narrower threads scale the type down to keep it there */
 /* "Connect Mothership": once the headline has typed, a single iridescent band sweeps across it, bottom left to top right
    (a 45° band: each letter lights from its foot up as the band travels along the line).
-   Its colours are the hero clip's: the cube's teal and steel blue catching the sunset's peach and sand.
+   Its colours are the hero clip's: the cube's teal and steel blue catching the sunset's peach and sand, with a thin
+   white glint at the centre for shine.
    The text is painted by the gradient throughout (ink either side of the band), so nothing swaps colour.
    On top of the band: a soft glow in its colours and a tight RGB split, both riding along with it */
 .hero-reply h1 .iri-fill {
-  background: linear-gradient(45deg, var(--ink) 0 38%, #2f5a5c 43%, #4a6f8a 46.5%, #8ea5a7 50%, #d2b293 53.5%, #a8907a 57%, var(--ink) 62% 100%) 100% 0 / 300% 100%;
+  background: linear-gradient(45deg, var(--ink) 0 38%, #2f5a5c 43%, #4a6f8a 46.5%, #8ea5a7 49.2%, #fff 49.75% 50.25%, #c9ad91 50.8%, #d2b293 53.5%, #a8907a 57%, var(--ink) 62% 100%) 100% 0 / 300% 100%;
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 /* RGB split riding the band: a soft (blurred) red and cyan copy of the words sit just behind them, pulled a hair apart along the 45° line,
