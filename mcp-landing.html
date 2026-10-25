@@ -804,15 +804,16 @@ img { display: block; }
 .phone .app-head .agent-tag { color: #000; }
 .phone .agent-tag { gap: 11px; font-size: 19.2px; }
 .phone .agent-tag .ic { width: 27.4px; height: 27.4px; }
-.phone .screen > .body { flex: none; height: 500px; padding: 13.7px 21.9px 29.4px; overflow: hidden; }
+.phone .screen > .body { flex: none; height: 514px; padding: 13.7px 21.9px 109.4px; overflow: hidden; } /* Figma 324:7799 */
 /* The thread opens at the top of the conversation, then scrolls down to the answer once the phone has risen in
    (--chat-end, set by script, is how far the thread overflows the body); it resets while the slide is hidden */
-.phone .chat-scroll { display: flex; flex-direction: column; gap: 38px; }
+.phone .chat-scroll { display: flex; flex-direction: column; gap: 60px; }
 .scene-c:is(.is-active, .is-prev) .phone .chat-scroll { translate: 0 var(--chat-end, 0px); transition: translate 1.8s cubic-bezier(.65,0,.35,1) 1.3s; }
 .phone .agent-msg { gap: 21.9px; }
 .phone .agent-msg .body { gap: 7.3px; padding: 0; font-size: 23.3px; }
 .phone .agent-msg .box { padding: 21.9px; border-width: 1.4px; border-radius: 11px; font-size: 20.6px; }
 .phone .agent-msg.is-tight { width: 427.7px; gap: 11px; }
+.phone .agent-msg.is-tight .body { letter-spacing: -0.01em; } /* Figma I324:7811;210:137: -1% */
 .phone .user-turn { display: flex; justify-content: flex-end; }
 .phone .chat-bubble { width: 315.3px; padding: 16.4px 24.7px; border-radius: 27.4px 27.4px 9.6px 27.4px; font-size: 23.3px; }
 .phone .cursor-block { width: 13.7px; height: 13.7px; margin-top: 3.7px; }
@@ -1389,7 +1390,7 @@ a.app-tile:hover .launch { color: #fff; }
                   <p>Want me to send the pickup schedule to your warehouse team?</p>
                 </div>
               </div>
-              <div class="user-turn"><p class="chat-bubble">Just include this in all pickup notes to all shipments:<br><br>Carrier must have a TWIC card</p></div>
+              <div class="user-turn"><p class="chat-bubble">Just include this in all pickup notes to all shipments:<br>Carrier must have a TWIC card</p></div>
               <div class="agent-msg is-tight">
                 <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
                 <div class="body">
