@@ -229,13 +229,13 @@ img { display: block; }
   transition: background-color 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease;
 }
 .site-nav.is-stuck {
-  background: rgba(255,255,255,0.78); border-bottom-color: rgba(9,10,12,0.08);
+  background: rgba(255,255,255,0.88); border-bottom-color: rgba(9,10,12,0.08);
   backdrop-filter: blur(20px) saturate(1.4); -webkit-backdrop-filter: blur(20px) saturate(1.4);
 }
 /* Over dark sections and dark photos the nav turns dark: white logo and labels, the black pill flips to white */
 .site-nav .logo, .site-nav .pill img { transition: filter 0.3s ease; }
 .site-nav .pill { transition: background-color 0.3s ease, color 0.3s ease; }
-.site-nav.is-dark.is-stuck { background: rgba(12,12,13,0.72); border-bottom-color: rgba(255,255,255,0.08); }
+.site-nav.is-dark.is-stuck { background: rgba(12,12,13,0.82); border-bottom-color: rgba(255,255,255,0.08); }
 .site-nav.is-dark .logo, .site-nav.is-dark .pill:not(.is-dark) img { filter: invert(1); }
 .site-nav.is-dark .pill:not(.is-dark) { background: rgba(255,255,255,0.12); color: #fff; }
 .site-nav.is-dark .pill:not(.is-dark):hover { background: rgba(255,255,255,0.22); }
@@ -250,6 +250,49 @@ img { display: block; }
 .pill.is-dark:hover { background: #222; }
 .site-nav .spacer { flex: 1; }
 .site-nav .right { display: flex; gap: 10px; }
+.products-toggle[aria-expanded="true"] { background: rgba(9,10,12,0.06); }
+
+/* ── All Products menu ── */
+/* Rebuilt from mothership.com: a frosted sheet under the nav, products on the left, the hovered one's panel on the right */
+.products-menu {
+  position: fixed; top: 108px; left: 0; right: 0; z-index: 49;
+  max-height: calc(100dvh - 108px); overflow-y: auto; overscroll-behavior: contain;
+  background: rgba(255,255,255,0.88); backdrop-filter: blur(50px) saturate(1.4); -webkit-backdrop-filter: blur(50px) saturate(1.4);
+  border-bottom: 1px solid rgba(9,10,12,0.08); box-shadow: 0 24px 48px rgba(9,10,12,0.08);
+  opacity: 0; visibility: hidden; translate: 0 -8px;
+  transition: opacity 0.25s ease, translate 0.25s ease, visibility 0s linear 0.25s;
+}
+.products-menu.is-open { opacity: 1; visibility: visible; translate: 0 0; transition: opacity 0.25s ease, translate 0.25s ease; }
+.pm-inner { display: flex; gap: 7px; width: min(1050px, 100% - 48px); margin: 0 auto; padding: 12px 0 24px; font-family: var(--font-geist); color: var(--label-primary); }
+.pm-list { flex: 0 0 250px; display: flex; flex-direction: column; gap: 2px; }
+.pm-group { padding: 14px 8px 6px; font-size: 11px; font-weight: 500; color: var(--gray-500); }
+.pm-group:first-child { padding-top: 6px; }
+.pm-trigger { display: flex; align-items: center; gap: 12px; height: 46px; padding: 8px; border-radius: 10px; font-size: 14px; font-weight: 500; text-align: left; transition: background-color 0.15s ease; }
+.pm-trigger img { flex: none; width: 30px; height: 30px; }
+.pm-trigger:hover, .pm-trigger.is-active { background: rgba(0,0,0,0.05); box-shadow: inset 0 0 10px rgba(255,255,255,0.21), 0 0 20px rgba(255,255,255,0.12); }
+.pm-panels { flex: 1; min-width: 0; }
+.pm-panel { display: none; padding: 19px; border-radius: 20px; background: rgba(0,0,0,0.02); }
+.pm-panel.is-active { display: block; animation: pm-in 0.3s ease; }
+@keyframes pm-in { from { opacity: 0; } }
+.pm-head { padding: 0 2px 18px; }
+.pm-title { font-family: var(--font-ui); font-size: 20px; font-weight: 600; line-height: 26px; }
+.pm-title:hover { text-decoration: underline; text-underline-offset: 3px; }
+.pm-head p { margin-top: 4px; font-size: 14px; line-height: 20px; color: var(--gray-500); }
+.pm-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.pm-card { display: flex; flex-direction: column; justify-content: space-between; gap: 16px; min-height: 190px; padding: 12px; border-radius: 16px; background: rgba(0,0,0,0.02); }
+.pm-card img { width: 50px; height: 50px; border-radius: 8px; }
+.pm-card strong { display: block; font-size: 13px; font-weight: 600; line-height: 18px; }
+.pm-card span { display: block; margin-top: 4px; font-size: 11px; line-height: 15px; color: var(--gray-500); }
+/* TMS Dashboard: five feature columns, each with its list */
+.pm-cards.is-cols { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.pm-cards.is-cols .pm-card { justify-content: flex-start; }
+.pm-card ul { display: grid; gap: 6px; margin-top: 10px; padding-left: 14px; list-style: disc; font-size: 11px; line-height: 15px; color: var(--gray-500); }
+@media (max-width: 1080px) {
+  .pm-list { flex-basis: 210px; }
+  .pm-cards { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
+  .pm-cards.is-cols { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  .pm-card { min-height: 160px; }
+}
 
 /* ── Hero ── */
 .hero { position: relative; padding: 143px 0 120px; overflow: hidden; }
@@ -899,6 +942,16 @@ a.app-tile:hover .launch { color: #fff; }
   .site-nav { padding: 0 16px; gap: 8px; }
   .site-nav .logo { width: 116px; height: 12px; }
   .site-nav .pill:not(.is-dark) { display: none; }
+  /* All Products stays on phones as an icon button; the menu stacks the product list over its panel */
+  .site-nav .pill.products-toggle { display: inline-flex; padding: 9px 10px; }
+  .products-toggle .pm-label { display: none; }
+  .pm-inner { flex-direction: column; gap: 12px; width: calc(100% - 32px); padding-bottom: 16px; }
+  .pm-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); flex-basis: auto; }
+  .pm-group { grid-column: 1 / -1; }
+  .pm-trigger { height: auto; min-height: 46px; font-size: 13px; }
+  .pm-panel { padding: 14px; }
+  .pm-cards, .pm-cards.is-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .pm-card { min-height: 140px; }
   .site-nav .pill.is-dark { font-size: 13px; padding: 6px 12px; }
   .hero { padding: 140px 0 64px; }
   .chat-app { min-height: 0; }
@@ -993,7 +1046,7 @@ a.app-tile:hover .launch { color: #fff; }
 <!-- ═══════════ Hero ═══════════ -->
 <header class="site-nav">
   <a href="#top" aria-label="Mothership home"><img class="logo" src="assets/mcp-landing/mothership-logo.svg" alt="Mothership"></a>
-  <a class="pill" href="#top"><img src="assets/mcp-landing/icon-menu.svg" alt="">All Products</a>
+  <button class="pill products-toggle" type="button" aria-expanded="false" aria-controls="products-menu" aria-label="All Products"><img src="assets/mcp-landing/icon-menu.svg" alt=""><span class="pm-label">All Products</span></button>
   <span class="spacer"></span>
   <div class="right">
     <a class="pill" href="#top"><img src="assets/mcp-landing/icon-track.svg" alt="">Track</a>
@@ -1001,6 +1054,97 @@ a.app-tile:hover .launch { color: #fff; }
     <a class="pill is-dark" href="#get-started"><img src="assets/mcp-landing/icon-arrow.svg" alt="">Sign up in 60 seconds</a>
   </div>
 </header>
+<!-- All Products menu: rebuilt from the mega menu on mothership.com -->
+<div class="products-menu" id="products-menu" inert>
+  <div class="pm-inner">
+    <div class="pm-list" role="tablist" aria-label="All products" aria-orientation="vertical">
+      <p class="pm-group">Trucking</p>
+      <button class="pm-trigger is-active" type="button" role="tab" id="pm-tab-local" aria-controls="pm-local" aria-selected="true"><img src="assets/mcp-landing/menu/local.avif" alt="">Local Same-Day</button>
+      <button class="pm-trigger" type="button" role="tab" id="pm-tab-ltl" aria-controls="pm-ltl" aria-selected="false"><img src="assets/mcp-landing/menu/ltl.avif" alt="">National LTL</button>
+      <p class="pm-group">Software</p>
+      <button class="pm-trigger" type="button" role="tab" id="pm-tab-tms" aria-controls="pm-tms" aria-selected="false"><img src="assets/mcp-landing/menu/tms.avif" alt="">TMS Dashboard</button>
+      <button class="pm-trigger" type="button" role="tab" id="pm-tab-intelligence" aria-controls="pm-intelligence" aria-selected="false"><img src="assets/mcp-landing/menu/mi.avif" alt="">Intelligence</button>
+      <button class="pm-trigger" type="button" role="tab" id="pm-tab-galaxy" aria-controls="pm-galaxy" aria-selected="false"><img src="assets/mcp-landing/menu/galaxyapp.avif" alt="">Galaxy API</button>
+      <button class="pm-trigger" type="button" role="tab" id="pm-tab-dashboard-api" aria-controls="pm-dashboard-api" aria-selected="false"><img src="assets/mcp-landing/menu/dashboard-api.avif" alt="">Dashboard API</button>
+      <button class="pm-trigger" type="button" role="tab" id="pm-tab-freightprotect" aria-controls="pm-freightprotect" aria-selected="false"><img src="assets/mcp-landing/menu/fp.avif" alt="">FreightProtect™ Full Coverage</button>
+    </div>
+    <div class="pm-panels">
+      <div class="pm-panel is-active" id="pm-local" role="tabpanel" aria-labelledby="pm-tab-local">
+        <div class="pm-head"><a class="pm-title" href="https://www.mothership.com/local-same-day">Local Same-Day</a><p>Delight business and residential customers with lightning fast local delivery.</p></div>
+        <div class="pm-cards">
+          <div class="pm-card"><img src="assets/mcp-landing/menu/topcities.avif" alt=""><div><strong>Deliver Same-Day in top US cities</strong><span>Ship up to 100 miles across cities</span></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/track-real-time.avif" alt=""><div><strong>Track your freight in real-time</strong><span>View the exact carrier location</span></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/largest-network.avif" alt=""><div><strong>Largest network of independent carriers</strong><span>Monitored by auto-compliance tech</span></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/zipcodes.avif" alt=""><div><strong>7,000+ zip codes</strong><span>where 100 million people live</span></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/fp.avif" alt=""><div><strong>Optional FreightProtect® Coverage</strong><span>Damage and loss premium coverage that protects your freight</span></div></div>
+        </div>
+      </div>
+      <div class="pm-panel" id="pm-ltl" role="tabpanel" aria-labelledby="pm-tab-ltl">
+        <div class="pm-head"><a class="pm-title" href="https://www.mothership.com/national-ltl">National LTL</a><p>Go further with technology enhanced national less-than-truckload services.</p></div>
+        <div class="pm-cards">
+          <div class="pm-card"><img src="assets/mcp-landing/menu/lowest-rates.avif" alt=""><div><strong>Instant access to the lowest rates</strong><span>Save without commitments</span></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/nationwide.avif" alt=""><div><strong>Nationwide coverage across 50,000 lanes</strong><span>Deliver anywhere in the US</span></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/integrations.avif" alt=""><div><strong>Direct integrations with national carriers</strong><span>Leverage corporate carrier scale</span></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/pre-negotatiated.avif" alt=""><div><strong>Pre-negotiated pricing</strong><span>Discounted pricing with no hidden fees for all customers</span></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/pricing-specific.avif" alt=""><div><strong>Customer specific pricing</strong><span>Tailored pricing for our highest-volume shippers</span></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/fp.avif" alt=""><div><strong>Optional FreightProtect® Coverage</strong><span>Damage and loss premium coverage that protects your freight</span></div></div>
+        </div>
+      </div>
+      <div class="pm-panel" id="pm-tms" role="tabpanel" aria-labelledby="pm-tab-tms">
+        <div class="pm-head"><a class="pm-title" href="https://www.mothership.com/tms-dashboard">TMS Dashboard</a><p>A modern freight dashboard, built for growing businesses.</p></div>
+        <div class="pm-cards is-cols">
+          <div class="pm-card"><img src="assets/mcp-landing/menu/cost.avif" alt=""><div><strong>Rate &amp; Quote</strong><ul><li>Instant Quoting &amp; Classification</li><li>AI-Powered Accessorial Detection</li><li>Address Auto-Complete &amp; Verification</li><li>Smart Carrier Filtering</li><li>Amazon Fulfillment Appointments</li></ul></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/checkout.avif" alt=""><div><strong>Manage &amp; Bill</strong><ul><li>All-in-One Billing Dashboard</li><li>Net 30 Financing</li><li>International Payment Support</li><li>Scheduled Reporting</li><li>Automatic Carrier Reconciliation</li></ul></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/bulk.avif" alt=""><div><strong>Tender &amp; Book</strong><ul><li>Scheduled &amp; Future Shipments</li><li>Bulk Uploads</li><li>Post-Order Editing</li><li>Team Access &amp; Role-Based Permissions</li></ul></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/claims.avif" alt=""><div><strong>Claims &amp; Support</strong><ul><li>Claims Management Dashboard</li><li>Dispute Management &amp; Customer Advocacy</li><li>U.S. Based Support + AI Assist</li></ul></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/visibility.avif" alt=""><div><strong>Track &amp; Notify</strong><ul><li>Real-Time Shipment Tracking</li><li>Unified LTL Visibility</li><li>End-to-End Carrier Tracking</li><li>Notification Center</li><li>AI Appointment Scheduling</li><li>Cargo Photo Capture</li><li>Digital Documents &amp; Instant POD</li></ul></div></div>
+        </div>
+      </div>
+      <div class="pm-panel" id="pm-intelligence" role="tabpanel" aria-labelledby="pm-tab-intelligence">
+        <div class="pm-head"><a class="pm-title" href="https://www.mothership.com/intelligence">Intelligence</a><p>Smarter booking, fewer surprises, more predictability.</p></div>
+        <div class="pm-cards">
+          <div class="pm-card"><img src="assets/mcp-landing/menu/accessdetect.avif" alt=""><div><strong>AI-Powered accessorial detection</strong></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/instaquote.avif" alt=""><div><strong>Instant quoting &amp; classification</strong></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/addressverify.avif" alt=""><div><strong>Address auto-complete &amp; verification</strong></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/costoptimize.avif" alt=""><div><strong>Real-time cost optimization</strong></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/carrierfiltering.avif" alt=""><div><strong>Smart carrier filtering</strong></div></div>
+        </div>
+      </div>
+      <div class="pm-panel" id="pm-galaxy" role="tabpanel" aria-labelledby="pm-tab-galaxy">
+        <div class="pm-head"><a class="pm-title" href="https://www.mothership.com/galaxy-api">Galaxy API</a><p>The All-in-one Carrier API Platform. Rate, Tender, Track, and Docs. Powered by AI.</p></div>
+        <div class="pm-cards">
+          <div class="pm-card"><img src="assets/mcp-landing/menu/carrierfiltering.avif" alt=""><div><strong>Smart carrier filtering &amp; insights</strong></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/accessdetect.avif" alt=""><div><strong>AI-Powered accessorial detection</strong></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/instaquote.avif" alt=""><div><strong>Universal invoicing</strong></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/fp-personalized.avif" alt=""><div><strong>Universal claims</strong></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/fp-carrier-reconcile.avif" alt=""><div><strong>Performance metrics</strong></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/fp.avif" alt=""><div><strong>Optional FreightProtect® Coverage</strong></div></div>
+        </div>
+      </div>
+      <div class="pm-panel" id="pm-dashboard-api" role="tabpanel" aria-labelledby="pm-tab-dashboard-api">
+        <div class="pm-head"><a class="pm-title" href="https://www.mothership.com/dashboard-api">Dashboard API</a><p>Integrate with Mothership API and boost your supply chain.</p></div>
+        <div class="pm-cards">
+          <div class="pm-card"><img src="assets/mcp-landing/menu/carriercoverage.avif" alt=""><div><strong>Comprehensive carrier coverage</strong></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/notificationwebhook.avif" alt=""><div><strong>Real-Time notifications with webhooks</strong></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/nationwide.avif" alt=""><div><strong>Access our nationwide network</strong></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/largest-network.avif" alt=""><div><strong>Access our local Same-Day freight</strong></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/apienvironment.avif" alt=""><div><strong>Sandbox and production API environments available</strong></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/openapi.avif" alt=""><div><strong>OpenAPI specification available</strong></div></div>
+        </div>
+      </div>
+      <div class="pm-panel" id="pm-freightprotect" role="tabpanel" aria-labelledby="pm-tab-freightprotect">
+        <div class="pm-head"><a class="pm-title" href="https://www.mothership.com/freightprotect-full-coverage">FreightProtect™ Full Coverage</a><p>Damage and loss premium coverage that protects your freight.</p></div>
+        <div class="pm-cards">
+          <div class="pm-card"><img src="assets/mcp-landing/menu/fp-personalized.avif" alt=""><div><strong>Personalized Premium Coverage</strong></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/fp-bestpricing.avif" alt=""><div><strong>Industry-best Pricing</strong></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/fp-claimapprove.avif" alt=""><div><strong>Fast Claim Approval</strong></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/fp-disputemngt.avif" alt=""><div><strong>Dispute management &amp; customer advocacy</strong></div></div>
+          <div class="pm-card"><img src="assets/mcp-landing/menu/fp-carrier-reconcile.avif" alt=""><div><strong>Automatic carrier reconciliation</strong></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <main id="top">
 <section class="hero" data-intro="start" aria-labelledby="hero-title">
@@ -1027,7 +1171,7 @@ a.app-tile:hover .launch { color: #fff; }
         <div class="hero-user"><p class="page-bubble">Can I just ship freight from my AI chat?</p><span class="sent-by">Sent by you</span></div>
         <div class="hero-reply">
           <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-          <h1 id="hero-title" data-typewriter>Yes. Connect Mothership and just ask</h1>
+          <h1 id="hero-title" data-typewriter>Yes. Connect Mothership and just ask.</h1>
           <span class="cursor-block"></span>
         </div>
       </div>
@@ -1485,14 +1629,40 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matc
   const nav = document.querySelector('.site-nav');
   const zones = document.querySelectorAll('.on-dark, .examples-photo, .stage-wrap');
   let queued = false;
+  const menu = document.getElementById('products-menu');
+  const toggle = nav.querySelector('.products-toggle');
   const update = () => {
     queued = false;
-    nav.classList.toggle('is-stuck', scrollY > 8);
+    // While the All Products menu is open the nav stays frosted white, to sit flush with the sheet
+    const open = menu.classList.contains('is-open');
+    nav.classList.toggle('is-stuck', scrollY > 8 || open);
     const n = nav.getBoundingClientRect(), y = n.top + n.height / 2;
-    nav.classList.toggle('is-dark', [...zones].some(z => { const r = z.getBoundingClientRect(); return r.top <= y && r.bottom >= y; }));
+    nav.classList.toggle('is-dark', !open && [...zones].some(z => { const r = z.getBoundingClientRect(); return r.top <= y && r.bottom >= y; }));
   };
   const schedule = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
   addEventListener('scroll', schedule, { passive: true }); addEventListener('resize', schedule); update();
+
+  // All Products opens on click; hovering, focusing or tapping a product shows its panel
+  const setOpen = open => {
+    menu.classList.toggle('is-open', open);
+    menu.inert = !open;
+    toggle.setAttribute('aria-expanded', open);
+    update();
+  };
+  toggle.addEventListener('click', () => setOpen(!menu.classList.contains('is-open')));
+  document.addEventListener('pointerdown', e => {
+    if (menu.classList.contains('is-open') && !menu.contains(e.target) && !toggle.contains(e.target)) setOpen(false);
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && menu.classList.contains('is-open')) { setOpen(false); toggle.focus(); }
+  });
+  const tabs = [...menu.querySelectorAll('.pm-trigger')];
+  const show = tab => tabs.forEach(t => {
+    const on = t === tab;
+    t.classList.toggle('is-active', on); t.setAttribute('aria-selected', on);
+    document.getElementById(t.getAttribute('aria-controls')).classList.toggle('is-active', on);
+  });
+  tabs.forEach(t => ['mouseenter', 'focus', 'click'].forEach(ev => t.addEventListener(ev, () => { if (!t.classList.contains('is-active')) show(t); })));
 }
 let introTimers = [];
 const later = (fn, ms) => introTimers.push(setTimeout(fn, ms));
