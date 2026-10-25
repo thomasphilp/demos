@@ -393,7 +393,7 @@ img { display: block; }
 }
 .hero-reply h1 .iri::before { color: rgba(255,40,60,0.8); translate: -0.017em 0; filter: blur(1.5px); }
 .hero-reply h1 .iri::after { color: rgba(0,200,255,0.8); translate: 0.017em 0; filter: blur(1.5px); }
-.hero.is-answered .hero-reply h1 .iri-fill { animation: iri-wave 2.7s cubic-bezier(.45,0,.25,1) 0.25s both; }
+.hero.is-answered .hero-reply h1 .iri-fill { animation: iri-wave 2.7s cubic-bezier(.45,0,.25,1) 0.32s both; }
 /* Glow: a blurred copy painted with the band's colours only (clear either side), moving with it, behind everything */
 .hero-reply h1 .iri-glow { position: absolute; left: 0; top: 0; z-index: -2; pointer-events: none; }
 .hero-reply h1 .iri-glow::before {
@@ -401,13 +401,15 @@ img { display: block; }
   background: linear-gradient(90deg, transparent 44%, #2f5a5c 46.5%, #4a6f8a 48.25%, #8ea5a7 50%, #d2b293 51.75%, #a8907a 53%, transparent 56.5%) 100% 0 / 300% 100%;
   -webkit-background-clip: text; background-clip: text; color: transparent; filter: blur(0.16em); opacity: 0.85;
 }
-.hero.is-answered .hero-reply h1 .iri-glow::before { animation: iri-wave 2.7s cubic-bezier(.45,0,.25,1) 0.25s both; }
-.hero.is-answered .hero-reply h1 .iri::before { animation: iri-split-red 2.7s cubic-bezier(.45,0,.25,1) 0.25s both; }
-.hero.is-answered .hero-reply h1 .iri::after { animation: iri-split-cyan 2.7s cubic-bezier(.45,0,.25,1) 0.25s both; }
-@keyframes iri-wave { from { background-position: 100% 0; } to { background-position: 0 0; } }
+.hero.is-answered .hero-reply h1 .iri-glow::before { animation: iri-wave 2.7s cubic-bezier(.45,0,.25,1) 0.32s both; }
+.hero.is-answered .hero-reply h1 .iri::before { animation: iri-split-red 2.7s cubic-bezier(.45,0,.25,1) 0.32s both; }
+.hero.is-answered .hero-reply h1 .iri::after { animation: iri-split-cyan 2.7s cubic-bezier(.45,0,.25,1) 0.32s both; }
+/* 85% → 15%: the band is just touching the first letter at the start and just past the last at the end, so none of the
+   sweep is spent off the words; it starts with the MCP server block's fade-in (0.32s after the headline types) */
+@keyframes iri-wave { from { background-position: 85% 0; } to { background-position: 15% 0; } }
 /* As the band travels the two copies trade places: red starts below-left and cyan above-right, and they end swapped */
-@keyframes iri-split-red { from { -webkit-mask-position: 100% 0; mask-position: 100% 0; translate: -0.017em 0; } to { -webkit-mask-position: 0 0; mask-position: 0 0; translate: 0.017em 0; } }
-@keyframes iri-split-cyan { from { -webkit-mask-position: 100% 0; mask-position: 100% 0; translate: 0.017em 0; } to { -webkit-mask-position: 0 0; mask-position: 0 0; translate: -0.017em 0; } }
+@keyframes iri-split-red { from { -webkit-mask-position: 85% 0; mask-position: 85% 0; translate: -0.017em 0; } to { -webkit-mask-position: 15% 0; mask-position: 15% 0; translate: 0.017em 0; } }
+@keyframes iri-split-cyan { from { -webkit-mask-position: 85% 0; mask-position: 85% 0; translate: 0.017em 0; } to { -webkit-mask-position: 15% 0; mask-position: 15% 0; translate: -0.017em 0; } }
 /* Phones break the two words over two lines, which one-line copies can't follow: the band plays without the split */
 @media (max-width: 720px) { .hero-reply h1 .iri::before, .hero-reply h1 .iri::after, .hero-reply h1 .iri-glow { display: none; } }
 @media (prefers-reduced-motion: reduce) { .hero.is-answered .hero-reply h1 .iri-fill, .hero.is-answered .hero-reply h1 .iri::before, .hero.is-answered .hero-reply h1 .iri::after, .hero.is-answered .hero-reply h1 .iri-glow::before { animation: none; } }
@@ -1744,8 +1746,8 @@ function playIntro() {
   if (reducedMotion) { hero.dataset.intro = 'done'; twType(heroTitle, { onDone: heroAnswered }); return; }
   later(() => { hero.dataset.intro = 'composer'; }, 120);
   // Reveal word by word: each word fades up into place, caret follows
-  const START = 1050, RATE = 85; // words start once the entrance bounce has settled
   const words = QUESTION.split(' ');
+  const START = 1050, RATE = 85 + 1000 / words.length; // words start once the entrance bounce has settled; the question takes ~1.8s to type
   later(() => composer.classList.add('is-typing'), START);
   words.forEach((word, i) => later(() => {
     const span = document.createElement('span');
