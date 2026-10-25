@@ -362,13 +362,27 @@ img { display: block; }
    (a 45° band: each letter lights from its foot up as the band travels along the line).
    Its colours are the hero clip's: the cube's teal and steel blue catching the sunset's peach and sand.
    The text is painted by the gradient throughout (ink either side of the band), so nothing swaps colour */
-.hero-reply h1 .iri {
+.hero-reply h1 .iri-fill {
   background: linear-gradient(45deg, var(--ink) 0 38%, #2f5a5c 43%, #4a6f8a 46.5%, #8ea5a7 50%, #d2b293 53.5%, #a8907a 57%, var(--ink) 62% 100%) 100% 0 / 300% 100%;
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
-.hero.is-answered .hero-reply h1 .iri { animation: iri-wave 1.8s cubic-bezier(.45,0,.25,1) 0.25s both; }
+/* RGB split riding the band: a soft (blurred) red and cyan copy of the words sit just behind them, pulled a hair apart along the 45° line,
+   and a mask the same shape as the band (moving with it) shows them only where it is passing */
+.hero-reply h1 .iri { position: relative; z-index: 0; }
+.hero-reply h1 .iri::before, .hero-reply h1 .iri::after {
+  content: attr(data-text); position: absolute; left: 0; top: 0; z-index: -1; line-height: normal; white-space: nowrap; pointer-events: none; /* normal: the inline box's own height, so the copies sit on the words */
+  -webkit-mask: linear-gradient(45deg, transparent 38%, #000 46%, #000 54%, transparent 62%) 100% 0 / 300% 100%;
+  mask: linear-gradient(45deg, transparent 38%, #000 46%, #000 54%, transparent 62%) 100% 0 / 300% 100%;
+}
+.hero-reply h1 .iri::before { color: rgba(255,40,60,0.8); translate: -0.012em 0.012em; filter: blur(1.5px); }
+.hero-reply h1 .iri::after { color: rgba(0,200,255,0.8); translate: 0.012em -0.012em; filter: blur(1.5px); }
+.hero.is-answered .hero-reply h1 .iri-fill { animation: iri-wave 1.8s cubic-bezier(.45,0,.25,1) 0.25s both; }
+.hero.is-answered .hero-reply h1 .iri::before, .hero.is-answered .hero-reply h1 .iri::after { animation: iri-split 1.8s cubic-bezier(.45,0,.25,1) 0.25s both; }
 @keyframes iri-wave { from { background-position: 100% 0; } to { background-position: 0 0; } }
-@media (prefers-reduced-motion: reduce) { .hero.is-answered .hero-reply h1 .iri { animation: none; } }
+@keyframes iri-split { from { -webkit-mask-position: 100% 0; mask-position: 100% 0; } to { -webkit-mask-position: 0 0; mask-position: 0 0; } }
+/* Phones break the two words over two lines, which one-line copies can't follow: the band plays without the split */
+@media (max-width: 720px) { .hero-reply h1 .iri::before, .hero-reply h1 .iri::after { display: none; } }
+@media (prefers-reduced-motion: reduce) { .hero.is-answered .hero-reply h1 .iri-fill, .hero.is-answered .hero-reply h1 .iri::before, .hero.is-answered .hero-reply h1 .iri::after { animation: none; } }
 .hero-reply h1 { font-family: var(--font-display); font-weight: 600; font-size: min(72px, 8.5cqi); line-height: 1.04; letter-spacing: -0.04em; color: var(--ink); }
 
 /* Connect frame: thin outline whose top/bottom edges open around the label and "Powered by" */
@@ -1194,7 +1208,7 @@ a.app-tile:hover .launch { color: #fff; }
         <div class="hero-user"><p class="page-bubble">Can I just ship freight from my AI chat?</p><span class="sent-by">Sent by you</span></div>
         <div class="hero-reply">
           <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-          <h1 id="hero-title" data-typewriter>Yes. <span class="iri">Connect Mothership</span> and just ask.</h1>
+          <h1 id="hero-title" data-typewriter>Yes. <span class="iri" data-text="Connect Mothership"><span class="iri-fill">Connect Mothership</span></span> and just ask.</h1>
           <span class="cursor-block"></span>
         </div>
       </div>
