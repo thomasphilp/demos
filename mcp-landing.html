@@ -821,8 +821,15 @@ a.app-tile:hover .launch { color: #fff; }
 
 /* ── Closing CTA + footer ── */
 .cta { padding: 160px var(--gutter); display: flex; flex-direction: column; align-items: center; gap: 32px; text-align: center; }
-.cta .actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center; }
-.signup { display: inline-flex; align-items: center; gap: 10px; height: 42px; padding: 0 22px 0 20px; border-radius: 8px; background: #000; color: #fff; font-family: var(--font-geist); font-weight: 600; font-size: 16px; transition: background 0.15s; }
+/* Figma Closing CTA (311:852): square Sign up block, then the URL box with its note 14px under it, 32px apart;
+   this URL box's beam is the dark-to-green sweep */
+.cta .actions { display: flex; align-items: flex-start; gap: 32px; flex-wrap: wrap; justify-content: center; }
+.cta .url-col { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.cta .mcp-url .beam {
+  background: conic-gradient(from 90deg, #090a0c 0%, #090a0c 62%, #08190f 63.125%, #082913 64.25%, #07471a 66.5%, #066621 68.75%, #048428 71%,
+    #02c236 75.5%, #00ff44 80%, #02c236 81.5%, #048428 83%, #066621 83.75%, #07471a 84.5%, #082913 85.25%, #08190f 85.625%, #090a0c 86%, #090a0c 100%);
+}
+.signup { display: inline-flex; align-items: center; gap: 10px; height: 42px; padding: 0 22px 0 20px; border-radius: 0; background: #000; color: #fff; font-family: var(--font-geist); font-weight: 600; font-size: 16px; transition: background 0.15s; }
 .signup:hover { background: #222; }
 .signup img { width: 14px; height: 14px; }
 .site-footer { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 32px 48px; border-top: 1px solid #e6e6e6; font-family: var(--font-geist); font-size: 14px; color: rgba(9,10,12,0.6); }
@@ -1346,14 +1353,16 @@ a.app-tile:hover .launch { color: #fff; }
 <section class="cta" id="get-started" aria-labelledby="cta-title">
   <h2 class="display" id="cta-title">Ship freight from your AI chat.</h2>
   <div class="actions">
-    <div class="mcp-url">
-      <span class="beam"></span><span class="surface"></span>
-      <span class="url">mcp.mothership.com</span>
-      <button type="button" class="copy-btn" data-copy="https://mcp.mothership.com">Copy</button>
-    </div>
     <a class="signup" href="https://www.mothership.com"><img src="assets/mcp-landing/icon-arrow.svg" alt="">Sign up in 60 seconds</a>
+    <div class="url-col">
+      <div class="mcp-url">
+        <span class="beam"></span><span class="surface"></span>
+        <span class="url">mcp.mothership.com</span>
+        <button type="button" class="copy-btn" data-copy="https://mcp.mothership.com">Copy</button>
+      </div>
+      <p class="pixel-note">Requires an approved Mothership account</p>
+    </div>
   </div>
-  <p class="pixel-note">Requires an approved Mothership account</p>
 </section>
 </main>
 
