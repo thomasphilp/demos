@@ -358,11 +358,12 @@ img { display: block; }
 .hero-user .page-bubble { width: var(--hero-bubble-w); }
 .hero-reply { display: flex; flex-direction: column; gap: 20px; max-width: 840px; }
 /* Two lines in Geist: 72px fits "Yes. Connect Mothership" in 822px; narrower threads scale the type down to keep it there */
-/* "Connect Mothership": once the headline has typed, a single iridescent band sweeps across it, left to right.
+/* "Connect Mothership": once the headline has typed, a single iridescent band sweeps across it, bottom left to top right
+   (a 45° band: each letter lights from its foot up as the band travels along the line).
    Its colours are the hero clip's: the cube's teal and steel blue catching the sunset's peach and sand.
    The text is painted by the gradient throughout (ink either side of the band), so nothing swaps colour */
 .hero-reply h1 .iri {
-  background: linear-gradient(100deg, var(--ink) 0 38%, #2f5a5c 43%, #4a6f8a 46.5%, #8ea5a7 50%, #d2b293 53.5%, #a8907a 57%, var(--ink) 62% 100%) 100% 0 / 300% 100%;
+  background: linear-gradient(45deg, var(--ink) 0 38%, #2f5a5c 43%, #4a6f8a 46.5%, #8ea5a7 50%, #d2b293 53.5%, #a8907a 57%, var(--ink) 62% 100%) 100% 0 / 300% 100%;
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 .hero.is-answered .hero-reply h1 .iri { animation: iri-wave 1.8s cubic-bezier(.45,0,.25,1) 0.25s both; }
