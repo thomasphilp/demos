@@ -499,7 +499,8 @@ img { display: block; }
 .examples .bracket-lines { width: min(908px, 100% - 2 * var(--bg-inset)); height: 157px; }
 .examples-stage { position: relative; margin-top: 57px; }
 .examples-photo { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: min(1548px, 100% - 2 * var(--bg-inset)); height: 729px; object-fit: cover; }
-.examples-grid { position: relative; width: min(1272px, calc(100% - 2 * var(--gutter))); margin: 0 auto; padding-top: 76px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 45px 28px; }
+/* Cards stay inside the inset photo: a gutter in from its edges (flush with it on phones) */
+.examples-grid { --card-inset: var(--gutter); position: relative; width: min(1272px, 100% - 2 * var(--bg-inset) - 2 * var(--card-inset)); margin: 0 auto; padding-top: 76px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 45px 28px; }
 .examples-note { width: 364px; max-width: calc(100% - 48px); margin: 88px auto 0; }
 
 .ex-card {
@@ -817,8 +818,11 @@ a.app-tile:hover .launch { color: #fff; }
   .ap-note { width: 100%; max-width: 536px; margin-left: 280px; }
   .apps-grid { gap: 24px; }
 }
-@media (max-width: 1000px) {
+/* One column once two cards would be narrower than ~500px inside the photo */
+@media (max-width: 1279px) {
   .examples-grid { grid-template-columns: 1fr; max-width: 622px; }
+}
+@media (max-width: 1000px) {
   .steps { grid-template-columns: 1fr; }
   .bracket-lines { display: none; }
   .ap-title { width: 100%; }
@@ -826,6 +830,7 @@ a.app-tile:hover .launch { color: #fff; }
 }
 @media (max-width: 720px) {
   :root { --gutter: 16px; --bg-inset: var(--gutter); }
+  .examples-grid { --card-inset: 0px; }
   .demo-bar { padding: 10px 16px; }
   .demo-bar-note { display: none; }
   .site-nav { padding: 0 16px; gap: 8px; }
