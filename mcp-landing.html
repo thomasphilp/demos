@@ -1509,7 +1509,7 @@ grid.querySelectorAll('.spark[data-icon]').forEach(el => {
   if (icon) el.innerHTML = `<svg viewBox="${icon.viewBox}" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${icon.inner}</svg>`;
 });
 
-const WORD_MS = 90;
+const WORD_MS = 60; // 50% faster than the original 90ms per word
 // What the agent says while it thinks: one is picked at random each time a card opens (never the same twice running)
 const THINKING = [
   'Thinking through it…', 'Checking your shipments…', 'Looking up your lanes…', 'Pulling up the details…',
@@ -1544,7 +1544,7 @@ function typeReply(card) {
       if (el === box) box.style.opacity = '1';
       el.textContent = ''; el.appendChild(cursor);
     }, t));
-    t += el === box ? 120 : 40;
+    t += el === box ? 80 : 27;
     const node = document.createTextNode('');
     timers.push(setTimeout(() => el.insertBefore(node, cursor), t - 1));
     // Word by word: the inline square caret sits right after the newest word
@@ -1556,7 +1556,7 @@ function typeReply(card) {
       const upTo = shown;
       timers.push(setTimeout(() => { node.data = upTo; }, t + (++n) * WORD_MS));
     });
-    t += n * WORD_MS + 120;
+    t += n * WORD_MS + 80;
   });
   timers.push(setTimeout(() => { cursor.remove(); dot.style.visibility = ''; }, t + 100));
 }
