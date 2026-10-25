@@ -30,6 +30,7 @@
   --font-logo: 'Outfit', sans-serif;
   --content: 1120px;
   --gutter: 24px;
+  --bg-inset: 100px; /* photo backgrounds (examples, desk/dock slider) stop this far short of the viewport edges */
   /* Shared border shine (hero input + MCP URL boxes): Figma Chat/Composer 245:1442 stroke stops */
   --shine-stops: #fff 0%, #fff 17.8%, #747474 59.5%, #00e1ff 66.6%, #00ff1a 71.6%, #fff 100%;
   --shine-speed: 0.75s;
@@ -495,9 +496,9 @@ img { display: block; }
 
 /* ── Examples ── */
 .examples { position: relative; padding-bottom: 156px; }
-.examples .bracket-lines { width: 908px; height: 157px; }
+.examples .bracket-lines { width: min(908px, 100% - 2 * var(--bg-inset)); height: 157px; }
 .examples-stage { position: relative; margin-top: 57px; }
-.examples-photo { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: min(1548px, 100%); height: 729px; object-fit: cover; }
+.examples-photo { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: min(1548px, 100% - 2 * var(--bg-inset)); height: 729px; object-fit: cover; }
 .examples-grid { position: relative; width: min(1272px, calc(100% - 2 * var(--gutter))); margin: 0 auto; padding-top: 76px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 45px 28px; }
 .examples-note { width: 364px; max-width: calc(100% - 48px); margin: 88px auto 0; }
 
@@ -564,9 +565,9 @@ img { display: block; }
 /* ── Devices ── */
 .devices-head { padding: 80px 0; }
 .devices { position: relative; padding-bottom: 103px; }
-.devices .bracket-lines { width: 908px; height: 150px; }
+.devices .bracket-lines { width: min(908px, 100% - 2 * var(--bg-inset)); height: 150px; }
 .devices .bracket-copy { position: relative; width: min(760px, calc(100% - 48px)); margin: 24px auto 0; text-align: center; font-size: 22px; line-height: 32px; font-weight: 500; }
-.stage-wrap { position: relative; width: min(1548px, 100%); margin: 70px auto 0; aspect-ratio: 1548 / 857; overflow: hidden; }
+.stage-wrap { position: relative; width: min(1548px, 100% - 2 * var(--bg-inset)); margin: 70px auto 0; aspect-ratio: 1548 / 857; overflow: hidden; }
 .stage { position: absolute; left: 0; top: 0; width: 1548px; height: 857px; transform-origin: 0 0; transform: translateX(var(--stage-x, 0px)) scale(var(--stage-scale, 1)); }
 .scene { position: absolute; inset: 0; }
 .scene .photo { position: absolute; inset: 0; width: 1548px; height: 857px; }
@@ -824,7 +825,7 @@ a.app-tile:hover .launch { color: #fff; }
   .ap-note { margin-left: 0; }
 }
 @media (max-width: 720px) {
-  :root { --gutter: 16px; }
+  :root { --gutter: 16px; --bg-inset: var(--gutter); }
   .demo-bar { padding: 10px 16px; }
   .demo-bar-note { display: none; }
   .site-nav { padding: 0 16px; gap: 8px; }
