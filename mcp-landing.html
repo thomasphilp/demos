@@ -6,7 +6,7 @@
 <title>Mothership MCP — Mothership Demo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bruno+Ace&family=Geist+Pixel&family=Geist:wght@400;500;600;700&family=Inter:wght@400;600;700&family=Instrument+Sans:wght@600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist+Pixel&family=Geist:wght@400;500;600;700&family=Inter:wght@400;600;700&family=Instrument+Sans:wght@600&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -473,9 +473,7 @@ img { display: block; }
 .app-logo { display: flex; align-items: center; gap: 9px; font-family: var(--font-logo); font-weight: 600; font-size: 18px; color: #1b1533; white-space: nowrap; }
 .app-logo > img, .app-logo > .vscode { width: 24px; height: 24px; }
 .powered { position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px; }
-.powered-mark { position: relative; width: 143px; height: 13px; }
-.powered-mark img { width: 120px; height: 12.5px; }
-.powered-mark span { position: absolute; left: 124px; top: -1px; font-family: 'Bruno Ace', sans-serif; font-size: 13.5px; letter-spacing: 1.2px; line-height: 1; color: #000; transform: skewX(-10deg); }
+.powered-mark { display: block; width: 142.661px; height: 12.3935px; } /* Figma 338:1511: the Mothership SI logo, at its own size */
 
 /* Hero intro: composer types the question, then hands off to the chat */
 .intro-composer {
@@ -1257,7 +1255,7 @@ a.app-tile:hover .launch { color: #fff; }
           <span class="cf-line"></span>
           <div class="powered">
             <p class="pixel-note">Powered by</p>
-            <div class="powered-mark"><img src="assets/mcp-landing/mothership-logotype-small.svg" alt="Mothership"><span>SI</span></div>
+            <img class="powered-mark" src="assets/mcp-landing/powered-mark.svg" alt="Mothership SI">
           </div>
           <span class="cf-line"></span>
         </div>
