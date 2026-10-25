@@ -1167,7 +1167,7 @@ a.app-tile:hover .launch { color: #fff; }
             <p data-typewriter data-tw-delay="1.15">Got it. I’ll quote this every Monday at 7 AM and send you the confirmation.</p>
           </div>
         </div>
-        <p class="ap-note">Every Monday at 7am, quote my Ontario → Phoenix lane and send me the three cheapest options.</p>
+        <p class="ap-note">Your quote is waiting every Monday morning. Mothership compares carriers on the lane, so you book the best rate without lifting a finger.</p>
       </div>
       <div class="ap-row">
         <div class="ap-title"><span class="ic" data-icon="outline/folder-plus"></span>Stays on support</div>
@@ -1178,7 +1178,7 @@ a.app-tile:hover .launch { color: #fff; }
             <p data-typewriter data-tw-delay="1.15">Case opened — I’ll check in every 2 hours. Update: new ETA 4:30 PM today.</p>
           </div>
         </div>
-        <p class="ap-note">If a pickup gets missed, open a support case and keep chasing it until it’s rescheduled.</p>
+        <p class="ap-note">No more chasing carriers. Mothership stays on the case and keeps you posted, so your team gets hours back every week.</p>
       </div>
       <div class="ap-row">
         <div class="ap-title"><span class="ic" data-icon="outline/clock"></span>Heads-up on delays</div>
@@ -1189,7 +1189,7 @@ a.app-tile:hover .launch { color: #fff; }
             <p data-typewriter data-tw-delay="1.15">Will do. Everything’s on time right now — I’ll message you if that changes.</p>
           </div>
         </div>
-        <p class="ap-note">Text me if any shipment is running more than 2 hours late.</p>
+        <p class="ap-note">Hear about delays before your customers do. Mothership watches every shipment, so you reset expectations early instead of apologizing late.</p>
       </div>
     </div>
   </div>
@@ -1934,16 +1934,16 @@ new ResizeObserver(fitStage).observe(stageWrap); fitStage();
 (() => {
   const MORE = [
     [ // Recurring quotes
-      { q: 'Every Friday, quote a full truckload from Dallas to Atlanta.', a: 'Scheduled. Each Friday at 9 AM you’ll get the three best FTL rates.', note: 'Every Friday at 9am, quote Dallas → Atlanta FTL and send me the top three rates.' },
-      { q: 'Quote our 3 busiest lanes on the 1st of every month.', a: 'Done. On the 1st I’ll quote all three lanes and flag any price changes.', note: 'On the 1st of each month, re-quote my busiest lanes and flag what changed.' },
+      { q: 'Every Friday, quote a full truckload from Dallas to Atlanta.', a: 'Scheduled. Each Friday at 9 AM you’ll get the three best FTL rates.', note: 'Friday rates land before the weekend rush. Mothership checks every carrier on the lane, so you lock in FTL capacity at the right price.' },
+      { q: 'Quote our 3 busiest lanes on the 1st of every month.', a: 'Done. On the 1st I’ll quote all three lanes and flag any price changes.', note: 'Your busiest lanes, re-priced every month. Mothership flags rate changes early, so you budget with confidence and never overpay.' },
     ],
     [ // Stays on support
-      { q: 'The BOL for MS483105 has the wrong weight. Get it fixed.', a: 'Correction filed with the carrier. I’ll send the updated BOL once it’s approved.', note: 'If a BOL has the wrong details, file the correction and follow up until it’s approved.' },
-      { q: 'We were billed a liftgate fee we never booked on MS481977.', a: 'Dispute opened with the invoice and BOL attached. I’ll tell you when it’s credited.', note: 'If an invoice has a charge we didn’t book, dispute it and chase it until it’s credited.' },
+      { q: 'The BOL for MS483105 has the wrong weight. Get it fixed.', a: 'Correction filed with the carrier. I’ll send the updated BOL once it’s approved.', note: 'BOL mistakes get fixed without the back-and-forth. Mothership files the correction and follows through, so paperwork never holds up a shipment.' },
+      { q: 'We were billed a liftgate fee we never booked on MS481977.', a: 'Dispute opened with the invoice and BOL attached. I’ll tell you when it’s credited.', note: 'Fees you never booked get disputed for you. Mothership sends the proof and chases the credit, so money you don’t owe comes back.' },
     ],
     [ // Heads-up on delays
-      { q: 'Warn me if weather could hit any pickup tomorrow.', a: 'Watching tomorrow’s routes. A storm near Denver may delay MS482611 — move the pickup earlier?', note: 'Before each pickup day, check the forecast on my routes and warn me about risks.' },
-      { q: 'If MS482904 runs late, let the receiver know.', a: 'On it. If the ETA slips I’ll email the receiver with the new delivery window.', note: 'If a delivery is running late, send the receiver the new ETA.' },
+      { q: 'Warn me if weather could hit any pickup tomorrow.', a: 'Watching tomorrow’s routes. A storm near Denver may delay MS482611 — move the pickup earlier?', note: 'Storms stop being surprises. Mothership checks the forecast against your pickups and suggests a fix before freight gets stuck.' },
+      { q: 'If MS482904 runs late, let the receiver know.', a: 'On it. If the ETA slips I’ll email the receiver with the new delivery window.', note: 'Receivers get the new ETA without a phone call. Mothership keeps everyone in the loop, so docks plan ahead and customers stay happy.' },
     ],
   ];
   document.querySelectorAll('.ap-row').forEach((row, r) => {
