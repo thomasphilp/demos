@@ -2002,7 +2002,7 @@ function twType(el, { start = 0, rate = 120, onDone } = {}) { // 120ms a word: 5
 
 /* ── Scroll reveal: everything after the hero fades up once, as it scrolls into view ── */
 (() => {
-  // Each group staggers its items slightly, like a section's headline then its body
+  // Each group staggers its items slightly, like a section's headline then its body; [selector, stagger] sets its own gap
   const GROUPS = [
     '.exchange-user .page-bubble, .exchange-user .sent-by, .exchange-agent > :not([data-typewriter]):not(.cursor-block)',
     '.bracket, .bracket-copy',
@@ -2015,13 +2015,14 @@ function twType(el, { start = 0, rate = 120, onDone } = {}) { // 120ms a word: 5
     '.setup-bg',
     '.steps',
     '.step',
-    '.cta > :not([data-typewriter])',
+    ['.cta .actions > *', 0.35], // after the typed headline: Sign up, then the URL box
     '.site-footer',
   ];
   const STAGGER = 0.09;
   const hero = document.querySelector('.hero');
   const targets = [];
-  GROUPS.forEach(sel => {
+  GROUPS.forEach(group => {
+    const [sel, gap] = Array.isArray(group) ? group : [group, STAGGER];
     const byParent = new Map();
     document.querySelectorAll(sel).forEach(el => {
       if (hero.contains(el)) return;
@@ -2029,7 +2030,7 @@ function twType(el, { start = 0, rate = 120, onDone } = {}) { // 120ms a word: 5
       const i = byParent.get(key) || 0;
       byParent.set(key, i + 1);
       el.classList.add('reveal');
-      el.style.setProperty('--reveal-delay', `${Math.min(i, 5) * STAGGER}s`);
+      el.style.setProperty('--reveal-delay', `${Math.min(i, 5) * gap}s`);
       targets.push(el);
     });
   });
