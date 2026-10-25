@@ -208,7 +208,12 @@ img { display: block; }
   70%  { transform: scale(1.05); box-shadow: 0 0 0 8px rgba(9,10,12,0); }
   100% { transform: scale(1); box-shadow: 0 0 0 10px rgba(9,10,12,0); }
 }
-.mcp-url { transition: background-color 0.3s ease; }
+.mcp-url { transition: background-color 0.3s ease, transform 0.2s cubic-bezier(.2,.7,.3,1), box-shadow 0.2s cubic-bezier(.2,.7,.3,1); }
+/* Hover: the box lifts 2px up-left as its hard shadow grows to 6px, like a raised key, and Copy turns green */
+@media (hover: hover) {
+  .mcp-url:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 #000; }
+  .mcp-url:hover .copy-btn:not(.is-copied) { background: var(--green); color: #000; }
+}
 .mcp-url:has(.copy-btn.is-copied) { background: var(--green); }
 .pixel-note { font-family: var(--font-pixel); font-size: 12px; color: var(--label-muted); text-align: center; }
 
