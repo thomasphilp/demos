@@ -495,7 +495,7 @@ img { display: block; }
 .features { padding: 80px 0; }
 
 /* ── Examples ── */
-.examples { position: relative; padding-bottom: 360px; } /* room for the photo hanging 300px below the last row of cards */
+.examples { position: relative; padding-bottom: 210px; } /* room for the photo hanging 150px below the last row of cards */
 .examples .bracket-lines { width: min(908px, 100% - 2 * var(--bg-inset)); height: 157px; }
 .examples-stage { position: relative; margin-top: 57px; }
 /* The warehouse photo (and its cursor grid) steps down behind each row of example cards as the page scrolls:
@@ -2246,7 +2246,7 @@ if (exPhoto) cursorGrid(exStage, {
   px: 3, color: '#fff', alpha: 0.32, edge: 0.45, fade: 0.3, speed: 18, reach: 10, clickReach: 10,
 });
 // Step the photo down with the scroll: it sits behind whichever row of cards is nearest the middle of the viewport,
-// offset from that row as it is from the first; at the last row it hangs 300px below the cards
+// offset from that row as it is from the first; at the last row it hangs 150px below the cards
 if (exBg) {
   const cards = [...exStage.querySelectorAll('.ex-card')];
   let raf = 0;
@@ -2257,7 +2257,7 @@ if (exBg) {
     const mid = innerHeight / 2, stageTop = exStage.getBoundingClientRect().top, rowH = cards[0].offsetHeight;
     let best = 0;
     rows.forEach((t, i) => { if (Math.abs(stageTop + t + rowH / 2 - mid) < Math.abs(stageTop + rows[best] + rowH / 2 - mid)) best = i; });
-    const last = Math.max(0, exStage.offsetHeight + 300 - exBg.offsetHeight);
+    const last = Math.max(0, exStage.offsetHeight + 150 - exBg.offsetHeight);
     exStage.style.setProperty('--bg-y', `${best === rows.length - 1 ? last : Math.min(last, rows[best] - rows[0])}px`);
   };
   const queue = () => { if (!raf) raf = requestAnimationFrame(step); };
