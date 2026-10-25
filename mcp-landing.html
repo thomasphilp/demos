@@ -865,8 +865,16 @@ a.app-tile:hover .launch { color: #fff; }
   .ap-note { width: 100%; max-width: 536px; margin-left: 280px; }
   .apps-grid { gap: 24px; }
 }
-/* One column once two cards would be narrower than ~500px inside the photo */
-@media (max-width: 1279px) {
+/* Narrow two-column range: question bubbles never wider than the card, and the compact card the phones use
+   (taller, smaller list) so the longest reply still fits */
+.ex-rest .bubble { max-width: calc(100% - 48px); }
+@media (min-width: 1080px) and (max-width: 1279px) {
+  .ex-card { height: 440px; }
+  .ex-hover .q { bottom: 294px; } /* the question keeps its spot above the reply in the taller card */
+  .ex-hover .reply .box { font-size: 13px; padding: 12px; }
+}
+/* One column below 1080px; from there up two cards fit side by side inside the photo */
+@media (max-width: 1079px) {
   .examples-grid { grid-template-columns: 1fr; max-width: 622px; }
 }
 @media (max-width: 1000px) {
