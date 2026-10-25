@@ -2337,11 +2337,11 @@ fn rotateUV(p: vec2f, angle: f32) -> vec2f {
   if (hx < 1.0) { irid = mix(cCyan, cBlue, hx); }
   else if (hx < 2.0) { irid = mix(cBlue, cViolet, hx - 1.0); }
   else if (hx < 3.0) { irid = mix(cViolet, cMint, hx - 2.0); }
-  let fg = mix(tintColor.rgb, irid, crest * 0.35) * tintColor.a;
-  let bg = (bgColor.rgb + irid * crest * 0.02) * bgColor.a;
-  // Chromatic split: red and blue lines drift apart from green along the ring crests (up to ~1.5px at 1x)
+  let fg = mix(tintColor.rgb, irid, crest * 0.175) * tintColor.a;
+  let bg = (bgColor.rgb + irid * crest * 0.01) * bgColor.a;
+  // Chromatic split: red and blue lines drift apart from green along the ring crests (up to ~0.75px at 1x)
   if (patternMode == 6 && ripple > 0.0 && patternAngle == 0.0) {
-    let ca = rdir * pow(abs(w1), 1.2) * (dims.y / 857.0) * 1.5 * ripple;
+    let ca = rdir * pow(abs(w1), 1.2) * (dims.y / 857.0) * 0.75 * ripple;
     let pR = wavyAt(px + ca, cellSize, lumAt(px + ca, dims, contrast));
     let pB = wavyAt(px - ca, cellSize, lumAt(px - ca, dims, contrast));
     let colC = vec3f(mix(bg.r, fg.r, pR), mix(bg.g, fg.g, pattern), mix(bg.b, fg.b, pB));
