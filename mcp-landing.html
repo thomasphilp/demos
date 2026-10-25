@@ -204,10 +204,17 @@ img { display: block; }
 .pixel-note { font-family: var(--font-pixel); font-size: 12px; color: var(--label-muted); text-align: center; }
 
 /* ── Nav ── */
+/* Sticky: clear over the hero video at the top, frosted white once the page scrolls */
 .site-nav {
-  position: absolute; top: 44px; left: 0; right: 0; z-index: 50; height: 64px;
+  position: fixed; top: 44px; left: 0; right: 0; z-index: 50; height: 64px;
   display: flex; align-items: center; gap: 16px; padding: 0 24px;
   backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid transparent;
+  transition: background-color 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease;
+}
+.site-nav.is-stuck {
+  background: rgba(255,255,255,0.78); border-bottom-color: rgba(9,10,12,0.08);
+  backdrop-filter: blur(20px) saturate(1.4); -webkit-backdrop-filter: blur(20px) saturate(1.4);
 }
 .site-nav .logo { width: 155px; height: 16px; }
 .pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 4px; background: rgba(255,255,255,0.25); font-family: var(--font-geist); font-weight: 600; font-size: 14px; color: var(--label-primary); white-space: nowrap; transition: background 0.15s; }
@@ -621,6 +628,16 @@ img { display: block; }
 .ap-card .agent-msg .agent-tag { opacity: 0.5; }
 .ap-card .agent-msg p { font-family: var(--font-display); font-weight: 600; font-size: 17px; letter-spacing: -0.02em; color: #fff; }
 .ap-note { width: 174px; flex-shrink: 0; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.7); }
+/* Each card holds three examples: click it (or a dot) for the next; the dots are the slider paginator in miniature */
+.ap-card.is-carousel { cursor: pointer; }
+.ap-card .user-turn, .ap-card .agent-msg, .ap-row .ap-note { transition: opacity 0.2s ease, transform 0.25s ease; }
+.ap-card.is-switching .user-turn, .ap-card.is-switching .agent-msg, .ap-row.is-switching .ap-note { opacity: 0; transform: translateY(-6px); }
+.ap-dots { display: flex; align-items: center; gap: 6px; align-self: center; margin-top: auto; }
+.ap-dot { position: relative; width: 6px; height: 6px; padding: 0; border: 0; border-radius: 9999px; background: rgba(255,255,255,0.3); cursor: pointer; transition: width 0.4s cubic-bezier(.4,0,.25,1), background-color 0.3s ease; }
+.ap-dot::before { content: ""; position: absolute; inset: -9px -4px; }
+.ap-dot:hover:not(.is-active) { background: rgba(255,255,255,0.6); }
+.ap-dot.is-active { width: 18px; background: #fff; cursor: default; }
+.ap-dot:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
 
 .apps { padding: 60px 0 92px; }
 .apps .exchange { gap: 80px; }
@@ -1279,6 +1296,12 @@ const composer = hero.querySelector('.intro-composer');
 const QUESTION = 'Can I just ship freight from my AI chat?';
 const BOLD_WORDS = new Set(['ship', 'freight']); // Instrument Sans Bold, as in Figma 299:692
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Sticky nav turns frosted as soon as the page leaves the top
+{
+  const nav = document.querySelector('.site-nav');
+  const stick = () => nav.classList.toggle('is-stuck', scrollY > 8);
+  addEventListener('scroll', stick, { passive: true }); stick();
+}
 let introTimers = [];
 const later = (fn, ms) => introTimers.push(setTimeout(fn, ms));
 function playIntro() {
@@ -1742,6 +1765,74 @@ new ResizeObserver(fitStage).observe(stageWrap); fitStage();
   }).observe(stageWrap, { attributes: true, attributeFilter: ['class'] });
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) setPaused(true);
   startDot();
+})();
+
+/* ── Autopilot cards: three examples each; click the card for the next, or a dot to jump ──
+   The first example is the one in the markup. A card only switches once its first reply has typed,
+   so the page's top-to-bottom reveal queue (which waits on that typing) is never cut short. */
+(() => {
+  const MORE = [
+    [ // Recurring quotes
+      { q: 'Every Friday, quote a full truckload from Dallas to Atlanta.', a: 'Scheduled. Each Friday at 9 AM you’ll get the three best FTL rates.', note: 'Every Friday at 9am, quote Dallas → Atlanta FTL and send me the top three rates.' },
+      { q: 'Quote our 3 busiest lanes on the 1st of every month.', a: 'Done. On the 1st I’ll quote all three lanes and flag any price changes.', note: 'On the 1st of each month, re-quote my busiest lanes and flag what changed.' },
+    ],
+    [ // Stays on support
+      { q: 'The BOL for MS483105 has the wrong weight. Get it fixed.', a: 'Correction filed with the carrier. I’ll send the updated BOL once it’s approved.', note: 'If a BOL has the wrong details, file the correction and follow up until it’s approved.' },
+      { q: 'We were billed a liftgate fee we never booked on MS481977.', a: 'Dispute opened with the invoice and BOL attached. I’ll tell you when it’s credited.', note: 'If an invoice has a charge we didn’t book, dispute it and chase it until it’s credited.' },
+    ],
+    [ // Heads-up on delays
+      { q: 'Warn me if weather could hit any pickup tomorrow.', a: 'Watching tomorrow’s routes. A storm near Denver may delay MS482611 — move the pickup earlier?', note: 'Before each pickup day, check the forecast on my routes and warn me about risks.' },
+      { q: 'If MS482904 runs late, let the receiver know.', a: 'On it. If the ETA slips I’ll email the receiver with the new delivery window.', note: 'If a delivery is running late, send the receiver the new ETA.' },
+    ],
+  ];
+  document.querySelectorAll('.ap-row').forEach((row, r) => {
+    const card = row.querySelector('.ap-card'), bubble = card.querySelector('.chat-bubble'), reply = card.querySelector('.agent-msg p'), note = row.querySelector('.ap-note');
+    if (!MORE[r]) return;
+    const examples = [{ q: bubble.textContent, a: reply.textContent, note: note.textContent }, ...MORE[r]];
+    let cur = 0, ready = false, timer;
+    card.classList.add('is-carousel');
+    const dots = document.createElement('div');
+    dots.className = 'ap-dots'; dots.setAttribute('role', 'group'); dots.setAttribute('aria-label', 'Examples');
+    dots.innerHTML = examples.map((_, i) => `<button type="button" class="ap-dot${i ? '' : ' is-active'}" aria-label="Example ${i + 1} of ${examples.length}"${i ? '' : ' aria-current="true"'}></button>`).join('');
+    card.appendChild(dots);
+    // Reserve the tallest example's height so the row never jumps
+    const reserve = () => {
+      const probe = card.cloneNode(true);
+      Object.assign(probe.style, { position: 'absolute', visibility: 'hidden', pointerEvents: 'none', minHeight: '0', width: `${card.offsetWidth}px` });
+      card.after(probe);
+      const pb = probe.querySelector('.chat-bubble'), pa = probe.querySelector('.agent-msg p');
+      const tallest = Math.max(...examples.map(ex => { pb.textContent = ex.q; pa.textContent = ex.a; return probe.offsetHeight; }));
+      probe.remove();
+      card.style.minHeight = `${tallest}px`;
+    };
+    new ResizeObserver(reserve).observe(row); reserve();
+    // The first reply has typed (by the reveal queue) once it carries .is-typed
+    new MutationObserver((_, mo) => { if (reply.classList.contains('is-typed')) { ready = true; mo.disconnect(); } }).observe(reply, { attributes: true, attributeFilter: ['class'] });
+    const show = (i) => {
+      if (!ready || i === cur) return;
+      cur = i;
+      dots.querySelectorAll('.ap-dot').forEach((d, k) => { d.classList.toggle('is-active', k === i); d.toggleAttribute('aria-current', k === i); });
+      card.classList.add('is-switching'); row.classList.add('is-switching');
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        const ex = examples[i];
+        bubble.textContent = ex.q; note.textContent = ex.note;
+        // Re-split the reply into words for the typewriter
+        if (reply._tw) { reply._tw.timers.forEach(clearTimeout); delete reply._tw; }
+        reply.classList.remove('tw', 'is-typed'); reply.textContent = ex.a;
+        twPrep(reply);
+        card.classList.remove('is-switching'); row.classList.remove('is-switching');
+        bubble.getAnimations().forEach(a => { a.cancel(); a.play(); }); // replay the bubble's bounce-in
+        twType(reply, { start: 650 });
+      }, 220);
+    };
+    card.addEventListener('click', (e) => {
+      const dot = e.target.closest('.ap-dot');
+      if (dot) { show([...dots.children].indexOf(dot)); return; }
+      if (getSelection().toString()) return; // let people select text
+      show((cur + 1) % examples.length);
+    });
+  });
 })();
 
 /* ── Cursor grid: cells light up under the pointer with an ordered-dither fill and fade; clicks send a
