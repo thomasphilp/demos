@@ -2141,7 +2141,7 @@ document.querySelectorAll('.on-dark').forEach((sec) => {
 /* ── "Pattern Screen" shader (Figma custom effect, wavy lines) on the device photos ──
    setup()/render() below are the Figma shader module (unused param helpers trimmed), with one addition:
    an ambient iridescent ripple. Wide rings spread from the centre of the photo, bending the lines and
-   tinting them with a thin-film rainbow along each crest. frameData.x is time, frameData.w the ripple amount. */
+   tinting them with a cool thin-film sheen (cyan, blue, violet, mint) along each crest. frameData.x is time, frameData.w the ripple amount. */
 const PatternScreen = (() => {
   function setup(device, frame) {
     var wgsl = `
@@ -2284,10 +2284,19 @@ fn rotateUV(p: vec2f, angle: f32) -> vec2f {
     let dist2 = length(bcf - vec2f(0.5));
     pattern = select(0.0, 1.0, dist2 < l * 0.45);
   }
-  // Iridescence along the ring crests: a cosine rainbow whose hue shifts with phase, brightness and time
+  // Iridescence along the ring crests: a hue that shifts with phase, brightness and time
   let crest = pow(clamp(abs(w1), 0.0, 1.0), 1.6) * ripple; // thick crests
   let hue = fract(ph1 * 0.16 + l * 0.35 + time * 0.03);
-  let irid = vec3f(0.55) + 0.45 * cos(6.2831853 * (vec3f(hue) + vec3f(0.0, 0.33, 0.67)));
+  // Cool colours only: cyan → blue → violet → mint → cyan (no reds, oranges or yellows)
+  let hx = hue * 4.0;
+  let cCyan = vec3f(0.0, 0.88, 1.0);
+  let cBlue = vec3f(0.27, 0.42, 1.0);
+  let cViolet = vec3f(0.58, 0.38, 1.0);
+  let cMint = vec3f(0.0, 1.0, 0.62);
+  var irid = mix(cMint, cCyan, hx - 3.0);
+  if (hx < 1.0) { irid = mix(cCyan, cBlue, hx); }
+  else if (hx < 2.0) { irid = mix(cBlue, cViolet, hx - 1.0); }
+  else if (hx < 3.0) { irid = mix(cViolet, cMint, hx - 2.0); }
   let fg = mix(tintColor.rgb, irid, crest * 0.7) * tintColor.a;
   let bg = (bgColor.rgb + irid * crest * 0.04) * bgColor.a;
   let col = mix(bg, fg, pattern);
