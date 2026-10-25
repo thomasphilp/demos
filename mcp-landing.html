@@ -189,6 +189,9 @@ img { display: block; }
 }
 @keyframes beam { to { transform: rotate(360deg); } }
 .mcp-url .surface { position: absolute; inset: 1px; background: #fff; } /* 1px shine border */
+.hero-connect .mcp-url .surface { inset: 1.5px; } /* Figma 297:685 */
+.hero-connect .mcp-url .url { font-weight: 400; color: #000; } /* Figma 288:5275: Geist Regular, black */
+.hero-connect .copy-btn { font-weight: 600; } /* Figma 288:5277: Geist SemiBold */
 .mcp-url .url { position: relative; font-size: 18px; font-weight: 500; color: var(--label-primary); }
 .copy-btn { position: relative; background: var(--ink); color: #fff; font-family: var(--font-geist); font-size: 12px; padding: 5px 12px; border-radius: 0; min-width: 53px; }
 .copy-btn:hover { background: #000; }
@@ -403,7 +406,7 @@ img { display: block; }
 .hero-connect { width: var(--thread-w); margin: 110px auto 56px; display: flex; flex-direction: column; }
 .cf-edge { display: flex; align-items: stretch; gap: 24px; }
 .cf-edge .cf-line { flex: 1; min-width: 24px; border: 0 solid rgba(0,0,0,0.2); } /* frame lines at 20% (in the colour: the glitch animates opacity) */
-.cf-edge.is-top .cf-line { margin-top: 10.5px; border-top-width: 1px; }
+.cf-edge.is-top .cf-line { margin-top: 16px; border-top-width: 1px; } /* the lead's middle */
 .br-mobile { display: none; }
 /* Figma 313:6803: three stacked, open-bottom outlines behind the frame's top edge (Figma 40/20/10% black, halved here) */
 .hero-connect { position: relative; }
@@ -416,7 +419,7 @@ img { display: block; }
 .cf-edge.is-bottom .cf-line { margin-bottom: 21px; border-bottom-width: 1px; }
 .cf-edge .cf-line:first-child { border-left-width: 1px; }
 .cf-edge .cf-line:last-child { border-right-width: 1px; }
-.cf-edge .lead { font-size: 17px; font-weight: 500; line-height: 21px; text-align: center; }
+.cf-edge .lead { font-size: 22px; font-weight: 500; line-height: 32px; text-align: center; } /* Figma 288:5273 */
 .cf-body { position: relative; padding: 18px 25px 40px; display: flex; flex-direction: column; align-items: center; gap: 64px; }
 /* Side lines as their own layers, so the frame can glitch without moving the content */
 .cf-body::before, .cf-body::after { content: ""; position: absolute; top: 0; bottom: 0; width: 1px; background: rgba(0,0,0,0.2); pointer-events: none; }
@@ -459,7 +462,8 @@ img { display: block; }
 .hero.is-answered .cf-tab:nth-child(2) { animation-duration: 3.8s; animation-delay: 1.7s; }
 .hero.is-answered .cf-tab:nth-child(3) { animation-duration: 5.1s; animation-delay: 2.6s; }
 .connect-block { position: relative; display: flex; flex-direction: column; align-items: center; gap: 18px; }
-.hero-copy { position: relative; width: min(696px, 100%); text-align: center; font-size: 22px; line-height: 32px; font-weight: 500; }
+.hero-copy { position: relative; width: min(696px, 100%); text-align: center; font-size: 22px; line-height: 32px; font-weight: 400; }
+.hero-copy strong { font-weight: 600; } /* Figma 274:2278: lead sentence SemiBold, the rest Regular */
 .available { position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 24px; }
 .marquee { width: min(750px, 100%); overflow: hidden; -webkit-mask: url(assets/mcp-landing/marquee-mask.svg) center / 100% 100% no-repeat; mask: url(assets/mcp-landing/marquee-mask.svg) center / 100% 100% no-repeat; }
 .marquee-track { display: flex; gap: 56px; width: max-content; animation: marquee 20s linear infinite; }
@@ -915,7 +919,7 @@ a.app-tile:hover .launch { color: #fff; }
    this URL box's beam is the dark-to-green sweep */
 .cta .actions { display: flex; align-items: flex-start; gap: 32px; flex-wrap: wrap; justify-content: center; }
 .cta .url-col { display: flex; flex-direction: column; align-items: center; gap: 14px; }
-.cta .mcp-url .beam {
+.hero-connect .mcp-url .beam, .cta .mcp-url .beam {
   background: conic-gradient(from 90deg, #090a0c 0%, #090a0c 62%, #08190f 63.125%, #082913 64.25%, #07471a 66.5%, #066621 68.75%, #048428 71%,
     #02c236 75.5%, #00ff44 80%, #02c236 81.5%, #048428 83%, #066621 83.75%, #07471a 84.5%, #082913 85.25%, #08190f 85.625%, #090a0c 86%, #090a0c 100%);
 }
@@ -1016,6 +1020,8 @@ a.app-tile:hover .launch { color: #fff; }
   .cf-edge { gap: 12px; }
   .cf-edge .cf-line { min-width: 12px; }
   .br-mobile { display: inline; }
+  .cf-edge .lead { font-size: 18px; line-height: 26px; } /* two lines, broken at .br-mobile */
+  .cf-edge.is-top .cf-line { margin-top: 13px; }
   /* Desk/dock slider fills 60% of the screen; photos crop to cover, the wide overlays shrink to the visible width */
   .stage-wrap { aspect-ratio: auto; height: 60vh; height: 60svh; }
   /* Slide inputs on phones: exactly the hero's mobile composer on screen (question on top, plus + send below, 24px
@@ -1239,7 +1245,7 @@ a.app-tile:hover .launch { color: #fff; }
             </div>
             <p class="pixel-note">Requires an approved Mothership account</p>
           </div>
-          <p class="hero-copy">Quote, book, track and pay for LTL, FTL and Same-day local freight in plain words. Everything our Dashboard does now in Claude, ChatGPT and more — on desktop or your phone.</p>
+          <p class="hero-copy"><strong>Quote, book, track and pay for LTL, FTL and Same-day local freight in plain words.</strong> Everything our Dashboard does now in Claude, ChatGPT and more — on desktop or your phone.</p>
           <div class="available">
             <p class="pixel-note">Now available in</p>
             <div class="marquee"><div class="marquee-track" id="marquee-track"></div></div>
