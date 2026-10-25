@@ -1781,6 +1781,14 @@ const fitStage = () => {
 };
 new ResizeObserver(fitStage).observe(stageWrap); fitStage();
 
+// "For example" bracket: its side lines run down to the top of the slider photo, however the copy wraps
+// (offsets, so the reveal's translate doesn't skew it)
+{
+  const devices = stageWrap.closest('.devices'), bracket = devices.querySelector('.bracket'), lines = bracket.querySelector('.bracket-lines');
+  const reach = () => { lines.style.height = `${Math.max(0, stageWrap.offsetTop - bracket.offsetTop - lines.offsetTop)}px`; };
+  new ResizeObserver(reach).observe(devices); reach();
+}
+
 /* ── Devices slideshow: autoplays, the active dot's fill is the timer (its animationend advances) ── */
 (() => {
   const scenes = [...stageWrap.querySelectorAll('.scene')];
