@@ -362,7 +362,7 @@ img { display: block; }
    (a 45° band: each letter lights from its foot up as the band travels along the line).
    Its colours are the hero clip's: the cube's teal and steel blue catching the sunset's peach and sand.
    The text is painted by the gradient throughout (ink either side of the band), so nothing swaps colour.
-   On top of the band: a soft glow in its colours and a tight RGB split, both riding along with it */
+   On top of the band: a soft glow in its colours, a tight RGB split and a dither, all riding along with it */
 .hero-reply h1 .iri-fill {
   background: linear-gradient(45deg, var(--ink) 0 38%, #2f5a5c 43%, #4a6f8a 46.5%, #8ea5a7 50%, #d2b293 53.5%, #a8907a 57%, var(--ink) 62% 100%) 100% 0 / 300% 100%;
   -webkit-background-clip: text; background-clip: text; color: transparent;
@@ -388,10 +388,27 @@ img { display: block; }
 .hero.is-answered .hero-reply h1 .iri-glow::before { animation: iri-wave 1.8s cubic-bezier(.45,0,.25,1) 0.25s both; }
 .hero.is-answered .hero-reply h1 .iri::before, .hero.is-answered .hero-reply h1 .iri::after { animation: iri-split 1.8s cubic-bezier(.45,0,.25,1) 0.25s both; }
 @keyframes iri-wave { from { background-position: 100% 0; } to { background-position: 0 0; } }
+/* Dither riding the band, the cursor grid's look: copies of the words filled with its 4x4 Bayer dots (2px), at four
+   nested densities, each shown in a narrower slice of the band, so the dots thicken toward its centre in steps.
+   Each copy multiplies its dot tile (white on black) by its slice (white inside, black outside) and screens the
+   result onto the letters: black adds nothing, so only the dots inside the slice lighten the words */
+.hero-reply h1 .iri-dots { position: absolute; left: 0; top: 0; z-index: 1; pointer-events: none; }
+.hero-reply h1 .iri-dots::before, .hero-reply h1 .iri-dots::after {
+  content: attr(data-text); position: absolute; left: 0; top: 0; line-height: normal; white-space: nowrap;
+  background: var(--dots) 0 0 / 8px 8px, linear-gradient(45deg, #000 calc(50% - var(--half)), #fff calc(50% - var(--half)) calc(50% + var(--half)), #000 calc(50% + var(--half))) 100% 0 / 300% 100% no-repeat;
+  background-blend-mode: multiply; -webkit-background-clip: text; background-clip: text; color: transparent;
+  mix-blend-mode: screen; opacity: 0.45;
+}
+.hero-reply h1 .iri-glow + .iri-dots::before { --dots: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect width='8' height='8'/><g fill='%23fff'><rect x='0' y='0' width='2' height='2'/><rect x='4' y='0' width='2' height='2'/><rect x='4' y='4' width='2' height='2'/></g></svg>"); --half: 12%; }
+.hero-reply h1 .iri-glow + .iri-dots::after { --dots: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect width='8' height='8'/><g fill='%23fff'><rect x='0' y='0' width='2' height='2'/><rect x='4' y='0' width='2' height='2'/><rect x='2' y='2' width='2' height='2'/><rect x='0' y='4' width='2' height='2'/><rect x='4' y='4' width='2' height='2'/><rect x='6' y='6' width='2' height='2'/></g></svg>"); --half: 9%; }
+.hero-reply h1 .iri-dots + .iri-dots::before { --dots: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect width='8' height='8'/><g fill='%23fff'><rect x='0' y='0' width='2' height='2'/><rect x='2' y='0' width='2' height='2'/><rect x='4' y='0' width='2' height='2'/><rect x='2' y='2' width='2' height='2'/><rect x='6' y='2' width='2' height='2'/><rect x='0' y='4' width='2' height='2'/><rect x='4' y='4' width='2' height='2'/><rect x='6' y='4' width='2' height='2'/><rect x='2' y='6' width='2' height='2'/><rect x='6' y='6' width='2' height='2'/></g></svg>"); --half: 6%; }
+.hero-reply h1 .iri-dots + .iri-dots::after { --dots: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect width='8' height='8'/><g fill='%23fff'><rect x='0' y='0' width='2' height='2'/><rect x='2' y='0' width='2' height='2'/><rect x='4' y='0' width='2' height='2'/><rect x='6' y='0' width='2' height='2'/><rect x='0' y='2' width='2' height='2'/><rect x='2' y='2' width='2' height='2'/><rect x='6' y='2' width='2' height='2'/><rect x='0' y='4' width='2' height='2'/><rect x='2' y='4' width='2' height='2'/><rect x='4' y='4' width='2' height='2'/><rect x='6' y='4' width='2' height='2'/><rect x='2' y='6' width='2' height='2'/><rect x='4' y='6' width='2' height='2'/><rect x='6' y='6' width='2' height='2'/></g></svg>"); --half: 3%; }
+.hero.is-answered .hero-reply h1 .iri-dots::before, .hero.is-answered .hero-reply h1 .iri-dots::after { animation: iri-dots 1.8s cubic-bezier(.45,0,.25,1) 0.25s both; }
+@keyframes iri-dots { from { background-position: 0 0, 100% 0; } to { background-position: 0 0, 0 0; } }
 @keyframes iri-split { from { -webkit-mask-position: 100% 0; mask-position: 100% 0; } to { -webkit-mask-position: 0 0; mask-position: 0 0; } }
 /* Phones break the two words over two lines, which one-line copies can't follow: the band plays without the split */
-@media (max-width: 720px) { .hero-reply h1 .iri::before, .hero-reply h1 .iri::after, .hero-reply h1 .iri-glow { display: none; } }
-@media (prefers-reduced-motion: reduce) { .hero.is-answered .hero-reply h1 .iri-fill, .hero.is-answered .hero-reply h1 .iri::before, .hero.is-answered .hero-reply h1 .iri::after, .hero.is-answered .hero-reply h1 .iri-glow::before { animation: none; } }
+@media (max-width: 720px) { .hero-reply h1 .iri::before, .hero-reply h1 .iri::after, .hero-reply h1 .iri-glow, .hero-reply h1 .iri-dots { display: none; } }
+@media (prefers-reduced-motion: reduce) { .hero.is-answered .hero-reply h1 .iri-fill, .hero.is-answered .hero-reply h1 .iri::before, .hero.is-answered .hero-reply h1 .iri::after, .hero.is-answered .hero-reply h1 .iri-glow::before, .hero.is-answered .hero-reply h1 .iri-dots::before, .hero.is-answered .hero-reply h1 .iri-dots::after { animation: none; } }
 .hero-reply h1 { font-family: var(--font-display); font-weight: 600; font-size: min(72px, 8.5cqi); line-height: 1.04; letter-spacing: -0.04em; color: var(--ink); }
 
 /* Connect frame: thin outline whose top/bottom edges open around the label and "Powered by" */
@@ -1217,7 +1234,7 @@ a.app-tile:hover .launch { color: #fff; }
         <div class="hero-user"><p class="page-bubble">Can I just ship freight from my AI chat?</p><span class="sent-by">Sent by you</span></div>
         <div class="hero-reply">
           <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-          <h1 id="hero-title" data-typewriter>Yes. <span class="iri" data-text="Connect Mothership"><span class="iri-glow" data-text="Connect Mothership" aria-hidden="true"></span><span class="iri-fill">Connect Mothership</span></span> and just ask.</h1>
+          <h1 id="hero-title" data-typewriter>Yes. <span class="iri" data-text="Connect Mothership"><span class="iri-glow" data-text="Connect Mothership" aria-hidden="true"></span><span class="iri-dots" data-text="Connect Mothership" aria-hidden="true"></span><span class="iri-dots" data-text="Connect Mothership" aria-hidden="true"></span><span class="iri-fill">Connect Mothership</span></span> and just ask.</h1>
           <span class="cursor-block"></span>
         </div>
       </div>
