@@ -506,7 +506,18 @@ img { display: block; }
 .ex-hover .q .bubble { background: #000; color: #fff; border-radius: 14px 14px 5px 14px; padding: 8px 12px; font-family: var(--font-display); font-size: 17px; letter-spacing: -0.02em; white-space: pre-line; }
 .ex-hover .q .chip { background: #000; border-radius: 8px; font-size: 16px; }
 .ex-hover .reply { position: absolute; left: 52px; top: 161px; width: min(492px, calc(100% - 80px)); display: flex; flex-direction: column; gap: 16px; }
-.ex-hover .reply .spark { width: 20px; height: 20px; color: #b9b9b9; }
+.ex-hover .reply .spark { width: 20px; height: 20px; color: #b9b9b9; transition: color 0.3s ease; }
+/* Before the reply: the star turns and pulses, and a "thinking" line under it runs the "Your AI agent" sweep */
+.ex-hover .reply.is-thinking .spark { color: #141414; animation: spark-think 1.2s ease-in-out infinite; }
+@keyframes spark-think {
+  0%   { transform: rotate(0deg) scale(1); }
+  50%  { transform: rotate(45deg) scale(0.78); opacity: 0.7; }
+  100% { transform: rotate(90deg) scale(1); }
+}
+.ex-hover .reply .think { display: none; font-size: 15px; }
+.ex-hover .reply.is-thinking .think { display: flex; animation: think-in 0.3s ease-out both, agent-sweep 2.4s linear infinite; }
+.ex-hover .reply .think .tag-label { background-position: var(--sweep-x) 0; } /* no icon in front of this one */
+@keyframes think-in { from { opacity: 0; transform: translateY(4px); } }
 .ex-hover .reply .body { display: flex; flex-direction: column; gap: 5px; font-family: var(--font-display); font-weight: 600; color: var(--ink); }
 .ex-hover .reply .lead { font-size: 16px; letter-spacing: -0.02em; white-space: pre-line; }
 .ex-hover .reply .box { background: #efefef; border: 1px solid #eaeaea; border-radius: 8px; padding: 16px; font-size: 15px; letter-spacing: -0.02em; white-space: pre-line; transition: opacity 0.2s ease; }
@@ -1473,7 +1484,7 @@ grid.innerHTML = EXAMPLES.map((ex, i) => `
       <div class="q">${ex.file ? `<span class="chip">${ex.file}</span>` : ''}<p class="bubble">${esc(ex.hq)}</p></div>
       <div class="reply">
         <span class="spark ic" data-icon="solid/AI/magic"></span>
-        <div class="body"><p class="lead"></p><p class="box"></p><p class="ask"></p></div>
+        <div class="body"><span class="agent-tag is-shimmer think" aria-hidden="true"><span class="tag-label"></span></span><p class="lead"></p><p class="box"></p><p class="ask"></p></div>
         <span class="dot is-resting"></span>
       </div>
     </div>
@@ -1484,11 +1495,18 @@ grid.querySelectorAll('.spark[data-icon]').forEach(el => {
 });
 
 const WORD_MS = 90;
+// What the agent says while it thinks: one is picked at random each time a card opens (never the same twice running)
+const THINKING = [
+  'Thinking through it…', 'Checking your shipments…', 'Looking up your lanes…', 'Pulling up the details…',
+  'Reading the BOL…', 'Comparing carrier rates…', 'Checking pickup windows…', 'Matching it to your account…',
+  'Asking Mothership…', 'Lining up the options…', 'Tracking it down…', 'Going through your invoices…',
+];
 function typeReply(card) {
   const ex = EXAMPLES[card.dataset.i];
   const hover = card.querySelector('.ex-hover');
   const [lead, box, ask] = hover.querySelectorAll('.body > p');
   const dot = hover.querySelector('.reply > .dot');
+  const reply = hover.querySelector('.reply'), think = reply.querySelector('.think .tag-label');
   const parts = [[lead, ex.lead], [box, ex.box], [ask, ex.ask]];
   cancelTyping(card);
   parts.forEach(([el]) => { el.textContent = ''; });
@@ -1497,8 +1515,15 @@ function typeReply(card) {
   cursor.className = 'dot is-inline';
   dot.style.visibility = 'hidden';
   const timers = card._timers = [];
+  reply.classList.remove('is-thinking');
   if (reducedMotion) { parts.forEach(([el, text]) => { el.textContent = text; }); box.style.opacity = '1'; dot.style.visibility = ''; return; }
-  let t = 280;
+  // Think first: the star works and a random line sweeps, for a random beat, then the reply starts typing
+  let pick; do { pick = THINKING[Math.floor(Math.random() * THINKING.length)]; } while (THINKING.length > 1 && pick === card._lastThink);
+  card._lastThink = pick; think.textContent = pick;
+  const thinkMs = 1100 + Math.random() * 700;
+  timers.push(setTimeout(() => reply.classList.add('is-thinking'), 200));
+  timers.push(setTimeout(() => reply.classList.remove('is-thinking'), 200 + thinkMs));
+  let t = 200 + thinkMs + 160;
   parts.forEach(([el, text], pi) => {
     timers.push(setTimeout(() => {
       if (el === box) box.style.opacity = '1';
@@ -1520,7 +1545,7 @@ function typeReply(card) {
   });
   timers.push(setTimeout(() => { cursor.remove(); dot.style.visibility = ''; }, t + 100));
 }
-function cancelTyping(card) { (card._timers || []).forEach(clearTimeout); card._timers = []; }
+function cancelTyping(card) { (card._timers || []).forEach(clearTimeout); card._timers = []; card.querySelector('.ex-hover .reply')?.classList.remove('is-thinking'); }
 function fillReply(card) {
   const ex = EXAMPLES[card.dataset.i];
   const [lead, box, ask] = card.querySelectorAll('.ex-hover .body > p');
