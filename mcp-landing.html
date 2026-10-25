@@ -679,7 +679,7 @@ img { display: block; }
 .desk-window .composer-area { padding: 0 24px 20px; }
 
 /* Slide 3 phone: Figma "Phone / Hero chat" (324:7553), 488×806, centred and running off the bottom of the frame;
-   one white status + title block casting a shadow over the chat, a 467px chat body with the composer peeking in below */
+   one white status + title block casting a shadow over the chat, then a 500px chat body (no composer) */
 .phone { position: absolute; left: 530px; top: 224px; width: 488px; height: 806px; padding: 8.2px 6px; border-radius: 64.4px; background: #0d0a1a; box-shadow: 0 41px 82px rgba(26,13,51,0.28); display: flex; }
 .phone .screen { flex: 1; display: flex; flex-direction: column; background: #fff; border-radius: 57.6px; overflow: hidden; }
 .phone .topbar { position: relative; z-index: 1; background: #fff; filter: drop-shadow(0 4px 14px rgba(0,0,0,0.45)); }
@@ -690,7 +690,7 @@ img { display: block; }
 .phone .app-head .agent-tag { color: #000; }
 .phone .agent-tag { gap: 11px; font-size: 19.2px; }
 .phone .agent-tag .ic { width: 27.4px; height: 27.4px; }
-.phone .screen > .body { flex: none; height: 467px; padding: 13.7px 21.9px 29.4px; overflow: hidden; }
+.phone .screen > .body { flex: none; height: 500px; padding: 13.7px 21.9px 29.4px; overflow: hidden; }
 /* The thread opens at the top of the conversation, then scrolls down to the answer once the phone has risen in
    (--chat-end, set by script, is how far the thread overflows the body); it resets while the slide is hidden */
 .phone .chat-scroll { display: flex; flex-direction: column; gap: 38px; }
@@ -707,16 +707,6 @@ img { display: block; }
 .phone:not(.is-replying) .user-turn .chat-bubble, .phone:not(.is-replying) .agent-msg.is-tight .agent-tag { opacity: 0; }
 .phone.is-replying .user-turn .chat-bubble { animation: bubble-in 0.75s 2.7s both; }
 .phone.is-replying .agent-msg.is-tight .agent-tag { animation: ap-label-in 0.3s ease-out 3.3s backwards, agent-sweep 2.4s linear infinite; }
-.phone .composer-area { padding: 0 16.4px 27.4px; }
-.phone .composer-tall { height: 130.2px; display: flex; flex-direction: column; justify-content: flex-end; gap: 16.4px; padding: 11px 11px 11px 24.7px; border-radius: 32.9px; border: 1.4px solid var(--gray-200); filter: drop-shadow(0 2.7px 5.5px rgba(0,0,0,0.05)); }
-.phone .composer-tall .placeholder { font-size: 20.6px; color: var(--gray-500); }
-.phone .composer-tall .row { display: flex; align-items: flex-end; justify-content: space-between; }
-.phone .composer-tall .row > div { display: flex; align-items: center; gap: 16.4px; }
-.phone .composer-tall .plus { width: 24.7px; height: 24.7px; }
-.phone .tool-chip { gap: 8.2px; padding: 5.5px 13.7px 5.5px 11px; border-width: 1.4px; font-size: 17.8px; }
-.phone .tool-chip img { width: 9.6px; height: 9.6px; }
-.phone .send-sm { width: 49.3px; height: 49.3px; border-radius: 24.7px; }
-.phone .send-sm img { width: 21.9px; height: 21.9px; }
 
 /* ── Dark sections ── */
 .on-dark { background: #000; color: rgba(255,255,255,0.9); }
@@ -1152,18 +1142,6 @@ a.app-tile:hover .launch { color: #fff; }
                   <span class="cursor-block"></span>
                 </div>
               </div>
-              </div>
-            </div>
-            <div class="composer-area">
-              <div class="composer-tall">
-                <p class="placeholder">Reply…</p>
-                <div class="row">
-                  <div>
-                    <img class="plus" src="assets/mcp-landing/composer-plus.svg" alt="">
-                    <span class="tool-chip"><img src="assets/mcp-landing/chip-dot.svg" alt="">Mothership</span>
-                  </div>
-                  <span class="send-sm"><img src="assets/mcp-landing/composer-arrow.svg" alt=""></span>
-                </div>
               </div>
             </div>
           </div>
@@ -1735,7 +1713,11 @@ function twRest(el) {
 function twPlace(el, word) {
   const tw = el._tw, host = el.getBoundingClientRect();
   const fs = parseFloat(getComputedStyle(el).fontSize), rest = twRest(el);
-  const size = rest ? Math.round(rest.getBoundingClientRect().width) : Math.round(fs * 0.42);
+  // No resting square (the Autopilot replies): the caret is the font's x-height (1ex), measured in the reply's own type
+  const exProbe = !rest && Object.assign(document.createElement('span'), { style: 'position:absolute;width:1ex;height:0' });
+  if (exProbe) el.appendChild(exProbe);
+  const size = rest ? Math.round(rest.getBoundingClientRect().width) : Math.round(exProbe.getBoundingClientRect().width);
+  if (exProbe) exProbe.remove();
   const target = word || tw.words[0];
   const rects = target.getClientRects(); const r = word ? rects[rects.length - 1] : rects[0];
   // Sit the square on the baseline (bottom of the x-height): measure it with a zero-size probe beside the word
