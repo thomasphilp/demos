@@ -552,7 +552,7 @@ img { display: block; }
 @keyframes think-in { from { opacity: 0; transform: translateY(4px); } }
 .ex-hover .reply .body { display: flex; flex-direction: column; gap: 5px; font-family: var(--font-display); font-weight: 600; color: var(--ink); }
 .ex-hover .reply .lead { font-size: 16px; letter-spacing: -0.02em; white-space: pre-line; }
-.ex-hover .reply .box { background: #efefef; border: 1px solid #eaeaea; border-radius: 8px; padding: 16px; font-size: 15px; letter-spacing: -0.02em; white-space: pre-line; transition: opacity 0.2s ease; }
+.ex-hover .reply .box { align-self: flex-start; width: fit-content; max-width: 100%; background: #efefef; border: 1px solid #eaeaea; border-radius: 8px; padding: 16px; font-size: 15px; letter-spacing: -0.02em; white-space: pre-line; transition: opacity 0.2s ease; }
 .ex-hover .reply .ask { font-size: 15px; letter-spacing: -0.02em; }
 .ex-hover .reply .dot { width: 8.65px; height: 8.65px; border-radius: 1.3px; background: #000; }
 .ex-hover .reply .dot.is-inline { display: inline-block; vertical-align: baseline; margin-left: 2px; }
@@ -1641,6 +1641,9 @@ function typeReply(card) {
   const reply = hover.querySelector('.reply'), think = reply.querySelector('.think .tag-label');
   const parts = [[lead, ex.lead], [box, ex.box], [ask, ex.ask]];
   cancelTyping(card);
+  // The gray box hugs its finished text: size it once up front (plus room for the caret) so it doesn't grow as it types
+  box.style.width = ''; box.textContent = ex.box;
+  box.style.width = `${Math.min(box.parentElement.clientWidth, box.offsetWidth + 12)}px`;
   parts.forEach(([el]) => { el.textContent = ''; });
   box.style.opacity = '0';
   const cursor = document.createElement('span');
