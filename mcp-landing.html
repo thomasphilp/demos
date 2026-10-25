@@ -649,6 +649,12 @@ img { display: block; }
 .scene-ask .composer .plus { width: 36px; height: 36px; }
 .scene-ask .composer .send { width: 72px; height: 72px; }
 .scene-ask .composer .send img { width: 32px; height: 32px; }
+/* Before the first word: "Reply…" placeholder behind the caret, send disabled (20%, like the phone composer's) */
+.scene-ask .composer .typed { position: relative; }
+.scene-ask .composer .placeholder { position: absolute; left: 6px; top: 0; font-weight: 400; color: var(--gray-500); pointer-events: none; }
+.scene-ask .composer:not(.is-empty) .placeholder { display: none; }
+.scene-ask .composer .send { transition: opacity 0.25s ease; }
+.scene-ask .composer.is-empty .send { opacity: 0.2; }
 
 .desk-window { position: absolute; left: 50%; top: 102px; width: 968px; height: 634px; display: flex; overflow: hidden; background: #fff; border: 1px solid var(--gray-200); border-radius: 18px; }
 .desk-window .rail { width: 57px; background: #f6f6f4; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 16px 0; }
@@ -695,7 +701,12 @@ img { display: block; }
 .phone .agent-msg.is-tight { width: 427.7px; gap: 11px; }
 .phone .user-turn { display: flex; justify-content: flex-end; }
 .phone .chat-bubble { width: 315.3px; padding: 16.4px 24.7px; border-radius: 27.4px 27.4px 9.6px 27.4px; font-size: 23.3px; }
-.phone .dot { width: 13.7px; height: 13.7px; border-radius: 2px; background: #000; animation: blink 1.1s steps(1) infinite; }
+.phone .cursor-block { width: 13.7px; height: 13.7px; margin-top: 3.7px; }
+/* Slide 4 plays like the page's other exchanges once the thread has scrolled down: the follow-up bubble bounces in,
+   then "Your AI agent", then the reply types (script) and the cursor block takes over */
+.phone:not(.is-replying) .user-turn .chat-bubble, .phone:not(.is-replying) .agent-msg.is-tight .agent-tag { opacity: 0; }
+.phone.is-replying .user-turn .chat-bubble { animation: bubble-in 0.75s 2.7s both; }
+.phone.is-replying .agent-msg.is-tight .agent-tag { animation: ap-label-in 0.3s ease-out 3.3s backwards, agent-sweep 2.4s linear infinite; }
 .phone .composer-area { padding: 0 16.4px 27.4px; }
 .phone .composer-tall { height: 130.2px; display: flex; flex-direction: column; justify-content: flex-end; gap: 16.4px; padding: 11px 11px 11px 24.7px; border-radius: 32.9px; border: 1.4px solid var(--gray-200); filter: drop-shadow(0 2.7px 5.5px rgba(0,0,0,0.05)); }
 .phone .composer-tall .placeholder { font-size: 20.6px; color: var(--gray-500); }
@@ -1104,8 +1115,8 @@ a.app-tile:hover .launch { color: #fff; }
 
       <div class="scene scene-ask" data-dur="3.75">
         <div class="photo" data-shader><img src="assets/mcp-landing/dock-phone.jpg" alt=""></div>
-        <div class="composer" data-bold="Just include this in all pickup notes:" data-question="Carrier must have a TWIC card">
-          <div class="typed"><span class="typed-text"></span><span class="caret"></span></div>
+        <div class="composer is-empty" data-bold="Just include this in all pickup notes:" data-question="Carrier must have a TWIC card">
+          <div class="typed"><span class="placeholder">Reply…</span><span class="typed-text"></span><span class="caret"></span></div>
           <div class="row">
             <img class="plus" src="assets/mcp-landing/composer-plus-lg.svg" alt="">
             <span class="send"><img src="assets/mcp-landing/composer-arrow-lg.svg" alt=""></span>
@@ -1138,8 +1149,8 @@ a.app-tile:hover .launch { color: #fff; }
                 <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
                 <div class="body">
                   <p>All notes have been updated for all shipments listed.</p>
+                  <span class="cursor-block"></span>
                 </div>
-                <span class="dot"></span>
               </div>
               </div>
             </div>
@@ -1905,7 +1916,7 @@ new ResizeObserver(fitStage).observe(stageWrap); fitStage();
     if (!comp) return;
     const compText = comp.querySelector('.typed-text'), compSend = comp.querySelector('.send');
     typeTimers.forEach(clearTimeout); typeTimers = [];
-    compText.textContent = ''; compSend.classList.remove('is-pressed'); comp.classList.remove('is-typing');
+    compText.textContent = ''; compSend.classList.remove('is-pressed'); comp.classList.remove('is-typing'); comp.classList.add('is-empty');
     const bold = comp.dataset.bold ? comp.dataset.bold.split(' ') : [];
     const words = [...bold.map(w => [w, true]), ...comp.dataset.question.split(' ').map(w => [w, false])], START = 700, RATE = 85;
     const at = (fn, ms) => typeTimers.push(setTimeout(fn, ms));
@@ -1915,7 +1926,7 @@ new ResizeObserver(fitStage).observe(stageWrap); fitStage();
       const span = document.createElement('span');
       span.className = isBold ? 'word is-bold' : 'word';
       span.textContent = (i && i !== bold.length ? ' ' : '') + word;
-      compText.appendChild(span);
+      compText.appendChild(span); comp.classList.remove('is-empty');
     }, START + i * RATE));
     const typed = START + words.length * RATE;
     at(() => comp.classList.remove('is-typing'), typed);
@@ -1928,12 +1939,20 @@ new ResizeObserver(fitStage).observe(stageWrap); fitStage();
     dot.classList.add('is-active'); dot.setAttribute('aria-current', 'true');
     fill.style.animation = 'none'; void fill.offsetWidth; fill.style.animation = ''; // restart the fill
   };
+  // Slide 4 (the phone): bubble, agent tag, then the reply types — replayed each time the slide comes round
+  const phone = stageWrap.querySelector('.scene-c .phone'), phoneReply = phone && phone.querySelector('.agent-msg.is-tight .body p');
+  if (phoneReply) twPrep(phoneReply);
+  const playPhone = () => {
+    phone.classList.remove('is-replying'); void phone.offsetWidth; phone.classList.add('is-replying');
+    twType(phoneReply, { start: 3500 });
+  };
   const go = i => {
     const old = scenes[cur];
     clearTimeout(prevTimer);
     scenes.forEach(s => s.classList.remove('is-prev'));
     old.classList.remove('is-active'); old.classList.add('is-prev');
     typeQuestion(scenes[i]);
+    if (phone && scenes[i].contains(phone)) playPhone();
     scenes[i].classList.add('is-active');
     prevTimer = setTimeout(() => old.classList.remove('is-prev'), 650);
     dots[cur].classList.remove('is-active'); dots[cur].removeAttribute('aria-current');
