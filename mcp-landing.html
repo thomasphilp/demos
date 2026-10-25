@@ -402,7 +402,7 @@ img { display: block; }
 /* Spans the chat column: headline's left edge to the bubble's right edge */
 .hero-connect { width: var(--thread-w); margin: 110px auto 56px; display: flex; flex-direction: column; }
 .cf-edge { display: flex; align-items: stretch; gap: 24px; }
-.cf-edge .cf-line { flex: 1; min-width: 24px; border: 0 solid #000; }
+.cf-edge .cf-line { flex: 1; min-width: 24px; border: 0 solid rgba(0,0,0,0.2); } /* frame lines at 20% (in the colour: the glitch animates opacity) */
 .cf-edge.is-top .cf-line { margin-top: 10.5px; border-top-width: 1px; }
 .br-mobile { display: none; }
 /* Figma 313:6803: three stacked, open-bottom outlines behind the frame's top edge (Figma 40/20/10% black, halved here) */
@@ -419,7 +419,7 @@ img { display: block; }
 .cf-edge .lead { font-size: 17px; font-weight: 500; line-height: 21px; text-align: center; }
 .cf-body { position: relative; padding: 18px 25px 40px; display: flex; flex-direction: column; align-items: center; gap: 64px; }
 /* Side lines as their own layers, so the frame can glitch without moving the content */
-.cf-body::before, .cf-body::after { content: ""; position: absolute; top: 0; bottom: 0; width: 1px; background: #000; pointer-events: none; }
+.cf-body::before, .cf-body::after { content: ""; position: absolute; top: 0; bottom: 0; width: 1px; background: rgba(0,0,0,0.2); pointer-events: none; }
 .cf-body::before { left: 0; }
 .cf-body::after { right: 0; }
 
@@ -1264,7 +1264,7 @@ a.app-tile:hover .launch { color: #fff; }
     <div class="exchange-user"><p class="page-bubble">What can it do?</p><span class="sent-by">Sent by you</span></div>
     <div class="exchange-agent">
       <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-      <h2 class="display" id="features-title" data-typewriter data-tw-delay="0.7">Everything the Mothership Dashboard does, and more.</h2>
+      <h2 class="display" id="features-title" data-typewriter data-tw-delay="0.4">Everything the Mothership Dashboard does, and more.</h2>
       <span class="cursor-block"></span>
     </div>
   </div>
@@ -1287,7 +1287,7 @@ a.app-tile:hover .launch { color: #fff; }
     <div class="exchange-user"><p class="page-bubble">Does it work on my phone?</p><span class="sent-by">Sent by you</span></div>
     <div class="exchange-agent">
       <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-      <h2 class="display" id="devices-title" style="max-width: 707px" data-typewriter data-tw-delay="0.7">Yes — same chat at your desk or on the dock.</h2>
+      <h2 class="display" id="devices-title" style="max-width: 707px" data-typewriter data-tw-delay="0.4">Yes — same chat at your desk or on the dock.</h2>
       <span class="cursor-block"></span>
     </div>
   </div>
@@ -1403,7 +1403,7 @@ a.app-tile:hover .launch { color: #fff; }
     <div class="exchange-user"><p class="page-bubble is-green">Can it do things on its own?</p><span class="sent-by">Sent by you</span></div>
     <div class="exchange-agent">
       <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-      <h2 class="display" id="autopilot-title" data-typewriter data-tw-delay="0.7">It follows through, and more. Set it once in plain words.</h2>
+      <h2 class="display" id="autopilot-title" data-typewriter data-tw-delay="0.4">It follows through, and more. Set it once in plain words.</h2>
       <span class="cursor-block is-light"></span>
     </div>
   </div>
@@ -1464,7 +1464,7 @@ a.app-tile:hover .launch { color: #fff; }
       <div class="exchange-user"><p class="page-bubble is-green">Which AI apps work?</p><span class="sent-by">Sent by you</span></div>
       <div class="exchange-agent">
         <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-        <h2 class="display" id="apps-title" data-typewriter data-tw-delay="0.7">These ones, today:</h2>
+        <h2 class="display" id="apps-title" data-typewriter data-tw-delay="0.4">These ones, today:</h2>
         <span class="cursor-block is-light"></span>
       </div>
     </div>
@@ -1487,7 +1487,7 @@ a.app-tile:hover .launch { color: #fff; }
       <div class="exchange-user"><p class="page-bubble is-green has-shadow">How do I set it up?</p><span class="sent-by">Sent by you</span></div>
       <div class="exchange-agent">
         <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-        <h2 class="display" id="setup-title" data-typewriter data-tw-delay="0.7">Three steps, in seconds:</h2>
+        <h2 class="display" id="setup-title" data-typewriter data-tw-delay="0.4">Three steps, in seconds:</h2>
         <span class="cursor-block is-light"></span>
       </div>
     </div>
@@ -1545,7 +1545,7 @@ a.app-tile:hover .launch { color: #fff; }
 
 <!-- ═══════════ Closing CTA ═══════════ -->
 <section class="cta" id="get-started" aria-labelledby="cta-title">
-  <h2 class="display" id="cta-title" data-typewriter data-tw-delay="0.7" data-tw-keep>Ship freight from your AI chat.</h2>
+  <h2 class="display" id="cta-title" data-typewriter data-tw-delay="0.4" data-tw-keep>Ship freight from your AI chat.</h2>
   <div class="actions">
     <a class="signup" href="https://www.mothership.com"><img src="assets/mcp-landing/icon-arrow.svg" alt="">Sign up in 60 seconds</a>
     <div class="url-col">
@@ -2057,6 +2057,8 @@ function twType(el, { start = 0, rate = 120, onDone } = {}) { // 120ms a word: 5
     '.site-footer',
   ];
   const STAGGER = 0.06;
+  // Section headlines type quicker than replies (75ms a word), so what's under them isn't held up for long
+  const twRate = el => el.matches('.display') ? 75 : undefined;
   const hero = document.querySelector('.hero');
   const targets = [];
   GROUPS.forEach(group => {
@@ -2093,7 +2095,7 @@ function twType(el, { start = 0, rate = 120, onDone } = {}) { // 120ms a word: 5
     if (!e.isIntersecting) return;
     late.unobserve(e.target);
     const it = e.target._seq;
-    if (it.kind === 'type') twType(it.el, { start: 300 });
+    if (it.kind === 'type') twType(it.el, { start: 300, rate: twRate(it.el) });
     else { it.el.style.setProperty('--reveal-delay', '0s'); it.el.classList.add('is-visible'); }
   }), { threshold: 0.1, rootMargin: '0px 0px -4% 0px' });
   const pump = () => {
@@ -2108,7 +2110,7 @@ function twType(el, { start = 0, rate = 120, onDone } = {}) { // 120ms a word: 5
         it.el.classList.add('is-visible'); continue;
       }
       busy = true;
-      twType(it.el, { start: parseFloat(it.el.dataset.twDelay || '0.5') * 1000, onDone: () => { busy = false; pump(); } });
+      twType(it.el, { start: parseFloat(it.el.dataset.twDelay || '0.5') * 1000, rate: twRate(it.el), onDone: () => { busy = false; pump(); } });
       return;
     }
   };
