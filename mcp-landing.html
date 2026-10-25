@@ -403,7 +403,7 @@ img { display: block; }
    white 0–17.8% → #747474 59.5% → #00e1ff 66.6% → #00ff1a 71.6% → white 100% */
 @property --shine-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
 .intro-composer { --bw: 1.5px; border-width: var(--bw); border-color: transparent; background-clip: padding-box; }
-.intro-composer::before, .scene-a .composer::before {
+.intro-composer::before {
   content: ""; position: absolute; inset: calc(-1 * var(--bw)); padding: var(--bw); border-radius: inherit; pointer-events: none;
   background: conic-gradient(from var(--shine-angle), var(--shine-stops));
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
@@ -632,8 +632,11 @@ img { display: block; }
 .stage-play .ic-play { margin-left: 2px; }
 .stage-dot:focus-visible, .stage-play:focus-visible { outline: 2px solid #0071e3; outline-offset: 3px; }
 
-/* Slide 1 input: the hero composer (shine border, typed question, round send), at the same artboard size */
-.scene-a .composer { --bw: 1.5px; position: absolute; left: 250px; top: 372px; width: 1077px; height: 113px; display: flex; align-items: center; gap: 24px; padding: 16px 16px 16px 36px; border-radius: 9999px; background: rgba(255,255,255,0.8); border: var(--bw) solid transparent; background-clip: padding-box; backdrop-filter: blur(34px); -webkit-backdrop-filter: blur(34px); box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
+/* Slide 1 input: Figma Chat/Composer (324:7845) — frosted pill with a 6px translucent white rim (no shine),
+   the typed question and a rounded-square send */
+.scene-a .composer { position: absolute; left: 250px; top: 372px; width: 1077px; height: 113px; display: flex; align-items: center; gap: 24px; padding: 16px 16px 16px 36px; border-radius: 9999px; background: rgba(255,255,255,0.8); border: 6px solid rgba(255,255,255,0.36); backdrop-filter: blur(34px); -webkit-backdrop-filter: blur(34px); box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
+.scene-a .composer .send { width: 72px; height: 72px; border-radius: 18px; }
+.scene-a .composer .send img { width: 32px; height: 32px; }
 
 .desk-window { position: absolute; left: 50%; top: 102px; width: 968px; height: 634px; display: flex; overflow: hidden; background: #fff; border: 1px solid var(--gray-200); border-radius: 18px; }
 .desk-window .rail { width: 57px; background: #f6f6f4; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 16px 0; }
