@@ -2100,11 +2100,6 @@ const cursorGrid = (host, o) => {
   const draw = () => {
     const w = canvases[0].width, h = canvases[0].height;
     ctx.clearRect(0, 0, w, h);
-    if (o.line) { // faint resting grid
-      ctx.fillStyle = o.line;
-      for (let i = 1; i < cols; i++) ctx.fillRect(Math.round(i * cell), 0, 1, h);
-      for (let j = 1; j < rows; j++) ctx.fillRect(0, Math.round(j * cell), w, 1);
-    }
     for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
       const n = j * cols + i, v = out[n]; if (!v) continue;
       const x0 = Math.round(i * cell), y0 = Math.round(j * cell), cw = Math.round((i + 1) * cell) - x0, ch = Math.round((j + 1) * cell) - y0;
@@ -2234,14 +2229,14 @@ document.querySelectorAll('.features, .examples, .devices-head, .devices, .cta, 
   cursorGrid(sec, { ...SOFT, mount: () => { const cv = document.createElement('canvas'); sec.prepend(cv); return [cv]; } });
 });
 
-// Dark sections: accent green cells over a faint resting grid, a ring from the headline when first seen,
+// Dark sections: accent green cells (no resting grid: cells only show around the cursor), a ring from the headline when first seen,
 // and an occasional idle ring
 document.querySelectorAll('.on-dark').forEach((sec) => {
   let seen = false, grid;
   grid = cursorGrid(sec, {
     mount: () => { const cv = document.createElement('canvas'); sec.prepend(cv); return [cv]; },
     cols: (w) => w >= 992 ? 20 : w >= 768 ? 14 : 9,
-    px: 3, color: '#00ff1a', alpha: 0.45, edge: 0.5, line: 'rgba(255,255,255,0.045)', fade: 0.32, speed: 16, reach: 10, clickReach: 12, idle: 5200,
+    px: 3, color: '#00ff1a', alpha: 0.45, edge: 0.5, fade: 0.32, speed: 16, reach: 10, clickReach: 12, idle: 5200,
     onView: () => {
       if (seen || !grid) return; seen = true;
       const t = sec.querySelector('.display'), r = t ? t.getBoundingClientRect() : null, s = sec.getBoundingClientRect();
