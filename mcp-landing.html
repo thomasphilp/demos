@@ -523,6 +523,8 @@ img { display: block; }
 .ex-hover .q .bubble { background: #000; color: #fff; border-radius: 14px 14px 5px 14px; padding: 8px 12px; font-family: var(--font-display); font-size: 17px; letter-spacing: -0.02em; white-space: pre-line; }
 /* Figma "Address book" hover (309:993): the question, then the file in a small bubble right-aligned 4px under it;
    the reply starts lower to clear them */
+/* Figma "Sent by you" (313:6600): 10px pixel type, 4px under the question, inset 12px from its right edge */
+.ex-hover .q .sent { position: absolute; top: calc(100% + 4px); right: 12px; font-family: var(--font-pixel); font-size: 10px; line-height: 13px; color: #808080; white-space: nowrap; }
 .ex-card.has-file .ex-hover .q { top: 75px; bottom: auto; right: 49px; flex-direction: column; align-items: flex-end; gap: 4px; }
 .ex-hover .q .attachment { width: 91px; padding: 11px; background: #000; border-radius: 12.2px 12.2px 4.3px 12.2px; }
 .ex-hover .q .chip { border-width: 0.6px; border-radius: 2.4px; padding: 4.9px; font-size: 9.75px; }
@@ -556,7 +558,8 @@ img { display: block; }
 .ex-card.is-open .ex-rest { opacity: 0; transform: translateY(-24px) scale(0.96); }
 .ex-card.is-open .ex-hover { opacity: 1; pointer-events: auto; }
 .ex-card.is-open .ex-hover .q { transform: none; }
-.ex-card.is-open .ex-hover .q > * { animation: bubble-in 0.6s 0.05s both; }
+.ex-card.is-open .ex-hover .q > :not(.sent) { animation: bubble-in 0.6s 0.05s both; }
+.ex-card.is-open .ex-hover .q .sent { animation: chat-fade 0.3s 0.4s both; } /* a quick fade once the question has landed */
 
 /* ── Devices ── */
 .devices-head { padding: 80px 0; }
@@ -1540,7 +1543,7 @@ grid.innerHTML = EXAMPLES.map((ex, i) => `
     </div>
     <div class="ex-hover" aria-live="polite">
       <div class="panel"></div>
-      <div class="q"><p class="bubble">${esc(ex.hq)}</p>${ex.file ? `<div class="attachment"><span class="chip">${ex.file}</span></div>` : ''}</div>
+      <div class="q"><p class="bubble">${esc(ex.hq)}</p>${ex.file ? `<div class="attachment"><span class="chip">${ex.file}</span></div>` : ''}<span class="sent">Sent by you</span></div>
       <div class="reply">
         <span class="sparks"><span class="spark ic" data-icon="solid/AI/magic"></span><span class="spark ic is-next" data-icon="solid/AI/magic" aria-hidden="true"></span></span>
         <div class="body"><span class="agent-tag is-shimmer think" aria-hidden="true"><span class="tag-label"></span></span><p class="lead"></p><p class="box"></p><p class="ask"></p></div>
