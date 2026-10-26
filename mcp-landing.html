@@ -421,6 +421,8 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
 .hero.is-answered .iri-glow::before, .cta .display.is-typed .iri-glow::before { animation: iri-wave 2.7s cubic-bezier(.45,0,.25,1) 0.32s both; }
 .hero.is-answered .iri::before, .cta .display.is-typed .iri::before { animation: iri-split-red 2.7s cubic-bezier(.45,0,.25,1) 0.32s both; }
 .hero.is-answered .iri::after, .cta .display.is-typed .iri::after { animation: iri-split-cyan 2.7s cubic-bezier(.45,0,.25,1) 0.32s both; }
+/* The hero's sweep runs 25% faster than the CTA's (2.7s × 0.75) */
+.hero.is-answered .iri-fill, .hero.is-answered .iri-glow::before, .hero.is-answered .iri::before, .hero.is-answered .iri::after { animation-duration: 2.025s; }
 /* 85% → 15%: the band is just touching the first letter at the start and just past the last at the end, so none of the
    sweep is spent off the words; it starts with the MCP server block's fade-in (0.32s after the headline types) */
 @keyframes iri-wave { from { background-position: 85% 0; } to { background-position: 15% 0; } }
