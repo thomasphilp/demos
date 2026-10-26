@@ -383,8 +383,8 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
 .hero-user .sent-by { font-size: 13px; font-weight: 600; transition: opacity 0.4s ease; } /* Figma 245:969: SemiBold 13 */
 .hero:not([data-intro="done"]) .hero-user .sent-by { opacity: 0; }
 .hero[data-intro="done"] .hero-user .sent-by { transition-delay: 0.85s; }
-.hero { --hero-bubble-w: 534px; }
-.hero-user .page-bubble { width: var(--hero-bubble-w); }
+.hero { --hero-bubble-w: 560px; } /* two lines of the question: "…book, and" / "track freight from AI chat?" */
+.hero-user .page-bubble { width: var(--hero-bubble-w); text-wrap: balance; } /* where it needs three lines, no word left alone on the last */
 .hero-reply { display: flex; flex-direction: column; gap: 20px; max-width: 840px; }
 .hero-reply > .agent-tag, .setup .exchange-agent > .agent-tag { font-size: 13px; font-weight: 600; } /* Figma 245:969: SemiBold 13 */
 .hero-reply > .agent-tag { color: rgba(9,10,12,0.9); }
@@ -1231,7 +1231,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
   .cf-tab:nth-child(3) { bottom: 28px; }
   /* Phones: the same composer at phone size — 36px question, 22px plus, 48px send */
   .intro-composer {
-    --composer-h: 230px; /* room for three lines of the 36px question */
+    --composer-h: 274px; /* room for four lines of the 36px question: 20 + 4 × 45 + 14 + 48 + 12 */
     row-gap: 14px; column-gap: 12px; padding: 20px 12px 12px 20px;
   }
   .chat-app { transform-origin: 50% 183px; }
@@ -1419,7 +1419,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
     <div class="chat-convo">
       <div class="chat-thread">
         <div class="chat-time"><span class="ic ts-ic" data-icon="solid/AI/magic" aria-hidden="true"></span><p class="timestamp" id="hero-time">Today 9:41 AM</p></div>
-        <div class="hero-user"><p class="page-bubble">Can I just ship freight from my AI chat?</p><span class="sent-by">Sent by you</span></div>
+        <div class="hero-user"><p class="page-bubble">Can I quote, book, and track freight from AI chat?</p><span class="sent-by">Sent by you</span></div>
         <div class="hero-reply">
           <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
           <h1 id="hero-title" data-typewriter>Yes. <span class="iri" data-text="Connect Mothership"><span class="iri-glow" data-text="Connect Mothership" aria-hidden="true"></span><span class="iri-fill">Connect Mothership</span></span> and just ask.</h1>
@@ -1888,8 +1888,8 @@ document.querySelectorAll('[data-copy]').forEach(btn => {
 const hero = document.querySelector('.hero');
 const typedEl = hero.querySelector('.typed-text');
 const composer = hero.querySelector('.intro-composer');
-const QUESTION = 'Can I just ship freight from my AI chat?';
-const BOLD_WORDS = new Set(['ship', 'freight']); // Bold, as in Figma 299:692
+const QUESTION = 'Can I quote, book, and track freight from AI chat?';
+const BOLD_WORDS = new Set(['quote,', 'book,', 'and', 'track', 'freight']); // Bold: the ask itself (as "ship freight" was in Figma 299:692)
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 // Sticky nav turns frosted as soon as the page leaves the top, and dark while its middle is over a dark
 // section or a dark photo (by position, so light cards passing under a dark photo don't make it flicker)
