@@ -1209,6 +1209,11 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
 }
 </style>
 <script>if (new URLSearchParams(location.search).has('embed')) document.documentElement.classList.add('is-embed');</script>
+<script>
+  // A refresh always starts at the top (the intro plays from there): no restored scroll position
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  addEventListener('pageshow', () => scrollTo(0, 0));
+</script>
 </head>
 <body>
 
