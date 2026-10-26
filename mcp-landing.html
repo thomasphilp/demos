@@ -1133,6 +1133,32 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
   .cf-body { padding: 6px 0 56px; gap: 56px; }
   .connect-block .pixel-note { max-width: 219px; }
   .hero-copy { width: min(440px, 100%); font-size: 20px; line-height: 30px; }
+  /* Devices slider, Figma Built (768) 368:1055: a taller 668×738 frame (photos crop to cover, the wide overlays shrink to
+     the visible width) with the tablet input on screen — the intro's 39px question, 36px plus, 72px send — 79px in from each side */
+  .stage-wrap { aspect-ratio: 668 / 738; }
+  .scene-a .composer, .scene-ask .composer {
+    --k: calc(1 / var(--stage-scale, 1)); --bw: calc(1.5px * var(--k));
+    left: 0; right: 0; margin: 0 auto; width: calc(var(--stage-vis, 1548) * 1px - 158px * var(--k));
+    top: 50%; transform: translateY(-50%); height: auto; min-height: calc(251px * var(--k));
+    display: grid; grid-template-columns: 1fr auto; grid-template-areas: "text text" "plus send";
+    align-items: center; row-gap: calc(24px * var(--k)); column-gap: calc(24px * var(--k));
+    padding: calc(37px * var(--k)) calc(16px * var(--k)) calc(16px * var(--k)) calc(36px * var(--k)); border-radius: calc(24px * var(--k));
+  }
+  .scene-a .composer .typed, .scene-ask .composer .typed { grid-area: text; align-self: start; font-size: calc(39px * var(--k)); line-height: 1.25; letter-spacing: normal; min-height: 0; white-space: normal; }
+  .scene-a .composer .caret, .scene-ask .composer .caret { width: calc(1.5px * var(--k)); height: calc(42px * var(--k)); vertical-align: calc(-9px * var(--k)); }
+  .scene-a .composer .plus, .scene-ask .composer .plus { grid-area: plus; width: calc(36px * var(--k)); height: calc(36px * var(--k)); }
+  .scene-a .composer .send, .scene-ask .composer .send { grid-area: send; width: calc(72px * var(--k)); height: calc(72px * var(--k)); }
+  .scene-a .composer .send img, .scene-ask .composer .send img { width: calc(32px * var(--k)); height: calc(32px * var(--k)); }
+  .desk-window { scale: min(1, calc((var(--stage-vis, 1548) - 60) / 968)); }
+  /* Closing CTA (Figma 343:13288): the buttons 64px under "Powered by" */
+  .cta .actions { margin-top: 40px; }
+}
+/* Tablet only (Figma Built (768) 351:1859): "For example" and its copy sit on the slider's left edge, left-aligned */
+@media (min-width: 721px) and (max-width: 1000px) {
+  .devices .bracket { width: min(668px, 100% - 2 * var(--bg-inset)); margin: 0 auto; align-items: flex-start; }
+  .devices .bracket-label { margin-left: -8px; }
+  .devices .bracket-copy { --w: min(668px, 100% - 2 * var(--bg-inset)); width: var(--w); margin-top: 16px; padding-right: max(0px, calc(var(--w) - 529px)); text-align: left; }
+  .stage-wrap { margin-top: 44px; }
 }
 @media (max-width: 720px) {
   :root { --gutter: 16px; --bg-inset: var(--gutter); }
@@ -1172,13 +1198,13 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
   .chat-time .ts-ic { display: block; width: 20px; height: 20px; }
   .hero-user .page-bubble { width: auto; max-width: 279px; font-size: 28px; line-height: 36px; padding: 14px 24px; border-radius: 24px 24px 8px 24px; }
   .hero-connect { margin: 40px auto 0; }
-  /* Desk/dock slider fills 60% of the screen; photos crop to cover, the wide overlays shrink to the visible width */
-  .stage-wrap { aspect-ratio: auto; height: 60vh; height: 60svh; }
+  /* Desk/dock slider, Figma Built (375) 368:1703: edge to edge, 375×669, photos cropped to cover */
+  .stage-wrap { width: 100%; aspect-ratio: 375 / 669; }
   /* Slide inputs on phones: exactly the hero's mobile composer on screen (question on top, plus + send below, 24px
      corners, 1px shine), sized by dividing by the artboard's scale, 20px in from the slide's edges, centred */
   .scene-a .composer, .scene-ask .composer {
     --k: calc(1 / var(--stage-scale, 1)); --bw: calc(1px * var(--k));
-    left: 0; right: 0; margin: 0 auto; width: calc(var(--stage-vis, 1548) * 1px - 40px * var(--k));
+    left: 0; right: 0; margin: 0 auto; width: calc(var(--stage-vis, 1548) * 1px - 64px * var(--k)); /* 32px in from each side */
     top: 50%; transform: translateY(-50%); height: auto; min-height: calc(230px * var(--k)); /* as tall as the hero's */
     display: grid; grid-template-columns: 1fr auto; grid-template-areas: "text text" "plus send";
     align-items: center; row-gap: calc(14px * var(--k)); column-gap: calc(12px * var(--k));
@@ -1189,8 +1215,11 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
   .scene-a .composer .plus, .scene-ask .composer .plus { grid-area: plus; width: calc(22px * var(--k)); height: calc(22px * var(--k)); }
   .scene-a .composer .send, .scene-ask .composer .send { grid-area: send; width: calc(48px * var(--k)); height: calc(48px * var(--k)); }
   .scene-a .composer .send img, .scene-ask .composer .send img { width: calc(22px * var(--k)); height: calc(22px * var(--k)); }
-  .desk-window { scale: min(1, calc((var(--stage-vis, 1548) - 60) / 968)); }
   .hero-copy { width: min(325px, 100%); font-size: 18px; line-height: 28px; }
+  /* Closing CTA (Figma 351:2790): 47px down, the headline at 42/50, the buttons 62px under "Powered by", 129px below them */
+  .cta { padding: 47px 16px 129px; }
+  .cta .display { font-size: 42px; line-height: 50px; }
+  .cta .actions { margin-top: 38px; }
   /* The hero URL box is only the frame's inner width here, so the URL drops to 13px (6px after the globe, 12px left pad,
      8px minimum before Copy) and the wider "Copied" still clears the URL and the rim */
   .hero-connect .mcp-url { padding-left: 12px; gap: 8px; }
