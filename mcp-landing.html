@@ -2128,7 +2128,7 @@ function twPrep(el) {
 }
 function twReset(el) {
   const tw = twPrep(el);
-  tw.timers.forEach(clearTimeout); tw.timers = [];
+  tw.timers.forEach(clearTimeout); tw.timers = []; tw.finish = null;
   tw.words.forEach(w => w.classList.remove('is-on'));
   tw.caret.classList.remove('is-on', 'is-resting');
   el.classList.remove('is-typed');
@@ -2173,11 +2173,20 @@ function twKeep(el) {
 }
 function twType(el, { start = 0, rate = 120, onDone } = {}) { // 120ms a word: 50% faster than the original 180
   const tw = twPrep(el); twReset(el);
-  if (reducedMotion) { tw.words.forEach(w => w.classList.add('is-on')); twSettle(el, () => { el.classList.add('is-typed'); onDone && onDone(); }); return; }
+  // tw.finish() puts every word in at once and settles the caret (the reveal queue calls it when the visitor scrolls past)
+  let done = false;
+  const finish = () => {
+    if (done) return; done = true;
+    tw.timers.forEach(clearTimeout); tw.timers = [];
+    tw.words.forEach(w => w.classList.add('is-on'));
+    twSettle(el, () => { el.classList.add('is-typed'); onDone && onDone(); });
+  };
+  tw.finish = finish;
+  if (reducedMotion) { finish(); return; }
   const at = (fn, ms) => tw.timers.push(setTimeout(fn, ms));
   at(() => { twPlace(el, null); tw.caret.classList.add('is-on'); }, start);
   tw.words.forEach((w, i) => at(() => { w.classList.add('is-on'); twPlace(el, w); }, start + 147 + i * rate));
-  at(() => twSettle(el, () => { el.classList.add('is-typed'); onDone && onDone(); }), start + 147 + tw.words.length * rate + 187);
+  at(finish, start + 147 + tw.words.length * rate + 187);
 }
 
 /* ── Iridescent words: the RGB split and glow are one-line copies, so they sit out wherever the words wrap ── */
@@ -2248,32 +2257,28 @@ document.querySelectorAll('.iri').forEach(el => {
   const items = [...targets.map(el => ({ el, kind: 'reveal' })), ...writers.map(el => ({ el, kind: 'type' }))]
     .sort((a, b) => (a.el.compareDocumentPosition(b.el) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
   items.forEach((it, i) => { it.i = i; it.el._seq = it; });
-  let next = 0, busy = false, open = false;
+  let next = 0, busy = false, open = false, typing = null;
   // Nothing below the hero plays until the visitor has actually scrolled (a reload mid-page counts)
   let scrolled = scrollY > 0;
   // Chat example cards stagger within each batch that comes into view, so every row plays left then right
   const CARD_STAGGER = 0.15;
-  // Items skipped while the queue was busy play on their own once they're back in view
-  const late = new IntersectionObserver(entries => entries.forEach(e => {
-    if (!e.isIntersecting) return;
-    late.unobserve(e.target);
-    const it = e.target._seq;
-    if (it.kind === 'type') twType(it.el, { start: 300, rate: twRate(it.el) });
-    else { it.el.style.setProperty('--reveal-delay', '0s'); it.el.classList.add('is-visible'); }
-  }), { threshold: 0.1, rootMargin: '0px 0px -4% 0px' });
   const pump = () => {
     if (!open || !scrolled || busy) return;
     let cardBatch = 0;
     while (next < items.length && items[next].ready) {
       const it = items[next++];
-      // Scrolled past before its turn (fully above the viewport): stay hidden and play when it's seen again
-      if (it.el.getBoundingClientRect().bottom < 0) { late.observe(it.el); continue; }
+      // Scrolled past before its turn (fully above the viewport): show it as it ends up, so scrolling back never finds a gap
+      if (it.el.getBoundingClientRect().bottom < 0) {
+        if (it.kind === 'type') { twType(it.el); it.el._tw.finish(); }
+        else { it.el.style.setProperty('--reveal-delay', '0s'); it.el.classList.add('is-visible'); }
+        continue;
+      }
       if (it.kind === 'reveal') {
         if (it.el.matches('.ex-card')) it.el.style.setProperty('--reveal-delay', `${cardBatch++ * CARD_STAGGER}s`);
         it.el.classList.add('is-visible'); continue;
       }
-      busy = true;
-      twType(it.el, { start: parseFloat(it.el.dataset.twDelay || '0.5') * 1000, rate: twRate(it.el), onDone: () => { busy = false; pump(); } });
+      busy = true; typing = it;
+      twType(it.el, { start: parseFloat(it.el.dataset.twDelay || '0.5') * 1000, rate: twRate(it.el), onDone: () => { busy = false; typing = null; pump(); } });
       return;
     }
   };
@@ -2292,6 +2297,11 @@ document.querySelectorAll('.iri').forEach(el => {
     items.forEach(it => { it.ready = true; }); pump();
   };
   addEventListener('scroll', atBottom, { passive: true });
+  // Scrolling on past a headline or reply that's still typing (it's into the top 40% of the screen) finishes it at once,
+  // so what's under it fades in as it arrives instead of waiting on the words
+  addEventListener('scroll', () => {
+    if (typing && typing.el.getBoundingClientRect().bottom < innerHeight * 0.4) typing.el._tw.finish?.();
+  }, { passive: true });
   // Nothing below the hero starts until the hero's answer and connect block are in
   document.addEventListener('hero:answered', () => { if (!open) { open = true; setTimeout(pump, 700); } });
   const onFirstScroll = () => { if (scrollY <= 0) return; scrolled = true; removeEventListener('scroll', onFirstScroll); pump(); };
