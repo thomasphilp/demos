@@ -690,8 +690,8 @@ img { display: block; }
 .devices:has(.stage-nav:is(.is-paused, .is-idle)) .scene .photo { animation-play-state: paused; }
 @keyframes ken-burns { from { transform: scale(1); } to { transform: scale(1.08); } }
 .scene .photo img, .scene .photo canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-/* Slide 3 photo sits where Figma placed it (Rectangle 38: 153.75% × 153.94%, offset up and left); the shader host draws it at this box */
-:is(.scene-ask, .scene-c) .photo img { left: -24.55%; top: -30.94%; width: 153.75%; height: 153.94%; }
+/* Dock photo sits where Figma placed it (Rectangle 38, 362:14814: 127.55% × 127.71%, offset up and left); the shader host draws it at this box */
+:is(.scene-ask, .scene-c) .photo img { left: -3%; top: -27.72%; width: 127.55%; height: 127.71%; }
 .scene .photo canvas { opacity: 0; }
 .scene .photo.is-shaded canvas { opacity: 1; }
 .scene .photo.is-shaded img { visibility: hidden; }
@@ -745,21 +745,22 @@ img { display: block; }
 
 /* Slide 1 input: the hero composer at the same artboard size — frosted pill, rotating shine rim, typed question, round send */
 .scene-a .composer { position: absolute; left: 250px; top: 372px; width: 1077px; height: 113px; display: flex; align-items: center; gap: 24px; padding: 16px 16px 16px 36px; border-radius: 9999px; background: rgba(255,255,255,0.8); border-style: solid; backdrop-filter: blur(34px); -webkit-backdrop-filter: blur(34px); box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
-/* Slide 3 input: the hero's mobile composer (question on top, plus + round send below, 24px corners, 1px shine rim),
-   scaled up by k = 39/22 to the slide's 39px type and centred on the dock photo (Figma 324:7983 position) */
+/* Slide 3 input: Figma Mobile/Chat/Composer (343:4359) — 732 wide, 24px corners, a 3px shine rim, the question in two
+   Medium lines on top, plus + round 72px send below, centred on the dock photo */
 .scene-ask .composer {
-  --k: 1.7727; --bw: calc(1px * var(--k)); position: absolute; left: 408px; top: 50%; transform: translateY(-50%); width: 732px;
+  --k: 1.7727; --bw: 3px; position: absolute; left: 408px; top: 50%; transform: translateY(-50%); width: 732px;
   display: grid; grid-template-columns: 1fr auto; grid-template-areas: "text text" "plus send"; align-items: center;
-  row-gap: calc(14px * var(--k)); column-gap: calc(12px * var(--k));
-  padding: calc(20px * var(--k)) calc(12px * var(--k)) calc(12px * var(--k)) calc(20px * var(--k)); border-radius: calc(24px * var(--k));
-  background: rgba(255,255,255,0.8); border: var(--bw) solid transparent; background-clip: padding-box;
+  row-gap: 24px; column-gap: 21px;
+  padding: 37px 16px 16px 36px; border-radius: 24px;
+  background: rgba(255,255,255,0.9); border: var(--bw) solid transparent; background-clip: padding-box;
   backdrop-filter: blur(34px); -webkit-backdrop-filter: blur(34px); box-shadow: 0 4px 8px rgba(0,0,0,0.05);
 }
-.scene-ask .composer .typed { grid-area: text; align-self: start; flex: none; line-height: 1.25; min-height: 2.5em; white-space: normal; }
-.scene-ask .composer .caret { height: calc(24px * var(--k)); vertical-align: calc(-5px * var(--k)); }
-.scene-ask .composer .plus { grid-area: plus; width: calc(22px * var(--k)); height: calc(22px * var(--k)); }
-.scene-ask .composer .send { grid-area: send; width: calc(48px * var(--k)); height: calc(48px * var(--k)); }
-.scene-ask .composer .send img { width: calc(22px * var(--k)); height: calc(22px * var(--k)); }
+.scene-ask .composer .typed { grid-area: text; align-self: start; flex: none; line-height: 1.25; min-height: 2.5em; white-space: normal; letter-spacing: normal; }
+.scene-ask .composer .typed .word.is-bold { font-weight: inherit; } /* the first line is no longer bold (Figma 343:4363) */
+.scene-ask .composer .caret { height: 42px; vertical-align: -9px; }
+.scene-ask .composer .plus { grid-area: plus; width: 36px; height: 36px; }
+.scene-ask .composer .send { grid-area: send; width: 72px; height: 72px; }
+.scene-ask .composer .send img { width: 32px; height: 32px; }
 /* Before the first word: "Reply…" placeholder behind the caret, send disabled (20%, like the phone composer's) */
 .scene-ask .composer .typed { position: relative; }
 .scene-ask .composer .placeholder { position: absolute; left: 6px; top: 0; font-weight: 400; color: var(--gray-500); pointer-events: none; }
@@ -767,23 +768,23 @@ img { display: block; }
 .scene-ask .composer .send { transition: opacity 0.25s ease; }
 .scene-ask .composer.is-empty .send { opacity: 0.2; }
 
-/* Slide 2: Figma Chat window / Desktop (324:8015) — 864px window, larger type, the reply box 697px and centred */
-.desk-window { position: absolute; left: 50%; top: 102px; width: 864px; height: 634px; display: flex; overflow: hidden; background: #fff; border: 1px solid var(--gray-200); border-radius: 18px; }
+/* Slide 2: Figma Chat window / Desktop (343:4257) — 968px window, 20px type, the reply composer full width */
+.desk-window { position: absolute; left: 50%; top: 102px; width: 968px; height: 634px; display: flex; overflow: hidden; background: #fff; border: 1px solid var(--gray-200); border-radius: 18px; }
 .desk-window .rail { width: 57px; background: #f6f6f4; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 16px 0; }
 .desk-window .convo { flex: 1; display: flex; flex-direction: column; }
-.desk-window .thread { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 16px; padding: 16px 56px 0; overflow: hidden; }
+.desk-window .thread { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 16px; padding: 16px 32px 0; overflow: hidden; }
 .chat-bubble { background: #000; color: #fff; border-radius: 20px 20px 7px 20px; padding: 12px 18px; font-family: var(--font-display); font-weight: 600; letter-spacing: -0.02em; }
 .agent-msg { display: flex; flex-direction: column; gap: 16px; }
 .agent-msg .body { display: flex; flex-direction: column; gap: 5px; font-family: var(--font-display); font-weight: 600; color: var(--ink); letter-spacing: -0.02em; }
 .agent-msg .box { background: #efefef; border: 1px solid #eaeaea; border-radius: 8px; padding: 16px; white-space: pre-line; }
 .desk-window .user-turn { display: flex; justify-content: flex-end; }
-.desk-window .chat-bubble { padding: 14.7px 22.1px; border-radius: 24.5px 24.5px 8.6px 24.5px; font-size: 30.1px; }
-.desk-window .agent-msg { width: 612px; gap: 19.6px; }
-.desk-window .agent-msg .agent-tag { gap: 9.8px; font-size: 17.2px; }
-.desk-window .agent-msg .agent-tag .ic { width: 24.5px; height: 24.5px; }
-.desk-window .agent-msg .body { gap: 16px; font-size: 24.5px; }
-.desk-window .agent-msg .box { padding: 19.6px; border-width: 1.2px; border-radius: 9.8px; font-size: 18px; }
-.desk-window .dot { width: 19.2px; height: 19.2px; border-radius: 1.6px; background: #000; animation: blink 1.1s steps(1) infinite; }
+.desk-window .chat-bubble { padding: 12px 18px; border-radius: 20px 20px 7px 20px; font-size: 20px; letter-spacing: normal; }
+.desk-window .agent-msg { width: 653px; gap: 16px; }
+.desk-window .agent-msg .agent-tag { gap: 8px; font-size: 14px; }
+.desk-window .agent-msg .agent-tag .ic { width: 20px; height: 20px; }
+.desk-window .agent-msg .body { gap: 5.3px; font-size: 20px; }
+.desk-window .agent-msg .box { padding: 16px; border-width: 1px; border-radius: 8px; font-size: 20px; }
+.desk-window .dot { width: 15.65px; height: 15.65px; border-radius: 1.3px; background: #000; animation: blink 1.1s steps(1) infinite; }
 /* Slide 2 plays like the page's other exchanges: the question bounces in, then "Your AI agent", then the reply types
    word by word with an inline square caret (script), and the resting square takes over */
 .desk-window:not(.is-replying) .chat-bubble, .desk-window:not(.is-replying) .agent-tag { opacity: 0; }
@@ -798,11 +799,11 @@ img { display: block; }
 .send-sm { width: 36px; height: 36px; border-radius: 18px; background: var(--gray-950); opacity: 0.2; display: flex; align-items: center; justify-content: center; }
 .send-sm img { width: 16px; height: 16px; }
 .desk-window .composer-area { display: flex; justify-content: center; padding: 0 24px 20px; }
-.desk-window .composer-sm { width: 697px; max-width: 100%; }
+.desk-window .composer-sm { width: 100%; }
 
-/* Slide 3 phone: Figma "Phone / Hero chat" (324:7553), 488×806, centred and running off the bottom of the frame;
-   one white status + title block casting a shadow over the chat, then a 500px chat body (no composer) */
-.phone { position: absolute; left: 530px; top: 224px; width: 488px; height: 806px; padding: 8.2px 6px; border-radius: 64.4px; background: #0d0a1a; box-shadow: 0 41px 82px rgba(26,13,51,0.28); display: flex; }
+/* Slide 4 phone: Figma "Phone / Hero chat" (324:7790), 488×806, centred and running off the bottom of the frame;
+   one white status + title block casting a shadow over the chat, a 514px chat body, then the reply composer */
+.phone { position: absolute; left: 530px; top: 222px; width: 488px; height: 806px; padding: 8.2px 6px; border-radius: 64.4px; background: #0d0a1a; box-shadow: 0 41px 82px rgba(26,13,51,0.28); display: flex; }
 .phone .screen { flex: 1; display: flex; flex-direction: column; background: #fff; border-radius: 57.6px; overflow: hidden; }
 .phone .topbar { position: relative; z-index: 1; background: #fff; filter: drop-shadow(0 4px 14px rgba(0,0,0,0.45)); }
 .phone .status { display: flex; align-items: center; padding: 19.2px 35.6px 8.2px; color: #000; }
@@ -812,11 +813,21 @@ img { display: block; }
 .phone .app-head .agent-tag { color: #000; }
 .phone .agent-tag { gap: 11px; font-size: 19.2px; }
 .phone .agent-tag .ic { width: 27.4px; height: 27.4px; }
-.phone .screen > .body { flex: none; height: 514px; padding: 13.7px 21.9px 109.4px; overflow: hidden; } /* Figma 324:7799 */
-/* The thread opens at the top of the conversation, then scrolls down to the answer once the phone has risen in
-   (--chat-end, set by script, is how far the thread overflows the body); it resets while the slide is hidden */
-.phone .chat-scroll { display: flex; flex-direction: column; gap: 60px; }
-.scene-c:is(.is-active, .is-prev) .phone .chat-scroll { translate: 0 var(--chat-end, 0px); transition: translate 1.8s cubic-bezier(.65,0,.35,1) 1.3s; }
+.phone .screen > .body { flex: none; height: 514px; padding: 20px; display: flex; flex-direction: column; justify-content: center; overflow: hidden; } /* Figma 324:7799 */
+.phone .chat-scroll { display: flex; flex-direction: column; align-items: center; gap: 60px; }
+.phone .chat-scroll > * { width: 100%; }
+.phone .chat-scroll > .agent-msg.is-tight { width: 427.7px; }
+/* Figma 324:7812: the phone's reply composer — "Reply…" over plus, the Mothership chip and a dimmed send */
+.phone .composer-area { padding: 0 16.45px 27.4px; }
+.phone .composer-lg { height: 130.2px; display: flex; flex-direction: column; justify-content: flex-end; gap: 16.45px; padding: 11px 11px 11px 24.7px; border-radius: 32.9px; background: #fff; border: 1.37px solid var(--gray-200); filter: drop-shadow(0 2.74px 5.48px rgba(0,0,0,0.05)); }
+.phone .composer-lg .placeholder { font-size: 20.56px; color: var(--gray-500); }
+.phone .composer-lg .row { display: flex; align-items: flex-end; justify-content: space-between; }
+.phone .composer-lg .tools { display: flex; align-items: center; gap: 16.45px; }
+.phone .composer-lg .plus { width: 24.7px; height: 24.7px; }
+.phone .composer-lg .tool-chip { gap: 8.2px; padding: 5.5px 13.7px 5.5px 11px; border-width: 1.37px; font-size: 17.8px; }
+.phone .composer-lg .tool-chip img { width: 9.6px; height: 9.6px; }
+.phone .composer-lg .send-sm { width: 49.35px; height: 49.35px; border-radius: 24.7px; }
+.phone .composer-lg .send-sm img { width: 21.9px; height: 21.9px; }
 .phone .agent-msg { gap: 21.9px; }
 .phone .agent-msg .body { gap: 7.3px; padding: 0; font-size: 23.3px; }
 .phone .agent-msg .box { padding: 21.9px; border-width: 1.4px; border-radius: 11px; font-size: 20.6px; }
@@ -825,11 +836,11 @@ img { display: block; }
 .phone .user-turn { display: flex; justify-content: flex-end; }
 .phone .chat-bubble { width: 315.3px; padding: 16.4px 24.7px; border-radius: 27.4px 27.4px 9.6px 27.4px; font-size: 23.3px; }
 .phone .cursor-block { width: 13.7px; height: 13.7px; margin-top: 3.7px; }
-/* Slide 4 plays like the page's other exchanges once the thread has scrolled down: the follow-up bubble bounces in,
+/* Slide 4 plays like the page's other exchanges once the phone has risen in: the bubble bounces in,
    then "Your AI agent", then the reply types (script) and the cursor block takes over */
 .phone:not(.is-replying) .user-turn .chat-bubble, .phone:not(.is-replying) .agent-msg.is-tight .agent-tag { opacity: 0; }
-.phone.is-replying .user-turn .chat-bubble { animation: bubble-in 0.75s 2.7s both; }
-.phone.is-replying .agent-msg.is-tight .agent-tag { animation: ap-label-in 0.3s ease-out 3.3s backwards, agent-sweep 2.4s linear infinite; }
+.phone.is-replying .user-turn .chat-bubble { animation: bubble-in 0.75s 0.7s both; }
+.phone.is-replying .agent-msg.is-tight .agent-tag { animation: ap-label-in 0.3s ease-out 1.3s backwards, agent-sweep 2.4s linear infinite; }
 
 /* ── Dark sections ── */
 .on-dark { background: #000; color: rgba(255,255,255,0.9); }
@@ -1092,7 +1103,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
   .scene-a .composer .plus, .scene-ask .composer .plus { grid-area: plus; width: calc(22px * var(--k)); height: calc(22px * var(--k)); }
   .scene-a .composer .send, .scene-ask .composer .send { grid-area: send; width: calc(48px * var(--k)); height: calc(48px * var(--k)); }
   .scene-a .composer .send img, .scene-ask .composer .send img { width: calc(22px * var(--k)); height: calc(22px * var(--k)); }
-  .desk-window { scale: min(1, calc((var(--stage-vis, 1548) - 60) / 864)); }
+  .desk-window { scale: min(1, calc((var(--stage-vis, 1548) - 60) / 968)); }
   .cf-body { padding: 18px 12px 32px; gap: 40px; }
   /* Shorter stacked outlines on phones: 14px each, still flush and 16px above the frame */
   .cf-stack { top: calc(10.5px - 16px - 42px); height: 42px; }
@@ -1404,7 +1415,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
       </div>
 
       <div class="scene scene-ask" data-dur="3.75">
-        <div class="photo" data-shader><img src="assets/mcp-landing/dock-phone.jpg" alt=""></div>
+        <div class="photo" data-shader="lines"><img src="assets/mcp-landing/dock-phone.jpg" alt=""></div>
         <div class="composer is-empty" data-bold="Just include this in all pickup notes:" data-question="Carrier must have a TWIC card">
           <div class="typed"><span class="placeholder">Reply…</span><span class="typed-text"></span><span class="caret"></span></div>
           <img class="plus" src="assets/mcp-landing/composer-plus-lg.svg" alt="">
@@ -1413,7 +1424,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
       </div>
 
       <div class="scene scene-c" data-dur="7.875">
-        <div class="photo" data-shader><img src="assets/mcp-landing/dock-phone.jpg" alt="Shipper on the dock checking a phone"></div>
+        <div class="photo" data-shader="lines"><img src="assets/mcp-landing/dock-phone.jpg" alt="Shipper on the dock checking a phone"></div>
         <div class="phone">
           <div class="screen">
             <div class="topbar">
@@ -1422,16 +1433,6 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
             </div>
             <div class="body">
               <div class="chat-scroll">
-              <div class="agent-msg">
-                <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-                <div class="body">
-                  <p>You have 3 shipments booked for next week:</p>
-                  <p class="box">1. MS482301 · Ontario → Phoenix · Mon, Oct 26 · 6 pallets · $548
-2. MS482302 · Fontana → Reno · Tue, Oct 27 · Full truckload · $1,940
-3. MS482303 · LA → San Diego · Wed, Oct 28 · Local · $185</p>
-                  <p>Want me to send the pickup schedule to your warehouse team?</p>
-                </div>
-              </div>
               <div class="user-turn"><p class="chat-bubble">Just include this in all pickup notes to all shipments:<br>Carrier must have a TWIC card</p></div>
               <div class="agent-msg is-tight">
                 <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
@@ -1440,6 +1441,15 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
                   <span class="cursor-block"></span>
                 </div>
               </div>
+              </div>
+            </div>
+            <div class="composer-area">
+              <div class="composer-lg">
+                <span class="placeholder">Reply…</span>
+                <div class="row">
+                  <span class="tools"><img class="plus" src="assets/mcp-landing/composer-plus.svg" alt=""><span class="tool-chip"><img src="assets/mcp-landing/chip-dot.svg" alt="">Mothership</span></span>
+                  <span class="send-sm"><img src="assets/mcp-landing/composer-arrow.svg" alt=""></span>
+                </div>
               </div>
             </div>
           </div>
@@ -2225,17 +2235,6 @@ const fitStage = () => {
 };
 new ResizeObserver(fitStage).observe(stageWrap); fitStage();
 
-// Slide 3 chat: how far the thread must scroll for the answer to sit at the bottom of the chat body
-(() => {
-  const body = stageWrap.querySelector('.phone .screen > .body'), thread = body?.querySelector('.chat-scroll');
-  if (!thread) return;
-  const fit = () => {
-    const cs = getComputedStyle(body), room = body.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
-    body.style.setProperty('--chat-end', `${Math.min(0, room - thread.offsetHeight)}px`);
-  };
-  new ResizeObserver(fit).observe(thread); fit();
-})();
-
 // "For example" bracket: its side lines run down to the top of the slider photo, however the copy wraps
 // (offsets, so the reveal's translate doesn't skew it)
 {
@@ -2289,7 +2288,7 @@ new ResizeObserver(fitStage).observe(stageWrap); fitStage();
   if (phoneReply) twPrep(phoneReply);
   const playPhone = () => {
     phone.classList.remove('is-replying'); void phone.offsetWidth; phone.classList.add('is-replying');
-    twType(phoneReply, { start: 3500 });
+    twType(phoneReply, { start: 1500 });
   };
   // Slide 2 (the desk window): question bubble, agent tag, then the reply types — replayed each time the slide comes round
   const desk = stageWrap.querySelector('.scene-b .desk-window');
@@ -2977,6 +2976,8 @@ fn rotateUV(p: vec2f, angle: f32) -> vec2f {
    layer's design size. Params match the Figma effect. The ripple re-renders ~30fps, only the slide on show,
    only while the slider is on screen; reduced motion gets the still frame. */
 const SHADER_PARAMS = { patternAngle: 0, contrast: 1, bgColor: { r: 0, g: 0, b: 0, a: 1 }, patternScale: 3.5, tintColor: { r: 1, g: 1, b: 1, a: 1 }, patternMode: 6 };
+// The dock slides (data-shader="lines", Figma 343:4276 / 324:6918): straight horizontal lines, wider, softer contrast
+const LINE_PARAMS = { patternMode: 1, patternScale: 6, contrast: 0.7 };
 async function applyPatternScreen() {
   if (!navigator.gpu) { console.info('Pattern Screen shader needs WebGPU; showing the unshaded photos.'); return; }
   const adapter = await navigator.gpu.requestAdapter();
@@ -3001,7 +3002,8 @@ async function applyPatternScreen() {
     const ctx = canvas.getContext('webgpu');
     ctx.configure({ device, format, alphaMode: 'premultiplied' });
     // patternScale is in output pixels; scale with dpr so the lines match the 1x design
-    const frame = { state: {}, params: { ...SHADER_PARAMS, patternScale: SHADER_PARAMS.patternScale * dpr }, input, output: null, time: 0, ripple: reducedMotion ? 0 : 1, box: rippleBox(layer, w) };
+    const params = layer.dataset.shader === 'lines' ? { ...SHADER_PARAMS, ...LINE_PARAMS } : SHADER_PARAMS;
+    const frame = { state: {}, params: { ...params, patternScale: params.patternScale * dpr }, input, output: null, time: 0, ripple: reducedMotion ? 0 : 1, box: rippleBox(layer, w) };
     PatternScreen.setup(device, frame);
     frame.output = ctx.getCurrentTexture();
     PatternScreen.render(device, frame);
