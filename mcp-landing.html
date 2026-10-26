@@ -634,6 +634,11 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
 .examples-shade { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 100%; height: 1029px; object-fit: cover; opacity: 0; transition: opacity 0.45s ease; }
 .examples-shade.is-on { opacity: 1; transition-duration: 0.12s; }
 @media (prefers-reduced-motion: reduce) { .examples-shade { display: none; } }
+/* With WebGPU the scroll swap is drawn live instead: the same screen, plus the slider's ripple rolling out from the
+   row of cards (script); the baked PNGs above stay as the fallback */
+.examples-live { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 100%; height: 1029px; opacity: 0; transition: opacity 0.45s ease; pointer-events: none; }
+.examples-live.is-on { opacity: 1; transition-duration: 0.12s; }
+.examples-bg.has-live-shade .examples-shade { display: none; }
 /* Cards stay inside the inset photo: a gutter in from its edges (flush with it on phones) */
 .examples-grid { --card-inset: var(--gutter); position: relative; width: min(1272px, 100% - 2 * var(--bg-inset) - 2 * var(--card-inset)); margin: 0 auto; padding-top: 76px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 45px 28px; }
 
@@ -3111,6 +3116,75 @@ function rippleBox(layer, w) {
 }
 // Heavy GPU/canvas work: run after the hero intro has played
 setTimeout(() => applyPatternScreen().catch(err => console.warn('Pattern Screen shader failed:', err)), reducedMotion ? 0 : 3500);
+
+/* Examples background while scrolling: the current row's photo runs Figma's screen live (Section 3, 373:4784–4786: wavy
+   lines on a dark gray base) with the slider's ripple rolling out from the row of cards nearest the middle of the screen.
+   It only draws while the scroll swap is showing (and through its fade-out); reduced motion and no-WebGPU keep the PNGs. */
+async function applyExamplesShade() {
+  if (!navigator.gpu || reducedMotion || !exBg) return;
+  const adapter = await navigator.gpu.requestAdapter();
+  if (!adapter) return;
+  const device = await adapter.requestDevice();
+  const format = navigator.gpu.getPreferredCanvasFormat();
+  const PARAMS = { patternAngle: 0, contrast: 1.35, bgColor: { r: 0.3, g: 0.3, b: 0.3, a: 1 }, patternScale: 5, tintColor: { r: 1, g: 1, b: 1, a: 1 }, patternMode: 6 };
+  const photos = [exPhoto, ...exBg.querySelectorAll('.examples-alt')];
+  const shades = [...exBg.querySelectorAll('.examples-shade')];
+  await Promise.all(photos.map(img => img.decode().catch(() => {})));
+  const cv = Object.assign(document.createElement('canvas'), { className: 'examples-live' });
+  cv.setAttribute('aria-hidden', 'true');
+  shades[shades.length - 1].after(cv); // over the photos, under the cursor grid
+  const ctx = cv.getContext('webgpu');
+  ctx.configure({ device, format, alphaMode: 'premultiplied' });
+  const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+  let w = 0, inputs = [], frame = null;
+  // One input texture per row photo, cover-cropped to the photo's box, rebuilt when the box changes size
+  const build = () => {
+    const W = Math.round(exPhoto.offsetWidth * dpr), H = Math.round(exPhoto.offsetHeight * dpr);
+    if (!W || !H || W === w) return !!frame;
+    w = W; cv.width = W; cv.height = H;
+    inputs.forEach(t => t.destroy());
+    inputs = photos.map(img => {
+      const src = Object.assign(document.createElement('canvas'), { width: W, height: H });
+      const k = Math.max(W / img.naturalWidth, H / img.naturalHeight), dw = img.naturalWidth * k, dh = img.naturalHeight * k;
+      src.getContext('2d').drawImage(img, (W - dw) / 2, (H - dh) / 2, dw, dh);
+      const tex = device.createTexture({ size: [W, H], format: 'rgba8unorm', usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT });
+      device.queue.copyExternalImageToTexture({ source: src }, { texture: tex, premultipliedAlpha: true }, [W, H]);
+      return tex;
+    });
+    frame = { state: {}, params: { ...PARAMS, patternScale: PARAMS.patternScale * dpr }, input: inputs[0], output: null, time: 0, ripple: 1, box: null };
+    PatternScreen.setup(device, frame);
+    return true;
+  };
+  if (!build()) return;
+  // The ripple's source: the row of cards whose middle is nearest the middle of the screen, in canvas px
+  const cards = [...exStage.querySelectorAll('.ex-card')];
+  const rowBox = () => {
+    const r = cv.getBoundingClientRect();
+    if (!r.width) return null;
+    const rects = cards.map(c => c.getBoundingClientRect());
+    const near = rects.reduce((a, q) => Math.abs(q.top + q.height / 2 - innerHeight / 2) < Math.abs(a.top + a.height / 2 - innerHeight / 2) ? q : a);
+    const row = rects.filter(q => Math.abs(q.top - near.top) < 2);
+    const L = Math.min(...row.map(q => q.left)), R = Math.max(...row.map(q => q.right)), T = near.top, B = Math.max(...row.map(q => q.bottom));
+    const k = cv.width / r.width;
+    return [((L + R) / 2 - r.left) * k, ((T + B) / 2 - r.top) * k, (R - L) / 2 * k, (B - T) / 2 * k, 16 * k, 0, 0, 0];
+  };
+  let raf = 0, liveUntil = 0;
+  const tick = (ts) => {
+    raf = 0;
+    const i = shades.findIndex(sh => sh.classList.contains('is-on'));
+    cv.classList.toggle('is-on', i >= 0);
+    if (i >= 0) { frame.input = inputs[i]; liveUntil = ts + 600; }
+    if (ts > liveUntil) return; // faded out: stop drawing until the next scroll
+    frame.time = ts / 1000; frame.box = rowBox(); frame.output = ctx.getCurrentTexture();
+    PatternScreen.render(device, frame);
+    raf = requestAnimationFrame(tick);
+  };
+  const wake = () => { if (!raf) raf = requestAnimationFrame(tick); };
+  addEventListener('scroll', wake, { passive: true });
+  new ResizeObserver(() => { if (build()) wake(); }).observe(exPhoto);
+  exBg.classList.add('has-live-shade');
+}
+setTimeout(() => applyExamplesShade().catch(err => console.warn('Examples shader failed:', err)), reducedMotion ? 0 : 3600);
 </script>
 </body>
 </html>
