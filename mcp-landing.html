@@ -660,9 +660,10 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
 
 .ex-hover { position: absolute; inset: 0; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
 .ex-hover .panel { position: absolute; left: 7px; right: 7px; bottom: 7px; height: 333px; background: #fff; border-radius: 8px; }
-.ex-hover .q { position: absolute; right: 27px; bottom: 271px; display: flex; gap: 8px; align-items: flex-end; transform: translateY(10px); transition: transform 0.45s cubic-bezier(.2,.7,.2,1); }
-/* Figma Chat example hover (309:747 etc.): Geist Regular 11.66 question bubble, "Sent by you" flush with its right edge */
-.ex-hover .q .bubble { background: #000; color: #fff; border-radius: 13.72px 13.72px 4.8px 13.72px; padding: 8.23px 12.35px; font-family: var(--font-display); font-weight: 400; font-size: 11.66px; white-space: pre-line; }
+.ex-hover .q { position: absolute; right: 27px; bottom: 264px; display: flex; gap: 8px; align-items: flex-end; transform: translateY(10px); transition: transform 0.45s cubic-bezier(.2,.7,.2,1); }
+/* Figma Chat example hover (309:747 etc.): Geist Regular 17 question bubble (the instance is scaled ×0.686 in Figma, but its text
+   renders at 17 — the bubble is 308×38), "Sent by you" flush with its right edge */
+.ex-hover .q .bubble { background: #000; color: #fff; border-radius: 13.72px 13.72px 4.8px 13.72px; padding: 8.23px 12.35px; font-family: var(--font-display); font-weight: 400; font-size: 17px; white-space: pre-line; }
 /* Figma "Address book" hover (309:993): the question, then the file in a small bubble right-aligned 4px under it;
    the reply starts lower to clear them */
 /* "Sent by you" (313:6605): Regular 10, 4px under the question, right-aligned with it */
@@ -1060,7 +1061,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
 .ex-rest > .bubble, .ex-rest > .rest-q { max-width: calc(100% - 48px); } /* the file card's bubble fills its own wrapper */
 @media (min-width: 1080px) and (max-width: 1279px) {
   .ex-card { height: 440px; }
-  .ex-hover .q { bottom: 300px; } /* the question keeps its spot above the reply in the taller card */
+  .ex-hover .q { bottom: 293px; } /* the question keeps its spot above the reply in the taller card */
   .ex-hover .reply .box { font-size: 13px; padding: 12px; }
 }
 /* One column below 1080px; from there up two cards fit side by side inside the photo */
