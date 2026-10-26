@@ -464,7 +464,8 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
 .cf-edge .cf-line:first-child { border-left-width: 1px; }
 .cf-edge .cf-line:last-child { border-right-width: 1px; }
 .cf-edge .lead { font-size: 20px; font-weight: 500; line-height: 32px; text-align: center; } /* Figma 343:3268: Medium 20 */
-.cf-body { position: relative; padding: 18px 25px 64px; display: flex; flex-direction: column; align-items: center; gap: 64px; }
+/* Figma 388:5040: the note sits 6px under the lead (2px under its 32px line box), the URL box 20px under the note */
+.cf-body { position: relative; padding: 2px 25px 64px; display: flex; flex-direction: column; align-items: center; gap: 64px; }
 /* Side lines as their own layers, so the frame can glitch without moving the content */
 .cf-body::before, .cf-body::after { content: ""; position: absolute; top: 0; bottom: 0; width: 1px; background: rgba(0,0,0,0.2); pointer-events: none; }
 .cf-body::before { left: 0; }
@@ -505,7 +506,7 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
 .hero.is-answered .cf-tab:nth-child(1) { animation-duration: 4.4s; animation-delay: 0.9s; }
 .hero.is-answered .cf-tab:nth-child(2) { animation-duration: 3.8s; animation-delay: 1.7s; }
 .hero.is-answered .cf-tab:nth-child(3) { animation-duration: 5.1s; animation-delay: 2.6s; }
-.connect-block { position: relative; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.connect-block { position: relative; display: flex; flex-direction: column; align-items: center; gap: 20px; }
 .hero-copy { position: relative; width: min(696px, 100%); text-align: center; font-size: 22px; line-height: 30px; font-weight: 400; }
 .hero-copy strong { font-weight: 600; } /* Figma 274:2278: lead sentence SemiBold, the rest Regular */
 .available { position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 24px; }
@@ -1137,7 +1138,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
   .scene-a .composer .send, .scene-ask .composer .send { grid-area: send; width: calc(48px * var(--k)); height: calc(48px * var(--k)); }
   .scene-a .composer .send img, .scene-ask .composer .send img { width: calc(22px * var(--k)); height: calc(22px * var(--k)); }
   .desk-window { scale: min(1, calc((var(--stage-vis, 1548) - 60) / 968)); }
-  .cf-body { padding: 18px 12px 32px; gap: 40px; }
+  .cf-body { padding: 4px 12px 32px; gap: 40px; }
   /* Shorter stacked outlines on phones: 14px each, still flush and 16px above the frame */
   .cf-stack { top: calc(10.5px - 16px - 42px); height: 42px; }
   .cf-tab { height: 14px; }
@@ -1343,12 +1344,12 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
         <div class="cf-edge is-top"><span class="cf-line"></span><p class="lead">Add our MCP server to<br class="br-mobile"> your AI agent in seconds</p><span class="cf-line"></span></div>
         <div class="cf-body">
           <div class="connect-block">
+            <p class="pixel-note has-check"><span class="ic" data-icon="solid/checkmark" aria-hidden="true"></span>Just ask your AI how. Requires an approved Mothership account.</p>
             <div class="mcp-url">
               <span class="beam"></span><span class="surface"></span>
               <span class="url"><span class="ic" data-icon="outline/globe-alt" aria-hidden="true"></span>mcp.mothership.com</span>
               <button type="button" class="copy-btn" data-copy="https://mcp.mothership.com">Copy</button>
             </div>
-            <p class="pixel-note has-check"><span class="ic" data-icon="solid/checkmark" aria-hidden="true"></span>Just ask your AI how. Requires an approved Mothership account</p>
           </div>
           <p class="hero-copy"><strong>Quote, book, track and pay for LTL, FTL and Same-day local freight in plain words.</strong> Everything our Dashboard does now in Claude, ChatGPT and more — on desktop or your phone.</p>
           <div class="available">
