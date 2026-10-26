@@ -943,7 +943,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
 
 /* ── Closing CTA + footer ── */
 .cta { padding: 160px var(--gutter); display: flex; flex-direction: column; align-items: center; gap: 32px; text-align: center; }
-.cta .display { color: #000; --iri-ink: #000; } /* Figma 245:969; the hero's iridescent band, RGB split and glow sweep it once it has typed */
+.cta .display { color: #000; --iri-ink: #000; text-wrap: balance; } /* Figma 245:969; the hero's iridescent band, RGB split and glow sweep it once it has typed */
 /* Figma Closing CTA (311:852): square Sign up block, then the URL box with its note 14px under it, 32px apart;
    this URL box's beam is the dark-to-green sweep */
 .cta .actions { display: flex; align-items: flex-start; gap: 32px; flex-wrap: wrap; justify-content: center; }
@@ -1015,6 +1015,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
 @media (max-width: 1180px) {
   .ap-row { flex-wrap: wrap; }
   .ap-card { width: min(536px, 100%); }
+  .ap-box { padding: 80px 56px; } /* the desktop's 92px title column no longer applies once the rows wrap */
   .ap-note { width: 100%; max-width: 536px; margin-left: 244px; }
   .apps-grid { gap: 24px; }
   .app-tile { height: 200px; }
@@ -1036,6 +1037,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
   .step-arrow { display: none; }
   .bracket-lines { display: none; }
   .setup .bracket { height: auto; }
+  .autopilot .bracket-label { flex-direction: column; } /* logos over the note, as in the setup bracket */
   .ap-title { width: 100%; }
   .ap-note { margin-left: 0; }
 }
@@ -1127,7 +1129,8 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
   .ap-card .chat-bubble { width: auto; max-width: 300px; }
   .apps-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .app-tile { height: auto; aspect-ratio: 1; }
-  .app-tile .app-logo { font-size: 20px; }
+  .app-tile .app-logo { font-size: 20px; gap: 10px; }
+  .setup .bracket-label { line-height: 24px; }
   .app-tile .launch { right: 10px; bottom: 10px; width: 16px; height: 16px; }
   .steps { padding: 32px 20px; }
   .app-tile .app-logo > img, .app-tile .app-logo > .vscode { width: 26px; height: 26px; }
