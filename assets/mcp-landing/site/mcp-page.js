@@ -1,10 +1,67 @@
 /* biome-ignore-all lint: plain DOM script written as one file; Biome formats it but its lint rules aren't applied */
-let started = false
+/** The page this script is running on: its <main>, and how to stop it */
+let current = null
 
-/** The page's motion: the intro, typing, reveals, sliders, cursor grids and shaders. Runs once per page load. */
+/**
+ * The page's motion: the intro, typing, reveals, sliders, cursor grids and shaders. Runs once per page, and returns a
+ * cleanup for the React effect. React may run the effect twice on the same page (Strict Mode), so the cleanup waits a
+ * tick and only stops the script once its page has left the document; a later visit starts it again on the new page.
+ */
 export function initMcpPage(COPY, LANG) {
-  if (started) return
-  started = true
+  const root = document.querySelector('main.mcp-page')
+  if (current?.root === root) return current.release
+  current?.stop()
+  // Everything that outlives the page's own elements is tracked here, so stop() can undo it: window and document
+  // listeners, observers, timers and animation frames. These names shadow the globals for the rest of the script.
+  const abort = new AbortController()
+  const withSignal = (opts) =>
+    typeof opts === 'object' ? { ...opts, signal: abort.signal } : { capture: !!opts, signal: abort.signal }
+  const addEventListener = (type, fn, opts) => window.addEventListener(type, fn, withSignal(opts))
+  const onDocument = (type, fn, opts) => document.addEventListener(type, fn, withSignal(opts))
+  const observers = new Set()
+  const tracked = (Base) =>
+    class extends Base {
+      constructor(...args) {
+        super(...args)
+        observers.add(this)
+      }
+    }
+  const ResizeObserver = tracked(window.ResizeObserver)
+  const IntersectionObserver = tracked(window.IntersectionObserver)
+  const MutationObserver = tracked(window.MutationObserver)
+  const timers = new Set()
+  const frames = new Set()
+  const setTimeout = (fn, ms) => {
+    const id = window.setTimeout(() => {
+      timers.delete(id)
+      fn()
+    }, ms)
+    timers.add(id)
+    return id
+  }
+  const setInterval = (fn, ms) => {
+    const id = window.setInterval(fn, ms)
+    timers.add(-id)
+    return id
+  }
+  const requestAnimationFrame = (fn) => {
+    const id = window.requestAnimationFrame((t) => {
+      frames.delete(id)
+      fn(t)
+    })
+    frames.add(id)
+    return id
+  }
+  const stop = () => {
+    abort.abort()
+    for (const o of observers) o.disconnect()
+    for (const id of timers) id < 0 ? window.clearInterval(-id) : window.clearTimeout(id)
+    for (const id of frames) window.cancelAnimationFrame(id)
+    if ('scrollRestoration' in history) history.scrollRestoration = 'auto'
+    if (current?.root === root) current = null
+  }
+  const release = () => window.setTimeout(() => root?.isConnected || stop())
+  current = { root, stop, release }
   // A refresh always starts at the top, where the intro plays: no restored scroll position
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
   scrollTo(0, 0)
@@ -12,8 +69,7 @@ export function initMcpPage(COPY, LANG) {
   const siteNavBar = () => document.querySelector('.navbar-wrapper-light, .navbar-wrapper')
   /* ── Copy: every visible string in the page body comes from mcp-copy.json, the same file as the marketplace page's
      i18n catalog (src/i18n/catalogs/mcp.json). ?lang=zh-CN shows the Simplified Chinese.
-     tools/port-mcp.py builds the marketplace /mcp page from this file; the demo-only blocks below stay here
-     (there the page renders the copy itself and the site's own nav, footer and locale are already in place) ── */
+     The marketplace page renders that copy itself; the demo (tools/build-demo.py in thomasphilp/demos) is built from it ── */
   const tr = (key, vars = {}) => (COPY[LANG][key] ?? COPY.en[key] ?? '').replace(/{{(\w+)}}/g, (_, v) => vars[v] ?? '')
   // Typing tokens: words and the spaces between them; Chinese has no spaces, so the segmenter's words, with punctuation
   // kept on the word before it (opening brackets and quotes on the word after)
@@ -890,7 +946,7 @@ export function initMcpPage(COPY, LANG) {
       run()
     }
     if (document.querySelector('.hero.is-answered')) start()
-    else document.addEventListener('hero:answered', start, { once: true })
+    else onDocument('hero:answered', start, { once: true })
   })()
 
   /* ── MCP URL boxes: a comet laps the 1px rim at an even speed, once every 4s ── */
@@ -1088,7 +1144,7 @@ export function initMcpPage(COPY, LANG) {
       { passive: true },
     )
     // Nothing below the hero starts until the hero's answer and connect block are in
-    document.addEventListener('hero:answered', (e) => {
+    onDocument('hero:answered', (e) => {
       if (!open) {
         open = true
         setTimeout(pump, e.detail?.skipped ? 0 : 700)
@@ -2365,7 +2421,7 @@ export function initMcpPage(COPY, LANG) {
       inView = e.isIntersecting
       wake()
     }).observe(stageWrap)
-    document.addEventListener('visibilitychange', wake)
+    onDocument('visibilitychange', wake)
   }
   const shaded = []
   // The slide's chat UI in its layer's output pixels (centre, half size, corner radius); from on-screen rects, so it tracks the
@@ -2515,4 +2571,5 @@ export function initMcpPage(COPY, LANG) {
     () => applyExamplesShade().catch((err) => console.warn('Examples shader failed:', err)),
     reducedMotion ? 0 : 3600,
   )
+  return release
 }
