@@ -3031,8 +3031,8 @@ fn rotateUV(p: vec2f, angle: f32) -> vec2f {
 /* Minimal host: feeds the photo (object-fit: cover at the layer's size) in as the input texture at the
    layer's design size. Params match the Figma effect. The ripple re-renders ~30fps, only the slide on show,
    only while the slider is on screen; reduced motion gets the still frame. */
-// Figma 373:4752 (desk) / 373:4751 (dock): one diamond-checker screen on every slide
-const SHADER_PARAMS = { patternAngle: 0, contrast: 1.35, bgColor: { r: 0, g: 0, b: 0, a: 1 }, patternScale: 5.5, tintColor: { r: 1, g: 1, b: 1, a: 1 }, patternMode: 7 };
+// Figma 373:4752 (desk) / 373:4751 (dock): one wavy-line screen on every slide
+const SHADER_PARAMS = { patternAngle: 0, contrast: 1.35, bgColor: { r: 0, g: 0, b: 0, a: 1 }, patternScale: 5.5, tintColor: { r: 1, g: 1, b: 1, a: 1 }, patternMode: 6 };
 async function applyPatternScreen() {
   if (!navigator.gpu) { console.info('Pattern Screen shader needs WebGPU; showing the unshaded photos.'); return; }
   const adapter = await navigator.gpu.requestAdapter();
