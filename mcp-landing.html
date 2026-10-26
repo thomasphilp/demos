@@ -1887,7 +1887,7 @@ function playIntro() {
   later(() => { hero.dataset.intro = 'composer'; }, 120);
   // Reveal word by word: each word fades up into place, caret follows
   const words = QUESTION.split(' ');
-  const START = 1050, RATE = 85 + 1000 / words.length; // words start once the entrance bounce has settled; the question takes ~1.8s to type
+  const START = 1050, RATE = (85 + 1000 / words.length) / 1.5; // words start once the entrance bounce has settled; the question takes ~1.2s to type (50% faster than the first ~1.8s)
   later(() => composer.classList.add('is-typing'), START);
   words.forEach((word, i) => later(() => {
     const span = document.createElement('span');
