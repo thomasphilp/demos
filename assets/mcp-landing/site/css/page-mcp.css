@@ -533,25 +533,26 @@
 .mcp-page .examples-stage { position: relative; margin-top: 57px; }
 /* In the section's bottom padding, clear of the photo that hangs below the last row of cards */
 .mcp-page .examples > .signup-note { position: absolute; left: 0; right: 0; bottom: 20px; padding: 0 var(--gutter); }
-/* The warehouse photo (and its cursor grid) steps down behind each row of example cards as the page scrolls:
-   --bg-y is set by script to the current row's offset; it moves off fast and settles (ease-out) so it keeps up with the scroll */
-.mcp-page .examples-bg { position: absolute; left: 0; right: 0; top: 0; height: 1029px; translate: 0 var(--bg-y, 0px); transition: translate 0.7s cubic-bezier(.22,1,.36,1); pointer-events: none; }
-.mcp-page .examples-photo, .mcp-page .examples-alt { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 100%; height: 1029px; object-fit: cover; }
+/* The warehouse photo (and its cursor grid) sits behind every row of example cards and hangs 150px below the last.
+   The photos are 120px taller than that box and drift down through it as the page scrolls (--bg-shift, set by script
+   from -60px to 60px), so they move a little slower than the cards */
+.mcp-page .examples-bg { position: absolute; left: 0; right: 0; top: 0; bottom: -150px; overflow: hidden; pointer-events: none; }
+.mcp-page .examples-photo, .mcp-page .examples-alt, .mcp-page .examples-shade, .mcp-page .examples-live { position: absolute; left: 50%; top: -60px; transform: translate(-50%, var(--bg-shift, 0px)); width: 100%; height: calc(100% + 120px); object-fit: cover; }
 /* full-bleed, edge to edge */
-/* Figma 343:7605 / 343:7606: each row has its own photo. The next one fades in over the last as the backdrop steps down
+/* Figma 343:7605 / 343:7606: each row has its own photo. The next one fades in over the last as its row comes up
    (lower ones stay up underneath, so the crossfade never shows the warehouse through) */
 .mcp-page .examples-alt { opacity: 0; transition: opacity 0.7s cubic-bezier(.22,1,.36,1); }
 .mcp-page .examples-alt.is-on { opacity: 1; }
 /* While the page is scrolling, the current row's photo swaps for its Figma-shaded version (Section 3, 373:4784–4786),
    in fast and back out once the scroll settles */
-.mcp-page .examples-shade { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 100%; height: 1029px; object-fit: cover; opacity: 0; transition: opacity 0.45s ease; }
+.mcp-page .examples-shade { opacity: 0; transition: opacity 0.45s ease; }
 .mcp-page .examples-shade.is-on { opacity: 1; transition-duration: 0.12s; }
 @media (prefers-reduced-motion: reduce) {
   .mcp-page .examples-shade { display: none; }
 }
 /* With WebGPU the scroll swap is drawn live instead: the same screen, plus the slider's ripple rolling out from the
    row of cards (script); the baked PNGs above stay as the fallback */
-.mcp-page .examples-live { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 100%; height: 1029px; opacity: 0; transition: opacity 0.45s ease; pointer-events: none; }
+.mcp-page .examples-live { opacity: 0; transition: opacity 0.45s ease; }
 .mcp-page .examples-live.is-on { opacity: 1; transition-duration: 0.12s; }
 .mcp-page .examples-bg.has-live-shade .examples-shade { display: none; }
 /* Cards stay inside the inset photo: a gutter in from its edges (flush with it on phones) */

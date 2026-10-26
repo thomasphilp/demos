@@ -1792,7 +1792,7 @@ export function initMcpPage(COPY, LANG) {
         return [cv]
       }, // over every row's photo
       area: exArea,
-      // The wrapper slides between rows, so measure the pointer from where it is now
+      // The photo drifts with the scroll, so measure the pointer from where it is now
       point: (e) => {
         const r = exBg.getBoundingClientRect(),
           a = exArea()
@@ -1808,14 +1808,14 @@ export function initMcpPage(COPY, LANG) {
       reach: 10,
       clickReach: 10,
     })
-  // Step the photo down with the scroll: it moves to a row as soon as that row's top comes 30% up from the bottom of the viewport
-  // (scrolling down) and back once it drops below, offset from that row as it is from the first, less 100px so more of it
-  // shows behind the row above; at the last row it hangs 150px below the cards. Each row brings in its own photo
-  // (rows split into thirds when the cards stack in one column)
+  // As the page scrolls, the photo drifts from 60px up to 60px down while the stage crosses the viewport, and each row
+  // brings in its own photo once its top comes 30% up from the bottom of the viewport (rows split into thirds when the
+  // cards stack in one column)
   if (exBg) {
     const cards = [...exStage.querySelectorAll('.ex-card')],
       alts = [...exBg.querySelectorAll('.examples-alt')]
     const shades = [...exBg.querySelectorAll('.examples-shade')]
+    const DRIFT = 60
     let raf = 0,
       photo = 0,
       scrolling = false,
@@ -1829,17 +1829,14 @@ export function initMcpPage(COPY, LANG) {
       const rows = [...new Set(cards.map((c) => c.offsetTop))].sort((a, b) => a - b)
       if (!rows.length) return
       const line = innerHeight * 0.7,
+        box = exBg.getBoundingClientRect(),
         stageTop = exStage.getBoundingClientRect().top
+      const through = Math.min(1, Math.max(0, (innerHeight - box.top) / (innerHeight + box.height)))
+      exBg.style.setProperty('--bg-shift', `${reducedMotion ? 0 : Math.round((through * 2 - 1) * DRIFT)}px`)
       let best = 0
       rows.forEach((t, i) => {
         if (stageTop + t < line) best = i
       })
-      const last = Math.max(0, exStage.offsetHeight + 150 - exBg.offsetHeight)
-      const RISE = 100 // the photo's extra 100px goes above the row it steps to
-      exStage.style.setProperty(
-        '--bg-y',
-        `${best === rows.length - 1 ? last : Math.min(last, Math.max(0, rows[best] - rows[0] - (best ? RISE : 0)))}px`,
-      )
       photo = Math.min(alts.length, Math.floor((best * (alts.length + 1)) / rows.length))
       alts.forEach((img, i) => img.classList.toggle('is-on', i < photo))
       shade()
