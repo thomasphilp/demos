@@ -199,6 +199,12 @@
 }
 .mcp-page .mcp-url:has(.copy-btn.is-copied) { background: var(--green); }
 .mcp-page .pixel-note { font-family: var(--font-pixel); font-size: 12px; color: var(--label-muted); text-align: center; }
+/* Signup links: in the connect note, under the examples, after the app tiles and under setup step 3. They take
+   the colour of the text around them, so they read on the white sections and the black ones */
+.mcp-page .signup-link { color: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; white-space: nowrap; transition: opacity 0.15s; }
+.mcp-page .signup-link:hover { opacity: 0.7; }
+.mcp-page .signup-link:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+.mcp-page .signup-note { font-family: var(--font-geist); font-size: 14px; line-height: 20px; text-align: center; color: var(--label-muted); }
 .mcp-page .chat-time .ts-ic { display: none; }
 /* tablet and phone only */
 /* ── Hero ── */
@@ -525,6 +531,8 @@
 /* room for the photo hanging 150px below the last row of cards */
 .mcp-page .examples .bracket-lines { width: min(908px, 100% - 2 * var(--bg-inset)); height: 157px; }
 .mcp-page .examples-stage { position: relative; margin-top: 57px; }
+/* In the section's bottom padding, clear of the photo that hangs below the last row of cards */
+.mcp-page .examples > .signup-note { position: absolute; left: 0; right: 0; bottom: 20px; padding: 0 var(--gutter); }
 /* The warehouse photo (and its cursor grid) steps down behind each row of example cards as the page scrolls:
    --bg-y is set by script to the current row's offset; it moves off fast and settles (ease-out) so it keeps up with the scroll */
 .mcp-page .examples-bg { position: absolute; left: 0; right: 0; top: 0; height: 1029px; translate: 0 var(--bg-y, 0px); transition: translate 0.7s cubic-bezier(.22,1,.36,1); pointer-events: none; }
@@ -860,6 +868,7 @@
 .mcp-page .apps { padding: 60px 0 92px; }
 .mcp-page .apps .exchange { gap: 80px; }
 .mcp-page .apps-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 48px; }
+.mcp-page .apps .signup-note { color: rgba(255,255,255,0.7); }
 /* Each tile is frosted like the setup steps box: translucent dark fill with a background blur over the cursor grid.
    --tile-solid is roughly that fill over the black page: the Launch label's top half, so it masks the border
    without leaving a black patch inside the tile (its bottom half is the page black). */
@@ -895,6 +904,8 @@
 .mcp-page .step:not(:first-child) .what { max-width: none; }
 .mcp-page .step-card { flex: 1; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); padding: 12px 16px; display: flex; flex-direction: column; justify-content: center; gap: 13px; font-family: var(--font-geist); color: #fff; }
 .mcp-page .step-card.is-center { align-items: center; }
+/* Under the third card, in the steps box's bottom padding, so the three cards stay the same height */
+.mcp-page .step .signup-note { position: absolute; left: 0; right: 0; top: calc(100% + 16px); text-align: left; color: rgba(255,255,255,0.7); }
 /* Figma 288:5067: the URL in its own outlined field */
 .mcp-page .step-card .url-row { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; font-family: var(--font-geist); font-size: 16px; font-weight: 400; line-height: 20px; }
 .mcp-page .step-card .url-row .ic { width: 16px; height: 16px; }
@@ -986,6 +997,9 @@
 @media (max-width: 1000px) {
   .mcp-page .steps { flex-direction: column; }
   .mcp-page .step-arrow { display: none; }
+  /* stacked steps don't need matching card heights, so the note sits in the flow under its card */
+  .mcp-page .step .signup-note { position: static; }
+  .mcp-page .examples > .signup-note { bottom: 8px; }
   .mcp-page .bracket-lines { display: none; }
   .mcp-page .setup .bracket { height: auto; }
   .mcp-page .autopilot .bracket-label { flex-direction: column; }
