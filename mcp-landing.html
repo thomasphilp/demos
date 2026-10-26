@@ -247,8 +247,6 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
 .mcp-url:has(.copy-btn.is-copied) { background: var(--green); }
 .pixel-note { font-family: var(--font-pixel); font-size: 12px; color: var(--label-muted); text-align: center; }
 /* Figma 343:3270: the hero note opens with a 10px checkmark, 8px before the words */
-.pixel-note.has-check { display: inline-flex; align-items: center; gap: 8px; }
-.pixel-note.has-check .ic { width: 10px; height: 10px; flex-shrink: 0; }
 
 /* ── Nav ── */
 /* Sticky: no background or blur at the very top (just the logo and pills over the hero), frosted white once the page scrolls */
@@ -457,6 +455,7 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
 .cf-comet path:nth-of-type(4n+2) { opacity: 0.5; }
 .cf-comet path:nth-of-type(4n+3) { opacity: 0.25; }
 .cf-comet path:nth-of-type(4n+4) { opacity: 0.1; }
+.cf-comet:not(.is-double) path.is-follow { visibility: hidden; } /* the second comet only shows on loops picked for two */
 @media (prefers-reduced-motion: reduce) { .cf-comet { display: none; } }
 .cf-tab { position: absolute; left: 50%; height: 25px; translate: -50% 0; border: 1px solid #000; border-bottom: 0; }
 .cf-tab:nth-child(1) { bottom: 0; width: 84.5%; opacity: 0.2; }
@@ -1363,7 +1362,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
         <div class="cf-edge is-top"><span class="cf-line"></span><p class="lead">Add our MCP server to<br class="br-mobile"> your AI agent in seconds</p><span class="cf-line"></span></div>
         <div class="cf-body">
           <div class="connect-block">
-            <p class="pixel-note has-check"><span class="ic" data-icon="solid/checkmark" aria-hidden="true"></span>Just ask your AI how. Requires an approved Mothership account.</p>
+            <p class="pixel-note">Just ask your AI how. Requires an approved Mothership account.</p>
             <div class="mcp-url">
               <span class="beam"></span><span class="surface"></span>
               <span class="url"><span class="ic" data-icon="outline/globe-alt" aria-hidden="true"></span>mcp.mothership.com</span>
@@ -2234,14 +2233,16 @@ document.querySelectorAll('.iri').forEach(el => {
   const NS = 'http://www.w3.org/2000/svg';
   const svg = document.createElementNS(NS, 'svg');
   svg.setAttribute('class', 'cf-comet'); svg.setAttribute('aria-hidden', 'true');
+  // 8 paths per comet (4 tail layers × left/right); the second 8 are a follower that trails the first by FOLLOW ms
   const paths = [];
-  for (let i = 0; i < 8; i++) { const p = document.createElementNS(NS, 'path'); svg.appendChild(p); paths.push(p); }
+  for (let i = 0; i < 16; i++) { const p = document.createElementNS(NS, 'path'); if (i >= 8) p.classList.add('is-follow'); svg.appendChild(p); paths.push(p); }
   frame.appendChild(svg);
   const top = frame.querySelectorAll('.cf-edge.is-top .cf-line'), bot = frame.querySelectorAll('.cf-edge.is-bottom .cf-line');
   const box = el => { let x = 0, y = 0, n = el; while (n && n !== frame) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; } return { x, y, w: el.offsetWidth, h: el.offsetHeight }; };
   // Each tail layer's length as a share of the path; the head runs 0 → 1.2 of the path in the first 70% of each 2s loop
-  const LENS = [0.03, 0.07, 0.12, 0.18], RUN = 1.2, LOOP = 2000;
-  let anims = [], playing = false;
+  // Each loop randomly runs one comet or two, the second close behind the first
+  const LENS = [0.03, 0.07, 0.12, 0.18], RUN = 1.2, LOOP = 2000, FOLLOW = 120;
+  let anims = [], playing = false, picker = 0;
   const run = () => {
     const L = paths[0].getTotalLength(); // both sides are the same length
     if (!L) return;
@@ -2254,9 +2255,19 @@ document.querySelectorAll('.iri').forEach(el => {
         { strokeDashoffset: `${len}px`, easing: 'cubic-bezier(.45,0,.35,1)' },
         { strokeDashoffset: `${len - RUN * L}px`, offset: 0.7 },
         { strokeDashoffset: `${len - RUN * L}px` },
-      ], { duration: LOOP, iterations: Infinity, delay: t === null ? 1200 : 0 });
+      ], { duration: LOOP, iterations: Infinity, delay: (t === null ? 1200 : 0) + (i >= 8 ? FOLLOW : 0), fill: i >= 8 ? 'backwards' : 'auto' });
     });
     if (t !== null) anims.forEach(a => { a.currentTime = t; }); // re-traced on resize: keep the beat
+    pick();
+  };
+  // Re-roll one or two comets while both are parked past the line ends (85% into the lead's loop)
+  const pick = () => {
+    clearTimeout(picker);
+    const a = anims[0], at = 0.85 * LOOP;
+    const local = a.currentTime - a.effect.getTiming().delay; // ms into the lead's loops, negative before it starts
+    const phase = local < 0 ? null : local % LOOP;
+    if (phase === null || phase >= at - 30) svg.classList.toggle('is-double', Math.random() < 0.5);
+    picker = setTimeout(pick, Math.max(50, phase === null ? at - local : (at - phase + LOOP) % LOOP));
   };
   const trace = () => {
     const W = frame.offsetWidth, H = frame.offsetHeight;
