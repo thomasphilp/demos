@@ -1810,12 +1810,16 @@ export function initMcpPage(COPY, LANG) {
     })
   // As the page scrolls, the photo drifts from 60px up to 60px down while the stage crosses the viewport, and each row
   // brings in its own photo once its top comes 30% up from the bottom of the viewport (rows split into thirds when the
-  // cards stack in one column)
+  // cards stack in one column). On phones the photo is one screen tall and steps down to that row instead: offset from
+  // it as it is from the first, less 100px so more of it shows behind the row above, and at the last row it hangs
+  // 150px below the cards
   if (exBg) {
     const cards = [...exStage.querySelectorAll('.ex-card')],
       alts = [...exBg.querySelectorAll('.examples-alt')]
     const shades = [...exBg.querySelectorAll('.examples-shade')]
-    const DRIFT = 60
+    const DRIFT = 60,
+      RISE = 100,
+      phone = matchMedia('(max-width: 720px)')
     let raf = 0,
       photo = 0,
       scrolling = false,
@@ -1831,12 +1835,21 @@ export function initMcpPage(COPY, LANG) {
       const line = innerHeight * 0.7,
         box = exBg.getBoundingClientRect(),
         stageTop = exStage.getBoundingClientRect().top
-      const through = Math.min(1, Math.max(0, (innerHeight - box.top) / (innerHeight + box.height)))
-      exBg.style.setProperty('--bg-shift', `${reducedMotion ? 0 : Math.round((through * 2 - 1) * DRIFT)}px`)
       let best = 0
       rows.forEach((t, i) => {
         if (stageTop + t < line) best = i
       })
+      if (phone.matches) {
+        const last = Math.max(0, exStage.offsetHeight + 150 - exBg.offsetHeight)
+        const y =
+          best === rows.length - 1 ? last : Math.min(last, Math.max(0, rows[best] - rows[0] - (best ? RISE : 0)))
+        exStage.style.setProperty('--bg-y', `${y}px`)
+        exBg.style.setProperty('--bg-shift', '0px')
+      } else {
+        const through = Math.min(1, Math.max(0, (innerHeight - box.top) / (innerHeight + box.height)))
+        exStage.style.setProperty('--bg-y', '0px')
+        exBg.style.setProperty('--bg-shift', `${reducedMotion ? 0 : Math.round((through * 2 - 1) * DRIFT)}px`)
+      }
       photo = Math.min(alts.length, Math.floor((best * (alts.length + 1)) / rows.length))
       alts.forEach((img, i) => img.classList.toggle('is-on', i < photo))
       shade()

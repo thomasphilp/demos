@@ -1083,6 +1083,10 @@
 }
 @media (max-width: 720px) {
   .mcp-page .app-tile { padding-left: 24px; }
+  /* Phones: one 1029px photo that steps down to each row as it comes up (--bg-y, set by script) instead of one
+     stretched over every card; it moves off fast and settles (ease-out) so it keeps up with the scroll */
+  .mcp-page .examples-bg { bottom: auto; height: 1029px; translate: 0 var(--bg-y, 0px); transition: translate 0.7s cubic-bezier(.22,1,.36,1); }
+  .mcp-page .examples-photo, .mcp-page .examples-alt, .mcp-page .examples-shade, .mcp-page .examples-live { top: 0; height: 100%; transform: translateX(-50%); }
   .mcp-page { --gutter: 16px; --bg-inset: var(--gutter); }
   .mcp-page .examples-grid { --card-inset: 0px; }
   .mcp-page .hero { padding: 116px 0 64px; }
