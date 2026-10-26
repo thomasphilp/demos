@@ -691,7 +691,10 @@ img { display: block; }
 @keyframes ken-burns { from { transform: scale(1); } to { transform: scale(1.08); } }
 .scene .photo img, .scene .photo canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 /* Dock photo sits where Figma placed it (Rectangle 38, 362:14814: 127.55% × 127.71%, offset up and left); the shader host draws it at this box */
-:is(.scene-ask, .scene-c) .photo img { left: -3%; top: -27.72%; width: 127.55%; height: 127.71%; }
+:is(.scene-ask, .scene-c) .photo img.source { left: -3%; top: -27.72%; width: 127.55%; height: 127.71%; }
+/* Each slide shows Figma's own shaded render (343:4253 desk, 343:4276 dock) until the live shader takes over, and in its place
+   where WebGPU isn't available; the colour photo underneath is only the shader's input */
+.scene .photo img.source { visibility: hidden; }
 .scene .photo canvas { opacity: 0; }
 .scene .photo.is-shaded canvas { opacity: 1; }
 .scene .photo.is-shaded img { visibility: hidden; }
@@ -1375,7 +1378,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
   <div class="stage-wrap" id="stage-wrap">
     <div class="stage">
       <div class="scene scene-a is-active" data-dur="3.75">
-        <div class="photo" data-shader><img src="assets/mcp-landing/desk.jpg" alt="Shipper at a desk"></div>
+        <div class="photo" data-shader><img class="shaded" src="assets/mcp-landing/desk-shaded.png" alt="Shipper at a desk"><img class="source" src="assets/mcp-landing/desk.jpg" alt=""></div>
         <div class="composer" data-question="What do I have shipping next week?">
           <img class="plus" src="assets/mcp-landing/composer-plus-lg.svg" alt="">
           <div class="typed"><span class="typed-text"></span><span class="caret"></span></div>
@@ -1384,7 +1387,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
       </div>
 
       <div class="scene scene-b" data-dur="7.875">
-        <div class="photo" data-shader><img src="assets/mcp-landing/desk.jpg" alt=""></div>
+        <div class="photo" data-shader><img class="shaded" src="assets/mcp-landing/desk-shaded.png" alt=""><img class="source" src="assets/mcp-landing/desk.jpg" alt=""></div>
         <div class="desk-window">
           <div class="rail"><span class="ic" data-icon="solid/AI/magic"></span><span class="avatar">TP</span></div>
           <div class="convo">
@@ -1415,7 +1418,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
       </div>
 
       <div class="scene scene-ask" data-dur="3.75">
-        <div class="photo" data-shader="lines"><img src="assets/mcp-landing/dock-phone.jpg" alt=""></div>
+        <div class="photo" data-shader="lines"><img class="shaded" src="assets/mcp-landing/dock-shaded.png" alt=""><img class="source" src="assets/mcp-landing/dock-phone.jpg" alt=""></div>
         <div class="composer is-empty" data-bold="Just include this in all pickup notes:" data-question="Carrier must have a TWIC card">
           <div class="typed"><span class="placeholder">Reply…</span><span class="typed-text"></span><span class="caret"></span></div>
           <img class="plus" src="assets/mcp-landing/composer-plus-lg.svg" alt="">
@@ -1424,7 +1427,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
       </div>
 
       <div class="scene scene-c" data-dur="7.875">
-        <div class="photo" data-shader="lines"><img src="assets/mcp-landing/dock-phone.jpg" alt="Shipper on the dock checking a phone"></div>
+        <div class="photo" data-shader="lines"><img class="shaded" src="assets/mcp-landing/dock-shaded.png" alt="Shipper on the dock checking a phone"><img class="source" src="assets/mcp-landing/dock-phone.jpg" alt=""></div>
         <div class="phone">
           <div class="screen">
             <div class="topbar">
@@ -2986,7 +2989,7 @@ async function applyPatternScreen() {
   const format = navigator.gpu.getPreferredCanvasFormat();
   const W = 1548, H = 857, dpr = Math.min(window.devicePixelRatio || 1, 2);
   for (const layer of document.querySelectorAll('[data-shader]')) {
-    const img = layer.querySelector('img');
+    const img = layer.querySelector('img.source');
     await img.decode().catch(() => {});
     const w = Math.round(W * dpr), h = Math.round(H * dpr);
     // Cover-crop the photo into its CSS box (the whole layer, or the Figma crop on slide 3) on an input canvas the size of the layer
