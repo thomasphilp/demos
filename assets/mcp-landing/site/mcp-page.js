@@ -1343,9 +1343,9 @@ export function initMcpPage(COPY, LANG) {
       }
       new ResizeObserver(reserve).observe(row)
       reserve()
-      // Autoplay: once a reply has typed, the current dot's bar fills over 3s and the next example plays (looping);
+      // Autoplay: once a reply has typed, the current dot's bar fills over 4.5s and the next example plays (looping);
       // it waits while the card is off screen
-      const AUTO_MS = 3000
+      const AUTO_MS = 4500
       const stopTimer = () => {
         clearTimeout(auto)
         auto = 0

@@ -862,7 +862,7 @@
 /* Figma 343:4486: the current dot is a 16×4 outline with a white bar inside that fills over 3s — the autoplay timer */
 .mcp-page .ap-dot.is-active { width: 16px; background: transparent; box-shadow: inset 0 0 0 1px #fff; cursor: default; }
 .mcp-page .ap-dot::after { content: ""; position: absolute; left: 1px; top: 0.5px; height: 3px; width: 0; background: #fff; }
-.mcp-page .ap-dots.is-timing .ap-dot.is-active::after { animation: mcp-ap-timer 3s linear forwards; }
+.mcp-page .ap-dots.is-timing .ap-dot.is-active::after { animation: mcp-ap-timer 4.5s linear forwards; }
 @keyframes mcp-ap-timer { to { width: calc(100% - 2px); } }
 .mcp-page .ap-dot:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
 .mcp-page .apps { padding: 60px 0 92px; }
