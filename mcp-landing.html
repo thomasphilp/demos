@@ -189,26 +189,18 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
 .vscode .v3 img { inset: -26.18% -83.33%; width: auto; height: auto; }
 .vscode .v4 { inset: 0.26% 0.06% 0.26% -0.06%; mix-blend-mode: overlay; }
 
-/* MCP URL box (Figma 381:4943 hero, 381:4973 closing CTA — the same box in both): on #fcfcfb, a mid gray 1px rim
-   with two fading green streaks orbiting it once every 4s, black offset shadow; a 30% globe, the URL in Medium 16, Copy.
-   Wider and roomier than Figma's 275×40 (316×44, 8px around Copy) so the button's wider "Copied" state still clears
-   the URL and the rim; never wider than its column on small screens */
+/* MCP URL box (Figma 381:4943 hero, 381:4973 closing CTA — the same box in both): on #fcfcfb, a 1px inside rim of
+   mid gray under a linear wash, 46% white on the left into #00ff37 green on the right; black offset shadow; a 30% globe,
+   the URL in Medium 16, Copy. Wider and roomier than Figma's 275×40 (316×44, 8px around Copy) so the button's wider
+   "Copied" state still clears the URL and the rim; never wider than its column on small screens */
 .mcp-url {
   position: relative; overflow: hidden; width: 316px; max-width: 100%; height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  /* The box itself is the persistent gray 1px rim; the beam's sweep passes over it */
+  /* The box itself is the gray rim; the beam layer is the wash over it */
   padding: 8px 8px 8px 14px; background: #878787; box-shadow: 4px 4px 0 0 #000;
 }
-.mcp-url .beam {
-  position: absolute; left: 50%; top: 50%; width: 340px; height: 340px; margin: -170px 0 0 -170px; /* covers the 316px box's whole rim as it turns */
-  background: conic-gradient(from 90deg,
-    rgba(4,132,40,0.5) 0.43%, rgba(3,163,47,0.625) 5.59%, rgba(2,194,54,0.75) 10.76%, rgba(1,224,61,0.875) 15.92%, #00ff44 21.09%,
-    rgba(1,224,61,0.875) 22.12%, rgba(3,163,47,0.625) 24.18%, rgba(6,102,33,0.375) 26.23%, rgba(7,71,26,0.25) 27.26%, rgba(9,10,12,0) 29.32%,
-    rgba(7,71,26,0.25) 40.95%, rgba(6,102,33,0.375) 46.77%, rgba(4,132,40,0.5) 52.58%, rgba(3,163,47,0.625) 58.4%, rgba(2,194,54,0.75) 64.22%,
-    rgba(1,224,61,0.875) 70.03%, #00ff44 75.85%, rgba(2,194,54,0.75) 76.83%, rgba(4,132,40,0.5) 77.81%, rgba(7,71,26,0.25) 78.79%, rgba(9,10,12,0) 79.76%,
-    rgba(7,71,26,0.25) 90.1%, rgba(6,102,33,0.375) 95.26%, rgba(4,132,40,0.5) 100%);
-  animation: beam 4s linear infinite;
-}
-@keyframes beam { to { transform: rotate(360deg); } }
+/* Figma's gradient transform mapped onto the 316×44 box: the wash runs up-right at ~48.5°, white until ~40% along, full green from ~73% */
+.mcp-url .beam { position: absolute; inset: 0; background: linear-gradient(48.5deg, rgba(255,255,255,0.46) 40.3%, #00ff37 72.6%); transition: opacity 0.3s ease; }
+@keyframes beam { to { transform: rotate(360deg); } } /* the paginator's shine */
 .mcp-url .surface { position: absolute; inset: 1px; background: #fcfcfb; } /* 1px shine border */
 .mcp-url .url { position: relative; display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 500; color: rgba(9,10,12,0.9); white-space: nowrap; }
 .mcp-url .url .ic { width: 16px; height: 16px; color: rgba(0,0,0,0.3); flex-shrink: 0; }
@@ -245,8 +237,8 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
   .mcp-url .copy-btn:hover:not(.is-copied) { background: var(--green); color: #000; }
 }
 .mcp-url:has(.copy-btn.is-copied) { background: var(--green); }
+.mcp-url:has(.copy-btn.is-copied) .beam { opacity: 0; }
 .pixel-note { font-family: var(--font-pixel); font-size: 12px; color: var(--label-muted); text-align: center; }
-/* Figma 343:3270: the hero note opens with a 10px checkmark, 8px before the words */
 
 /* ── Nav ── */
 /* Sticky: no background or blur at the very top (just the logo and pills over the hero), frosted white once the page scrolls */
@@ -456,7 +448,7 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
 .cf-comet path:nth-of-type(4n+3) { opacity: 0.25; }
 .cf-comet path:nth-of-type(4n+4) { opacity: 0.1; }
 .cf-comet:not(.is-double) path.is-follow { visibility: hidden; } /* the second comet only shows on loops picked for two */
-@media (prefers-reduced-motion: reduce) { .cf-comet { display: none; } }
+@media (prefers-reduced-motion: reduce), (max-width: 1079px) { .cf-comet { display: none; } } /* desktop only: no comets on tablet or phone */
 .cf-tab { position: absolute; left: 50%; height: 25px; translate: -50% 0; border: 1px solid #000; border-bottom: 0; }
 .cf-tab:nth-child(1) { bottom: 0; width: 84.5%; opacity: 0.2; }
 .cf-tab:nth-child(2) { bottom: 25px; width: 73.45%; opacity: 0.1; }
@@ -1014,7 +1006,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
 .cta { padding: 160px var(--gutter); display: flex; flex-direction: column; align-items: center; gap: 24px; text-align: center; }
 .cta .display { color: #000; --iri-ink: #000; text-wrap: balance; } /* Figma 245:969; the hero's iridescent band, RGB split and glow sweep it once it has typed */
 /* Figma Closing CTA (311:852): headline, "Powered by" 24px under it, then 96px down the square Sign up block and the URL box
-   with its note 14px under it, 32px apart; this URL box's beam is the dark-to-green sweep */
+   with its note 14px under it, 32px apart */
 .cta .actions { display: flex; align-items: flex-start; gap: 32px; flex-wrap: wrap; justify-content: center; margin-top: 72px; }
 .cta .url-col { display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .signup { display: inline-flex; align-items: center; gap: 10px; height: 42px; padding: 0 22px 0 20px; border-radius: 0; background: #000; color: #fff; font-family: var(--font-geist); font-weight: 600; font-size: 16px; transition: background 0.15s; }
@@ -1783,6 +1775,16 @@ track.querySelectorAll('[data-vscode-hero]').forEach(el => {
 
 /* Copy buttons */
 const checkIcon = `<svg viewBox="${ICONS['outline/check'].viewBox}" fill="none" aria-hidden="true">${ICONS['outline/check'].inner}</svg>`;
+// The async clipboard first; where it's refused (a frame without clipboard-write, an insecure origin) a hidden
+// textarea and execCommand('copy') still get the URL on the clipboard
+const copyText = async text => {
+  try { await navigator.clipboard.writeText(text); return true; } catch {}
+  const ta = Object.assign(document.createElement('textarea'), { value: text, readOnly: true });
+  ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none';
+  document.body.appendChild(ta); ta.select();
+  let ok = false; try { ok = document.execCommand('copy'); } catch {}
+  ta.remove(); return ok;
+};
 document.querySelectorAll('[data-copy]').forEach(btn => {
   // "Copy" sizes the button; "Copied" overlays it and the button widens to fit while it shows
   const label = btn.textContent.trim();
@@ -1792,8 +1794,8 @@ document.querySelectorAll('[data-copy]').forEach(btn => {
   let timer;
   btn.addEventListener('click', async () => {
     btn.classList.remove('is-tapped'); void btn.offsetWidth; btn.classList.add('is-tapped');
-    try { await navigator.clipboard.writeText(btn.dataset.copy); done.innerHTML = `${checkIcon}Copied`; btn.setAttribute('aria-label', 'Copied'); }
-    catch { done.textContent = 'Copy failed'; btn.setAttribute('aria-label', 'Copy failed'); }
+    if (await copyText(btn.dataset.copy)) { done.innerHTML = `${checkIcon}Copied`; btn.setAttribute('aria-label', 'Copied'); }
+    else { done.textContent = 'Copy failed'; btn.setAttribute('aria-label', 'Copy failed'); }
     const cs = getComputedStyle(btn);
     btn.style.setProperty('--done-w', `${done.offsetWidth + parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight)}px`);
     btn.classList.add('is-copied');
@@ -1976,7 +1978,8 @@ document.getElementById('replay-intro').addEventListener('click', () => { window
     if (view === 'desktop') return;
     const [w, h] = SIZES[view];
     shell = Object.assign(document.createElement('div'), { className: 'vp-shell' });
-    frame = Object.assign(document.createElement('iframe'), { title: `This page at ${w} × ${h}`, src: `${location.pathname}?embed=1` });
+    // clipboard-write lets the framed page's Copy buttons reach the clipboard
+    frame = Object.assign(document.createElement('iframe'), { title: `This page at ${w} × ${h}`, src: `${location.pathname}?embed=1`, allow: 'clipboard-write' });
     frame.style.width = `${w}px`; frame.style.height = `min(${h}px, 100%)`;
     shell.appendChild(frame); document.body.appendChild(shell);
   };
