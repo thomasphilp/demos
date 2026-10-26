@@ -1085,6 +1085,20 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
   .autopilot .bracket-label { flex-direction: column; } /* logos over the note, as in the setup bracket */
   .ap-title { width: 100%; }
   .ap-note { margin-left: 0; }
+  /* Intro input on tablets and phones: Figma Mobile/Chat/Composer (370:3355 / 368:734) at its own size — the question on
+     top, plus and a round send below (no tool chip in the intro), 24px corners, a 3px shine rim, send at 20% until typing */
+  .intro-composer {
+    --bw: 3px; --composer-h: 251px; /* room for two lines of the 39px question */
+    display: grid; grid-template-columns: 1fr auto; grid-template-areas: "text text" "plus send";
+    align-items: center; row-gap: 24px; column-gap: 24px; padding: 37px 16px 16px 36px; border-radius: 24px;
+    background: rgba(255,255,255,0.9); box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  }
+  .intro-composer .typed { grid-area: text; align-self: start; font-size: 39px; line-height: 1.25; letter-spacing: normal; white-space: normal; }
+  .intro-composer .caret { height: 42px; vertical-align: -9px; }
+  .intro-composer .plus { grid-area: plus; width: 36px; height: 36px; }
+  .intro-composer .send { grid-area: send; width: 72px; height: 72px; border-radius: 50%; transition: opacity 0.25s ease; }
+  .intro-composer .send img { width: 32px; height: 32px; }
+  .intro-composer.is-empty .send { opacity: 0.2; }
 }
 @media (max-width: 720px) {
   :root { --gutter: 16px; --bg-inset: var(--gutter); }
@@ -1144,11 +1158,10 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
   .cf-tab { height: 14px; }
   .cf-tab:nth-child(2) { bottom: 14px; }
   .cf-tab:nth-child(3) { bottom: 28px; }
-  /* Figma Mobile/Chat/Composer (313:6667): taller, 24px radius, question on top, plus + send row below */
+  /* Phones: the same composer at phone size — 36px question, 22px plus, 48px send */
   .intro-composer {
-    --bw: 1px; --composer-h: 230px; /* room for three lines of the 36px question */
-    display: grid; grid-template-columns: 1fr auto; grid-template-areas: "text text" "plus send";
-    align-items: center; row-gap: 14px; column-gap: 12px; padding: 20px 12px 12px 20px; border-radius: 24px;
+    --composer-h: 230px; /* room for three lines of the 36px question */
+    row-gap: 14px; column-gap: 12px; padding: 20px 12px 12px 20px;
   }
   .chat-app { transform-origin: 50% 183px; }
   .intro-composer .typed { grid-area: text; align-self: start; font-size: 36px; line-height: 1.25; /* phones: 36px (desktop 39px) */ letter-spacing: normal; white-space: normal; }
@@ -1851,7 +1864,7 @@ function playIntro() {
   introTimers.forEach(clearTimeout); introTimers = [];
   typedEl.textContent = '';
   hero.dataset.intro = 'start';
-  composer.classList.remove('is-leaving');
+  composer.classList.remove('is-leaving'); composer.classList.add('is-empty');
   twReset(heroTitle);
   hero.classList.remove('is-answered');
   if (reducedMotion) { hero.dataset.intro = 'done'; twType(heroTitle, { onDone: heroAnswered }); return; }
@@ -1865,7 +1878,7 @@ function playIntro() {
     span.className = BOLD_WORDS.has(word) ? 'word is-bold' : 'word';
     span.textContent = word;
     if (i) typedEl.appendChild(document.createTextNode(' ')); // a plain space between words, so a wrapped line doesn't start with one
-    typedEl.appendChild(span);
+    typedEl.appendChild(span); composer.classList.remove('is-empty');
   }, START + i * RATE));
   const typed = START + words.length * RATE;
   later(() => composer.classList.remove('is-typing'), typed);
