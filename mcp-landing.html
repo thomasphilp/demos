@@ -1202,7 +1202,7 @@ html:lang(zh-CN) .ap-card .agent-msg { width: auto !important; }
 <main id="top">
 <section class="hero" data-intro="start" aria-labelledby="hero-title">
   <div class="hero-bg">
-    <video src="assets/mcp-landing/hero-cube.mp4" poster="assets/mcp-landing/hero-bg.jpg" muted loop playsinline preload="auto" aria-hidden="true"></video>
+    <video src="assets/mcp-landing/hero-cube.mp4" poster="assets/mcp-landing/hero-bg.jpg" muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1"></video>
   </div>
   <div class="hero-fade"></div>
 
@@ -1572,20 +1572,25 @@ html:lang(zh-CN) .ap-card .agent-msg { width: auto !important; }
 
 <script type="module">
 /* ── Copy: every visible string in the page body comes from mcp-copy.json, the same file as the marketplace page's
-   i18n catalog (src/i18n/catalogs/mcp.json). ?lang=zh-CN shows the Simplified Chinese ── */
+   i18n catalog (src/i18n/catalogs/mcp.json). ?lang=zh-CN shows the Simplified Chinese.
+   tools/port-mcp.py builds the marketplace /mcp page from this file; the demo-only blocks below stay here
+   (there the page renders the copy itself and the site's own nav, footer and locale are already in place) ── */
+/* demo-only:start */
 const LANG = new URLSearchParams(location.search).get('lang') === 'zh-CN' ? 'zh-CN' : 'en';
 const COPY = await fetch('assets/mcp-landing/mcp-copy.json').then(r => r.json());
 document.documentElement.lang = LANG;
+/* demo-only:end */
 const tr = (key, vars = {}) => (COPY[LANG][key] ?? COPY.en[key] ?? '').replace(/{{(\w+)}}/g, (_, v) => vars[v] ?? '');
+/* demo-only:start */
 const escHtml = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 // The iridescent words keep one-line copies of their text in data-text
 const iriHtml = text => `<span class="iri" data-text="${text}"><span class="iri-glow" data-text="${text}" aria-hidden="true"></span><span class="iri-fill">${text}</span></span>`;
 // <cN> placeholders: the element each message wraps (or stands for), as the marketplace page's PageTrans components
-const RICH = { heroTitle: { c0: iriHtml }, ctaTitle: { c0: iriHtml }, connectLead: { c0: () => '<br class="br-mobile">' } };
+const RICH = { heroTitle: { c0: iriHtml }, ctaTitle: { c0: iriHtml }, connectLead: { br: () => '<br class="br-mobile">' } };
 const richHtml = key => escHtml(tr(key))
   .replace(/&lt;(c\d+)&gt;(.*?)&lt;\/\1&gt;/g, (_, c, inner) => (RICH[key]?.[c] ?? (x => x))(inner))
   .replace(/&lt;b&gt;(.*?)&lt;\/b&gt;/g, '<strong>$1</strong>')
-  .replace(/&lt;br\s*\/?&gt;/g, '<br>');
+  .replace(/&lt;br\s*\/?&gt;/g, () => RICH[key]?.br?.() ?? '<br>');
 document.querySelectorAll('[data-i18n]').forEach(el => {
   if (el.hasAttribute('data-i18n-plain')) { el.textContent = tr(el.dataset.i18n).replace(/<\/?b>/g, ''); return; }
   const icons = [...el.children].filter(c => c.matches('.ic, img')); // a leading icon stays in front of the words
@@ -1657,6 +1662,7 @@ const siteNavBar = () => navRoot.querySelector('.navbar-wrapper-light, .navbar-w
     location.href = url;
   });
 }
+/* demo-only:end */
 // Typing tokens: words and the spaces between them; Chinese has no spaces, so the segmenter's words, with punctuation
 // kept on the word before it (opening brackets and quotes on the word after)
 const segmenter = LANG === 'zh-CN' && Intl.Segmenter ? new Intl.Segmenter('zh-CN', { granularity: 'word' }) : null;
@@ -1906,6 +1912,7 @@ if (!reducedMotion) { heroVideo.muted = true; heroVideo.play().catch(() => {}); 
 const heroReady = new Promise(r => heroVideo.readyState >= 2 ? r() : heroVideo.addEventListener('loadeddata', r, { once: true }));
 Promise.race([heroReady, new Promise(r => setTimeout(r, 1500))])
   .then(() => requestAnimationFrame(() => requestAnimationFrame(() => { if (!introSkipped) playIntro(); })));
+/* demo-only:start */
 document.getElementById('replay-intro').addEventListener('click', () => { window.scrollTo({ top: 0 }); introSkipped = false; playIntro(); });
 
 /* ── Viewport switcher: Tablet / Mobile show the page in a frame at that width (?view= keeps it on reload);
@@ -1941,6 +1948,7 @@ document.getElementById('replay-intro').addEventListener('click', () => { window
   }, true));
   set(new URLSearchParams(location.search).get('view'));
 })();
+/* demo-only:end */
 
 /* ── Chat examples: Rest → Hover, reply types in led by the cursor ── */
 // Copy from mcp-copy.json (ex1Q, ex1Lead …); w is the resting bubble's width, tuned to the English (Chinese sizes to its text);
@@ -2057,6 +2065,7 @@ grid.querySelectorAll('.ex-card').forEach(card => {
     card.classList.contains('is-open') ? closeCard(card) : openCard(card);
   }, { passive: true });
 });
+/* demo-only:start */
 document.getElementById('open-all').addEventListener('click', e => {
   const on = document.body.classList.toggle('show-all');
   e.currentTarget.textContent = on ? 'Hide replies' : 'Show all replies';
@@ -2064,7 +2073,8 @@ document.getElementById('open-all').addEventListener('click', e => {
     if (on) { card.classList.add('is-open'); cancelTyping(card); fillReply(card); }
     else { card.classList.remove('is-open'); }
   });
-});
+});/* demo-only:end */
+
 
 /* ── Typewriter for AI replies: words appear one at a time, a square caret leads each word ── */
 function twPrep(el) {
