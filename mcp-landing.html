@@ -6,7 +6,7 @@
 <title>Mothership MCP — Mothership Demo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist+Pixel&family=Geist:wght@400;500;600;700&family=Inter:wght@400;600;700&family=Instrument+Sans:wght@600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist+Pixel&family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -23,13 +23,14 @@
   --green-copy: #1aff00;
   --surface-glass: rgba(255,255,255,0.7);
   --shadow-float: 0 4px 92px 0 rgba(0,0,0,0.1);
-  /* Everything outside the nav is Geist, at the weights the original faces used (Bricolage / Instrument Sans / Inter / Outfit) */
+  /* Everything is Geist, at the weights the original faces used (Bricolage / Instrument Sans / Inter / Outfit), except
+     Figma's Geist Pixel notes: "Requires an approved Mothership account", "Now available in", "Powered by" */
   --font-display: 'Geist', sans-serif;
   --font-ui: 'Geist', sans-serif;
   --font-geist: 'Geist', sans-serif;
   --font-pixel: 'Geist Pixel', 'Geist', monospace;
   --font-logo: 'Geist', sans-serif;
-  --font-nav-title: 'Instrument Sans', sans-serif; /* All Products menu panel titles, as on mothership.com */
+  --font-nav-title: 'Geist', sans-serif; /* All Products menu panel titles */
   --content: 1120px;
   --gutter: 24px;
   --bg-inset: 50px; /* photo backgrounds (examples, desk/dock slider) stop this far short of the viewport edges */
@@ -59,7 +60,7 @@ img { display: block; }
   display: flex; align-items: center; gap: 8px;
   padding: 10px 24px; background: #000;
   border-bottom: 1px solid rgba(255,255,255,0.08);
-  font-family: 'Inter', sans-serif; font-size: 12px;
+  font-family: var(--font-ui); font-size: 12px;
 }
 .demo-bar-label {
   font-weight: 500; margin-right: 4px;
