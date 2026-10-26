@@ -74,6 +74,19 @@ img { display: block; }
 }
 .demo-bar button:hover { background: rgba(255,255,255,0.15); }
 .demo-bar-note { margin-left: auto; color: rgba(255,255,255,0.45); }
+/* Viewport switcher: Desktop is the page itself; Tablet and Mobile load the page again in a frame at that width */
+.demo-bar .vp-group { display: flex; gap: 2px; padding: 2px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.25); }
+.demo-bar .vp-group button { border: 0; padding: 3px 10px; background: transparent; }
+.demo-bar .vp-group button[aria-pressed="true"] { background: #fff; color: #000; }
+.vp-shell { position: fixed; inset: 44px 0 0; z-index: 9998; display: flex; justify-content: center; align-items: flex-start; padding: 16px; overflow: auto; background: #161616; }
+.vp-shell iframe { flex: none; border: 0; background: #fff; box-shadow: 0 0 0 1px rgba(255,255,255,0.14), 0 24px 64px rgba(0,0,0,0.5); }
+html.is-previewing body { overflow: hidden; }
+html.is-previewing body > :not(.demo-bar):not(.vp-shell) { visibility: hidden; }
+/* Inside the frame (?embed=1): no demo bar, so the page starts at the top */
+html.is-embed .demo-bar { display: none; }
+html.is-embed body { padding-top: 0; }
+html.is-embed .site-nav { top: 0; }
+html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
 
 /* ── Icons (from icons.json) ── */
 .ic { display: inline-flex; flex-shrink: 0; width: 20px; height: 20px; }
@@ -1059,7 +1072,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
   :root { --gutter: 16px; --bg-inset: var(--gutter); }
   .examples-grid { --card-inset: 0px; }
   .demo-bar { padding: 10px 16px; }
-  .demo-bar-note { display: none; }
+  .demo-bar-note, .demo-bar .vp-group { display: none; }
   .site-nav { padding: 0 16px; gap: 8px; }
   .site-nav .logo { width: 116px; height: 12px; }
   .site-nav .pill:not(.is-dark) { display: none; }
@@ -1158,12 +1171,18 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
   .scene .photo { animation: none !important; }
 }
 </style>
+<script>if (new URLSearchParams(location.search).has('embed')) document.documentElement.classList.add('is-embed');</script>
 </head>
 <body>
 
 <div class="demo-bar" role="region" aria-label="Demo controls">
   <span class="demo-bar-label">MCP landing</span>
   <button type="button" id="replay-intro">Replay intro</button>
+  <span class="vp-group" role="group" aria-label="Viewport size">
+    <button type="button" data-view="desktop" aria-pressed="true" title="Full window">Desktop</button>
+    <button type="button" data-view="tablet" aria-pressed="false" title="768 × 1024">Tablet</button>
+    <button type="button" data-view="mobile" aria-pressed="false" title="375 × 812">Mobile</button>
+  </span>
   <button type="button" id="open-all">Show all replies</button>
   <span class="demo-bar-note">Hover a chat example to see the reply</span>
 </div>
@@ -1888,6 +1907,39 @@ const heroReady = new Promise(r => heroVideo.readyState >= 2 ? r() : heroVideo.a
 Promise.race([heroReady, new Promise(r => setTimeout(r, 1500))])
   .then(() => requestAnimationFrame(() => requestAnimationFrame(playIntro)));
 document.getElementById('replay-intro').addEventListener('click', () => { window.scrollTo({ top: 0 }); playIntro(); });
+
+/* ── Viewport switcher: Tablet / Mobile show the page in a frame at that width (?view= keeps it on reload);
+   while one is showing, Replay intro and Show all replies act on the framed page ── */
+(() => {
+  if (document.documentElement.classList.contains('is-embed')) return;
+  const SIZES = { tablet: [768, 1024], mobile: [375, 812] };
+  const btns = [...document.querySelectorAll('.demo-bar [data-view]')];
+  let shell = null, frame = null;
+  const set = (view) => {
+    if (!SIZES[view]) view = 'desktop';
+    btns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === view)));
+    const url = new URL(location.href);
+    view === 'desktop' ? url.searchParams.delete('view') : url.searchParams.set('view', view);
+    history.replaceState(null, '', url);
+    shell?.remove(); shell = frame = null;
+    document.documentElement.classList.toggle('is-previewing', view !== 'desktop');
+    document.getElementById('open-all').textContent = document.body.classList.contains('show-all') ? 'Hide replies' : 'Show all replies';
+    if (view === 'desktop') return;
+    const [w, h] = SIZES[view];
+    shell = Object.assign(document.createElement('div'), { className: 'vp-shell' });
+    frame = Object.assign(document.createElement('iframe'), { title: `This page at ${w} × ${h}`, src: `${location.pathname}?embed=1` });
+    frame.style.width = `${w}px`; frame.style.height = `min(${h}px, 100%)`;
+    shell.appendChild(frame); document.body.appendChild(shell);
+  };
+  btns.forEach(b => b.addEventListener('click', () => set(b.dataset.view)));
+  ['replay-intro', 'open-all'].forEach(id => document.getElementById(id).addEventListener('click', (e) => {
+    if (!frame) return;
+    e.stopImmediatePropagation();
+    const inner = frame.contentDocument?.getElementById(id);
+    if (inner) { inner.click(); e.currentTarget.textContent = inner.textContent; }
+  }, true));
+  set(new URLSearchParams(location.search).get('view'));
+})();
 
 /* ── Chat examples: Rest → Hover, reply types in led by the cursor ── */
 const EXAMPLES = [
