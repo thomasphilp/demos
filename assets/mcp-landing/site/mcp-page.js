@@ -1,6 +1,8 @@
 /* biome-ignore-all lint: plain DOM script written as one file; Biome formats it but its lint rules aren't applied */
 /** The page this script is running on: its <main>, and how to stop it */
 let current = null
+/** Whether the script has run since the document loaded: only that first run can be a refresh */
+let loaded = false
 
 /**
  * The page's motion: the intro, typing, reveals, sliders, cursor grids and shaders. Runs once per page, and returns a
@@ -57,14 +59,15 @@ export function initMcpPage(COPY, LANG) {
     for (const o of observers) o.disconnect()
     for (const id of timers) id < 0 ? window.clearInterval(-id) : window.clearTimeout(id)
     for (const id of frames) window.cancelAnimationFrame(id)
-    if ('scrollRestoration' in history) history.scrollRestoration = 'auto'
     if (current?.root === root) current = null
   }
   const release = () => window.setTimeout(() => root?.isConnected || stop())
   current = { root, stop, release }
-  // A refresh always starts at the top, where the intro plays: no restored scroll position
-  if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
-  scrollTo(0, 0)
+  // A refresh always starts at the top, where the intro plays. Everything else is the router's: it scrolls a link to a
+  // part of the page (/mcp#get-started) into view and restores the place on a return through history
+  const refresh = !loaded && performance.getEntriesByType('navigation')[0]?.type === 'reload'
+  loaded = true
+  if (refresh && !location.hash) scrollTo(0, 0)
   // The site's nav bar, for the hero's cube placement (a top bar on desktop, a bottom bar on tablets and phones)
   const siteNavBar = () => document.querySelector('.navbar-wrapper-light, .navbar-wrapper')
   /* ── Copy: every visible string in the page body comes from mcp-copy.json, the same file as the marketplace page's
@@ -501,7 +504,8 @@ export function initMcpPage(COPY, LANG) {
     new ResizeObserver(place).observe(chat)
     place()
   })()
-  // Started from script (muted) rather than the autoplay attribute; skipped for reduced motion
+  // Started from script (muted) rather than the autoplay attribute; skipped for reduced motion. The video doesn't
+  // preload, so reduced motion never downloads it and shows the poster
   if (!reducedMotion) {
     heroVideo.muted = true
     heroVideo.play().catch(() => {})

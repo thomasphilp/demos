@@ -3,7 +3,7 @@
 /* The site's Webflow CSS styles bare elements page-wide (p, a, headings, images…). Inside the page they go back to the
    browser defaults the demo is built on, and the page's own rules (all more specific) take it from there */
 .mcp-page { line-height: normal; letter-spacing: normal; }
-.mcp-page :where(p, a, h1, h2, h3, h4, strong, b, em, small, ul, ol, li, button, img, video, svg, figure, blockquote, label, input) { all: revert; }
+.mcp-page :where(p, a, h1, h2, h3, h4, strong, b, em, small, ul, ol, li, button, img, video, figure, blockquote, label, input) { all: revert; }
 .mcp-page * { margin: 0; padding: 0; box-sizing: border-box; }
 .mcp-page {
   --ink: #141414;
