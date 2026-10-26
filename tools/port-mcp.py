@@ -200,6 +200,7 @@ def render_node(node, depth):
     pad = '  ' * depth
     if isinstance(node, tuple): return f"{pad}{{/* {node[1].strip()} */}}"
     if isinstance(node, str):
+        if node.strip(' \t\n\r') == '\xa0': return pad + "{'\\u00a0'}"  # a held line (&nbsp;), filled in by the script
         text = re.sub(r'\s+', ' ', node)
         return pad + jsx_text(text.strip()) if text.strip() else None
     open_tag = f'<{node.tag}{attrs_jsx(node)}'
