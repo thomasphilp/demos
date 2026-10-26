@@ -452,6 +452,9 @@
 .mcp-page .intro-composer .send img, .mcp-page .scene .composer .send img { width: 31px; height: 31px; }
 .mcp-page .intro-composer .typed, .mcp-page .scene .composer .typed { flex: 1; min-width: 0; font-size: 39px; font-weight: 500; letter-spacing: -0.02em; color: #000; white-space: nowrap; overflow: hidden; }
 /* -2% on the desktop input; phones keep normal spacing */
+/* The intro's question stays on one line on desktops: 37px at full width (39px clipped its question mark), and smaller
+   as the window narrows so the whole question still fits the input (about 23 font-sizes wide) */
+.mcp-page .intro-composer .typed { font-size: min(37px, (100vw - 259px) / 23); }
 .mcp-page .intro-composer .caret, .mcp-page .scene .composer .caret { display: inline-block; width: 2.5px; height: 38px; background: #000; vertical-align: -7px; margin-left: 2px; animation: mcp-blink 0.9s steps(1) infinite; }
 .mcp-page .intro-composer.is-typing .caret, .mcp-page .scene .composer.is-typing .caret { animation: none; }
 .mcp-page .send { width: 72px; height: 72px; border-radius: 18px; background: var(--gray-950); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
