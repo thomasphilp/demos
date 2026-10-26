@@ -190,25 +190,22 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
 .vscode .v4 { inset: 0.26% 0.06% 0.26% -0.06%; mix-blend-mode: overlay; }
 
 /* MCP URL box (Figma 381:4943 hero, 381:4973 closing CTA — the same box in both): on #fcfcfb, a mid gray 1px rim
-   with two fading green streaks orbiting it once every 4s, black offset shadow; a 30% globe, the URL in Medium 16, Copy.
+   with a green comet running round it once every 4s, black offset shadow; a 30% globe, the URL in Medium 16, Copy.
    Wider and roomier than Figma's 275×40 (316×44, 8px around Copy) so the button's wider "Copied" state still clears
    the URL and the rim; never wider than its column on small screens */
 .mcp-url {
   position: relative; overflow: hidden; width: 316px; max-width: 100%; height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  /* The box itself is the persistent gray 1px rim; the beam's sweep passes over it */
+  /* The box itself is the persistent gray 1px rim; the comet runs over it */
   padding: 8px 8px 8px 14px; background: #878787; box-shadow: 4px 4px 0 0 #000;
 }
-.mcp-url .beam {
-  position: absolute; left: 50%; top: 50%; width: 340px; height: 340px; margin: -170px 0 0 -170px; /* covers the 316px box's whole rim as it turns */
-  background: conic-gradient(from 90deg,
-    rgba(4,132,40,0.5) 0.43%, rgba(3,163,47,0.625) 5.59%, rgba(2,194,54,0.75) 10.76%, rgba(1,224,61,0.875) 15.92%, #00ff44 21.09%,
-    rgba(1,224,61,0.875) 22.12%, rgba(3,163,47,0.625) 24.18%, rgba(6,102,33,0.375) 26.23%, rgba(7,71,26,0.25) 27.26%, rgba(9,10,12,0) 29.32%,
-    rgba(7,71,26,0.25) 40.95%, rgba(6,102,33,0.375) 46.77%, rgba(4,132,40,0.5) 52.58%, rgba(3,163,47,0.625) 58.4%, rgba(2,194,54,0.75) 64.22%,
-    rgba(1,224,61,0.875) 70.03%, #00ff44 75.85%, rgba(2,194,54,0.75) 76.83%, rgba(4,132,40,0.5) 77.81%, rgba(7,71,26,0.25) 78.79%, rgba(9,10,12,0) 79.76%,
-    rgba(7,71,26,0.25) 90.1%, rgba(6,102,33,0.375) 95.26%, rgba(4,132,40,0.5) 100%);
-  animation: beam 4s linear infinite;
-}
-@keyframes beam { to { transform: rotate(360deg); } }
+/* The comet: four stacked dashes on the rim sharing one head, each longer and fainter, so the tail fades out behind it */
+.rim-comet { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.rim-comet path { fill: none; stroke: #00ff44; stroke-width: 1px; }
+.rim-comet path:nth-of-type(2) { opacity: 0.6; }
+.rim-comet path:nth-of-type(3) { opacity: 0.3; }
+.rim-comet path:nth-of-type(4) { opacity: 0.12; }
+@media (prefers-reduced-motion: reduce) { .rim-comet { display: none; } }
+@keyframes beam { to { transform: rotate(360deg); } } /* the paginator's shine */
 .mcp-url .surface { position: absolute; inset: 1px; background: #fcfcfb; } /* 1px shine border */
 .mcp-url .url { position: relative; display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 500; color: rgba(9,10,12,0.9); white-space: nowrap; }
 .mcp-url .url .ic { width: 16px; height: 16px; color: rgba(0,0,0,0.3); flex-shrink: 0; }
@@ -909,6 +906,11 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
 .hero > .cursor-grid.is-soft { -webkit-mask: linear-gradient(to bottom, transparent var(--fade-a, 50%), #000 var(--fade-b, 60%)); mask: linear-gradient(to bottom, transparent var(--fade-a, 50%), #000 var(--fade-b, 60%)); }
 .hero:not([data-intro="done"]) > .cursor-grid.is-soft { -webkit-mask: linear-gradient(to bottom, transparent var(--fade-a-intro, 50%), #000 var(--fade-b-intro, 60%)); mask: linear-gradient(to bottom, transparent var(--fade-a-intro, 50%), #000 var(--fade-b-intro, 60%)); }
 .setup-bg { z-index: -2; }
+/* The chat card's frosted glass blurs the hero's gray grid away, so a copy of it is drawn above the glass (under the
+   card's content), lined up with the hero; it fades out with the glass so the hero's own grid takes over below */
+.chat-app > .chat-grid { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; pointer-events: none; -webkit-mask: var(--chrome-fade); mask: var(--chrome-fade); }
+.chat-grid > .cursor-grid { -webkit-mask: linear-gradient(to bottom, transparent var(--fade-a, 50%), #000 var(--fade-b, 60%)); mask: linear-gradient(to bottom, transparent var(--fade-a, 50%), #000 var(--fade-b, 60%)); }
+.hero:not([data-intro="done"]) .chat-grid > .cursor-grid { -webkit-mask: linear-gradient(to bottom, transparent var(--fade-a-intro, 50%), #000 var(--fade-b-intro, 60%)); mask: linear-gradient(to bottom, transparent var(--fade-a-intro, 50%), #000 var(--fade-b-intro, 60%)); }
 .autopilot { padding: 120px 0; display: flex; flex-direction: column; align-items: center; gap: 80px; }
 .autopilot .bracket-lines { width: min(1053px, calc(100% - 2 * var(--gutter))); height: 39px; } /* ends exactly on the box's top border, not across it */
 .autopilot .bracket-label { color: rgba(255,255,255,0.9); }
@@ -1363,7 +1365,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
           <div class="connect-block">
             <p class="pixel-note">Just ask your AI how. Requires an approved Mothership account.</p>
             <div class="mcp-url">
-              <span class="beam"></span><span class="surface"></span>
+              <span class="surface"></span>
               <span class="url"><span class="ic" data-icon="outline/globe-alt" aria-hidden="true"></span>mcp.mothership.com</span>
               <button type="button" class="copy-btn" data-copy="https://mcp.mothership.com">Copy</button>
             </div>
@@ -1684,7 +1686,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
       <a class="signup" href="https://www.mothership.com"><img src="assets/mcp-landing/icon-arrow.svg" alt="">Sign up in 60 seconds</a>
       <div class="url-col">
         <div class="mcp-url">
-          <span class="beam"></span><span class="surface"></span>
+          <span class="surface"></span>
           <span class="url"><span class="ic" data-icon="outline/globe-alt" aria-hidden="true"></span>mcp.mothership.com</span>
           <button type="button" class="copy-btn" data-copy="https://mcp.mothership.com">Copy</button>
         </div>
@@ -2296,6 +2298,35 @@ document.querySelectorAll('.iri').forEach(el => {
   if (document.querySelector('.hero.is-answered')) start(); else document.addEventListener('hero:answered', start, { once: true });
 })();
 
+/* ── MCP URL boxes: a comet laps the 1px rim at an even speed, once every 4s ── */
+document.querySelectorAll('.mcp-url').forEach(box => {
+  if (reducedMotion) return;
+  const NS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('class', 'rim-comet'); svg.setAttribute('aria-hidden', 'true');
+  const paths = [0, 1, 2, 3].map(() => svg.appendChild(document.createElementNS(NS, 'path')));
+  box.prepend(svg); // under the surface, so only the rim shows
+  // Each layer's length as a share of the rim; the head runs one lap per loop
+  const LENS = [0.06, 0.12, 0.2, 0.3], LOOP = 4000;
+  let anims = [];
+  const trace = () => {
+    const W = box.offsetWidth, H = box.offsetHeight;
+    if (!W) return;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    paths.forEach(p => p.setAttribute('d', `M0.5 0.5 H${W - 0.5} V${H - 0.5} H0.5 Z`)); // clockwise from the top-left corner
+    const P = paths[0].getTotalLength();
+    const t = anims[0] ? anims[0].currentTime : 0;
+    anims.forEach(a => a.cancel());
+    anims = paths.map((p, i) => {
+      const len = LENS[i] * P;
+      p.style.strokeDasharray = `${len}px ${P - len}px`;
+      return p.animate([{ strokeDashoffset: `${len}px` }, { strokeDashoffset: `${len - P}px` }], { duration: LOOP, iterations: Infinity });
+    });
+    anims.forEach(a => { a.currentTime = t; }); // re-traced on resize: keep its place
+  };
+  new ResizeObserver(trace).observe(box); trace();
+});
+
 /* ── Hero chat card: fade its chrome to white from the top of the connect block ── */
 (() => {
   const card = document.querySelector('.chat-app');
@@ -2838,7 +2869,15 @@ cursorGrid(stageWrap, {
 // hero where the video has faded to white
 const SOFT = { px: 3, color: '#8b929c', alpha: 0.3, edge: 0.35, fade: 0.3, speed: 18, reach: 10, clickReach: 10,
   cols: (w) => w >= 1280 ? 36 : w >= 992 ? 30 : w >= 768 ? 22 : 12 };
-cursorGrid(hero, { ...SOFT, mount: () => { const cv = document.createElement('canvas'); hero.querySelector('.hero-fade').after(cv); cv.classList.add('is-soft'); return [cv]; } });
+cursorGrid(hero, { ...SOFT, mount: () => {
+  const cv = document.createElement('canvas'); hero.querySelector('.hero-fade').after(cv); cv.classList.add('is-soft');
+  // …mirrored above the chat card's glass, shifted back by the card's offset so its cells sit on the hero's
+  const card = hero.querySelector('.chat-app'), wrap = Object.assign(document.createElement('div'), { className: 'chat-grid' });
+  const mirror = document.createElement('canvas'); wrap.append(mirror); card.querySelector('.chat-shadow').after(wrap);
+  const align = () => { let x = 0, y = 0, n = card; while (n && n !== hero) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; } mirror.style.translate = `${-x}px ${-y}px`; };
+  new ResizeObserver(align).observe(hero); align();
+  return [cv, mirror];
+} });
 document.querySelectorAll('.features, .examples, .devices-head, .devices, .cta, .site-footer').forEach((sec) => {
   sec.classList.add('has-soft-grid');
   cursorGrid(sec, { ...SOFT, mount: () => { const cv = document.createElement('canvas'); sec.prepend(cv); return [cv]; } });
