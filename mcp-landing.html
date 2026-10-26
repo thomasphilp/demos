@@ -352,7 +352,12 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
 .hero-bg video.is-placed { position: absolute; object-fit: fill; -webkit-mask: linear-gradient(to bottom, transparent, #000 64px, #000 calc(100% - 120px), transparent); mask: linear-gradient(to bottom, transparent, #000 64px, #000 calc(100% - 120px), transparent); }
 /* White fade over the video: fully white by the chat card's vertical middle, solid white below.
    Placed by script against the chat (which doesn't move), so the lift never shifts it. */
-.hero-fade { --fade-len: 536px; position: absolute; left: 0; right: 0; top: 286px; height: 536px; background: linear-gradient(to bottom, rgba(255,255,255,0), #fff var(--fade-len), #fff); }
+@property --fade-len { syntax: '<length>'; inherits: false; initial-value: 536px; }
+.hero-fade { --fade-len: var(--fade-len-done, 536px); position: absolute; left: 0; right: 0; top: 286px; height: 536px; background: linear-gradient(to bottom, rgba(255,255,255,0), #fff var(--fade-len), #fff);
+  transition: translate 0.9s cubic-bezier(.16,1,.3,1) 0.12s, --fade-len 0.9s cubic-bezier(.16,1,.3,1) 0.12s; }
+/* During the intro (only the input over the clip) the fade starts 35% of its length lower and runs 25% shorter, so more
+   of the cube shows; it glides into its chat position, with the clip's lift, once the reply comes in */
+.hero:not([data-intro="done"]) .hero-fade { translate: 0 var(--fade-drop, 0px); --fade-len: var(--fade-len-intro, 536px); }
 
 /* The card's chrome (glass, border, shadow, rail) fades to white behind the connect block;
    --fade-start/--fade-end are measured from the card top in JS. Content stays fully opaque. */
@@ -899,6 +904,7 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
 .has-soft-grid > .cursor-grid { z-index: -1; }
 /* Hero: the gray grid takes over where the video fades to white (--fade-a/--fade-b follow the fade) */
 .hero > .cursor-grid.is-soft { -webkit-mask: linear-gradient(to bottom, transparent var(--fade-a, 50%), #000 var(--fade-b, 60%)); mask: linear-gradient(to bottom, transparent var(--fade-a, 50%), #000 var(--fade-b, 60%)); }
+.hero:not([data-intro="done"]) > .cursor-grid.is-soft { -webkit-mask: linear-gradient(to bottom, transparent var(--fade-a-intro, 50%), #000 var(--fade-b-intro, 60%)); mask: linear-gradient(to bottom, transparent var(--fade-a-intro, 50%), #000 var(--fade-b-intro, 60%)); }
 .setup-bg { z-index: -2; }
 .autopilot { padding: 120px 0; display: flex; flex-direction: column; align-items: center; gap: 80px; }
 .autopilot .bracket-lines { width: min(1053px, calc(100% - 2 * var(--gutter))); height: 39px; } /* ends exactly on the box's top border, not across it */
@@ -1911,8 +1917,11 @@ const heroVideo = hero.querySelector('.hero-bg video');
     const mid = chat.offsetTop + chat.offsetHeight / 2, fadeLen = Math.max(200, (mid - chat.offsetTop) * 0.9);
     fade.style.top = `${mid - fadeLen}px`;
     fade.style.height = `${Math.max(fadeLen, bg.offsetTop + top + vh - (mid - fadeLen))}px`;
-    fade.style.setProperty('--fade-len', `${fadeLen}px`);
+    const drop = fadeLen * 0.35, introLen = fadeLen * 0.75;
+    fade.style.setProperty('--fade-len-done', `${fadeLen}px`);
+    fade.style.setProperty('--fade-len-intro', `${introLen}px`); fade.style.setProperty('--fade-drop', `${drop}px`);
     hero.style.setProperty('--fade-a', `${mid - fadeLen}px`); hero.style.setProperty('--fade-b', `${mid}px`);
+    hero.style.setProperty('--fade-a-intro', `${mid - fadeLen + drop}px`); hero.style.setProperty('--fade-b-intro', `${mid - fadeLen + drop + introLen}px`);
     hero.style.setProperty('--cube-y', `${cubeY}px`);
     chat.style.transformOrigin = `50% ${cubeY - chat.offsetTop}px`;
     // Once the chat is in, lift the clip (with its sky and fade) so the cube's top peeks above the card:
