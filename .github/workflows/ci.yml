@@ -27,7 +27,9 @@ jobs:
         run: npm install -g html-validate
 
       - name: Validate HTML files
-        run: html-validate services-simplified.html accessorials-form.html mcp-landing.html
+        # mcp-landing.html and mcp-landing.zh-CN.html are built from the /mcp page in mothership/marketplace by
+        # tools/build-demo.py (React's server markup); the page's checks run in that repo
+        run: html-validate services-simplified.html accessorials-form.html
 
   # ---------------------------------------------------------------------------
   #  🔗  JOB: links — broken link check
