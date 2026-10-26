@@ -2297,10 +2297,15 @@ document.querySelectorAll('.iri').forEach(el => {
     items.forEach(it => { it.ready = true; }); pump();
   };
   addEventListener('scroll', atBottom, { passive: true });
-  // Scrolling on past a headline or reply that's still typing (it's into the top 40% of the screen) finishes it at once,
-  // so what's under it fades in as it arrives instead of waiting on the words
+  // Scrolling on down while a headline or reply types finishes that one block at once, so the next ones can play as
+  // usual (fade-in, typing). It counts from where the page was when its first word landed, and only 40px further down,
+  // so the scroll that brings it in doesn't finish it before it's seen.
+  let typedFrom = null;
   addEventListener('scroll', () => {
-    if (typing && typing.el.getBoundingClientRect().bottom < innerHeight * 0.4) typing.el._tw.finish?.();
+    if (!typing) { typedFrom = null; return; }
+    if (!typing.el.querySelector('.tw-w.is-on')) return; // still in its start delay
+    if (typedFrom === null || typedFrom.el !== typing.el) typedFrom = { el: typing.el, y: scrollY };
+    if (scrollY - typedFrom.y > 40) typing.el._tw.finish?.();
   }, { passive: true });
   // Nothing below the hero starts until the hero's answer and connect block are in
   document.addEventListener('hero:answered', () => { if (!open) { open = true; setTimeout(pump, 700); } });
