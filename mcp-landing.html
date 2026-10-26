@@ -323,13 +323,13 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
 .hero { position: relative; padding: 143px 0 120px; overflow: hidden; }
 /* The clip is placed by script so the cube sits dead centre in the viewport. The cube is high in the frame,
    so the space above the clip is a sky fill built from the clip's top edge (sampled across 0–8s),
-   deepening upward, and the clip's top edge fades into it */
+   lightening upward so the nav's black logo and labels stand out, and the clip's top edge fades into it */
 .hero-bg {
   --sky-h: 0px;
   position: absolute; left: 0; right: 0; top: -164px; height: 986px; overflow: hidden;
   /* Sky only above the clip (plus the clip's faded top edge); white below, should the clip end early */
   background:
-    linear-gradient(to bottom, rgba(38,92,112,0.55), rgba(38,92,112,0) var(--sky-h)) top / 100% calc(var(--sky-h) + 64px) no-repeat,
+    linear-gradient(to bottom, rgba(255,255,255,0.6), rgba(255,255,255,0) var(--sky-h)) top / 100% calc(var(--sky-h) + 64px) no-repeat,
     linear-gradient(to right, #7dabb5, #97afb9 16.7%, #90a9b4 33.3%, #799ead 50%, #7a9fad 66.7%, #829fab 83.3%, #598c9c) top / 100% calc(var(--sky-h) + 64px) no-repeat,
     #fff;
 }
