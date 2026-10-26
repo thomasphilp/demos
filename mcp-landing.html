@@ -1155,6 +1155,10 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
   .scene-a .composer .send img, .scene-ask .composer .send img { width: calc(22px * var(--k)); height: calc(22px * var(--k)); }
   .desk-window { scale: min(1, calc((var(--stage-vis, 1548) - 60) / 968)); }
   .cf-body { padding: 4px 12px 32px; gap: 40px; }
+  /* The hero URL box is only the frame's inner width here, so the URL drops to 13px (6px after the globe, 12px left pad,
+     8px minimum before Copy) and the wider "Copied" still clears the URL and the rim */
+  .hero-connect .mcp-url { padding-left: 12px; gap: 8px; }
+  .hero-connect .mcp-url .url { font-size: 13px; gap: 6px; }
   /* Shorter stacked outlines on phones: 14px each, still flush and 16px above the frame */
   .cf-stack { top: calc(10.5px - 16px - 42px); height: 42px; }
   .cf-tab { height: 14px; }
