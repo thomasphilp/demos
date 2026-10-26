@@ -624,6 +624,11 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
    (lower ones stay up underneath, so the crossfade never shows the warehouse through) */
 .examples-alt { opacity: 0; transition: opacity 0.7s cubic-bezier(.22,1,.36,1); }
 .examples-alt.is-on { opacity: 1; }
+/* While the page is scrolling, the current row's photo swaps for its Figma-shaded version (Section 3, 373:4784–4786),
+   in fast and back out once the scroll settles */
+.examples-shade { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 100%; height: 1029px; object-fit: cover; opacity: 0; transition: opacity 0.45s ease; }
+.examples-shade.is-on { opacity: 1; transition-duration: 0.12s; }
+@media (prefers-reduced-motion: reduce) { .examples-shade { display: none; } }
 /* Cards stay inside the inset photo: a gutter in from its edges (flush with it on phones) */
 .examples-grid { --card-inset: var(--gutter); position: relative; width: min(1272px, 100% - 2 * var(--bg-inset) - 2 * var(--card-inset)); margin: 0 auto; padding-top: 76px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 45px 28px; }
 
@@ -1371,7 +1376,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
     <p class="bracket-label"><span class="ic ic-24" data-icon="solid/AI chat"></span>Here’s how people ask. No waiting.</p>
   </div>
   <div class="examples-stage">
-    <div class="examples-bg"><img class="examples-photo" src="assets/mcp-landing/warehouse.jpg" alt=""><img class="examples-alt" src="assets/mcp-landing/examples-bg-2.jpg" alt="" decoding="async"><img class="examples-alt" src="assets/mcp-landing/examples-bg-3.jpg" alt="" decoding="async"></div>
+    <div class="examples-bg"><img class="examples-photo" src="assets/mcp-landing/warehouse.jpg" alt=""><img class="examples-alt" src="assets/mcp-landing/examples-bg-2.jpg" alt="" decoding="async"><img class="examples-alt" src="assets/mcp-landing/examples-bg-3.jpg" alt="" decoding="async"><img class="examples-shade" src="assets/mcp-landing/examples-bg-1-shaded.png" alt="" decoding="async" loading="lazy"><img class="examples-shade" src="assets/mcp-landing/examples-bg-2-shaded.png" alt="" decoding="async" loading="lazy"><img class="examples-shade" src="assets/mcp-landing/examples-bg-3-shaded.png" alt="" decoding="async" loading="lazy"></div>
     <div class="examples-grid" id="examples-grid"></div>
   </div>
 </section>
@@ -1796,14 +1801,26 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matc
   const schedule = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
   addEventListener('scroll', schedule, { passive: true }); addEventListener('resize', schedule); update();
 
-  // All Products opens on click; hovering, focusing or tapping a product shows its panel
+  // All Products opens on click, or on hover with a mouse (it closes a beat after the pointer leaves both the button and
+  // the sheet, so crossing the gap between them doesn't drop it); hovering, focusing or tapping a product shows its panel
   const setOpen = open => {
     menu.classList.toggle('is-open', open);
     menu.inert = !open;
     toggle.setAttribute('aria-expanded', open);
     update();
   };
-  toggle.addEventListener('click', () => setOpen(!menu.classList.contains('is-open')));
+  let hoverTimer = 0, hoverOpenedAt = 0;
+  const hoverIn = e => {
+    if (e.pointerType !== 'mouse') return;
+    clearTimeout(hoverTimer);
+    if (!menu.classList.contains('is-open')) { hoverOpenedAt = performance.now(); setOpen(true); }
+  };
+  const hoverOut = e => { if (e.pointerType === 'mouse') { clearTimeout(hoverTimer); hoverTimer = setTimeout(() => setOpen(false), 250); } };
+  toggle.addEventListener('pointerenter', hoverIn); toggle.addEventListener('pointerleave', hoverOut);
+  menu.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') clearTimeout(hoverTimer); });
+  menu.addEventListener('pointerleave', hoverOut);
+  // A click straight after the hover opened it (the same gesture) leaves it open
+  toggle.addEventListener('click', () => { if (performance.now() - hoverOpenedAt > 500) setOpen(!menu.classList.contains('is-open')); });
   document.addEventListener('pointerdown', e => {
     if (menu.classList.contains('is-open') && !menu.contains(e.target) && !toggle.contains(e.target)) setOpen(false);
   });
@@ -2647,7 +2664,9 @@ if (exPhoto) cursorGrid(exStage, {
 // (rows split into thirds when the cards stack in one column)
 if (exBg) {
   const cards = [...exStage.querySelectorAll('.ex-card')], alts = [...exBg.querySelectorAll('.examples-alt')];
-  let raf = 0;
+  const shades = [...exBg.querySelectorAll('.examples-shade')];
+  let raf = 0, photo = 0, scrolling = false, settle = 0;
+  const shade = () => shades.forEach((img, i) => img.classList.toggle('is-on', scrolling && i === photo && exPhoto.matches(':not(.reveal), .is-visible')));
   const step = () => {
     raf = 0;
     const rows = [...new Set(cards.map(c => c.offsetTop))].sort((a, b) => a - b);
@@ -2658,11 +2677,16 @@ if (exBg) {
     const last = Math.max(0, exStage.offsetHeight + 150 - exBg.offsetHeight);
     const RISE = 100; // the photo's extra 100px goes above the row it steps to
     exStage.style.setProperty('--bg-y', `${best === rows.length - 1 ? last : Math.min(last, Math.max(0, rows[best] - rows[0] - (best ? RISE : 0)))}px`);
-    const photo = Math.min(alts.length, Math.floor(best * (alts.length + 1) / rows.length));
+    photo = Math.min(alts.length, Math.floor(best * (alts.length + 1) / rows.length));
     alts.forEach((img, i) => img.classList.toggle('is-on', i < photo));
+    shade();
   };
   const queue = () => { if (!raf) raf = requestAnimationFrame(step); };
-  addEventListener('scroll', queue, { passive: true }); addEventListener('resize', queue); step();
+  const onScroll = () => {
+    scrolling = true; queue();
+    clearTimeout(settle); settle = setTimeout(() => { scrolling = false; shade(); }, 180);
+  };
+  addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', queue); step();
 }
 // …and over the desk/dock slider photos: one grid mirrored into each slide, between its photo and its chat UI.
 // The slides live in the scaled 1548×857 artboard, so the canvases use artboard px.
