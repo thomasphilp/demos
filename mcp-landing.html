@@ -454,6 +454,19 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
 .hero-connect { position: relative; }
 .cf-stack { position: absolute; left: 0; right: 0; top: calc(10.5px - 16px - 75px); height: 75px; pointer-events: none; }
 .cf-stack { display: none; } /* Hidden for now; delete this line to bring the stacked outlines back */
+/* A black comet runs the frame's lines on both sides at once, from "Powered by" out along the bottom, up the side and
+   in along the top to the lead, every 2s. Paths are traced from the lines by script (--cf-l is their length in px); four
+   stacked dashes make the soft tail. --cf-p is the head's position along the path, 0–1. */
+@property --cf-p { syntax: '<number>'; inherits: true; initial-value: 0; }
+.cf-comet { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+.cf-comet path { fill: none; stroke: #000; stroke-width: 1px; stroke-dasharray: calc(var(--len) * var(--cf-l) * 1px) calc(var(--cf-l) * 3px); stroke-dashoffset: calc((var(--len) - var(--cf-p)) * var(--cf-l) * 1px); }
+.cf-comet path:nth-of-type(4n+1) { --len: 0.03; }
+.cf-comet path:nth-of-type(4n+2) { --len: 0.07; opacity: 0.5; }
+.cf-comet path:nth-of-type(4n+3) { --len: 0.12; opacity: 0.25; }
+.cf-comet path:nth-of-type(4n+4) { --len: 0.18; opacity: 0.1; }
+.hero.is-answered .cf-comet { animation: cf-comet 2s cubic-bezier(.45,0,.35,1) 1.2s infinite both; }
+@keyframes cf-comet { 0% { --cf-p: 0; } 70%, 100% { --cf-p: 1.2; } }
+@media (prefers-reduced-motion: reduce) { .cf-comet { display: none; } }
 .cf-tab { position: absolute; left: 50%; height: 25px; translate: -50% 0; border: 1px solid #000; border-bottom: 0; }
 .cf-tab:nth-child(1) { bottom: 0; width: 84.5%; opacity: 0.2; }
 .cf-tab:nth-child(2) { bottom: 25px; width: 73.45%; opacity: 0.1; }
@@ -2208,6 +2221,32 @@ document.querySelectorAll('.iri').forEach(el => {
   const check = () => el.classList.toggle('is-wrapped', new Set([...fill.getClientRects()].filter(r => r.width > 1).map(r => Math.round(r.top))).size > 1);
   new ResizeObserver(check).observe(el.closest('h1, h2') || el); check();
 });
+
+/* ── Hero connect frame: trace the comet's two paths from the frame lines (offsets, so the reveal and glitch don't skew them) ── */
+(() => {
+  const frame = document.querySelector('.hero-connect');
+  if (!frame) return;
+  const NS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('class', 'cf-comet'); svg.setAttribute('aria-hidden', 'true');
+  const paths = [];
+  for (let i = 0; i < 8; i++) { const p = document.createElementNS(NS, 'path'); svg.appendChild(p); paths.push(p); }
+  frame.appendChild(svg);
+  const top = frame.querySelectorAll('.cf-edge.is-top .cf-line'), bot = frame.querySelectorAll('.cf-edge.is-bottom .cf-line');
+  const box = el => { let x = 0, y = 0, n = el; while (n && n !== frame) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; } return { x, y, w: el.offsetWidth, h: el.offsetHeight }; };
+  const trace = () => {
+    const W = frame.offsetWidth, H = frame.offsetHeight;
+    svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    const [tl, tr] = [...top].map(box), [bl, br] = [...bot].map(box);
+    const ty = tl.y + 0.5, by = bl.y + bl.h - 0.5;
+    // Left: bottom line's inner end → corner → up the side → top line's inner end; right is the mirror
+    const left = `M${bl.x + bl.w} ${by} H${bl.x + 0.5} V${ty} H${tl.x + tl.w}`;
+    const right = `M${br.x} ${by} H${br.x + br.w - 0.5} V${ty} H${tr.x}`;
+    paths.forEach((p, i) => p.setAttribute('d', i < 4 ? left : right));
+    svg.style.setProperty('--cf-l', paths[0].getTotalLength()); // both sides are the same length
+  };
+  new ResizeObserver(trace).observe(frame); trace();
+})();
 
 /* ── Hero chat card: fade its chrome to white from the top of the connect block ── */
 (() => {
