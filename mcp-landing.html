@@ -125,8 +125,8 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
   font-family: var(--font-display); font-weight: 500; font-size: 40px; line-height: 48px;
  
 }
-.page-bubble.is-green { background: var(--green); color: #000; }
-.page-bubble.has-shadow { filter: drop-shadow(0 4px 18px rgba(0,0,0,0.55)); }
+/* Figma 343:4462 / 343:4393 / 343:6088: the green bubbles glow — a 40px drop shadow in their own green at 40% */
+.page-bubble.is-green { background: var(--green); color: #000; box-shadow: 0 4px 40px rgba(0,255,26,0.4); }
 
 /* User bubbles (black): rise in from below, overshoot slightly, settle */
 @keyframes bubble-in {
@@ -1586,7 +1586,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
   <div class="setup-bg"><img src="assets/mcp-landing/setup-bg.jpg" alt=""></div>
   <div class="exchange">
     <div style="display: flex; flex-direction: column; gap: 40px">
-      <div class="exchange-user"><p class="page-bubble is-green has-shadow">How do I set it up?</p><span class="sent-by">Sent by you</span></div>
+      <div class="exchange-user"><p class="page-bubble is-green">How do I set it up?</p><span class="sent-by">Sent by you</span></div>
       <div class="exchange-agent">
         <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
         <h2 class="display" id="setup-title" data-typewriter data-tw-delay="0.4">Three steps, in seconds:</h2>
