@@ -267,6 +267,7 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
 .site-nav.is-dark .pill.is-dark { background: #fff; color: #000; }
 .site-nav.is-dark .pill.is-dark:hover { background: #e6e6e6; }
 .site-nav .logo { width: 155px; height: 16px; }
+.site-nav .logomark, .chat-time .ts-ic { display: none; } /* tablet and phone only */
 .pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 4px; background: rgba(255,255,255,0.25); font-family: var(--font-geist); font-weight: 600; font-size: 14px; color: var(--label-primary); white-space: nowrap; transition: background 0.15s; }
 .pill:hover { background: rgba(255,255,255,0.5); }
 .pill img { width: 10px; height: 10px; }
@@ -1101,17 +1102,54 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
   .intro-composer .send { grid-area: send; width: 72px; height: 72px; border-radius: 50%; transition: opacity 0.25s ease; }
   .intro-composer .send img { width: 32px; height: 32px; }
   .intro-composer.is-empty .send { opacity: 0.2; }
+  /* Figma Built (768) 390:6700: a black 80% frosted bar at every scroll position — white logomark, black pills with
+     white Medium 14 labels (no icons on Track and Log in), Sign up outlined in white */
+  .site-nav, .site-nav.is-stuck, .site-nav.is-dark.is-stuck { background: rgba(0,0,0,0.8); border-bottom-color: transparent; padding: 0 16px; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
+  .site-nav .logo { display: none; }
+  .site-nav .logomark { display: block; width: 30px; height: 20px; }
+  .site-nav .pill, .site-nav.is-dark .pill:not(.is-dark) { height: 32px; padding: 6px 12px; background: #000; color: #fff; font-weight: 500; font-size: 14px; }
+  .site-nav .pill:hover, .site-nav.is-dark .pill:not(.is-dark):hover { background: #222; }
+  .site-nav .pill:not(.is-dark) img, .site-nav.is-dark .pill:not(.is-dark) img { filter: invert(1); }
+  .site-nav .pill.is-dark img { filter: none; } /* the green arrow stays green */
+  .site-nav .right .pill:not(.is-dark) img { display: none; }
+  .site-nav .pill.is-dark, .site-nav.is-dark .pill.is-dark { background: transparent; color: #fff; box-shadow: inset 0 0 0 1px #fff; }
+  .site-nav .pill.is-dark:hover, .site-nav.is-dark .pill.is-dark:hover { background: rgba(255,255,255,0.12); }
+  /* Hero, Figma Built (768) 351:1608: the card 666px wide 114px down; the thread 42px in from each side of the
+     conversation, 24px top padding, 32px apart; a 472px bubble; the headline at 46/52 */
+  .hero { padding-top: 114px; }
+  .chat-app { width: min(666px, calc(100% - 2 * var(--gutter))); }
+  .chat-convo { --thread-w: calc(100% - 84px); }
+  .chat-thread { padding-top: 24px; gap: 32px; }
+  .hero { --hero-bubble-w: 472px; }
+  .hero-reply > .agent-tag { margin-bottom: -8px; } /* 12px over the headline, which keeps 20px to the cursor */
+  .hero-reply h1 { font-size: 46px; line-height: 52px; }
+  /* Connect block (Figma 370:3625): no frame — the lead in Medium 18 over two lines, the note 6px under it in two
+     lines, the URL box 20px under that, then the copy, the logos and "Powered by" 56px apart */
+  .hero-connect { margin: 48px auto 0; }
+  .cf-edge { gap: 0; justify-content: center; }
+  .cf-edge .cf-line, .cf-body::before, .cf-body::after { display: none; }
+  .br-mobile { display: inline; }
+  .cf-edge .lead { font-size: 18px; line-height: 23px; }
+  .cf-body { padding: 6px 0 56px; gap: 56px; }
+  .connect-block .pixel-note { max-width: 219px; }
+  .hero-copy { width: min(440px, 100%); font-size: 20px; line-height: 30px; }
 }
 @media (max-width: 720px) {
   :root { --gutter: 16px; --bg-inset: var(--gutter); }
   .examples-grid { --card-inset: 0px; }
   .demo-bar { padding: 10px 16px; }
   .demo-bar-note, .demo-bar .vp-group { display: none; }
-  .site-nav { padding: 0 16px; gap: 8px; }
-  .site-nav .logo { width: 116px; height: 12px; }
-  .site-nav .pill:not(.is-dark) { display: none; }
+  /* Figma Built (375) 390:6587: logomark, then Track, Log in, the menu icon and "Sign up", 10px apart, on the right */
+  .site-nav { gap: 10px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .site-nav, .site-nav.is-stuck, .site-nav.is-dark.is-stuck { backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .site-nav .right { display: contents; }
+  .site-nav .spacer { order: 1; }
+  .site-nav .right .pill:not(.is-dark) { order: 2; }
+  .site-nav .pill.products-toggle { order: 3; }
+  .site-nav .pill.is-dark { order: 4; }
+  .site-nav .pill.is-dark img, .su-long { display: none; }
   /* All Products stays on phones as an icon button; the menu stacks the product list over its panel */
-  .site-nav .pill.products-toggle { display: inline-flex; padding: 9px 10px; }
+  .site-nav .pill.products-toggle { display: inline-flex; padding: 6px 12px; }
   .products-toggle .pm-label { display: none; }
   .pm-inner { flex-direction: column; gap: 12px; width: calc(100% - 32px); padding-bottom: 16px; }
   .pm-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); flex-basis: auto; }
@@ -1120,22 +1158,20 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
   .pm-panel { padding: 14px; }
   .pm-cards, .pm-cards.is-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
   .pm-card { min-height: 140px; }
-  .site-nav .pill.is-dark { font-size: 13px; padding: 6px 12px; }
-  .hero { padding: 140px 0 64px; }
+  .hero { padding: 116px 0 64px; }
   .chat-app { min-height: 0; }
   .chat-rail { display: none; }
   /* No rail on phones: the hero thread is the card less 48px, centred */
   .exchange { width: calc(100% - 2 * var(--gutter) - 48px); margin: 0 auto; }
   .chat-convo { --thread-w: calc(100% - 48px); }
-  .chat-thread { padding: 32px 0; gap: 24px; }
-  .hero-user .page-bubble { width: auto; }
-  .hero-reply h1 { font-size: 40px; line-height: 44px; }
-  .hero-connect { margin: 46px auto 32px; }
-  .cf-edge { gap: 12px; }
-  .cf-edge .cf-line { min-width: 12px; }
-  .br-mobile { display: inline; }
-  .cf-edge .lead { font-size: 18px; line-height: 26px; } /* two lines, broken at .br-mobile */
-  .cf-edge.is-top .cf-line { margin-top: 13px; }
+  .chat-app { width: calc(100% - 2 * var(--gutter)); }
+  .chat-thread { padding: 24px 0 32px; gap: 32px; }
+  /* Figma Built (375) 370:4613: the sparkle on the left of the timestamp row (no rail here), the timestamp on the right;
+     a 28/36 bubble, 14/24 padding, 24px corners (8px at the tail) */
+  .chat-time { display: flex; align-items: center; justify-content: space-between; }
+  .chat-time .ts-ic { display: block; width: 20px; height: 20px; }
+  .hero-user .page-bubble { width: auto; max-width: 279px; font-size: 28px; line-height: 36px; padding: 14px 24px; border-radius: 24px 24px 8px 24px; }
+  .hero-connect { margin: 40px auto 0; }
   /* Desk/dock slider fills 60% of the screen; photos crop to cover, the wide overlays shrink to the visible width */
   .stage-wrap { aspect-ratio: auto; height: 60vh; height: 60svh; }
   /* Slide inputs on phones: exactly the hero's mobile composer on screen (question on top, plus + send below, 24px
@@ -1154,7 +1190,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
   .scene-a .composer .send, .scene-ask .composer .send { grid-area: send; width: calc(48px * var(--k)); height: calc(48px * var(--k)); }
   .scene-a .composer .send img, .scene-ask .composer .send img { width: calc(22px * var(--k)); height: calc(22px * var(--k)); }
   .desk-window { scale: min(1, calc((var(--stage-vis, 1548) - 60) / 968)); }
-  .cf-body { padding: 4px 12px 32px; gap: 40px; }
+  .hero-copy { width: min(325px, 100%); font-size: 18px; line-height: 28px; }
   /* The hero URL box is only the frame's inner width here, so the URL drops to 13px (6px after the globe, 12px left pad,
      8px minimum before Copy) and the wider "Copied" still clears the URL and the rim */
   .hero-connect .mcp-url { padding-left: 12px; gap: 8px; }
@@ -1178,7 +1214,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
   .page-bubble { font-size: 24px; line-height: 30px; padding: 14px 20px; border-radius: 24px 24px 8px 24px; }
   .display { font-size: 38px; line-height: 42px; }
   .bracket-label { font-size: 17px; line-height: 24px; flex-wrap: wrap; justify-content: center; }
-  .hero-copy, .devices .bracket-copy { font-size: 18px; line-height: 27px; }
+  .devices .bracket-copy { font-size: 18px; line-height: 27px; }
   .ex-card { height: 440px; }
   .ex-rest .bubble { font-size: 20px; max-width: calc(100% - 48px) !important; }
   .ex-rest .rest-q { max-width: calc(100% - 48px); }
@@ -1231,13 +1267,13 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
 
 <!-- ═══════════ Hero ═══════════ -->
 <header class="site-nav">
-  <a href="#top" aria-label="Mothership home"><img class="logo" src="assets/mcp-landing/mothership-logo.svg" alt="Mothership"></a>
+  <a href="#top" aria-label="Mothership home"><img class="logo" src="assets/mcp-landing/mothership-logo.svg" alt="Mothership"><img class="logomark" src="assets/mcp-landing/logomark-white.svg" alt=""></a>
   <button class="pill products-toggle" type="button" aria-expanded="false" aria-controls="products-menu" aria-label="All Products"><img src="assets/mcp-landing/icon-menu.svg" alt=""><span class="pm-label">All Products</span></button>
   <span class="spacer"></span>
   <div class="right">
     <a class="pill" href="#top"><img src="assets/mcp-landing/icon-track.svg" alt="">Track</a>
     <a class="pill" href="#top"><img src="assets/mcp-landing/icon-user.svg" alt="">Log in</a>
-    <a class="pill is-dark" href="#get-started"><img src="assets/mcp-landing/icon-arrow.svg" alt="">Sign up in 60 seconds</a>
+    <a class="pill is-dark" href="#get-started"><img src="assets/mcp-landing/icon-arrow.svg" alt=""><span>Sign up<span class="su-long"> in 60 seconds</span></span></a>
   </div>
 </header>
 <!-- All Products menu: rebuilt from the mega menu on mothership.com -->
@@ -1353,7 +1389,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
     </div>
     <div class="chat-convo">
       <div class="chat-thread">
-        <p class="timestamp" id="hero-time">Today 9:41 AM</p>
+        <div class="chat-time"><span class="ic ts-ic" data-icon="solid/AI/magic" aria-hidden="true"></span><p class="timestamp" id="hero-time">Today 9:41 AM</p></div>
         <div class="hero-user"><p class="page-bubble">Can I just ship freight from my AI chat?</p><span class="sent-by">Sent by you</span></div>
         <div class="hero-reply">
           <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
