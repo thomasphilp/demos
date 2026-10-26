@@ -185,6 +185,8 @@ def attrs_jsx(node):
         if k in BOOL and (v is None or v == ''): out.append(name); continue
         if v is None: v = ''
         if k in NUMERIC: out.append(f'{name}={{{int(v)}}}'); continue
+        # links into the site go local, so they keep the visitor's domain and locale (/sign-up redirects Chinese visitors)
+        if k == 'href' and v.startswith('https://www.mothership.com/'): v = v[len('https://www.mothership.com'):]
         out.append(f'{name}={json.dumps(rewrite_assets(v), ensure_ascii=False)}')
     return (' ' + ' '.join(out)) if out else ''
 
