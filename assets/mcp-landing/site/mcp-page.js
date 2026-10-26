@@ -1318,9 +1318,10 @@ export function initMcpPage(COPY, LANG) {
       play.setAttribute('aria-label', tr(paused ? 'playSlideshow' : 'pauseSlideshow'))
     }
     dots.forEach((dot, i) => {
+      // Picking a slide plays on from it, except with reduced motion, where only the play button starts the slideshow
       dot.addEventListener('click', () => {
         if (i !== cur) go(i)
-        setPaused(false)
+        setPaused(reducedMotion)
       })
       dot.querySelector('.fill').addEventListener('animationend', () => go((cur + 1) % scenes.length))
     })
