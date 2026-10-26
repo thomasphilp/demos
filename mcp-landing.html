@@ -189,15 +189,17 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
 .vscode .v3 img { inset: -26.18% -83.33%; width: auto; height: auto; }
 .vscode .v4 { inset: 0.26% 0.06% 0.26% -0.06%; mix-blend-mode: overlay; }
 
-/* MCP URL box (Figma 381:4943 hero, 381:4973 closing CTA — the same box in both): 275×40 on #fcfcfb, a mid gray 1px rim
-   with two fading green streaks orbiting it once every 4s, black offset shadow; a 30% globe, the URL in Medium 16, Copy */
+/* MCP URL box (Figma 381:4943 hero, 381:4973 closing CTA — the same box in both): on #fcfcfb, a mid gray 1px rim
+   with two fading green streaks orbiting it once every 4s, black offset shadow; a 30% globe, the URL in Medium 16, Copy.
+   Wider and roomier than Figma's 275×40 (316×44, 8px around Copy) so the button's wider "Copied" state still clears
+   the URL and the rim; never wider than its column on small screens */
 .mcp-url {
-  position: relative; overflow: hidden; width: 275px; height: 40px; display: flex; align-items: center; justify-content: space-between;
+  position: relative; overflow: hidden; width: 316px; max-width: 100%; height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 16px;
   /* The box itself is the persistent gray 1px rim; the beam's sweep passes over it */
-  padding: 7px 7px 7px 11px; background: #878787; box-shadow: 4px 4px 0 0 #000;
+  padding: 8px 8px 8px 14px; background: #878787; box-shadow: 4px 4px 0 0 #000;
 }
 .mcp-url .beam {
-  position: absolute; left: 50%; top: 50%; width: 305px; height: 305px; margin: -152.5px 0 0 -152.5px;
+  position: absolute; left: 50%; top: 50%; width: 340px; height: 340px; margin: -170px 0 0 -170px; /* covers the 316px box's whole rim as it turns */
   background: conic-gradient(from 90deg,
     rgba(4,132,40,0.5) 0.43%, rgba(3,163,47,0.625) 5.59%, rgba(2,194,54,0.75) 10.76%, rgba(1,224,61,0.875) 15.92%, #00ff44 21.09%,
     rgba(1,224,61,0.875) 22.12%, rgba(3,163,47,0.625) 24.18%, rgba(6,102,33,0.375) 26.23%, rgba(7,71,26,0.25) 27.26%, rgba(9,10,12,0) 29.32%,
@@ -249,11 +251,11 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
 .pixel-note.has-check .ic { width: 10px; height: 10px; flex-shrink: 0; }
 
 /* ── Nav ── */
-/* Sticky: clear over the hero video at the top, frosted white once the page scrolls */
+/* Sticky: no background or blur at the very top (just the logo and pills over the hero), frosted white once the page scrolls */
 .site-nav {
   position: fixed; top: 44px; left: 0; right: 0; z-index: 50; height: 64px;
   display: flex; align-items: center; gap: 16px; padding: 0 24px;
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(0); -webkit-backdrop-filter: blur(0);
   border-bottom: 1px solid transparent;
   transition: background-color 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease;
 }
@@ -506,7 +508,7 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
 .hero.is-answered .cf-tab:nth-child(1) { animation-duration: 4.4s; animation-delay: 0.9s; }
 .hero.is-answered .cf-tab:nth-child(2) { animation-duration: 3.8s; animation-delay: 1.7s; }
 .hero.is-answered .cf-tab:nth-child(3) { animation-duration: 5.1s; animation-delay: 2.6s; }
-.connect-block { position: relative; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+.connect-block { position: relative; display: flex; flex-direction: column; align-items: center; gap: 20px; max-width: 100%; } /* so the URL box caps at the frame's inner width on phones */
 .hero-copy { position: relative; width: min(696px, 100%); text-align: center; font-size: 22px; line-height: 30px; font-weight: 400; }
 .hero-copy strong { font-weight: 600; } /* Figma 274:2278: lead sentence SemiBold, the rest Regular */
 .available { position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 24px; }
