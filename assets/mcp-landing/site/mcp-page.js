@@ -174,9 +174,8 @@ export function initMcpPage(COPY, LANG) {
 
   /* VS Code mark (masked layers, as authored in Figma) */
   document.querySelectorAll('[data-vscode]').forEach((el) => {
-    const p = el.dataset.vscode === 'apps' ? 'assets/mcp-landing/site/images/mcp/apps-vscode-' : 'assets/mcp-landing/site/images/mcp/vscode-'
-    const mask =
-      el.dataset.vscode === 'apps' ? 'assets/mcp-landing/site/images/mcp/apps-vscode-mask.svg' : 'assets/mcp-landing/site/images/mcp/vscode-mask.svg'
+    const p = 'assets/mcp-landing/site/images/mcp/vscode-'
+    const mask = 'assets/mcp-landing/site/images/mcp/vscode-mask.svg'
     const layers = [
       ['v1', '0% 0%'],
       ['v2', '0% 100%'],
