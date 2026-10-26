@@ -655,19 +655,22 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
 
 .ex-hover { position: absolute; inset: 0; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
 .ex-hover .panel { position: absolute; left: 7px; right: 7px; bottom: 7px; height: 333px; background: #fff; border-radius: 8px; }
-.ex-hover .q { position: absolute; right: 48px; bottom: 265px; display: flex; gap: 8px; align-items: flex-end; transform: translateY(10px); transition: transform 0.45s cubic-bezier(.2,.7,.2,1); }
-.ex-hover .q .bubble { background: #000; color: #fff; border-radius: 14px 14px 5px 14px; padding: 8px 12px; font-family: var(--font-display); font-size: 17px; letter-spacing: -0.02em; white-space: pre-line; }
+.ex-hover .q { position: absolute; right: 27px; bottom: 271px; display: flex; gap: 8px; align-items: flex-end; transform: translateY(10px); transition: transform 0.45s cubic-bezier(.2,.7,.2,1); }
+/* Figma Chat example hover (309:747 etc.): Geist Regular 11.66 question bubble, "Sent by you" flush with its right edge */
+.ex-hover .q .bubble { background: #000; color: #fff; border-radius: 13.72px 13.72px 4.8px 13.72px; padding: 8.23px 12.35px; font-family: var(--font-display); font-weight: 400; font-size: 11.66px; white-space: pre-line; }
 /* Figma "Address book" hover (309:993): the question, then the file in a small bubble right-aligned 4px under it;
    the reply starts lower to clear them */
-/* Figma "Sent by you" (313:6600): 10px, 4px under the question, inset 12px from its right edge; same type as "Your AI agent" */
-.ex-hover .q .sent { position: absolute; top: calc(100% + 4px); right: 12px; font-family: var(--font-ui); font-weight: 500; font-size: 10px; line-height: 13px; color: #808080; white-space: nowrap; }
-.ex-card.has-file .ex-hover .q { top: 75px; bottom: auto; right: 49px; flex-direction: column; align-items: flex-end; gap: 4px; }
-.ex-hover .q .attachment { width: 91px; padding: 11px; background: #000; border-radius: 12.2px 12.2px 4.3px 12.2px; }
-.ex-hover .q .chip { border-width: 0.6px; border-radius: 2.4px; padding: 4.9px; font-size: 9.75px; }
-.ex-card.has-file .ex-hover .reply { top: 186px; }
-.ex-card.has-file .ex-hover .q .sent { top: calc(100% + 25px); } /* Figma keeps it just above the reply (185px) */
-.ex-hover .reply { position: absolute; left: 52px; top: 161px; width: min(492px, calc(100% - 80px)); display: flex; flex-direction: column; gap: 16px; }
-.ex-hover .reply .spark { width: 20px; height: 20px; color: #141414; } /* black while thinking and after */
+/* "Sent by you" (313:6605): Regular 10, 4px under the question, right-aligned with it */
+.ex-hover .q .sent { position: absolute; top: calc(100% + 4px); right: 0; font-family: var(--font-ui); font-weight: 400; font-size: 10px; line-height: 13px; color: #808080; white-space: nowrap; }
+.ex-card.has-file .ex-hover .q { top: 135px; bottom: auto; right: 34px; flex-direction: column; align-items: flex-end; gap: 4px; }
+.ex-hover .q .attachment { padding: 8px 10px; background: #000; border-radius: 12.18px 12.18px 4.26px 12.18px; }
+.ex-hover .q .chip { border-width: 0.6px; border-radius: 2.44px; padding: 4.87px; font-size: 14px; letter-spacing: normal; }
+.ex-card.has-file .ex-hover .reply { top: 239px; }
+.ex-card.has-file .ex-hover .q .sent { position: static; } /* under the file, in the stack */
+/* The reply (309:736): star, lead, box and ask 5.3px apart, then the square 16px under them */
+.ex-hover .reply { position: absolute; left: 28px; top: 162px; width: min(477px, calc(100% - 56px)); display: flex; flex-direction: column; gap: 5.3px; }
+.ex-hover .reply .spark { width: 20px; height: 20px; color: rgba(9,10,12,0.35); transition: color 0.3s ease; } /* Figma: 35% at rest */
+.ex-hover .reply.is-thinking .spark { color: #141414; } /* black while it works */
 /* Before the reply: the star turns and pulses, and a "thinking" line under it runs the "Your AI agent" sweep */
 /* Thinking stars: two stars take turns on a 1.6s loop and are never visible together. Each rises in from
    below (0.25s), holds (0.25s), drifts up and fades (0.25s); the next starts ~0.08s after the last has gone. */
@@ -687,9 +690,12 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
 @keyframes think-in { from { opacity: 0; transform: translateY(4px); } }
 .ex-hover .reply .body { display: flex; flex-direction: column; gap: 5px; font-family: var(--font-display); font-weight: 600; color: var(--ink); }
 .ex-hover .reply .lead { font-size: 16px; letter-spacing: -0.02em; white-space: pre-line; }
-.ex-hover .reply .box { align-self: flex-start; width: fit-content; max-width: 100%; background: #efefef; border: 1px solid #eaeaea; border-radius: 8px; padding: 16px; font-size: 15px; letter-spacing: -0.02em; white-space: pre-line; transition: opacity 0.2s ease; }
-.ex-hover .reply .ask { font-size: 15px; letter-spacing: -0.02em; }
-.ex-hover .reply .dot { width: 8.65px; height: 8.65px; border-radius: 1.3px; background: #000; }
+.ex-hover .reply .box { align-self: flex-start; width: fit-content; max-width: 100%; background: #efefef; border: 1px solid #eaeaea; border-radius: 8px; padding: 16px; font-size: 16px; letter-spacing: -0.02em; white-space: pre-line; transition: opacity 0.2s ease; }
+.ex-hover .reply .box[hidden] { display: none; }
+.ex-hover .reply .ask { font-size: 16px; letter-spacing: -0.02em; }
+.ex-hover .reply .dot { width: 12px; height: 12px; border-radius: 2px; background: #000; }
+.ex-hover .reply > .dot { margin-top: 10.7px; }
+.ex-hover .reply .dot.is-inline { width: 0.6em; height: 0.6em; border-radius: 1.3px; }
 .ex-hover .reply .dot.is-inline { display: inline-block; vertical-align: baseline; margin-left: 2px; }
 .ex-hover .reply .dot.is-resting { animation: blink 1.1s steps(1) infinite; }
 .ex-card.is-open .ex-rest { opacity: 0; transform: translateY(-24px) scale(0.96); }
@@ -1044,7 +1050,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
 .ex-rest > .bubble, .ex-rest > .rest-q { max-width: calc(100% - 48px); } /* the file card's bubble fills its own wrapper */
 @media (min-width: 1080px) and (max-width: 1279px) {
   .ex-card { height: 440px; }
-  .ex-hover .q { bottom: 294px; } /* the question keeps its spot above the reply in the taller card */
+  .ex-hover .q { bottom: 300px; } /* the question keeps its spot above the reply in the taller card */
   .ex-hover .reply .box { font-size: 13px; padding: 12px; }
 }
 /* One column below 1080px; from there up two cards fit side by side inside the photo */
@@ -1952,7 +1958,7 @@ const EXAMPLES = [
   { q: 'Help me book with Old Dominion quoted for pickup tomorrow at 9am.', w: 362, hq: 'Help me book with Old Dominion quoted\nfor pickup tomorrow at 9am.',
     lead: 'Here’s your Old Dominion quote:',
     box: 'Ontario, CA → Phoenix, AZ · 6 pallets\nPickup · Tomorrow · 9:00 AM\nTotal · $548',
-    ask: 'Want me to book it on your saved payment method?' },
+    ask: 'Continue to book?' },
   { q: 'Where’s MS123456? Is it delivering today?', w: 350, hq: 'Where’s MS123456? Is it delivering today?',
     lead: 'Yes — MS123456 is out for delivery.',
     box: 'Last scan · Phoenix, AZ terminal · 7:42 AM\nDelivery window · Today, 1–4 PM\nCarrier · Old Dominion · PRO 0841 2273',
@@ -1967,7 +1973,7 @@ const EXAMPLES = [
     ask: 'Want me to pay them now?' },
   { q: 'Update my address book with this file', w: 296, hq: 'Update my address book with this file', file: 'Contacts.csv',
     lead: 'Done — 12 locations added, 3 updated:',
-    box: '+ Desert Cold Storage · Phoenix, AZ\n+ Lakeview Distribution · Chicago, IL\nUpdated · Fontana DC dock hours',
+    box: '',
     ask: '2 rows were missing ZIP codes — want me to look them up?' },
 ];
 const esc = s => s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
@@ -1993,7 +1999,7 @@ grid.innerHTML = EXAMPLES.map((ex, i) => `
       <div class="q"><p class="bubble">${esc(ex.hq)}</p>${ex.file ? `<div class="attachment"><span class="chip">${ex.file}</span></div>` : ''}<span class="sent">Sent by you</span></div>
       <div class="reply">
         <span class="sparks"><span class="spark ic" data-icon="solid/AI/magic"></span><span class="spark ic is-next" data-icon="solid/AI/magic" aria-hidden="true"></span></span>
-        <div class="body"><span class="agent-tag is-shimmer think" aria-hidden="true"><span class="tag-label"></span></span><p class="lead"></p><p class="box"></p><p class="ask"></p></div>
+        <div class="body"><span class="agent-tag is-shimmer think" aria-hidden="true"><span class="tag-label"></span></span><p class="lead"></p><p class="box"${ex.box ? '' : ' hidden'}></p><p class="ask"></p></div>
         <span class="dot is-resting"></span>
       </div>
     </div>
@@ -2016,7 +2022,7 @@ function typeReply(card) {
   const [lead, box, ask] = hover.querySelectorAll('.body > p');
   const dot = hover.querySelector('.reply > .dot');
   const reply = hover.querySelector('.reply'), think = reply.querySelector('.think .tag-label');
-  const parts = [[lead, ex.lead], [box, ex.box], [ask, ex.ask]];
+  const parts = [[lead, ex.lead], ...(ex.box ? [[box, ex.box]] : []), [ask, ex.ask]];
   cancelTyping(card);
   // The gray box hugs its finished text: size it once up front (plus room for the caret) so it doesn't grow as it types
   box.style.width = ''; box.textContent = ex.box;
