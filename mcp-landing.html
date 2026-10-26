@@ -1914,10 +1914,25 @@ function playIntro() {
   later(() => twType(heroTitle, { onDone: heroAnswered }), LEAVE + LEAD + 1100);
 }
 // Once the hero answer is typed: bring in the connect block, then let the rest of the page start revealing
+// (at once when the visitor skipped the intro by scrolling)
+let introSkipped = false;
 function heroAnswered() {
   hero.classList.add('is-answered');
-  document.dispatchEvent(new Event('hero:answered'));
+  document.dispatchEvent(new CustomEvent('hero:answered', { detail: { skipped: introSkipped } }));
 }
+// Scrolling down during the intro jumps it to its end: the input gone, the chat in, the answer fully typed
+function skipIntro() {
+  if (hero.classList.contains('is-answered')) return;
+  introSkipped = true;
+  introTimers.forEach(clearTimeout); introTimers = [];
+  composer.classList.remove('is-typing'); composer.classList.add('is-leaving');
+  hero.dataset.intro = 'done';
+  if (!heroTitle._tw?.finish || heroTitle.classList.contains('is-typed')) twType(heroTitle, { onDone: heroAnswered });
+  heroTitle._tw.finish();
+}
+// Only scrolling down counts, so Replay intro's smooth scroll back up doesn't skip the replay
+let introY = scrollY;
+addEventListener('scroll', () => { if (scrollY > 40 && scrollY > introY) skipIntro(); introY = scrollY; }, { passive: true });
 const heroTitle = document.getElementById('hero-title');
 const sendBtn = composer.querySelector('.send');
 sendBtn.addEventListener('animationend', () => sendBtn.classList.remove('is-pressed'));
@@ -1970,8 +1985,8 @@ const heroVideo = hero.querySelector('.hero-bg video');
 if (!reducedMotion) { heroVideo.muted = true; heroVideo.play().catch(() => {}); }
 const heroReady = new Promise(r => heroVideo.readyState >= 2 ? r() : heroVideo.addEventListener('loadeddata', r, { once: true }));
 Promise.race([heroReady, new Promise(r => setTimeout(r, 1500))])
-  .then(() => requestAnimationFrame(() => requestAnimationFrame(playIntro)));
-document.getElementById('replay-intro').addEventListener('click', () => { window.scrollTo({ top: 0 }); playIntro(); });
+  .then(() => requestAnimationFrame(() => requestAnimationFrame(() => { if (!introSkipped) playIntro(); })));
+document.getElementById('replay-intro').addEventListener('click', () => { window.scrollTo({ top: 0 }); introSkipped = false; playIntro(); });
 
 /* ── Viewport switcher: Tablet / Mobile show the page in a frame at that width (?view= keeps it on reload);
    while one is showing, Replay intro and Show all replies act on the framed page ── */
@@ -2439,12 +2454,13 @@ document.querySelectorAll('.mcp-url').forEach(box => {
   let typedFrom = null;
   addEventListener('scroll', () => {
     if (!typing) { typedFrom = null; return; }
+    if (typing.el.getBoundingClientRect().bottom < 0) { typing.el._tw.finish?.(); return; } // scrolled right past it
     if (!typing.el.querySelector('.tw-w.is-on')) return; // still in its start delay
     if (typedFrom === null || typedFrom.el !== typing.el) typedFrom = { el: typing.el, y: scrollY };
     if (scrollY - typedFrom.y > 40) typing.el._tw.finish?.();
   }, { passive: true });
   // Nothing below the hero starts until the hero's answer and connect block are in
-  document.addEventListener('hero:answered', () => { if (!open) { open = true; setTimeout(pump, 700); } });
+  document.addEventListener('hero:answered', (e) => { if (!open) { open = true; setTimeout(pump, e.detail?.skipped ? 0 : 700); } });
   const onFirstScroll = () => { if (scrollY <= 0) return; scrolled = true; removeEventListener('scroll', onFirstScroll); pump(); };
   if (!scrolled) addEventListener('scroll', onFirstScroll, { passive: true });
 })();
