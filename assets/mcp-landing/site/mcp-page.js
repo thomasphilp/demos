@@ -508,7 +508,10 @@ export function initMcpPage(COPY, LANG) {
   // preload, so reduced motion never downloads it and shows the poster
   if (!reducedMotion) {
     heroVideo.muted = true
-    heroVideo.play().catch(() => {})
+    // It plays only while the hero is on screen, and pauses once the page scrolls past it
+    new IntersectionObserver(([e]) =>
+      e.isIntersecting ? heroVideo.play().catch(() => {}) : heroVideo.pause(),
+    ).observe(hero)
   }
   const heroReady = new Promise((r) =>
     heroVideo.readyState >= 2 ? r() : heroVideo.addEventListener('loadeddata', r, { once: true }),
@@ -2364,10 +2367,12 @@ export function initMcpPage(COPY, LANG) {
     if (!adapter) return
     const device = await adapter.requestDevice()
     const format = navigator.gpu.getPreferredCanvasFormat()
+    // Each slide's shader is built the first time its slide comes up, at the slider's size on screen (at most 1.5x),
+    // so the hidden slides hold no GPU memory until they are shown; until then a slide shows its baked PNG
     const W = 1548,
-      H = 857,
-      dpr = Math.min(window.devicePixelRatio || 1, 2)
-    for (const layer of document.querySelectorAll('[data-shader]')) {
+      H = 857
+    const build = async (layer) => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5) * Math.min(1, stageWrap.offsetWidth / W)
       const img = layer.querySelector('img.source')
       await img.decode().catch(() => {})
       const w = Math.round(W * dpr),
@@ -2412,7 +2417,21 @@ export function initMcpPage(COPY, LANG) {
       layer.classList.add('is-shaded')
       shaded.push({ frame, ctx, layer, w, scene: layer.closest('.scene'), last: 0 })
     }
-    if (reducedMotion || !shaded.length) return
+    const pending = new Map(
+      [...document.querySelectorAll('[data-shader]')].map((layer) => [layer, layer.closest('.scene')]),
+    )
+    const buildShown = async () => {
+      for (const [layer, scene] of pending) {
+        if (!scene || !scene.matches('.is-active, .is-prev')) continue
+        pending.delete(layer)
+        await build(layer)
+      }
+    }
+    await buildShown()
+    const scenes = new Set(pending.values())
+    for (const scene of scenes)
+      if (scene) new MutationObserver(buildShown).observe(scene, { attributeFilter: ['class'] })
+    if (reducedMotion) return
     let inView = false,
       raf = 0
     const tick = (ts) => {

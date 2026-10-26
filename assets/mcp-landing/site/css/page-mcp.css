@@ -938,8 +938,7 @@
 .mcp-page .auth .account { background: rgba(255,255,255,0.05); border-radius: 4px; padding: 12px; display: flex; flex-direction: column; gap: 2px; }
 .mcp-page .auth .account b { font-size: 12px; font-weight: 600; line-height: 16px; color: rgba(255,255,255,0.8); }
 .mcp-page .auth .actions { display: flex; justify-content: flex-end; gap: 8px; opacity: 0.5; }
-.mcp-page .auth .actions button { font-family: var(--font-geist); font-size: 14px; font-weight: 600; line-height: 18px; height: 32px; padding: 0 12px; border-radius: 4px; background: rgba(255,255,255,0.14); color: #fff; }
-.mcp-page .auth .actions button:hover { background: rgba(255,255,255,0.24); }
+.mcp-page .auth .actions .btn { display: inline-flex; align-items: center; font-family: var(--font-geist); font-size: 14px; font-weight: 600; line-height: 18px; height: 32px; padding: 0 12px; border-radius: 4px; background: rgba(255,255,255,0.14); color: #fff; }
 /* ── Closing CTA + footer ── */
 .mcp-page .cta { padding: 160px var(--gutter); display: flex; flex-direction: column; align-items: center; gap: 24px; text-align: center; }
 .mcp-page .cta .display { color: #000; --iri-ink: #000; text-wrap: balance; }
