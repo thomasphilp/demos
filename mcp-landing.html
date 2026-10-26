@@ -31,12 +31,13 @@
   --shadow-float: 0 4px 92px 0 rgba(0,0,0,0.1);
   /* Everything is Geist, at the weights the original faces used (Bricolage / Instrument Sans / Inter / Outfit), except
      Figma's Geist Pixel notes: "Requires an approved Mothership account", "Now available in", "Powered by" */
-  --font-display: 'Geist', sans-serif;
-  --font-ui: 'Geist', sans-serif;
-  --font-geist: 'Geist', sans-serif;
-  --font-pixel: 'Geist Pixel', 'Geist', monospace;
-  --font-logo: 'Geist', sans-serif;
-  --font-nav-title: 'Geist', sans-serif; /* All Products menu panel titles */
+  /* Geist has no Chinese glyphs: Chinese falls back to the platform's CJK face at the same size and weight */
+  --font-cjk: 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+  --font-display: 'Geist', var(--font-cjk);
+  --font-ui: 'Geist', var(--font-cjk);
+  --font-geist: 'Geist', var(--font-cjk);
+  --font-pixel: 'Geist Pixel', 'Geist', var(--font-cjk);
+  --font-logo: 'Geist', var(--font-cjk);
   --content: 1120px;
   --gutter: 24px;
   --bg-inset: 50px; /* photo backgrounds (examples, desk/dock slider) stop this far short of the viewport edges */
@@ -92,8 +93,6 @@ html.is-previewing body > :not(.demo-bar):not(.vp-shell) { visibility: hidden; }
 /* Inside the frame (?embed=1): no demo bar, so the page starts at the top */
 html.is-embed .demo-bar { display: none; }
 html.is-embed body { padding-top: 0; }
-html.is-embed .site-nav { top: 0; }
-html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
 
 /* ── Icons (from icons.json) ── */
 .ic { display: inline-flex; flex-shrink: 0; width: 20px; height: 20px; }
@@ -250,82 +249,7 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
 .mcp-url:has(.copy-btn.is-copied) { background: var(--green); }
 .pixel-note { font-family: var(--font-pixel); font-size: 12px; color: var(--label-muted); text-align: center; }
 
-/* ── Nav ── */
-/* Sticky: no background or blur at the very top (just the logo and pills over the hero), frosted white once the page scrolls */
-.site-nav {
-  position: fixed; top: 44px; left: 0; right: 0; z-index: 50; height: 64px;
-  display: flex; align-items: center; gap: 16px; padding: 0 24px;
-  backdrop-filter: blur(0); -webkit-backdrop-filter: blur(0);
-  border-bottom: 1px solid transparent;
-  transition: background-color 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease;
-}
-.site-nav.is-stuck {
-  background: rgba(255,255,255,0.88); border-bottom-color: rgba(9,10,12,0.08);
-  backdrop-filter: blur(20px) saturate(1.4); -webkit-backdrop-filter: blur(20px) saturate(1.4);
-}
-/* Over dark sections and dark photos the nav turns dark: white logo and labels, the black pill flips to white */
-.site-nav .logo, .site-nav .pill img { transition: filter 0.3s ease; }
-.site-nav .pill { transition: background-color 0.3s ease, color 0.3s ease; }
-.site-nav.is-dark.is-stuck { background: rgba(12,12,13,0.82); border-bottom-color: rgba(255,255,255,0.08); }
-.site-nav.is-dark .logo, .site-nav.is-dark .pill:not(.is-dark) img { filter: invert(1); }
-.site-nav.is-dark .pill:not(.is-dark) { background: rgba(255,255,255,0.12); color: #fff; }
-.site-nav.is-dark .pill:not(.is-dark):hover { background: rgba(255,255,255,0.22); }
-.site-nav.is-dark .pill.is-dark { background: #fff; color: #000; }
-.site-nav.is-dark .pill.is-dark:hover { background: #e6e6e6; }
-.site-nav .logo { width: 155px; height: 16px; }
-.site-nav .logomark, .chat-time .ts-ic { display: none; } /* tablet and phone only */
-.pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 4px; background: rgba(255,255,255,0.25); font-family: var(--font-geist); font-weight: 600; font-size: 14px; color: var(--label-primary); white-space: nowrap; transition: background 0.15s; }
-.pill:hover { background: rgba(255,255,255,0.5); }
-.pill img { width: 10px; height: 10px; }
-.pill.is-dark { background: #000; color: #fff; }
-.pill.is-dark img { width: 12px; height: 12px; }
-.pill.is-dark:hover { background: #222; }
-.site-nav .spacer { flex: 1; }
-.site-nav .right { display: flex; gap: 10px; }
-.products-toggle[aria-expanded="true"] { background: rgba(9,10,12,0.06); }
-
-/* ── All Products menu ── */
-/* Rebuilt from mothership.com: a frosted sheet under the nav, products on the left, the hovered one's panel on the right */
-.products-menu {
-  position: fixed; top: 108px; left: 0; right: 0; z-index: 49;
-  max-height: calc(100dvh - 108px); overflow-y: auto; overscroll-behavior: contain;
-  background: rgba(255,255,255,0.88); backdrop-filter: blur(50px) saturate(1.4); -webkit-backdrop-filter: blur(50px) saturate(1.4);
-  border-bottom: 1px solid rgba(9,10,12,0.08); box-shadow: 0 24px 48px rgba(9,10,12,0.08);
-  opacity: 0; visibility: hidden; translate: 0 -8px;
-  transition: opacity 0.25s ease, translate 0.25s ease, visibility 0s linear 0.25s;
-}
-.products-menu.is-open { opacity: 1; visibility: visible; translate: 0 0; transition: opacity 0.25s ease, translate 0.25s ease; }
-.pm-inner { display: flex; gap: 7px; width: min(1050px, 100% - 48px); margin: 0 auto; padding: 12px 0 24px; font-family: var(--font-geist); color: var(--label-primary); }
-.pm-list { flex: 0 0 250px; display: flex; flex-direction: column; gap: 2px; }
-.pm-group { padding: 14px 8px 6px; font-size: 11px; font-weight: 500; color: var(--gray-500); }
-.pm-group:first-child { padding-top: 6px; }
-.pm-trigger { display: flex; align-items: center; gap: 12px; height: 46px; padding: 8px; border-radius: 10px; font-size: 14px; font-weight: 500; text-align: left; transition: background-color 0.15s ease; }
-.pm-trigger img { flex: none; width: 30px; height: 30px; }
-.pm-trigger:hover, .pm-trigger.is-active { background: rgba(0,0,0,0.05); box-shadow: inset 0 0 10px rgba(255,255,255,0.21), 0 0 20px rgba(255,255,255,0.12); }
-.pm-panels { flex: 1; min-width: 0; }
-.pm-panel { display: none; padding: 19px; border-radius: 20px; background: rgba(0,0,0,0.02); }
-.pm-panel.is-active { display: block; animation: pm-in 0.3s ease; }
-@keyframes pm-in { from { opacity: 0; } }
-.pm-head { padding: 0 2px 18px; }
-.pm-title { font-family: var(--font-nav-title); font-size: 20px; font-weight: 600; line-height: 26px; }
-.pm-title:hover { text-decoration: underline; text-underline-offset: 3px; }
-.pm-head p { margin-top: 4px; font-size: 14px; line-height: 20px; color: var(--gray-500); }
-.pm-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-.pm-card { display: flex; flex-direction: column; justify-content: space-between; gap: 16px; min-height: 190px; padding: 12px; border-radius: 16px; background: rgba(0,0,0,0.02); }
-.pm-card img { width: 50px; height: 50px; border-radius: 8px; }
-.pm-card strong { display: block; font-size: 13px; font-weight: 600; line-height: 18px; }
-.pm-card span { display: block; margin-top: 4px; font-size: 11px; line-height: 15px; color: var(--gray-500); }
-/* TMS Dashboard: five feature columns, each with its list */
-.pm-cards.is-cols { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-.pm-cards.is-cols .pm-card { justify-content: flex-start; }
-.pm-card ul { display: grid; gap: 6px; margin-top: 10px; padding-left: 14px; list-style: disc; font-size: 11px; line-height: 15px; color: var(--gray-500); }
-@media (max-width: 1080px) {
-  .pm-list { flex-basis: 210px; }
-  .pm-cards { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
-  .pm-cards.is-cols { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-  .pm-card { min-height: 160px; }
-}
-
+.chat-time .ts-ic { display: none; } /* tablet and phone only */
 /* ── Hero ── */
 .hero { position: relative; padding: 143px 0 120px; overflow: hidden; }
 /* The clip is placed by script so the cube sits dead centre in the viewport. The cube is high in the frame,
@@ -1028,10 +952,6 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
 .signup { display: inline-flex; align-items: center; gap: 10px; height: 42px; padding: 0 22px 0 20px; border-radius: 0; background: #000; color: #fff; font-family: var(--font-geist); font-weight: 600; font-size: 16px; transition: background 0.15s; }
 .signup:hover { background: #222; }
 .signup img { width: 14px; height: 14px; }
-.site-footer { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 32px 48px; border-top: 1px solid #e6e6e6; font-family: var(--font-geist); font-size: 14px; color: rgba(9,10,12,0.6); }
-.site-footer .logo { width: 155px; height: 16px; }
-.site-footer nav { display: flex; gap: 28px; }
-.site-footer a:hover { color: var(--label-primary); }
 
 /* ── Scroll reveal (below the hero): fade up as each block enters the viewport ── */
 .reveal { opacity: 0; translate: 0 48px; transition: opacity 0.5s cubic-bezier(.25,.1,.25,1) var(--reveal-delay, 0s), translate 0.7s cubic-bezier(.16,1,.3,1) var(--reveal-delay, 0s); }
@@ -1108,18 +1028,6 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
   .intro-composer .send { grid-area: send; width: 72px; height: 72px; border-radius: 50%; transition: opacity 0.25s ease; }
   .intro-composer .send img { width: 32px; height: 32px; }
   .intro-composer.is-empty .send { opacity: 0.2; }
-  /* Figma Built (768) 390:6700: a black 80% frosted bar at every scroll position — white logomark, black pills with
-     white Medium 14 labels (no icons on Track and Log in), Sign up outlined in white */
-  .site-nav, .site-nav.is-stuck, .site-nav.is-dark.is-stuck { background: rgba(0,0,0,0.8); border-bottom-color: transparent; padding: 0 16px; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
-  .site-nav .logo { display: none; }
-  .site-nav .logomark { display: block; width: 30px; height: 20px; }
-  .site-nav .pill, .site-nav.is-dark .pill:not(.is-dark) { height: 32px; padding: 6px 12px; background: #000; color: #fff; font-weight: 500; font-size: 14px; }
-  .site-nav .pill:hover, .site-nav.is-dark .pill:not(.is-dark):hover { background: #222; }
-  .site-nav .pill:not(.is-dark) img, .site-nav.is-dark .pill:not(.is-dark) img { filter: invert(1); }
-  .site-nav .pill.is-dark img { filter: none; } /* the green arrow stays green */
-  .site-nav .right .pill:not(.is-dark) img { display: none; }
-  .site-nav .pill.is-dark, .site-nav.is-dark .pill.is-dark { background: transparent; color: #fff; box-shadow: inset 0 0 0 1px #fff; }
-  .site-nav .pill.is-dark:hover, .site-nav.is-dark .pill.is-dark:hover { background: rgba(255,255,255,0.12); }
   /* Hero, Figma Built (768) 351:1608: the card 666px wide 114px down; the thread 42px in from each side of the
      conversation, 24px top padding, 32px apart; a 472px bubble; the headline at 46/52 */
   .hero { padding-top: 114px; }
@@ -1171,25 +1079,6 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
   .examples-grid { --card-inset: 0px; }
   .demo-bar { padding: 10px 16px; }
   .demo-bar-note, .demo-bar .vp-group { display: none; }
-  /* Figma Built (375) 390:6587: logomark, then Track, Log in, the menu icon and "Sign up", 10px apart, on the right */
-  .site-nav { gap: 10px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
-  .site-nav, .site-nav.is-stuck, .site-nav.is-dark.is-stuck { backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
-  .site-nav .right { display: contents; }
-  .site-nav .spacer { order: 1; }
-  .site-nav .right .pill:not(.is-dark) { order: 2; }
-  .site-nav .pill.products-toggle { order: 3; }
-  .site-nav .pill.is-dark { order: 4; }
-  .site-nav .pill.is-dark img, .su-long { display: none; }
-  /* All Products stays on phones as an icon button; the menu stacks the product list over its panel */
-  .site-nav .pill.products-toggle { display: inline-flex; padding: 6px 12px; }
-  .products-toggle .pm-label { display: none; }
-  .pm-inner { flex-direction: column; gap: 12px; width: calc(100% - 32px); padding-bottom: 16px; }
-  .pm-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); flex-basis: auto; }
-  .pm-group { grid-column: 1 / -1; }
-  .pm-trigger { height: auto; min-height: 46px; font-size: 13px; }
-  .pm-panel { padding: 14px; }
-  .pm-cards, .pm-cards.is-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-  .pm-card { min-height: 140px; }
   .hero { padding: 116px 0 64px; }
   .chat-app { min-height: 0; }
   .chat-rail { display: none; }
@@ -1269,9 +1158,13 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
   .app-tile .launch { right: 10px; bottom: 10px; width: 16px; height: 16px; }
   .steps { padding: 32px 20px; }
   .app-tile .app-logo > img, .app-tile .app-logo > .vscode { width: 26px; height: 26px; }
-  .site-footer { flex-direction: column; padding: 32px 24px; }
-  .site-footer nav { flex-wrap: wrap; justify-content: center; gap: 16px 24px; }
 }
+/* Simplified Chinese (?lang=zh-CN here, the zh-CN locale on the marketplace page) */
+/* Negative tracking crowds Chinese characters, so nothing tracks tighter than normal */
+html:lang(zh-CN) body * { letter-spacing: normal !important; }
+/* Boxes sized to fit the English copy size to the Chinese text instead (the hero bubble keeps its width as a cap) */
+html:lang(zh-CN) .hero-user .page-bubble { width: auto; max-width: var(--hero-bubble-w); }
+html:lang(zh-CN) .ap-card .agent-msg { width: auto !important; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
   /* The dot fill is the slideshow's timer, so it keeps its real duration */
@@ -1297,112 +1190,15 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
     <button type="button" data-view="mobile" aria-pressed="false" title="375 × 812">Mobile</button>
   </span>
   <button type="button" id="open-all">Show all replies</button>
+  <button type="button" id="lang-toggle" aria-pressed="false" lang="zh-CN">中文</button>
   <span class="demo-bar-note">Hover a chat example to see the reply</span>
 </div>
 
-<!-- ═══════════ Hero ═══════════ -->
-<header class="site-nav">
-  <a href="#top" aria-label="Mothership home"><img class="logo" src="assets/mcp-landing/mothership-logo.svg" alt="Mothership"><img class="logomark" src="assets/mcp-landing/logomark-white.svg" alt=""></a>
-  <button class="pill products-toggle" type="button" aria-expanded="false" aria-controls="products-menu" aria-label="All Products"><img src="assets/mcp-landing/icon-menu.svg" alt=""><span class="pm-label">All Products</span></button>
-  <span class="spacer"></span>
-  <div class="right">
-    <a class="pill" href="#top"><img src="assets/mcp-landing/icon-track.svg" alt="">Track</a>
-    <a class="pill" href="#top"><img src="assets/mcp-landing/icon-user.svg" alt="">Log in</a>
-    <a class="pill is-dark" href="#get-started"><img src="assets/mcp-landing/icon-arrow.svg" alt=""><span>Sign up<span class="su-long"> in 60 seconds</span></span></a>
-  </div>
-</header>
-<!-- All Products menu: rebuilt from the mega menu on mothership.com -->
-<div class="products-menu" id="products-menu" inert>
-  <div class="pm-inner">
-    <div class="pm-list" role="tablist" aria-label="All products" aria-orientation="vertical">
-      <p class="pm-group">Trucking</p>
-      <button class="pm-trigger is-active" type="button" role="tab" id="pm-tab-local" aria-controls="pm-local" aria-selected="true"><img src="assets/mcp-landing/menu/local.avif" alt="">Local Same-Day</button>
-      <button class="pm-trigger" type="button" role="tab" id="pm-tab-ltl" aria-controls="pm-ltl" aria-selected="false"><img src="assets/mcp-landing/menu/ltl.avif" alt="">National LTL</button>
-      <p class="pm-group">Software</p>
-      <button class="pm-trigger" type="button" role="tab" id="pm-tab-tms" aria-controls="pm-tms" aria-selected="false"><img src="assets/mcp-landing/menu/tms.avif" alt="">TMS Dashboard</button>
-      <button class="pm-trigger" type="button" role="tab" id="pm-tab-intelligence" aria-controls="pm-intelligence" aria-selected="false"><img src="assets/mcp-landing/menu/mi.avif" alt="">Intelligence</button>
-      <button class="pm-trigger" type="button" role="tab" id="pm-tab-galaxy" aria-controls="pm-galaxy" aria-selected="false"><img src="assets/mcp-landing/menu/galaxyapp.avif" alt="">Galaxy API</button>
-      <button class="pm-trigger" type="button" role="tab" id="pm-tab-dashboard-api" aria-controls="pm-dashboard-api" aria-selected="false"><img src="assets/mcp-landing/menu/dashboard-api.avif" alt="">Dashboard API</button>
-      <button class="pm-trigger" type="button" role="tab" id="pm-tab-freightprotect" aria-controls="pm-freightprotect" aria-selected="false"><img src="assets/mcp-landing/menu/fp.avif" alt="">FreightProtect™ Full Coverage</button>
-    </div>
-    <div class="pm-panels">
-      <div class="pm-panel is-active" id="pm-local" role="tabpanel" aria-labelledby="pm-tab-local">
-        <div class="pm-head"><a class="pm-title" href="https://www.mothership.com/local-same-day">Local Same-Day</a><p>Delight business and residential customers with lightning fast local delivery.</p></div>
-        <div class="pm-cards">
-          <div class="pm-card"><img src="assets/mcp-landing/menu/topcities.avif" alt=""><div><strong>Deliver Same-Day in top US cities</strong><span>Ship up to 100 miles across cities</span></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/track-real-time.avif" alt=""><div><strong>Track your freight in real-time</strong><span>View the exact carrier location</span></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/largest-network.avif" alt=""><div><strong>Largest network of independent carriers</strong><span>Monitored by auto-compliance tech</span></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/zipcodes.avif" alt=""><div><strong>7,000+ zip codes</strong><span>where 100 million people live</span></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/fp.avif" alt=""><div><strong>Optional FreightProtect® Coverage</strong><span>Damage and loss premium coverage that protects your freight</span></div></div>
-        </div>
-      </div>
-      <div class="pm-panel" id="pm-ltl" role="tabpanel" aria-labelledby="pm-tab-ltl">
-        <div class="pm-head"><a class="pm-title" href="https://www.mothership.com/national-ltl">National LTL</a><p>Go further with technology enhanced national less-than-truckload services.</p></div>
-        <div class="pm-cards">
-          <div class="pm-card"><img src="assets/mcp-landing/menu/lowest-rates.avif" alt=""><div><strong>Instant access to the lowest rates</strong><span>Save without commitments</span></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/nationwide.avif" alt=""><div><strong>Nationwide coverage across 50,000 lanes</strong><span>Deliver anywhere in the US</span></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/integrations.avif" alt=""><div><strong>Direct integrations with national carriers</strong><span>Leverage corporate carrier scale</span></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/pre-negotatiated.avif" alt=""><div><strong>Pre-negotiated pricing</strong><span>Discounted pricing with no hidden fees for all customers</span></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/pricing-specific.avif" alt=""><div><strong>Customer specific pricing</strong><span>Tailored pricing for our highest-volume shippers</span></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/fp.avif" alt=""><div><strong>Optional FreightProtect® Coverage</strong><span>Damage and loss premium coverage that protects your freight</span></div></div>
-        </div>
-      </div>
-      <div class="pm-panel" id="pm-tms" role="tabpanel" aria-labelledby="pm-tab-tms">
-        <div class="pm-head"><a class="pm-title" href="https://www.mothership.com/tms-dashboard">TMS Dashboard</a><p>A modern freight dashboard, built for growing businesses.</p></div>
-        <div class="pm-cards is-cols">
-          <div class="pm-card"><img src="assets/mcp-landing/menu/cost.avif" alt=""><div><strong>Rate &amp; Quote</strong><ul><li>Instant Quoting &amp; Classification</li><li>AI-Powered Accessorial Detection</li><li>Address Auto-Complete &amp; Verification</li><li>Smart Carrier Filtering</li><li>Amazon Fulfillment Appointments</li></ul></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/checkout.avif" alt=""><div><strong>Manage &amp; Bill</strong><ul><li>All-in-One Billing Dashboard</li><li>Net 30 Financing</li><li>International Payment Support</li><li>Scheduled Reporting</li><li>Automatic Carrier Reconciliation</li></ul></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/bulk.avif" alt=""><div><strong>Tender &amp; Book</strong><ul><li>Scheduled &amp; Future Shipments</li><li>Bulk Uploads</li><li>Post-Order Editing</li><li>Team Access &amp; Role-Based Permissions</li></ul></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/claims.avif" alt=""><div><strong>Claims &amp; Support</strong><ul><li>Claims Management Dashboard</li><li>Dispute Management &amp; Customer Advocacy</li><li>U.S. Based Support + AI Assist</li></ul></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/visibility.avif" alt=""><div><strong>Track &amp; Notify</strong><ul><li>Real-Time Shipment Tracking</li><li>Unified LTL Visibility</li><li>End-to-End Carrier Tracking</li><li>Notification Center</li><li>AI Appointment Scheduling</li><li>Cargo Photo Capture</li><li>Digital Documents &amp; Instant POD</li></ul></div></div>
-        </div>
-      </div>
-      <div class="pm-panel" id="pm-intelligence" role="tabpanel" aria-labelledby="pm-tab-intelligence">
-        <div class="pm-head"><a class="pm-title" href="https://www.mothership.com/intelligence">Intelligence</a><p>Smarter booking, fewer surprises, more predictability.</p></div>
-        <div class="pm-cards">
-          <div class="pm-card"><img src="assets/mcp-landing/menu/accessdetect.avif" alt=""><div><strong>AI-Powered accessorial detection</strong></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/instaquote.avif" alt=""><div><strong>Instant quoting &amp; classification</strong></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/addressverify.avif" alt=""><div><strong>Address auto-complete &amp; verification</strong></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/costoptimize.avif" alt=""><div><strong>Real-time cost optimization</strong></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/carrierfiltering.avif" alt=""><div><strong>Smart carrier filtering</strong></div></div>
-        </div>
-      </div>
-      <div class="pm-panel" id="pm-galaxy" role="tabpanel" aria-labelledby="pm-tab-galaxy">
-        <div class="pm-head"><a class="pm-title" href="https://www.mothership.com/galaxy-api">Galaxy API</a><p>The All-in-one Carrier API Platform. Rate, Tender, Track, and Docs. Powered by AI.</p></div>
-        <div class="pm-cards">
-          <div class="pm-card"><img src="assets/mcp-landing/menu/carrierfiltering.avif" alt=""><div><strong>Smart carrier filtering &amp; insights</strong></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/accessdetect.avif" alt=""><div><strong>AI-Powered accessorial detection</strong></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/instaquote.avif" alt=""><div><strong>Universal invoicing</strong></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/fp-personalized.avif" alt=""><div><strong>Universal claims</strong></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/fp-carrier-reconcile.avif" alt=""><div><strong>Performance metrics</strong></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/fp.avif" alt=""><div><strong>Optional FreightProtect® Coverage</strong></div></div>
-        </div>
-      </div>
-      <div class="pm-panel" id="pm-dashboard-api" role="tabpanel" aria-labelledby="pm-tab-dashboard-api">
-        <div class="pm-head"><a class="pm-title" href="https://www.mothership.com/dashboard-api">Dashboard API</a><p>Integrate with Mothership API and boost your supply chain.</p></div>
-        <div class="pm-cards">
-          <div class="pm-card"><img src="assets/mcp-landing/menu/carriercoverage.avif" alt=""><div><strong>Comprehensive carrier coverage</strong></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/notificationwebhook.avif" alt=""><div><strong>Real-Time notifications with webhooks</strong></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/nationwide.avif" alt=""><div><strong>Access our nationwide network</strong></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/largest-network.avif" alt=""><div><strong>Access our local Same-Day freight</strong></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/apienvironment.avif" alt=""><div><strong>Sandbox and production API environments available</strong></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/openapi.avif" alt=""><div><strong>OpenAPI specification available</strong></div></div>
-        </div>
-      </div>
-      <div class="pm-panel" id="pm-freightprotect" role="tabpanel" aria-labelledby="pm-tab-freightprotect">
-        <div class="pm-head"><a class="pm-title" href="https://www.mothership.com/freightprotect-full-coverage">FreightProtect™ Full Coverage</a><p>Damage and loss premium coverage that protects your freight.</p></div>
-        <div class="pm-cards">
-          <div class="pm-card"><img src="assets/mcp-landing/menu/fp-personalized.avif" alt=""><div><strong>Personalized Premium Coverage</strong></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/fp-bestpricing.avif" alt=""><div><strong>Industry-best Pricing</strong></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/fp-claimapprove.avif" alt=""><div><strong>Fast Claim Approval</strong></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/fp-disputemngt.avif" alt=""><div><strong>Dispute management &amp; customer advocacy</strong></div></div>
-          <div class="pm-card"><img src="assets/mcp-landing/menu/fp-carrier-reconcile.avif" alt=""><div><strong>Automatic carrier reconciliation</strong></div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- The marketing site's nav and footer (assets/mcp-landing/site-chrome), mounted by script; our own nav is saved in
+     mcp-landing-nav-v2.html for later -->
+<div class="site-chrome" id="site-nav"></div>
 
+<!-- ═══════════ Hero ═══════════ -->
 <main id="top">
 <section class="hero" data-intro="start" aria-labelledby="hero-title">
   <div class="hero-bg">
@@ -1425,10 +1221,10 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
     <div class="chat-convo">
       <div class="chat-thread">
         <div class="chat-time"><span class="ic ts-ic" data-icon="solid/AI/magic" aria-hidden="true"></span><p class="timestamp" id="hero-time">Today 9:41 AM</p></div>
-        <div class="hero-user"><p class="page-bubble">Can I quote, book, and track freight from AI chat?</p><span class="sent-by">Sent by you</span></div>
+        <div class="hero-user"><p class="page-bubble" data-i18n="heroQuestion" data-i18n-plain>Can I quote, book, and track freight from AI chat?</p><span class="sent-by" data-i18n="sentBy">Sent by you</span></div>
         <div class="hero-reply">
-          <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-          <h1 id="hero-title" data-typewriter>Yes. <span class="iri" data-text="Connect Mothership"><span class="iri-glow" data-text="Connect Mothership" aria-hidden="true"></span><span class="iri-fill">Connect Mothership</span></span> and just ask.</h1>
+          <span class="agent-tag" data-i18n="agentTag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
+          <h1 id="hero-title" data-typewriter data-i18n="heroTitle">Yes. <span class="iri" data-text="Connect Mothership"><span class="iri-glow" data-text="Connect Mothership" aria-hidden="true"></span><span class="iri-fill">Connect Mothership</span></span> and just ask.</h1>
           <span class="cursor-block"></span>
         </div>
       </div>
@@ -1436,26 +1232,26 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
       <!-- Connect block lives inside the conversation, so it always sits within the chat card -->
       <div class="hero-connect">
         <div class="cf-stack" aria-hidden="true"><span class="cf-tab"></span><span class="cf-tab"></span><span class="cf-tab"></span></div>
-        <div class="cf-edge is-top"><span class="cf-line"></span><p class="lead">Add our MCP server to<br class="br-mobile"> your AI agent in seconds</p><span class="cf-line"></span></div>
+        <div class="cf-edge is-top"><span class="cf-line"></span><p class="lead" data-i18n="connectLead">Add our MCP server to<br class="br-mobile"> your AI agent in seconds</p><span class="cf-line"></span></div>
         <div class="cf-body">
           <div class="connect-block">
-            <p class="pixel-note">Just ask your AI how. Requires an approved Mothership account.</p>
+            <p class="pixel-note" data-i18n="connectNote">Just ask your AI how. Requires an approved Mothership account.</p>
             <div class="mcp-url">
               <span class="surface"></span>
               <span class="url"><span class="ic" data-icon="outline/globe-alt" aria-hidden="true"></span>mcp.mothership.com</span>
-              <button type="button" class="copy-btn" data-copy="https://mcp.mothership.com">Copy</button>
+              <button type="button" class="copy-btn" data-copy="https://mcp.mothership.com" data-i18n="copy">Copy</button>
             </div>
           </div>
-          <p class="hero-copy"><strong>Quote, book, track and pay for LTL, FTL and Same-day local freight in plain words.</strong> Everything our Dashboard does now in Claude, ChatGPT and more — on desktop or your phone.</p>
+          <p class="hero-copy" data-i18n="heroCopy"><strong>Quote, book, track and pay for LTL, FTL and Same-day local freight in plain words.</strong> Everything our Dashboard does now in Claude, ChatGPT and more — on desktop or your phone.</p>
           <div class="available">
-            <p class="pixel-note">Now available in</p>
+            <p class="pixel-note" data-i18n="nowAvailable">Now available in</p>
             <div class="marquee"><div class="marquee-track" id="marquee-track"></div></div>
           </div>
         </div>
         <div class="cf-edge is-bottom">
           <span class="cf-line"></span>
           <div class="powered">
-            <p class="pixel-note">Powered by</p>
+            <p class="pixel-note" data-i18n="poweredBy">Powered by</p>
             <img class="powered-mark" src="assets/mcp-landing/powered-mark.svg" alt="Mothership SI">
           </div>
           <span class="cf-line"></span>
@@ -1468,19 +1264,19 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
 <!-- ═══════════ What can it do ═══════════ -->
 <section class="features" aria-labelledby="features-title">
   <div class="exchange">
-    <div class="exchange-user"><p class="page-bubble">What can it do?</p><span class="sent-by">Sent by you</span></div>
+    <div class="exchange-user"><p class="page-bubble" data-i18n="featuresQ">What can it do?</p><span class="sent-by" data-i18n="sentBy">Sent by you</span></div>
     <div class="exchange-agent">
-      <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-      <h2 class="display" id="features-title" data-typewriter data-tw-delay="0.4">Everything the Mothership Dashboard does, and more.</h2>
+      <span class="agent-tag" data-i18n="agentTag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
+      <h2 class="display" id="features-title" data-typewriter data-tw-delay="0.4" data-i18n="featuresTitle">Everything the Mothership Dashboard does, and more.</h2>
       <span class="cursor-block"></span>
     </div>
   </div>
 </section>
 
-<section class="examples" aria-label="Example questions">
+<section class="examples" aria-label="Example questions" data-i18n-attr="aria-label:examplesAria">
   <div class="bracket">
     <div class="bracket-lines"><img src="assets/mcp-landing/examples-bracket.svg" alt=""></div>
-    <p class="bracket-label"><span class="ic ic-24" data-icon="solid/AI chat"></span>Here’s how people ask. No waiting.</p>
+    <p class="bracket-label" data-i18n="examplesLabel"><span class="ic ic-24" data-icon="solid/AI chat"></span>Here’s how people ask. No waiting.</p>
   </div>
   <div class="examples-stage">
     <div class="examples-bg"><img class="examples-photo" src="assets/mcp-landing/warehouse.jpg" alt=""><img class="examples-alt" src="assets/mcp-landing/examples-bg-2.jpg" alt="" decoding="async"><img class="examples-alt" src="assets/mcp-landing/examples-bg-3.jpg" alt="" decoding="async"><img class="examples-shade" src="assets/mcp-landing/examples-bg-1-shaded.png" alt="" decoding="async" loading="lazy"><img class="examples-shade" src="assets/mcp-landing/examples-bg-2-shaded.png" alt="" decoding="async" loading="lazy"><img class="examples-shade" src="assets/mcp-landing/examples-bg-3-shaded.png" alt="" decoding="async" loading="lazy"></div>
@@ -1491,27 +1287,27 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
 <!-- ═══════════ Devices ═══════════ -->
 <section class="devices-head" aria-labelledby="devices-title">
   <div class="exchange">
-    <div class="exchange-user"><p class="page-bubble">Does it work on my phone?</p><span class="sent-by">Sent by you</span></div>
+    <div class="exchange-user"><p class="page-bubble" data-i18n="devicesQ">Does it work on my phone?</p><span class="sent-by" data-i18n="sentBy">Sent by you</span></div>
     <div class="exchange-agent">
-      <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-      <h2 class="display" id="devices-title" style="max-width: 707px" data-typewriter data-tw-delay="0.4">Yes — same chat at your desk or on the dock.</h2>
+      <span class="agent-tag" data-i18n="agentTag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
+      <h2 class="display" id="devices-title" style="max-width: 707px" data-typewriter data-tw-delay="0.4" data-i18n="devicesTitle">Yes — same chat at your desk or on the dock.</h2>
       <span class="cursor-block"></span>
     </div>
   </div>
 </section>
 
-<section class="devices" aria-label="Desk and dock example">
+<section class="devices" aria-label="Desk and dock example" data-i18n-attr="aria-label:devicesAria">
   <div class="bracket">
     <div class="bracket-lines"><img src="assets/mcp-landing/devices-bracket.svg" alt=""></div>
-    <p class="bracket-label"><span class="ic ic-24" data-icon="solid/AI chat"></span>For example</p>
+    <p class="bracket-label" data-i18n="forExample"><span class="ic ic-24" data-icon="solid/AI chat"></span>For example</p>
   </div>
-  <p class="bracket-copy">Check a delivery from the warehouse floor, book next week’s loads from your laptop. Your AI picks up where you left off.</p>
+  <p class="bracket-copy" data-i18n="devicesCopy">Check a delivery from the warehouse floor, book next week’s loads from your laptop. Your AI picks up where you left off.</p>
 
   <div class="stage-wrap" id="stage-wrap">
     <div class="stage">
       <div class="scene scene-a is-active" data-dur="3.75">
-        <div class="photo" data-shader><img class="shaded" src="assets/mcp-landing/desk-shaded.png" alt="Shipper at a desk"><img class="source" src="assets/mcp-landing/desk.jpg" alt=""></div>
-        <div class="composer" data-question="What do I have shipping next week?">
+        <div class="photo" data-shader><img class="shaded" src="assets/mcp-landing/desk-shaded.png" alt="Shipper at a desk" data-i18n-attr="alt:deskAlt"><img class="source" src="assets/mcp-landing/desk.jpg" alt=""></div>
+        <div class="composer" data-question="What do I have shipping next week?" data-i18n-attr="data-question:deskQuestion">
           <img class="plus" src="assets/mcp-landing/composer-plus-lg.svg" alt="">
           <div class="typed"><span class="typed-text"></span><span class="caret"></span></div>
           <span class="send"><img src="assets/mcp-landing/composer-arrow-lg.svg" alt=""></span>
@@ -1524,15 +1320,15 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
           <div class="rail"><span class="ic" data-icon="solid/AI/magic"></span><span class="avatar">TP</span></div>
           <div class="convo">
             <div class="thread">
-              <div class="user-turn"><p class="chat-bubble">What do I have shipping next week?</p></div>
+              <div class="user-turn"><p class="chat-bubble" data-i18n="deskQuestion">What do I have shipping next week?</p></div>
               <div class="agent-msg">
-                <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
+                <span class="agent-tag" data-i18n="agentTag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
                 <div class="body">
-                  <p>You have 3 shipments booked for next week:</p>
-                  <p class="box">1. MS482301 · Ontario → Phoenix · Mon, Oct 26 · 6 pallets · $548
+                  <p data-i18n="deskLead">You have 3 shipments booked for next week:</p>
+                  <p class="box" data-i18n="deskBox">1. MS482301 · Ontario → Phoenix · Mon, Oct 26 · 6 pallets · $548
 2. MS482302 · Fontana → Reno · Tue, Oct 27 · Full truckload · $1,940
 3. MS482303 · LA → San Diego · Wed, Oct 28 · Local · $185</p>
-                  <p>Want me to send the pickup schedule to your warehouse team?</p>
+                  <p data-i18n="deskAsk">Want me to send the pickup schedule to your warehouse team?</p>
                 </div>
                 <span class="dot"></span>
               </div>
@@ -1541,7 +1337,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
               <div class="composer-sm">
                 <img class="plus" src="assets/mcp-landing/composer-plus.svg" alt="">
                 <span class="tool-chip"><img src="assets/mcp-landing/chip-dot.svg" alt="">Mothership</span>
-                <span class="placeholder">Reply</span>
+                <span class="placeholder" data-i18n="replyPlaceholder">Reply</span>
                 <span class="send-sm"><img src="assets/mcp-landing/composer-arrow.svg" alt=""></span>
               </div>
             </div>
@@ -1551,15 +1347,15 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
 
       <div class="scene scene-ask" data-dur="3.75">
         <div class="photo" data-shader><img class="shaded" src="assets/mcp-landing/dock-shaded.png" alt=""><img class="source" src="assets/mcp-landing/dock-phone.jpg" alt=""></div>
-        <div class="composer is-empty" data-bold="Just include this in all pickup notes:" data-question="Carrier must have a TWIC card">
-          <div class="typed"><span class="placeholder">Reply…</span><span class="typed-text"></span><span class="caret"></span></div>
+        <div class="composer is-empty" data-question="&lt;b&gt;Just include this in all pickup notes:&lt;/b&gt; Carrier must have a TWIC card" data-i18n-attr="data-question:dockQuestion">
+          <div class="typed"><span class="placeholder" data-i18n="replyPlaceholderTyping">Reply…</span><span class="typed-text"></span><span class="caret"></span></div>
           <img class="plus" src="assets/mcp-landing/composer-plus-lg.svg" alt="">
           <span class="send"><img src="assets/mcp-landing/composer-arrow-lg.svg" alt=""></span>
         </div>
       </div>
 
       <div class="scene scene-c" data-dur="7.875">
-        <div class="photo" data-shader><img class="shaded" src="assets/mcp-landing/dock-shaded.png" alt="Shipper on the dock checking a phone"><img class="source" src="assets/mcp-landing/dock-phone.jpg" alt=""></div>
+        <div class="photo" data-shader><img class="shaded" src="assets/mcp-landing/dock-shaded.png" alt="Shipper on the dock checking a phone" data-i18n-attr="alt:dockAlt"><img class="source" src="assets/mcp-landing/dock-phone.jpg" alt=""></div>
         <div class="phone">
           <div class="screen">
             <div class="topbar">
@@ -1568,11 +1364,11 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
             </div>
             <div class="body">
               <div class="chat-scroll">
-              <div class="user-turn"><p class="chat-bubble">Just include this in all pickup notes to all shipments:<br>Carrier must have a TWIC card</p></div>
+              <div class="user-turn"><p class="chat-bubble" data-i18n="dockBubble">Just include this in all pickup notes to all shipments:<br>Carrier must have a TWIC card</p></div>
               <div class="agent-msg is-tight">
-                <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
+                <span class="agent-tag" data-i18n="agentTag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
                 <div class="body">
-                  <p>All notes have been updated for all shipments listed.</p>
+                  <p data-i18n="dockReply">All notes have been updated for all shipments listed.</p>
                   <span class="cursor-block"></span>
                 </div>
               </div>
@@ -1580,7 +1376,7 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
             </div>
             <div class="composer-area">
               <div class="composer-lg">
-                <span class="placeholder">Reply…</span>
+                <span class="placeholder" data-i18n="replyPlaceholderTyping">Reply…</span>
                 <div class="row">
                   <span class="tools"><img class="plus" src="assets/mcp-landing/composer-plus.svg" alt=""><span class="tool-chip"><img src="assets/mcp-landing/chip-dot.svg" alt="">Mothership</span></span>
                   <span class="send-sm"><img src="assets/mcp-landing/composer-arrow.svg" alt=""></span>
@@ -1592,24 +1388,24 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
       </div>
     </div>
   </div>
-  <div class="stage-nav" id="stage-nav" role="group" aria-label="Slideshow controls">
+  <div class="stage-nav" id="stage-nav" role="group" aria-label="Slideshow controls" data-i18n-attr="aria-label:slideshowAria">
     <div class="stage-dots">
-      <button type="button" class="stage-dot is-active" aria-label="Slide 1: ask from your desk" aria-current="true"><span class="fill"></span></button>
-      <button type="button" class="stage-dot" aria-label="Slide 2: the answer on your laptop"><span class="fill"></span></button>
-      <button type="button" class="stage-dot" aria-label="Slide 3: ask from the dock"><span class="fill"></span></button>
-      <button type="button" class="stage-dot" aria-label="Slide 4: the answer on your phone"><span class="fill"></span></button>
+      <button type="button" class="stage-dot is-active" aria-label="Slide 1: ask from your desk" data-i18n-attr="aria-label:slide1Aria" aria-current="true"><span class="fill"></span></button>
+      <button type="button" class="stage-dot" aria-label="Slide 2: the answer on your laptop" data-i18n-attr="aria-label:slide2Aria"><span class="fill"></span></button>
+      <button type="button" class="stage-dot" aria-label="Slide 3: ask from the dock" data-i18n-attr="aria-label:slide3Aria"><span class="fill"></span></button>
+      <button type="button" class="stage-dot" aria-label="Slide 4: the answer on your phone" data-i18n-attr="aria-label:slide4Aria"><span class="fill"></span></button>
     </div>
-    <button type="button" class="stage-play" aria-label="Pause slideshow"><span class="ic ic-pause" data-icon="solid/pause"></span><span class="ic ic-play" data-icon="solid/play"></span></button>
+    <button type="button" class="stage-play" aria-label="Pause slideshow" data-i18n-attr="aria-label:pauseSlideshow"><span class="ic ic-pause" data-icon="solid/pause"></span><span class="ic ic-play" data-icon="solid/play"></span></button>
   </div>
 </section>
 
 <!-- ═══════════ Autopilot ═══════════ -->
 <section class="autopilot on-dark" aria-labelledby="autopilot-title">
   <div class="exchange">
-    <div class="exchange-user"><p class="page-bubble is-green">Can it do things on its own?</p><span class="sent-by">Sent by you</span></div>
+    <div class="exchange-user"><p class="page-bubble is-green" data-i18n="autopilotQ">Can it do things on its own?</p><span class="sent-by" data-i18n="sentBy">Sent by you</span></div>
     <div class="exchange-agent">
-      <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-      <h2 class="display" id="autopilot-title" data-typewriter data-tw-delay="0.4">It follows through, and more. Set it once in plain words.</h2>
+      <span class="agent-tag" data-i18n="agentTag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
+      <h2 class="display" id="autopilot-title" data-typewriter data-tw-delay="0.4" data-i18n="autopilotTitle">It follows through, and more. Set it once in plain words.</h2>
       <span class="cursor-block is-light"></span>
     </div>
   </div>
@@ -1622,42 +1418,42 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
           <img class="mark" src="assets/mcp-landing/agent-openai-dark.svg" alt="">
           <img class="mark" src="assets/mcp-landing/agent-claude-dark.svg" alt="">
         </span>
-        Routines, schedules and reports that run on their own. You just check in.
+        <span data-i18n="autopilotLabel">Routines, schedules and reports that run on their own. You just check in.</span>
       </div>
     </div>
     <div class="ap-box">
       <div class="ap-row">
-        <div class="ap-title"><span class="ic" data-icon="outline/arrow-path"></span>Recurring quotes</div>
+        <div class="ap-title" data-i18n="ap1Title"><span class="ic" data-icon="outline/arrow-path"></span>Recurring quotes</div>
         <div class="ap-card">
-          <div class="user-turn"><p class="chat-bubble">Every Monday, quote 6 pallets from Ontario to the Phoenix store.</p><span class="sent">Sent by you</span></div>
+          <div class="user-turn"><p class="chat-bubble" data-i18n="ap1Q">Every Monday, quote 6 pallets from Ontario to the Phoenix store.</p><span class="sent" data-i18n="sentBy">Sent by you</span></div>
           <div class="agent-msg" style="width: 364px; max-width: 100%">
-            <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-            <p data-typewriter data-tw-delay="1.15">Got it. I’ll quote this every Monday at 7 AM and send you the confirmation.</p>
+            <span class="agent-tag" data-i18n="agentTag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
+            <p data-typewriter data-tw-delay="1.15" data-i18n="ap1A">Got it. I’ll quote this every Monday at 7 AM and send you the confirmation.</p>
           </div>
         </div>
-        <p class="ap-note">The rates you’d chase every week arrive on their own. Mothership re-quotes your lanes on schedule, so you book at the best price without the busywork.</p>
+        <p class="ap-note" data-i18n="ap1Note">The rates you’d chase every week arrive on their own. Mothership re-quotes your lanes on schedule, so you book at the best price without the busywork.</p>
       </div>
       <div class="ap-row">
-        <div class="ap-title"><span class="ic" data-icon="outline/folder-plus"></span>Stays on support</div>
+        <div class="ap-title" data-i18n="ap2Title"><span class="ic" data-icon="outline/folder-plus"></span>Stays on support</div>
         <div class="ap-card">
-          <div class="user-turn"><p class="chat-bubble">MS482220 is late. Stay on support until it’s sorted.</p><span class="sent">Sent by you</span></div>
+          <div class="user-turn"><p class="chat-bubble" data-i18n="ap2Q">MS482220 is late. Stay on support until it’s sorted.</p><span class="sent" data-i18n="sentBy">Sent by you</span></div>
           <div class="agent-msg" style="width: 361px; max-width: 100%">
-            <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-            <p data-typewriter data-tw-delay="1.15">Case opened — I’ll check in every 2 hours. Update: new ETA 4:30 PM today.</p>
+            <span class="agent-tag" data-i18n="agentTag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
+            <p data-typewriter data-tw-delay="1.15" data-i18n="ap2A">Case opened — I’ll check in every 2 hours. Update: new ETA 4:30 PM today.</p>
           </div>
         </div>
-        <p class="ap-note">Problems get chased until they’re solved. Mothership stays on every case for you, so your team moves freight instead of waiting on hold.</p>
+        <p class="ap-note" data-i18n="ap2Note">Problems get chased until they’re solved. Mothership stays on every case for you, so your team moves freight instead of waiting on hold.</p>
       </div>
       <div class="ap-row">
-        <div class="ap-title"><span class="ic" data-icon="outline/clock"></span>Heads-up on delays</div>
+        <div class="ap-title" data-i18n="ap3Title"><span class="ic" data-icon="outline/clock"></span>Heads-up on delays</div>
         <div class="ap-card">
-          <div class="user-turn"><p class="chat-bubble">Tell me if anything will deliver late this week.</p><span class="sent">Sent by you</span></div>
+          <div class="user-turn"><p class="chat-bubble" data-i18n="ap3Q">Tell me if anything will deliver late this week.</p><span class="sent" data-i18n="sentBy">Sent by you</span></div>
           <div class="agent-msg" style="width: 341px; max-width: 100%">
-            <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-            <p data-typewriter data-tw-delay="1.15">Will do. Everything’s on time right now — I’ll message you if that changes.</p>
+            <span class="agent-tag" data-i18n="agentTag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
+            <p data-typewriter data-tw-delay="1.15" data-i18n="ap3A">Will do. Everything’s on time right now — I’ll message you if that changes.</p>
           </div>
         </div>
-        <p class="ap-note">Know about trouble before it costs you. Mothership watches every shipment and warns you early, so your customers hear it from you first.</p>
+        <p class="ap-note" data-i18n="ap3Note">Know about trouble before it costs you. Mothership watches every shipment and warns you early, so your customers hear it from you first.</p>
       </div>
     </div>
   </div>
@@ -1667,10 +1463,10 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
 <section class="apps on-dark" aria-labelledby="apps-title">
   <div class="exchange">
     <div style="display: flex; flex-direction: column; gap: 40px">
-      <div class="exchange-user"><p class="page-bubble is-green">Which AI apps work?</p><span class="sent-by">Sent by you</span></div>
+      <div class="exchange-user"><p class="page-bubble is-green" data-i18n="appsQ">Which AI apps work?</p><span class="sent-by" data-i18n="sentBy">Sent by you</span></div>
       <div class="exchange-agent">
-        <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-        <h2 class="display" id="apps-title" data-typewriter data-tw-delay="0.4">These ones, today:</h2>
+        <span class="agent-tag" data-i18n="agentTag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
+        <h2 class="display" id="apps-title" data-typewriter data-tw-delay="0.4" data-i18n="appsTitle">These ones, today:</h2>
         <span class="cursor-block is-light"></span>
       </div>
     </div>
@@ -1690,10 +1486,10 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
   <div class="setup-bg"><img src="assets/mcp-landing/setup-bg.jpg" alt=""></div>
   <div class="exchange">
     <div style="display: flex; flex-direction: column; gap: 40px">
-      <div class="exchange-user"><p class="page-bubble is-green">How do I set it up?</p><span class="sent-by">Sent by you</span></div>
+      <div class="exchange-user"><p class="page-bubble is-green" data-i18n="setupQ">How do I set it up?</p><span class="sent-by" data-i18n="sentBy">Sent by you</span></div>
       <div class="exchange-agent">
-        <span class="agent-tag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
-        <h2 class="display" id="setup-title" data-typewriter data-tw-delay="0.4">Three steps, in seconds:</h2>
+        <span class="agent-tag" data-i18n="agentTag"><span class="ic" data-icon="solid/AI/magic"></span>Your AI agent</span>
+        <h2 class="display" id="setup-title" data-typewriter data-tw-delay="0.4" data-i18n="setupTitle">Three steps, in seconds:</h2>
         <span class="cursor-block is-light"></span>
       </div>
     </div>
@@ -1706,44 +1502,44 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
             <img class="mark" src="assets/mcp-landing/setup-agent-openai.svg" alt="">
             <img class="mark" src="assets/mcp-landing/setup-agent-claude.svg" alt="">
           </span>
-          <span class="note">AI agents can vary how you connect MCP servers. Just ask your agent.</span>
+          <span class="note" data-i18n="setupNote">AI agents can vary how you connect MCP servers. Just ask your agent.</span>
         </div>
       </div>
       <div class="steps">
         <div class="step">
           <p class="num">1</p>
-          <p class="what">Copy our MCP URL</p>
+          <p class="what" data-i18n="step1">Copy our MCP URL</p>
           <div class="step-card is-center">
             <span class="url-row"><span class="ic" data-icon="outline/globe-alt"></span>mcp.mothership.com</span>
-            <button type="button" class="copy-green" data-copy="https://mcp.mothership.com">Copy</button>
+            <button type="button" class="copy-green" data-copy="https://mcp.mothership.com" data-i18n="copy">Copy</button>
           </div>
         </div>
         <img class="step-arrow" src="assets/mcp-landing/step-arrow.svg" alt="">
         <div class="step">
           <p class="num">2</p>
-          <p class="what">Add it as a connector in your AI</p>
+          <p class="what" data-i18n="step2">Add it as a connector in your AI</p>
           <div class="step-card">
-            <p class="section-label">Customize</p>
-            <div class="nav-item"><span class="ic" data-icon="outline/document-text"></span>Skills</div>
-            <div class="nav-item is-active"><span class="ic" data-icon="outline/squares-plus"></span>Connectors</div>
-            <div class="nav-item"><span class="ic" data-icon="outline/puzzle-piece"></span>Plugins</div>
+            <p class="section-label" data-i18n="step2Customize">Customize</p>
+            <div class="nav-item" data-i18n="step2Skills"><span class="ic" data-icon="outline/document-text"></span>Skills</div>
+            <div class="nav-item is-active" data-i18n="step2Connectors"><span class="ic" data-icon="outline/squares-plus"></span>Connectors</div>
+            <div class="nav-item" data-i18n="step2Plugins"><span class="ic" data-icon="outline/puzzle-piece"></span>Plugins</div>
             <span class="step-cursor" style="left: 191.67px; top: 152px"><img src="assets/mcp-landing/cursor.svg" alt=""></span>
           </div>
         </div>
         <img class="step-arrow" src="assets/mcp-landing/step-arrow.svg" alt="">
         <div class="step">
           <p class="num">3</p>
-          <p class="what">Sign in with your Mothership account when your AI asks you</p>
+          <p class="what" data-i18n="step3">Sign in with your Mothership account when your AI asks you</p>
           <div class="step-card auth">
             <div>
-              <p class="eyebrow">MCP authorization</p>
-              <h3>Allow your AI agent to access Mothership?</h3>
+              <p class="eyebrow" data-i18n="authEyebrow">MCP authorization</p>
+              <h3 data-i18n="authTitle">Allow your AI agent to access Mothership?</h3>
             </div>
             <div style="display: flex; flex-direction: column; gap: 4px">
-              <p class="eyebrow">Signed in as</p>
-              <div class="account"><b>name@organization.com</b><span class="fine">Organization name</span></div>
+              <p class="eyebrow" data-i18n="signedInAs">Signed in as</p>
+              <div class="account"><b>name@organization.com</b><span class="fine" data-i18n="authOrg">Organization name</span></div>
             </div>
-            <div class="actions"><button type="button">Deny</button><button type="button">Allow access</button></div>
+            <div class="actions"><button type="button" data-i18n="deny">Deny</button><button type="button" data-i18n="allow">Allow access</button></div>
           </div>
         </div>
       </div>
@@ -1753,34 +1549,139 @@ a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(2
 
 <!-- ═══════════ Closing CTA ═══════════ -->
 <section class="cta" id="get-started" aria-labelledby="cta-title">
-  <h2 class="display" id="cta-title" data-typewriter data-tw-delay="0.4" data-tw-keep><span class="iri" data-text="Ship freight from your AI chat."><span class="iri-glow" data-text="Ship freight from your AI chat." aria-hidden="true"></span><span class="iri-fill">Ship freight from your AI chat.</span></span></h2>
+  <h2 class="display" id="cta-title" data-typewriter data-tw-delay="0.4" data-tw-keep data-i18n="ctaTitle"><span class="iri" data-text="Ship freight from your AI chat."><span class="iri-glow" data-text="Ship freight from your AI chat." aria-hidden="true"></span><span class="iri-fill">Ship freight from your AI chat.</span></span></h2>
   <div class="powered">
-    <p class="pixel-note">Powered by</p>
+    <p class="pixel-note" data-i18n="poweredBy">Powered by</p>
     <img class="powered-mark" src="assets/mcp-landing/powered-mark.svg" alt="Mothership SI">
   </div>
   <div class="actions">
-      <a class="signup" href="https://www.mothership.com"><img src="assets/mcp-landing/icon-arrow.svg" alt="">Sign up in 60 seconds</a>
+      <a class="signup" href="https://www.mothership.com" data-i18n="signUp"><img src="assets/mcp-landing/icon-arrow.svg" alt="">Sign up in 60 seconds</a>
       <div class="url-col">
         <div class="mcp-url">
           <span class="surface"></span>
           <span class="url"><span class="ic" data-icon="outline/globe-alt" aria-hidden="true"></span>mcp.mothership.com</span>
-          <button type="button" class="copy-btn" data-copy="https://mcp.mothership.com">Copy</button>
+          <button type="button" class="copy-btn" data-copy="https://mcp.mothership.com" data-i18n="copy">Copy</button>
         </div>
-        <p class="pixel-note">Requires an approved Mothership account</p>
+        <p class="pixel-note" data-i18n="ctaNote">Requires an approved Mothership account</p>
       </div>
   </div>
 </section>
 </main>
 
-<footer class="site-footer">
-  <img class="logo" src="assets/mcp-landing/mothership-logo.svg" alt="Mothership">
-  <nav aria-label="Footer">
-    <a href="#top">Product</a><a href="#top">Pricing</a><a href="#top">Support</a><a href="#top">Privacy</a><a href="#top">Terms</a>
-  </nav>
-  <span>© 2026 Mothership</span>
-</footer>
+<div class="site-chrome" id="site-footer"></div>
 
-<script>
+<script type="module">
+/* ── Copy: every visible string in the page body comes from mcp-copy.json, the same file as the marketplace page's
+   i18n catalog (src/i18n/catalogs/mcp.json). ?lang=zh-CN shows the Simplified Chinese ── */
+const LANG = new URLSearchParams(location.search).get('lang') === 'zh-CN' ? 'zh-CN' : 'en';
+const COPY = await fetch('assets/mcp-landing/mcp-copy.json').then(r => r.json());
+document.documentElement.lang = LANG;
+const tr = (key, vars = {}) => (COPY[LANG][key] ?? COPY.en[key] ?? '').replace(/{{(\w+)}}/g, (_, v) => vars[v] ?? '');
+const escHtml = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+// The iridescent words keep one-line copies of their text in data-text
+const iriHtml = text => `<span class="iri" data-text="${text}"><span class="iri-glow" data-text="${text}" aria-hidden="true"></span><span class="iri-fill">${text}</span></span>`;
+// <cN> placeholders: the element each message wraps (or stands for), as the marketplace page's PageTrans components
+const RICH = { heroTitle: { c0: iriHtml }, ctaTitle: { c0: iriHtml }, connectLead: { c0: () => '<br class="br-mobile">' } };
+const richHtml = key => escHtml(tr(key))
+  .replace(/&lt;(c\d+)&gt;(.*?)&lt;\/\1&gt;/g, (_, c, inner) => (RICH[key]?.[c] ?? (x => x))(inner))
+  .replace(/&lt;b&gt;(.*?)&lt;\/b&gt;/g, '<strong>$1</strong>')
+  .replace(/&lt;br\s*\/?&gt;/g, '<br>');
+document.querySelectorAll('[data-i18n]').forEach(el => {
+  if (el.hasAttribute('data-i18n-plain')) { el.textContent = tr(el.dataset.i18n).replace(/<\/?b>/g, ''); return; }
+  const icons = [...el.children].filter(c => c.matches('.ic, img')); // a leading icon stays in front of the words
+  el.innerHTML = richHtml(el.dataset.i18n);
+  el.prepend(...icons);
+});
+document.querySelectorAll('[data-i18n-attr]').forEach(el => el.dataset.i18nAttr.split(';').forEach(pair => {
+  const [attr, key] = pair.split(':'); el.setAttribute(attr, tr(key));
+}));
+/* ── Site chrome: the marketing site's own nav and footer, from mothership.com (gomothership.cn in Chinese), with the
+   site's CSS pruned to what they use (assets/mcp-landing/site-chrome). Each sits in a shadow root, so the site's Webflow
+   CSS and this page's styles never touch. The nav opens like the site's Navigation component does ── */
+const CHROME = 'assets/mcp-landing/site-chrome/';
+const [navHtml, footHtml, chromeCss] = await Promise.all([`nav.${LANG}.html`, `footer.${LANG}.html`, 'site-chrome.css']
+  .map(f => fetch(CHROME + f).then(r => r.text())));
+const chromeSheet = new CSSStyleSheet();
+// Under the demo bar (44px) while the nav sits at the top; tablets and phones keep the site's bottom bar
+chromeSheet.replaceSync(`${chromeCss}
+:host { display: block; }
+@media screen and (min-width: 992px) { :host(.is-under-bar) .navbar-component { top: 44px; } } /* the site's top bar; 991px and down it's the bottom bar */`);
+const mountChrome = (id, html) => {
+  const host = document.getElementById(id), root = host.attachShadow({ mode: 'open' });
+  root.adoptedStyleSheets = [chromeSheet]; root.innerHTML = html;
+  root.querySelectorAll('a[href]').forEach(a => { a.target = '_blank'; a.rel = 'noopener'; }); // the real site opens alongside the demo
+  return root;
+};
+const navRoot = mountChrome('site-nav', navHtml);
+mountChrome('site-footer', footHtml);
+if (!document.documentElement.classList.contains('is-embed')) document.getElementById('site-nav').classList.add('is-under-bar');
+const siteNavBar = () => navRoot.querySelector('.navbar-wrapper-light, .navbar-wrapper');
+{
+  // Navigation: [data-menu-open] on the bar while the menu shows, [data-product] for the hovered product's panel;
+  // the menu button toggles .w--open; the menu shows for the 200ms close animation, then hides; outside press or Escape closes it
+  const nav = navRoot.querySelector('.w-nav'), buttons = [...navRoot.querySelectorAll('.w-nav-button')];
+  const menus = [...navRoot.querySelectorAll('nav.w-nav-menu')];
+  const duration = Number(nav?.dataset.duration ?? 200);
+  let open = false, hideTimer = 0;
+  const set = next => {
+    open = next; clearTimeout(hideTimer);
+    buttons.forEach(b => { b.classList.toggle('w--open', open); b.setAttribute('aria-expanded', String(open)); });
+    if (open) { nav.dataset.menuOpen = 'true'; menus.forEach(m => { m.style.display = 'block'; m.classList.add('w--nav-menu-open'); m.dataset.menuPhase = 'open'; m.inert = false; }); return; }
+    menus.forEach(m => { m.dataset.menuPhase = 'closing'; m.inert = true; });
+    hideTimer = setTimeout(() => {
+      nav.dataset.menuOpen = 'false';
+      menus.forEach(m => { m.style.display = 'none'; m.classList.remove('w--nav-menu-open'); });
+    }, reducedMotionPref() ? 0 : duration);
+  };
+  const reducedMotionPref = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  buttons.forEach(b => b.addEventListener('click', () => set(!open)));
+  const preview = target => {
+    const trigger = target instanceof Element ? target.closest('[class*="trigger-box"]') : null;
+    const item = [...(trigger?.classList ?? [])].find(n => n.startsWith('trigger-') && !n.startsWith('trigger-box'));
+    if (!item) return;
+    const name = item.replace(/^trigger-/, '').replace(/-(light|dark)$/, '');
+    nav.dataset.product = name === 'ltl-carriers' ? 'ltl-carrier-partners' : name;
+  };
+  nav?.addEventListener('pointerover', e => preview(e.target));
+  nav?.addEventListener('focusin', e => preview(e.target));
+  document.addEventListener('pointerdown', e => { if (open && !e.composedPath().includes(nav)) set(false); });
+  document.addEventListener('keydown', e => { if (open && e.key === 'Escape') { set(false); buttons[0]?.focus(); } });
+}
+// Demo bar: 中文 reloads the page in Simplified Chinese (?lang=zh-CN), English back in English
+{
+  const btn = document.getElementById('lang-toggle'), zh = LANG === 'zh-CN';
+  btn.setAttribute('aria-pressed', String(zh)); btn.textContent = zh ? 'English' : '中文'; btn.lang = zh ? 'en' : 'zh-CN';
+  btn.addEventListener('click', () => {
+    const url = new URL(location.href);
+    zh ? url.searchParams.delete('lang') : url.searchParams.set('lang', 'zh-CN');
+    location.href = url;
+  });
+}
+// Typing tokens: words and the spaces between them; Chinese has no spaces, so the segmenter's words, with punctuation
+// kept on the word before it (opening brackets and quotes on the word after)
+const segmenter = LANG === 'zh-CN' && Intl.Segmenter ? new Intl.Segmenter('zh-CN', { granularity: 'word' }) : null;
+function words(text) {
+  if (!segmenter) return text.split(/(\s+)/).filter(Boolean);
+  const out = []; let open = '';
+  for (const { segment, isWordLike } of segmenter.segment(text)) {
+    if (/^\s+$/.test(segment)) { out.push(segment); continue; }
+    if (!isWordLike && /^[（“‘《【(]+$/.test(segment)) { open += segment; continue; }
+    const last = out.length - 1;
+    if (!isWordLike && last >= 0 && !/^\s+$/.test(out[last])) out[last] += segment;
+    else { out.push(open + segment); open = ''; }
+  }
+  if (open) out.push(open);
+  return out;
+}
+// A typed message as [word, bold, space before it]; <b> marks the bold run
+function typedWords(msg) {
+  const out = []; let space = '', bold = false;
+  msg.split(/(<\/?b>)/).forEach(part => {
+    if (part === '<b>' || part === '</b>') { bold = part === '<b>'; return; }
+    words(part).forEach(w => { if (/^\s+$/.test(w)) space = ' '; else { out.push([w, bold, space]); space = ''; } });
+  });
+  return out;
+}
 /* Icons sourced from icons.json (colors swapped to currentColor) */
 const ICONS = {"solid/AI/magic": {"viewBox": "0 0 24 24", "inner": "<path d=\"M9.99993 23.8718C9.99105 22.5738 9.71911 21.2907 9.20006 20.1C8.20267 17.7027 6.29732 15.7974 3.90001 14.8C2.7089 14.2808 1.42526 14.0088 0.126826 14C0.0845646 14.0003 0.0422884 14.0003 0 14C0.0422893 13.9997 0.0845655 13.9997 0.126826 14C1.42282 13.9919 2.70499 13.7288 3.90001 13.225C5.08384 12.7139 6.16091 11.9845 7.07497 11.075C7.98217 10.1642 8.7039 9.08591 9.20009 7.89998C9.71911 6.70939 9.99105 5.42631 9.99996 4.12842C9.99969 4.08563 9.99969 4.04282 9.99998 4C10.0003 4.04282 10.0003 4.08563 9.99996 4.12842C10.0082 5.4239 10.2714 6.70553 10.7752 7.89998C11.2862 9.08386 12.0155 10.161 12.925 11.075C13.8391 11.9845 14.9161 12.7139 16.1 13.225C17.295 13.7288 18.5772 13.992 19.8732 14C19.9155 13.9997 19.9577 13.9997 20 14C19.9577 14.0003 19.9155 14.0003 19.8732 14C18.5748 14.0088 17.2911 14.2808 16.1 14.8C14.9141 15.2961 13.8358 16.0178 12.925 16.925C12.0155 17.839 11.2862 18.9161 10.7752 20.1C10.2714 21.2945 10.0081 22.5762 9.99993 23.8718C10.0002 23.9145 10.0002 23.9572 9.99995 24C9.99967 23.9572 9.99966 23.9145 9.99993 23.8718Z\" fill=\"currentColor\"/>\n<path d=\"M18 11.9231C17.9946 11.1443 17.8315 10.3744 17.52 9.66001C16.9216 8.22162 15.7784 7.07842 14.34 6.47999C13.6253 6.16849 12.8552 6.00531 12.0761 6.00001C12.0507 6.00017 12.0254 6.00017 12 6C12.0254 5.99984 12.0507 5.99984 12.0761 6.00001C12.8537 5.99517 13.623 5.83725 14.34 5.535C15.0503 5.22833 15.6965 4.79072 16.245 4.24502C16.7893 3.69853 17.2223 3.05155 17.5201 2.33999C17.8315 1.62564 17.9946 0.855787 18 0.0770578C17.9998 0.0513804 17.9998 0.0256939 18 0C18.0002 0.0256945 18.0002 0.0513809 18 0.0770578C18.0049 0.854344 18.1629 1.62332 18.4651 2.33999C18.7717 3.05032 19.2093 3.69658 19.755 4.24502C20.3034 4.79072 20.9497 5.22833 21.66 5.535C22.377 5.83726 23.1463 5.99517 23.9239 6.00001C23.9493 5.99984 23.9746 5.99984 24 6C23.9746 6.00017 23.9493 6.00017 23.9239 6.00001C23.1449 6.0053 22.3747 6.16848 21.66 6.47999C20.9484 6.77767 20.3015 7.21068 19.755 7.75498C19.2093 8.30342 18.7717 8.94969 18.4651 9.66001C18.1628 10.3767 18.0049 11.1457 18 11.9231C18.0001 11.9487 18.0001 11.9743 18 12C17.9998 11.9743 17.9998 11.9487 18 11.9231Z\" fill=\"currentColor\"/>"}, "solid/AI chat": {"viewBox": "0 0 24 24", "inner": "<path d=\"M10.5 5.27246C11.1787 5.42548 11.8441 5.64042 12.4854 5.91992C12.833 6.06456 13.1713 6.22643 13.5 6.40332V22.5C13.4999 23.3282 12.8282 23.9999 12 24C11.1718 23.9999 10.5001 23.3282 10.5 22.5V5.27246ZM6.75 5C7.57823 5.00013 8.24987 5.67177 8.25 6.5V17.5C8.24987 18.3282 7.57823 18.9999 6.75 19C5.92177 18.9999 5.25013 18.3282 5.25 17.5V6.5C5.25013 5.67177 5.92177 5.00013 6.75 5ZM15.75 7.99609C16.9652 9.10173 17.937 10.469 18.5801 12.0146C18.6401 12.1523 18.6958 12.2919 18.75 12.4316V17.5C18.7499 18.3282 18.0782 18.9999 17.25 19C16.4218 18.9999 15.7501 18.3282 15.75 17.5V7.99609ZM1.5 8C2.32823 8.00013 2.99987 8.67177 3 9.5V13.5C2.99987 14.3282 2.32823 14.9999 1.5 15C0.671766 14.9999 0.000131894 14.3282 0 13.5V9.5C0.000132 8.67177 0.671767 8.00013 1.5 8ZM23.1094 8.12988C23.6339 8.36359 23.9999 8.88879 24 9.5V13.5C23.9999 14.3282 23.3282 14.9999 22.5 15C21.6718 14.9999 21.0001 14.3282 21 13.5V10.8086C21.5122 9.91803 22.136 9.09427 22.8633 8.36328C22.9434 8.28344 23.027 8.2072 23.1094 8.12988ZM19 0.0644531C19.0041 0.712111 19.1358 1.35304 19.3877 1.9502C19.6432 2.54205 20.0082 3.08013 20.4629 3.53711C20.9199 3.99181 21.458 4.35675 22.0498 4.6123C22.6473 4.86417 23.2885 4.99595 23.9365 5C23.2873 5.00442 22.6453 5.14081 22.0498 5.40039C21.457 5.64845 20.9182 6.00938 20.4629 6.46289C20.0082 6.91987 19.6432 7.45795 19.3877 8.0498C19.1358 8.64695 19.0041 9.28789 19 9.93555C18.9955 9.28669 18.8591 8.64503 18.5996 8.0498C18.1009 6.8514 17.1486 5.89906 15.9502 5.40039C15.3547 5.14081 14.7127 5.00442 14.0635 5C14.7115 4.99595 15.3527 4.86417 15.9502 4.6123C16.542 4.35675 17.0801 3.9918 17.5371 3.53711C17.9906 3.08179 18.3515 2.54302 18.5996 1.9502C18.8591 1.35497 18.9955 0.713313 19 0.0644531ZM12 0C12.8282 0.000131894 13.4999 0.671766 13.5 1.5V3.61035C13.1703 3.79188 12.832 3.9587 12.4854 4.1084C11.8429 4.37921 11.1776 4.58716 10.5 4.73535V1.5C10.5001 0.671767 11.1718 0.000131984 12 0Z\" fill=\"currentColor\"/>"}, "outline/arrow-path": {"viewBox": "0 0 24 24", "inner": "<path d=\"M16.0228 9.34838H21.0154V9.3466M7.97677 14.6517L2.98413 14.6517V19.6444M2.98413 14.6517L6.16502 17.8347C7.15555 18.827 8.41261 19.58 9.86436 19.969C14.2654 21.1482 18.7892 18.5364 19.9685 14.1353M4.03073 9.86481C5.21 5.46371 9.73377 2.85191 14.1349 4.03118C15.5866 4.42017 16.8437 5.17309 17.8342 6.16547L21.0154 9.3466M21.0154 4.35577V9.3466\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "outline/folder-plus": {"viewBox": "0 0 24 24", "inner": "<g clip-path=\"url(#clip0_1218_6911)\">\n<path d=\"M12 10.6154V17.3846M15.3846 14H8.61538M13.1966 5.88895L10.8034 3.49567C10.486 3.1783 10.0555 3 9.60672 3H3.53846C2.13651 3 1 4.13651 1 5.53846V19.0769C1 20.4789 2.13651 21.6154 3.53846 21.6154H20.4615C21.8635 21.6154 23 20.4789 23 19.0769V8.92308C23 7.52112 21.8635 6.38462 20.4615 6.38462H14.3933C13.9445 6.38462 13.514 6.20632 13.1966 5.88895Z\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n</g>\n<defs>\n<clipPath id=\"clip0_1218_6911\">\n<rect width=\"24\" height=\"24\" fill=\"white\"/>\n</clipPath>\n</defs>"}, "outline/clock": {"viewBox": "0 0 24 24", "inner": "<g clip-path=\"url(#clip0_1218_7109)\">\n<path d=\"M12 4.79995V12L17 16M22.8 12C22.8 17.9646 17.9646 22.8 12 22.8C6.03528 22.8 1.19995 17.9646 1.19995 12C1.19995 6.03528 6.03528 1.19995 12 1.19995C17.9646 1.19995 22.8 6.03528 22.8 12Z\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n</g>\n<defs>\n<clipPath id=\"clip0_1218_7109\">\n<rect width=\"24\" height=\"24\" fill=\"white\"/>\n</clipPath>\n</defs>"}, "outline/globe-alt": {"viewBox": "0 0 24 24", "inner": "<g clip-path=\"url(#clip0_1218_6738)\">\n<path d=\"M12 22.8C17.031 22.8 21.2586 19.3598 22.4588 14.7035M12 22.8C6.96886 22.8 2.74125 19.3598 1.54111 14.7035M12 22.8C14.9823 22.8 17.4 17.9646 17.4 12C17.4 6.03528 14.9823 1.19995 12 1.19995M12 22.8C9.01761 22.8 6.59995 17.9646 6.59995 12C6.59995 6.03528 9.01761 1.19995 12 1.19995M22.4588 14.7035C22.6815 13.8394 22.8 12.9335 22.8 12C22.8 10.0735 22.2956 8.26487 21.4116 6.69889C19.5588 3.41628 16.0382 1.19995 12 1.19995M1.54111 14.7035C1.31841 13.8394 1.19995 12.9335 1.19995 12C1.19995 10.0735 1.70434 8.26487 2.58826 6.69889C4.44114 3.41628 7.96172 1.19995 12 1.19995M21.4116 6.69889C18.8876 8.88042 15.5979 10.2 12 10.2C8.40202 10.2 5.11227 8.88042 2.58826 6.69889M22.4588 14.7035C19.36 16.4216 15.7942 17.4 12 17.4C8.20568 17.4 4.6399 16.4216 1.54111 14.7035\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n</g>\n<defs>\n<clipPath id=\"clip0_1218_6738\">\n<rect width=\"24\" height=\"24\" fill=\"white\"/>\n</clipPath>\n</defs>"}, "outline/document-text": {"viewBox": "0 0 24 24", "inner": "<path d=\"M19.9999 14.4546V11.5909C19.9999 9.55751 18.3515 7.9091 16.318 7.9091H14.6817C14.0039 7.9091 13.4544 7.35963 13.4544 6.68183V5.04547C13.4544 3.01205 11.806 1.36365 9.77259 1.36365H7.72714M7.72714 15.2727H15.909M7.72714 18.5455H11.818M10.1817 1.36365H4.8635C4.1857 1.36365 3.63623 1.91312 3.63623 2.59092V21.4091C3.63623 22.0869 4.1857 22.6364 4.8635 22.6364H18.7726C19.4504 22.6364 19.9999 22.0869 19.9999 21.4091V11.1818C19.9999 5.7594 15.6041 1.36365 10.1817 1.36365Z\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "outline/squares-plus": {"viewBox": "0 0 24 24", "inner": "<g clip-path=\"url(#clip0_1218_6617)\">\n<path d=\"M14 18.5H18.5M18.5 18.5H23M18.5 18.5V14M18.5 18.5V23M4 10H7C8.65685 10 10 8.65685 10 7V4C10 2.34315 8.65685 1 7 1H4C2.34315 1 1 2.34315 1 4V7C1 8.65685 2.34315 10 4 10ZM4 23H7C8.65685 23 10 21.6569 10 20V17C10 15.3431 8.65685 14 7 14H4C2.34315 14 1 15.3431 1 17V20C1 21.6569 2.34315 23 4 23ZM17 10H20C21.6569 10 23 8.65685 23 7V4C23 2.34315 21.6569 1 20 1H17C15.3431 1 14 2.34315 14 4V7C14 8.65685 15.3431 10 17 10Z\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n</g>\n<defs>\n<clipPath id=\"clip0_1218_6617\">\n<rect width=\"24\" height=\"24\" fill=\"white\"/>\n</clipPath>\n</defs>"}, "outline/puzzle-piece": {"viewBox": "0 0 24 24", "inner": "<g clip-path=\"url(#clip0_1218_6668)\">\n<path d=\"M15.143 5.81354C15.143 5.40765 15.3556 5.04077 15.6015 4.71784C15.854 4.3863 16.0001 3.99304 16.0001 3.57132C16.0001 2.38786 14.8489 1.42847 13.4287 1.42847C12.0086 1.42847 10.8573 2.38786 10.8573 3.57132C10.8573 3.99304 11.0035 4.3863 11.2559 4.71784C11.5018 5.04077 11.7144 5.40765 11.7144 5.81354C11.7144 6.22643 11.3763 6.55986 10.9636 6.54797C9.35944 6.50177 7.77253 6.38669 6.20573 6.2056C6.41872 8.04876 6.54035 9.91975 6.56598 11.8139C6.57164 12.2322 6.23205 12.5713 5.81378 12.5713C5.40789 12.5713 5.04101 12.3587 4.71808 12.1128C4.38654 11.8604 3.99328 11.7142 3.57157 11.7142C2.3881 11.7142 1.42871 12.8654 1.42871 14.2856C1.42871 15.7058 2.3881 16.857 3.57157 16.857C3.99328 16.857 4.38654 16.7109 4.71808 16.4584C5.04101 16.2125 5.40789 15.9999 5.81378 15.9999C6.16714 15.9999 6.44764 16.2979 6.42174 16.6503C6.27792 18.6069 6.03148 20.535 5.68777 22.4292C7.42251 22.6464 9.18244 22.7826 10.9636 22.8339C11.3764 22.8457 11.7146 22.5123 11.7146 22.0993C11.7146 21.6934 11.5019 21.3265 11.256 21.0036C11.0036 20.6721 10.8574 20.2788 10.8574 19.8571C10.8574 18.6736 12.0087 17.7142 13.4288 17.7142C14.849 17.7142 16.0003 18.6736 16.0003 19.8571C16.0003 20.2788 15.8541 20.6721 15.6016 21.0036C15.3558 21.3265 15.1431 21.6934 15.1431 22.0993C15.1431 22.4797 15.4609 22.7835 15.8407 22.7612C17.9421 22.6377 20.0118 22.3959 22.0431 22.0424C22.3511 20.273 22.5742 18.4744 22.7083 16.6511C22.7342 16.2983 22.4534 15.9999 22.0996 15.9999C21.6937 15.9999 21.3269 16.2126 21.0039 16.4585C20.6724 16.7109 20.2791 16.8571 19.8574 16.8571C18.6739 16.8571 17.7146 15.7058 17.7146 14.2857C17.7146 12.8655 18.6739 11.7142 19.8574 11.7142C20.2791 11.7142 20.6724 11.8604 21.0039 12.1129C21.3269 12.3588 21.6937 12.5714 22.0996 12.5714C22.5183 12.5714 22.8582 12.2319 22.8526 11.8133C22.8245 9.74176 22.6816 7.69786 22.43 5.68787C20.2747 6.07893 18.0756 6.34407 15.8405 6.47538C15.4607 6.49769 15.143 6.19394 15.143 5.81354Z\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n</g>\n<defs>\n<clipPath id=\"clip0_1218_6668\">\n<rect width=\"24\" height=\"24\" fill=\"white\"/>\n</clipPath>\n</defs>"}, "solid/play": {"viewBox": "0 0 22 24", "inner": "<g clip-path=\"url(#clip0_1218_6681)\">\n<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M0.666626 3.53692C0.666626 1.63541 2.70529 0.430005 4.37142 1.34638L19.7589 9.80947C21.4858 10.7593 21.4858 13.2407 19.7589 14.1905L4.37142 22.6536C2.70529 23.57 0.666626 22.3646 0.666626 20.4631V3.53692Z\" fill=\"currentColor\"/>\n</g>\n<defs>\n<clipPath id=\"clip0_1218_6681\">\n<rect width=\"21.3333\" height=\"24\" fill=\"white\"/>\n</clipPath>\n</defs>"}, "solid/pause": {"viewBox": "0 0 18 24", "inner": "<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M1.125 1.875C1.125 1.25368 1.62868 0.75 2.25 0.75H4.5C5.12132 0.75 5.625 1.25368 5.625 1.875V22.125C5.625 22.7463 5.12132 23.25 4.5 23.25H2.25C1.95163 23.25 1.66548 23.1315 1.4545 22.9205C1.24353 22.7095 1.125 22.4234 1.125 22.125L1.125 1.875ZM12.375 1.875C12.375 1.25368 12.8787 0.75 13.5 0.75H15.75C16.0484 0.75 16.3345 0.868526 16.5455 1.0795C16.7565 1.29048 16.875 1.57663 16.875 1.875L16.875 22.125C16.875 22.7463 16.3713 23.25 15.75 23.25H13.5C12.8787 23.25 12.375 22.7463 12.375 22.125V1.875Z\" fill=\"currentColor\"/>"}, "outline/check": {"viewBox": "0 0 27 24", "inner": "<path d=\"M2.25 13.125L11.25 22.125L24.75 1.875\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "solid/export": {"viewBox": "0 0 24 24", "inner": "<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M15.4545 2.81818L19.8962 2.81818L16.6462 6.06811C16.2579 5.93164 15.8381 5.85712 15.4 5.85712H4.6C2.61178 5.85712 1 7.39214 1 9.28569V19.5714C1 21.4649 2.61177 23 4.6 23H15.4C17.3882 23 19 21.4649 19 19.5714V9.28569C19 8.45799 18.692 7.69879 18.1793 7.10636L21.1818 4.10383V8.54545C21.1818 9.04753 21.5888 9.45454 22.0909 9.45454C22.593 9.45454 23 9.04753 23 8.54545L23 1.90909C23 1.66798 22.9042 1.43675 22.7337 1.26627C22.5632 1.09578 22.332 1 22.0909 1H15.4545C14.9525 1 14.5455 1.40701 14.5455 1.90909C14.5455 2.41117 14.9525 2.81818 15.4545 2.81818ZM18.1793 7.10636C17.7775 6.64211 17.2499 6.28026 16.6462 6.06811L11.2663 11.4481C10.9112 11.8031 10.9112 12.3787 11.2663 12.7337C11.6213 13.0888 12.1969 13.0888 12.5519 12.7337L18.1793 7.10636Z\" fill=\"currentColor\"/>"}, "solid/checkmark": {"viewBox": "0 0 24 24", "inner": "<path d=\"M9.80065 21.1782C9.10726 21.1782 8.58722 20.9327 8.12134 20.3883L2.53088 13.717C2.14085 13.2793 2 12.8844 2 12.4361C2 11.4327 2.7584 10.6962 3.80932 10.6962C4.41603 10.6962 4.8494 10.9097 5.25027 11.3793L9.74648 16.8765L18.6089 3.10687C19.0423 2.4344 19.4865 2.17822 20.2015 2.17822C21.2416 2.17822 22 2.90407 22 3.90744C22 4.28103 21.8808 4.67598 21.5991 5.10294L11.5016 20.3136C11.1116 20.9007 10.5374 21.1782 9.80065 21.1782Z\" fill=\"currentColor\"/>"}};
 document.querySelectorAll('[data-icon]').forEach(el => {
@@ -1809,8 +1710,9 @@ document.querySelectorAll('.agent-tag').forEach(tag => {
 /* Hero timestamp: the date and time at page load, e.g. "Friday, Oct 23, 2026 · 2:49 PM" */
 (() => {
   const now = new Date();
-  const date = now.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
-  const time = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  const locale = LANG === 'zh-CN' ? 'zh-CN' : 'en-US';
+  const date = now.toLocaleDateString(locale, { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
+  const time = now.toLocaleTimeString(locale, { hour: 'numeric', minute: '2-digit' });
   document.getElementById('hero-time').textContent = `${date} · ${time}`;
 })();
 
@@ -1873,14 +1775,14 @@ const copyText = async text => {
 document.querySelectorAll('[data-copy]').forEach(btn => {
   // "Copy" sizes the button; "Copied" overlays it and the button widens to fit while it shows
   const label = btn.textContent.trim();
-  btn.innerHTML = `<span class="copy-stack" aria-hidden="true"><span class="lbl lbl-copy">${label}</span><span class="lbl lbl-done">${checkIcon}Copied</span></span>`;
-  const done = btn.querySelector('.lbl-done'), name = `${label} MCP server URL`;
+  btn.innerHTML = `<span class="copy-stack" aria-hidden="true"><span class="lbl lbl-copy">${label}</span><span class="lbl lbl-done">${checkIcon}${tr('copied')}</span></span>`;
+  const done = btn.querySelector('.lbl-done'), name = tr('copyAria');
   btn.setAttribute('aria-label', name);
   let timer;
   btn.addEventListener('click', async () => {
     btn.classList.remove('is-tapped'); void btn.offsetWidth; btn.classList.add('is-tapped');
-    if (await copyText(btn.dataset.copy)) { done.innerHTML = `${checkIcon}Copied`; btn.setAttribute('aria-label', 'Copied'); }
-    else { done.textContent = 'Copy failed'; btn.setAttribute('aria-label', 'Copy failed'); }
+    if (await copyText(btn.dataset.copy)) { done.innerHTML = `${checkIcon}${tr('copied')}`; btn.setAttribute('aria-label', tr('copied')); }
+    else { done.textContent = tr('copyFailed'); btn.setAttribute('aria-label', tr('copyFailed')); }
     const cs = getComputedStyle(btn);
     btn.style.setProperty('--done-w', `${done.offsetWidth + parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight)}px`);
     btn.classList.add('is-copied');
@@ -1894,62 +1796,8 @@ document.querySelectorAll('[data-copy]').forEach(btn => {
 const hero = document.querySelector('.hero');
 const typedEl = hero.querySelector('.typed-text');
 const composer = hero.querySelector('.intro-composer');
-const QUESTION = 'Can I quote, book, and track freight from AI chat?';
-const BOLD_WORDS = new Set(['quote,', 'book,', 'and', 'track', 'freight']); // Bold: the ask itself (as "ship freight" was in Figma 299:692)
+const QUESTION = typedWords(tr('heroQuestion')); // the <b> run types bold: the ask itself (as "ship freight" was in Figma 299:692)
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-// Sticky nav turns frosted as soon as the page leaves the top, and dark while its middle is over a dark
-// section or a dark photo (by position, so light cards passing under a dark photo don't make it flicker)
-{
-  const nav = document.querySelector('.site-nav');
-  const zones = document.querySelectorAll('.on-dark, .examples-photo, .stage-wrap');
-  let queued = false;
-  const menu = document.getElementById('products-menu');
-  const toggle = nav.querySelector('.products-toggle');
-  const update = () => {
-    queued = false;
-    // While the All Products menu is open the nav stays frosted white, to sit flush with the sheet
-    const open = menu.classList.contains('is-open');
-    nav.classList.toggle('is-stuck', scrollY > 8 || open);
-    const n = nav.getBoundingClientRect(), y = n.top + n.height / 2;
-    nav.classList.toggle('is-dark', !open && [...zones].some(z => { const r = z.getBoundingClientRect(); return r.top <= y && r.bottom >= y; }));
-  };
-  const schedule = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
-  addEventListener('scroll', schedule, { passive: true }); addEventListener('resize', schedule); update();
-
-  // All Products opens on click, or on hover with a mouse (it closes a beat after the pointer leaves both the button and
-  // the sheet, so crossing the gap between them doesn't drop it); hovering, focusing or tapping a product shows its panel
-  const setOpen = open => {
-    menu.classList.toggle('is-open', open);
-    menu.inert = !open;
-    toggle.setAttribute('aria-expanded', open);
-    update();
-  };
-  let hoverTimer = 0, hoverOpenedAt = 0;
-  const hoverIn = e => {
-    if (e.pointerType !== 'mouse') return;
-    clearTimeout(hoverTimer);
-    if (!menu.classList.contains('is-open')) { hoverOpenedAt = performance.now(); setOpen(true); }
-  };
-  const hoverOut = e => { if (e.pointerType === 'mouse') { clearTimeout(hoverTimer); hoverTimer = setTimeout(() => setOpen(false), 250); } };
-  toggle.addEventListener('pointerenter', hoverIn); toggle.addEventListener('pointerleave', hoverOut);
-  menu.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') clearTimeout(hoverTimer); });
-  menu.addEventListener('pointerleave', hoverOut);
-  // A click straight after the hover opened it (the same gesture) leaves it open
-  toggle.addEventListener('click', () => { if (performance.now() - hoverOpenedAt > 500) setOpen(!menu.classList.contains('is-open')); });
-  document.addEventListener('pointerdown', e => {
-    if (menu.classList.contains('is-open') && !menu.contains(e.target) && !toggle.contains(e.target)) setOpen(false);
-  });
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && menu.classList.contains('is-open')) { setOpen(false); toggle.focus(); }
-  });
-  const tabs = [...menu.querySelectorAll('.pm-trigger')];
-  const show = tab => tabs.forEach(t => {
-    const on = t === tab;
-    t.classList.toggle('is-active', on); t.setAttribute('aria-selected', on);
-    document.getElementById(t.getAttribute('aria-controls')).classList.toggle('is-active', on);
-  });
-  tabs.forEach(t => ['mouseenter', 'focus', 'click'].forEach(ev => t.addEventListener(ev, () => { if (!t.classList.contains('is-active')) show(t); })));
-}
 let introTimers = [];
 const later = (fn, ms) => introTimers.push(setTimeout(fn, ms));
 function playIntro() {
@@ -1962,14 +1810,14 @@ function playIntro() {
   if (reducedMotion) { hero.dataset.intro = 'done'; twType(heroTitle, { onDone: heroAnswered }); return; }
   later(() => { hero.dataset.intro = 'composer'; }, 120);
   // Reveal word by word: each word fades up into place, caret follows
-  const words = QUESTION.split(' ');
+  const words = QUESTION;
   const START = 1050, RATE = (85 + 1000 / words.length) / 1.5; // words start once the entrance bounce has settled; the question takes ~1.2s to type (50% faster than the first ~1.8s)
   later(() => composer.classList.add('is-typing'), START);
-  words.forEach((word, i) => later(() => {
+  words.forEach(([word, isBold, space], i) => later(() => {
     const span = document.createElement('span');
-    span.className = BOLD_WORDS.has(word) ? 'word is-bold' : 'word';
+    span.className = isBold ? 'word is-bold' : 'word';
     span.textContent = word;
-    if (i) typedEl.appendChild(document.createTextNode(' ')); // a plain space between words, so a wrapped line doesn't start with one
+    if (space) typedEl.appendChild(document.createTextNode(space)); // a plain space between words, so a wrapped line doesn't start with one
     typedEl.appendChild(span); composer.classList.remove('is-empty');
   }, START + i * RATE));
   const typed = START + words.length * RATE;
@@ -2018,7 +1866,6 @@ const heroVideo = hero.querySelector('.hero-bg video');
   const CUBE_W = 0.2;                  // cube width as a share of the clip width
   const CUBE_TOP = 0.12;               // cube's top edge as a share of the clip height
   const bg = hero.querySelector('.hero-bg'), fade = hero.querySelector('.hero-fade'), chat = hero.querySelector('.chat-app');
-  const nav = document.querySelector('.site-nav');
   const place = () => {
     const w = bg.clientWidth;
     const heroTop = hero.getBoundingClientRect().top + scrollY;
@@ -2045,7 +1892,9 @@ const heroVideo = hero.querySelector('.hero-bg video');
     chat.style.transformOrigin = `50% ${cubeY - chat.offsetTop}px`;
     // Once the chat is in, lift the clip (with its sky and fade) so the cube's top peeks above the card:
     // a share of the gap between the nav and the card, never sliding it down, plus 10px more
-    const navBottom = nav ? nav.getBoundingClientRect().bottom + scrollY - heroTop : 0; // hero coords
+    // The site nav is a 64px bar at the top (a bottom bar on phones, which the card never meets)
+    const bar = siteNavBar(), b = bar?.getBoundingClientRect();
+    const navBottom = b && b.top < innerHeight / 2 ? b.bottom + scrollY - heroTop : 0; // hero coords
     const peek = Math.min(110, Math.max(24, (chat.offsetTop - navBottom) * 0.6));
     const cubeTop = cubeY - (CY - CUBE_TOP) * vh;
     hero.style.setProperty('--cube-lift', `${Math.min(0, chat.offsetTop - peek - cubeTop) - 10}px`);
@@ -2079,7 +1928,7 @@ document.getElementById('replay-intro').addEventListener('click', () => { window
     const [w, h] = SIZES[view];
     shell = Object.assign(document.createElement('div'), { className: 'vp-shell' });
     // clipboard-write lets the framed page's Copy buttons reach the clipboard
-    frame = Object.assign(document.createElement('iframe'), { title: `This page at ${w} × ${h}`, src: `${location.pathname}?embed=1`, allow: 'clipboard-write' });
+    frame = Object.assign(document.createElement('iframe'), { title: `This page at ${w} × ${h}`, src: `${location.pathname}?embed=1${LANG === 'zh-CN' ? '&lang=zh-CN' : ''}`, allow: 'clipboard-write' });
     frame.style.width = `${w}px`; frame.style.height = `min(${h}px, 100%)`;
     shell.appendChild(frame); document.body.appendChild(shell);
   };
@@ -2094,53 +1943,35 @@ document.getElementById('replay-intro').addEventListener('click', () => { window
 })();
 
 /* ── Chat examples: Rest → Hover, reply types in led by the cursor ── */
-const EXAMPLES = [
-  { q: 'What do I have shipping next week?', w: 420, hq: 'What do I have shipping next week?',
-    lead: 'You have 3 shipments booked for next week:',
-    box: '1. MS482301 · Ontario → Phoenix · Mon, Oct 26 · $548\n2. MS482302 · Fontana → Reno · Tue, Oct 27 · $1,940\n3. MS482303 · LA → San Diego · Wed, Oct 28 · $185',
-    ask: 'Want me to send the pickup schedule to your warehouse team?' },
-  { q: 'Help me book with Old Dominion quoted for pickup tomorrow at 9am.', w: 362, hq: 'Help me book with Old Dominion quoted\nfor pickup tomorrow at 9am.',
-    lead: 'Here’s your Old Dominion quote:',
-    box: 'Ontario, CA → Phoenix, AZ · 6 pallets\nPickup · Tomorrow · 9:00 AM\nTotal · $548',
-    ask: 'Continue to book?' },
-  { q: 'Where’s MS123456? Is it delivering today?', w: 350, hq: 'Where’s MS123456? Is it delivering today?',
-    lead: 'Yes — MS123456 is out for delivery.',
-    box: 'Last scan · Phoenix, AZ terminal · 7:42 AM\nDelivery window · Today, 1–4 PM\nCarrier · Old Dominion · PRO 0841 2273',
-    ask: 'Want a heads-up when it’s delivered?' },
-  { q: 'Send me the BOL and delivery receipt for my last Chicago shipment.', w: 441, hq: 'Send me the BOL and delivery receipt\nfor my last Chicago shipment.',
-    lead: 'Here are the docs for MS481977\n(Ontario → Chicago, delivered Oct 19):',
-    box: 'BOL_MS481977.pdf\nPOD_MS481977.pdf',
-    ask: 'Want me to email them to your AP team?' },
-  { q: 'Which invoices are open?', w: null, hq: 'Which invoices are open?',
-    lead: 'You have 3 open invoices, $2,673 total:',
-    box: 'INV-10482 · MS482290 · $548 · due Oct 30\nINV-10491 · MS482295 · $1,940 · due Nov 2\nINV-10503 · MS482299 · $185 · due Nov 6',
-    ask: 'Want me to pay them now?' },
-  { q: 'Update my address book with this file', w: 296, hq: 'Update my address book with this file', file: 'Contacts.csv',
-    lead: 'Done — 12 locations added, 3 updated:',
-    box: '',
-    ask: '2 rows were missing ZIP codes — want me to look them up?' },
-];
+// Copy from mcp-copy.json (ex1Q, ex1Lead …); w is the resting bubble's width, tuned to the English (Chinese sizes to its text);
+// the hover bubble takes its own copy where the English breaks a long question in two
+const EX_LAYOUT = [{ w: 420 }, { w: 362, hover: true }, { w: 350 }, { w: 441, hover: true }, { w: null }, { w: 296, file: 'Contacts.csv' }];
+const EXAMPLES = EX_LAYOUT.map(({ w, hover, file }, i) => {
+  const n = i + 1, q = tr(`ex${n}Q`);
+  return { q, w: LANG === 'en' ? w : null, hq: hover ? tr(`ex${n}QHover`) : q, file,
+    lead: tr(`ex${n}Lead`), box: COPY.en[`ex${n}Box`] ? tr(`ex${n}Box`) : '', ask: tr(`ex${n}Ask`) };
+});
 const esc = s => s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
 const grid = document.getElementById('examples-grid');
 grid.innerHTML = EXAMPLES.map((ex, i) => `
-  <article class="ex-card${ex.file ? ' has-file' : ''}" tabindex="0" data-i="${i}" aria-label="Example: ${esc(ex.q)}">
+  <article class="ex-card${ex.file ? ' has-file' : ''}" tabindex="0" data-i="${i}" aria-label="${esc(tr('exampleAria', { question: ex.q }))}">
     <div class="ex-head">
       <span class="agent-stack">
         <span class="sphere"><img src="assets/mcp-landing/agent-sphere.svg" alt=""></span>
         <img class="mark" src="assets/mcp-landing/agent-openai.svg" alt="">
         <img class="mark" src="assets/mcp-landing/agent-claude.svg" alt="">
       </span>
-      <span class="agent-tag">Any AI agent</span>
+      <span class="agent-tag">${tr('anyAgent')}</span>
     </div>
     <div class="ex-rest">
       ${ex.file
-        ? `<div class="rest-q" style="width:${ex.w}px"><p class="bubble">${esc(ex.q)}</p><div class="attachment"><span class="chip">${ex.file}</span></div></div>`
-        : `<p class="bubble" style="${ex.w ? `width:${ex.w}px` : 'white-space:nowrap'}">${esc(ex.q)}</p>`}
+        ? `<div class="rest-q"${ex.w ? ` style="width:${ex.w}px"` : ''}><p class="bubble">${esc(ex.q)}</p><div class="attachment"><span class="chip">${ex.file}</span></div></div>`
+        : `<p class="bubble" style="${ex.w ? `width:${ex.w}px` : LANG === 'en' ? 'white-space:nowrap' : ''}">${esc(ex.q)}</p>`}
       <span class="caret-down"><img src="assets/mcp-landing/caret-down.svg" alt=""></span>
     </div>
     <div class="ex-hover" aria-live="polite">
       <div class="panel"></div>
-      <div class="q"><p class="bubble">${esc(ex.hq)}</p>${ex.file ? `<div class="attachment"><span class="chip">${ex.file}</span></div>` : ''}<span class="sent">Sent by you</span></div>
+      <div class="q"><p class="bubble">${esc(ex.hq)}</p>${ex.file ? `<div class="attachment"><span class="chip">${ex.file}</span></div>` : ''}<span class="sent">${tr('sentBy')}</span></div>
       <div class="reply">
         <span class="sparks"><span class="spark ic" data-icon="solid/AI/magic"></span><span class="spark ic is-next" data-icon="solid/AI/magic" aria-hidden="true"></span></span>
         <div class="body"><span class="agent-tag is-shimmer think" aria-hidden="true"><span class="tag-label"></span></span><p class="lead"></p><p class="box"${ex.box ? '' : ' hidden'}></p><p class="ask"></p></div>
@@ -2155,11 +1986,7 @@ grid.querySelectorAll('.spark[data-icon]').forEach(el => {
 
 const WORD_MS = 60; // 50% faster than the original 90ms per word
 // What the agent says while it thinks: one is picked at random each time a card opens (never the same twice running)
-const THINKING = [
-  'Thinking through it…', 'Checking your shipments…', 'Looking up your lanes…', 'Pulling up the details…',
-  'Reading the BOL…', 'Comparing carrier rates…', 'Checking pickup windows…', 'Matching it to your account…',
-  'Asking Mothership…', 'Lining up the options…', 'Tracking it down…', 'Going through your invoices…',
-];
+const THINKING = Array.from({ length: 12 }, (_, i) => tr(`thinking${i + 1}`));
 function typeReply(card) {
   const ex = EXAMPLES[card.dataset.i];
   const hover = card.querySelector('.ex-hover');
@@ -2199,7 +2026,7 @@ function typeParts(parts, box, cursor, t, timers) {
     t += el === box ? 80 : 27;
     const node = document.createTextNode('');
     timers.push(setTimeout(() => el.insertBefore(node, cursor), t - 1));
-    const tokens = text.split(/(\s+)/).filter(Boolean);
+    const tokens = words(text);
     let shown = '', n = 0;
     tokens.forEach(tok => {
       shown += tok;
@@ -2247,7 +2074,7 @@ function twPrep(el) {
   const nodes = []; while (walker.nextNode()) nodes.push(walker.currentNode);
   nodes.forEach(node => {
     const frag = document.createDocumentFragment();
-    node.data.split(/(\s+)/).forEach(tok => {
+    words(node.data).forEach(tok => {
       if (!tok) return;
       if (/^\s+$/.test(tok)) { frag.appendChild(document.createTextNode(tok)); return; }
       const w = document.createElement('span'); w.className = 'tw-w'; w.textContent = tok; frag.appendChild(w);
@@ -2448,7 +2275,6 @@ document.querySelectorAll('.mcp-url').forEach(box => {
     '.steps',
     '.step',
     ['.cta > .powered, .cta .actions > *', 0.35, true], // after the typed headline: Powered by, then Sign up and the URL box
-    '.site-footer',
   ];
   const STAGGER = 0.06;
   // Section headlines type quicker than replies (75ms a word), so what's under them isn't held up for long
@@ -2572,16 +2398,15 @@ new ResizeObserver(fitStage).observe(stageWrap); fitStage();
     const compText = comp.querySelector('.typed-text'), compSend = comp.querySelector('.send');
     typeTimers.forEach(clearTimeout); typeTimers = [];
     compText.textContent = ''; compSend.classList.remove('is-pressed'); comp.classList.remove('is-typing'); comp.classList.add('is-empty');
-    const bold = comp.dataset.bold ? comp.dataset.bold.split(' ') : [];
-    const words = [...bold.map(w => [w, true]), ...comp.dataset.question.split(' ').map(w => [w, false])], START = 700, RATE = 85;
+    const words = typedWords(comp.dataset.question), bold = words.filter(([, b]) => b), START = 700, RATE = 85;
     const at = (fn, ms) => typeTimers.push(setTimeout(fn, ms));
     at(() => comp.classList.add('is-typing'), START);
-    words.forEach(([word, isBold], i) => at(() => {
+    words.forEach(([word, isBold, space], i) => at(() => {
       if (i && i === bold.length) compText.appendChild(document.createElement('br'));
       const span = document.createElement('span');
       span.className = isBold ? 'word is-bold' : 'word';
       span.textContent = word;
-      if (i && i !== bold.length) compText.appendChild(document.createTextNode(' ')); // plain space: wrapped lines don't start with one
+      if (space && i !== bold.length) compText.appendChild(document.createTextNode(space)); // plain space: wrapped lines don't start with one
       compText.appendChild(span); comp.classList.remove('is-empty');
     }, START + i * RATE));
     const typed = START + words.length * RATE;
@@ -2635,7 +2460,7 @@ new ResizeObserver(fitStage).observe(stageWrap); fitStage();
   };
   const setPaused = paused => {
     nav.classList.toggle('is-paused', paused);
-    play.setAttribute('aria-label', paused ? 'Play slideshow' : 'Pause slideshow');
+    play.setAttribute('aria-label', tr(paused ? 'playSlideshow' : 'pauseSlideshow'));
   };
   dots.forEach((dot, i) => {
     dot.addEventListener('click', () => { if (i !== cur) go(i); setPaused(false); });
@@ -2667,20 +2492,8 @@ new ResizeObserver(fitStage).observe(stageWrap); fitStage();
    The first example is the one in the markup. A card only switches once its first reply has typed,
    so the page's top-to-bottom reveal queue (which waits on that typing) is never cut short. */
 (() => {
-  const MORE = [
-    [ // Recurring quotes
-      { q: 'Every Friday, quote a full truckload from Dallas to Atlanta.', a: 'Scheduled. Each Friday at 9 AM you’ll get the three best FTL rates.' },
-      { q: 'Quote our 3 busiest lanes on the 1st of every month.', a: 'Done. On the 1st I’ll quote all three lanes and flag any price changes.' },
-    ],
-    [ // Stays on support
-      { q: 'The BOL for MS483105 has the wrong weight. Get it fixed.', a: 'Correction filed with the carrier. I’ll send the updated BOL once it’s approved.' },
-      { q: 'We were billed a liftgate fee we never booked on MS481977.', a: 'Dispute opened with the invoice and BOL attached. I’ll tell you when it’s credited.' },
-    ],
-    [ // Heads-up on delays
-      { q: 'Warn me if weather could hit any pickup tomorrow.', a: 'Watching tomorrow’s routes. A storm near Denver may delay MS482611 — move the pickup earlier?' },
-      { q: 'If MS482904 runs late, let the receiver know.', a: 'On it. If the ETA slips I’ll email the receiver with the new delivery window.' },
-    ],
-  ];
+  // Each row's two extra examples come from the copy (ap1More1Q / ap1More1A …)
+  const MORE = [1, 2, 3].map(r => [1, 2].map(m => ({ q: tr(`ap${r}More${m}Q`), a: tr(`ap${r}More${m}A`) })));
   document.querySelectorAll('.ap-row').forEach((row, r) => {
     const card = row.querySelector('.ap-card'), bubble = card.querySelector('.chat-bubble'), reply = card.querySelector('.agent-msg p');
     if (!MORE[r]) return;
@@ -2688,8 +2501,8 @@ new ResizeObserver(fitStage).observe(stageWrap); fitStage();
     let cur = 0, ready = false, timer, auto = 0, visible = false;
     card.classList.add('is-carousel');
     const dots = document.createElement('div');
-    dots.className = 'ap-dots'; dots.setAttribute('role', 'group'); dots.setAttribute('aria-label', 'Examples');
-    dots.innerHTML = examples.map((_, i) => `<button type="button" class="ap-dot${i ? '' : ' is-active'}" aria-label="Example ${i + 1} of ${examples.length}"${i ? '' : ' aria-current="true"'}></button>`).join('');
+    dots.className = 'ap-dots'; dots.setAttribute('role', 'group'); dots.setAttribute('aria-label', tr('apExamplesAria'));
+    dots.innerHTML = examples.map((_, i) => `<button type="button" class="ap-dot${i ? '' : ' is-active'}" aria-label="${tr('apExampleOf', { n: i + 1, total: examples.length })}"${i ? '' : ' aria-current="true"'}></button>`).join('');
     card.appendChild(dots);
     // Reserve the tallest example's height so the row never jumps
     const reserve = () => {
@@ -2970,7 +2783,7 @@ cursorGrid(hero, { ...SOFT, mount: () => {
   new ResizeObserver(align).observe(hero); align();
   return [cv, mirror];
 } });
-document.querySelectorAll('.features, .examples, .devices-head, .devices, .cta, .site-footer').forEach((sec) => {
+document.querySelectorAll('.features, .examples, .devices-head, .devices, .cta').forEach((sec) => {
   sec.classList.add('has-soft-grid');
   cursorGrid(sec, { ...SOFT, mount: () => { const cv = document.createElement('canvas'); sec.prepend(cv); return [cv]; } });
 });
