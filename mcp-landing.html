@@ -455,17 +455,13 @@ html.is-embed .products-menu { top: 64px; max-height: calc(100dvh - 64px); }
 .cf-stack { position: absolute; left: 0; right: 0; top: calc(10.5px - 16px - 75px); height: 75px; pointer-events: none; }
 .cf-stack { display: none; } /* Hidden for now; delete this line to bring the stacked outlines back */
 /* A black comet runs the frame's lines on both sides at once, from "Powered by" out along the bottom, up the side and
-   in along the top to the lead, every 2s. Paths are traced from the lines by script (--cf-l is their length in px); four
-   stacked dashes make the soft tail. --cf-p is the head's position along the path, 0–1. */
-@property --cf-p { syntax: '<number>'; inherits: true; initial-value: 0; }
+   in along the top to the lead, every 2s. Paths are traced from the lines by script, which also runs the dash offsets
+   (Web Animations, in px); four stacked dashes of growing length and falling opacity make the soft tail. */
 .cf-comet { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
-.cf-comet path { fill: none; stroke: #000; stroke-width: 1px; stroke-dasharray: calc(var(--len) * var(--cf-l) * 1px) calc(var(--cf-l) * 3px); stroke-dashoffset: calc((var(--len) - var(--cf-p)) * var(--cf-l) * 1px); }
-.cf-comet path:nth-of-type(4n+1) { --len: 0.03; }
-.cf-comet path:nth-of-type(4n+2) { --len: 0.07; opacity: 0.5; }
-.cf-comet path:nth-of-type(4n+3) { --len: 0.12; opacity: 0.25; }
-.cf-comet path:nth-of-type(4n+4) { --len: 0.18; opacity: 0.1; }
-.hero.is-answered .cf-comet { animation: cf-comet 2s cubic-bezier(.45,0,.35,1) 1.2s infinite both; }
-@keyframes cf-comet { 0% { --cf-p: 0; } 70%, 100% { --cf-p: 1.2; } }
+.cf-comet path { fill: none; stroke: #000; stroke-width: 1px; }
+.cf-comet path:nth-of-type(4n+2) { opacity: 0.5; }
+.cf-comet path:nth-of-type(4n+3) { opacity: 0.25; }
+.cf-comet path:nth-of-type(4n+4) { opacity: 0.1; }
 @media (prefers-reduced-motion: reduce) { .cf-comet { display: none; } }
 .cf-tab { position: absolute; left: 50%; height: 25px; translate: -50% 0; border: 1px solid #000; border-bottom: 0; }
 .cf-tab:nth-child(1) { bottom: 0; width: 84.5%; opacity: 0.2; }
@@ -2234,6 +2230,25 @@ document.querySelectorAll('.iri').forEach(el => {
   frame.appendChild(svg);
   const top = frame.querySelectorAll('.cf-edge.is-top .cf-line'), bot = frame.querySelectorAll('.cf-edge.is-bottom .cf-line');
   const box = el => { let x = 0, y = 0, n = el; while (n && n !== frame) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; } return { x, y, w: el.offsetWidth, h: el.offsetHeight }; };
+  // Each tail layer's length as a share of the path; the head runs 0 → 1.2 of the path in the first 70% of each 2s loop
+  const LENS = [0.03, 0.07, 0.12, 0.18], RUN = 1.2, LOOP = 2000;
+  let anims = [], playing = false;
+  const run = () => {
+    const L = paths[0].getTotalLength(); // both sides are the same length
+    if (!L) return;
+    const t = anims[0] ? anims[0].currentTime : null;
+    anims.forEach(a => a.cancel());
+    anims = paths.map((p, i) => {
+      const len = LENS[i % 4] * L;
+      p.style.strokeDasharray = `${len}px ${L * 3}px`;
+      return p.animate([
+        { strokeDashoffset: `${len}px`, easing: 'cubic-bezier(.45,0,.35,1)' },
+        { strokeDashoffset: `${len - RUN * L}px`, offset: 0.7 },
+        { strokeDashoffset: `${len - RUN * L}px` },
+      ], { duration: LOOP, iterations: Infinity, delay: t === null ? 1200 : 0 });
+    });
+    if (t !== null) anims.forEach(a => { a.currentTime = t; }); // re-traced on resize: keep the beat
+  };
   const trace = () => {
     const W = frame.offsetWidth, H = frame.offsetHeight;
     svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
@@ -2243,9 +2258,12 @@ document.querySelectorAll('.iri').forEach(el => {
     const left = `M${bl.x + bl.w} ${by} H${bl.x + 0.5} V${ty} H${tl.x + tl.w}`;
     const right = `M${br.x} ${by} H${br.x + br.w - 0.5} V${ty} H${tr.x}`;
     paths.forEach((p, i) => p.setAttribute('d', i < 4 ? left : right));
-    svg.style.setProperty('--cf-l', paths[0].getTotalLength()); // both sides are the same length
+    if (playing) run();
   };
   new ResizeObserver(trace).observe(frame); trace();
+  // It starts once the reply has come in and the connect block is showing
+  const start = () => { if (playing || reducedMotion) return; playing = true; run(); };
+  if (document.querySelector('.hero.is-answered')) start(); else document.addEventListener('hero:answered', start, { once: true });
 })();
 
 /* ── Hero chat card: fade its chrome to white from the top of the connect block ── */
