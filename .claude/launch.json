@@ -1,0 +1,35 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "services-simplified",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["server.js"],
+      "env": {
+        "PORT": "4001",
+        "DEFAULT_FILE": "services-simplified.html"
+      },
+      "port": 4001
+    },
+    {
+      "name": "accessorials-form",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["server.js"],
+      "env": {
+        "PORT": "4002",
+        "DEFAULT_FILE": "accessorials-form.html"
+      },
+      "port": 4002
+    },
+    {
+      "name": "mcp-landing",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["server.js"],
+      "env": {
+        "PORT": "4003",
+        "DEFAULT_FILE": "mcp-landing.html"
+      },
+      "port": 4003
+    }
+  ]
+}

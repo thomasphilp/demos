@@ -579,7 +579,7 @@ export function initMcpPage(COPY, LANG) {
         <span class="agent-stack">
           <img class="mark" src="assets/mcp-landing/site/images/mcp/agent-openai.svg" alt="">
           <img class="mark" src="assets/mcp-landing/site/images/mcp/agent-claude.svg" alt="">
-          <span class="sphere"><img src="assets/mcp-landing/site/images/mcp/agent-sphere.svg" alt=""></span>
+          <span class="grok"><img src="assets/mcp-landing/site/images/mcp/agent-grok.svg" alt=""></span>
         </span>
         <span class="agent-tag">${tr('anyAgent')}</span>
       </div>
