@@ -62,8 +62,22 @@ export function initMcpPage(COPY, LANG) {
     frames.add(id)
     return id
   }
+  // WebGPU devices for the shaders: destroying one frees every canvas texture made on it
+  const devices = new Set()
+  const openDevice = async () => {
+    const adapter = await navigator.gpu.requestAdapter()
+    if (!adapter || stopped()) return null
+    const device = await adapter.requestDevice()
+    if (stopped()) {
+      device.destroy()
+      return null
+    }
+    devices.add(device)
+    return device
+  }
   const stop = () => {
     abort.abort()
+    for (const d of devices) d.destroy()
     for (const o of observers) o.disconnect()
     for (const id of timers) id < 0 ? window.clearInterval(-id) : window.clearTimeout(id)
     for (const id of frames) window.cancelAnimationFrame(id)
@@ -1415,8 +1429,10 @@ export function initMcpPage(COPY, LANG) {
       new ResizeObserver(reserve).observe(row)
       reserve()
       // Autoplay: once a reply has typed, the current dot's bar fills over 4.5s and the next example plays (looping);
-      // it waits while the card is off screen
+      // it waits while the card is off screen, and holds while the pointer is over the card or focus is inside it, so
+      // anyone reading can stop it
       const AUTO_MS = 4500
+      let held = false
       const stopTimer = () => {
         clearTimeout(auto)
         auto = 0
@@ -1424,7 +1440,7 @@ export function initMcpPage(COPY, LANG) {
       }
       const startTimer = () => {
         stopTimer()
-        if (reducedMotion || !visible || !reply.classList.contains('is-typed')) return
+        if (reducedMotion || held || !visible || !reply.classList.contains('is-typed')) return
         void dots.offsetWidth // restart the fill
         dots.classList.add('is-timing')
         auto = setTimeout(() => show((cur + 1) % examples.length), AUTO_MS)
@@ -1437,6 +1453,18 @@ export function initMcpPage(COPY, LANG) {
         },
         { threshold: 0.5 },
       ).observe(card)
+      const hold = () => {
+        held = true
+        stopTimer()
+      }
+      const resume = (stillHeld) => {
+        held = stillHeld
+        if (!held && ready) startTimer()
+      }
+      card.addEventListener('pointerenter', hold)
+      card.addEventListener('pointerleave', () => resume(card.contains(document.activeElement)))
+      card.addEventListener('focusin', hold)
+      card.addEventListener('focusout', (e) => card.contains(e.relatedTarget) || resume(card.matches(':hover')))
       // A reply has finished typing once it carries .is-typed (the reveal queue's first one, a carousel step, or an instant
       // finish on scroll); that starts the timer
       let wasTyped = false
@@ -2372,9 +2400,8 @@ export function initMcpPage(COPY, LANG) {
       console.info('Pattern Screen shader needs WebGPU; showing the unshaded photos.')
       return
     }
-    const adapter = await navigator.gpu.requestAdapter()
-    if (!adapter) return
-    const device = await adapter.requestDevice()
+    const device = await openDevice()
+    if (!device) return
     const format = navigator.gpu.getPreferredCanvasFormat()
     // Each slide's shader is built the first time its slide comes up, at the slider's size on screen (at most 1.5x),
     // so the hidden slides hold no GPU memory until they are shown; until then a slide shows its baked PNG
@@ -2384,6 +2411,7 @@ export function initMcpPage(COPY, LANG) {
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5) * Math.min(1, stageWrap.offsetWidth / W)
       const img = layer.querySelector('img.source')
       await img.decode().catch(() => {})
+      if (stopped()) return
       const w = Math.round(W * dpr),
         h = Math.round(H * dpr)
       // Cover-crop the photo into its CSS box (the whole layer, or the Figma crop on slide 3) on an input canvas the size of the layer
@@ -2497,9 +2525,8 @@ export function initMcpPage(COPY, LANG) {
      It only draws while the scroll swap is showing (and through its fade-out); reduced motion and no-WebGPU keep the PNGs. */
   async function applyExamplesShade() {
     if (!navigator.gpu || reducedMotion || !exBg) return
-    const adapter = await navigator.gpu.requestAdapter()
-    if (!adapter) return
-    const device = await adapter.requestDevice()
+    const device = await openDevice()
+    if (!device) return
     const format = navigator.gpu.getPreferredCanvasFormat()
     const PARAMS = {
       patternAngle: 0,
@@ -2512,6 +2539,7 @@ export function initMcpPage(COPY, LANG) {
     const photos = [exPhoto, ...exBg.querySelectorAll('.examples-alt')]
     const shades = [...exBg.querySelectorAll('.examples-shade')]
     await Promise.all(photos.map((img) => img.decode().catch(() => {})))
+    if (stopped()) return
     const cv = Object.assign(document.createElement('canvas'), { className: 'examples-live' })
     cv.setAttribute('aria-hidden', 'true')
     shades[shades.length - 1].after(cv) // over the photos, under the cursor grid
