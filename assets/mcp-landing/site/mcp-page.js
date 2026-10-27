@@ -253,66 +253,25 @@ export function initMcpPage(COPY, LANG) {
     document.getElementById('hero-time').textContent = `${date} · ${time}`
   })()
 
-  /* VS Code mark (masked layers, as authored in Figma) */
-  document.querySelectorAll('[data-vscode]').forEach((el) => {
-    const p = 'assets/mcp-landing/site/images/mcp/vscode-'
-    const mask = 'assets/mcp-landing/site/images/mcp/vscode-mask.svg'
-    const layers = [
-      ['v1', '0% 0%'],
-      ['v2', '0% 100%'],
-      ['v3', '100% 0%'],
-      ['v4', '0% 0%'],
-    ]
-    el.innerHTML = layers.map(([c], i) => `<div class="${c}"><img src="${p}${i + 1}.svg" alt=""></div>`).join('')
-    // Mask is the full 24x23.876 glyph; offset per layer so it lines up with the whole mark
-    const s = el.getBoundingClientRect().width || 24
-    const k = s / 24
-    const pos = { v1: [0.015, 0], v2: [0.015, -5.737], v3: [-16.5, 0], v4: [0.015, 0] }
-    el.querySelectorAll(':scope > div').forEach((d) => {
-      const [x, y] = pos[d.className]
-      const v = `url(${mask})`
-      d.style.webkitMaskImage = v
-      d.style.maskImage = v
-      const size = `${24 * k}px ${23.876 * k}px`
-      d.style.webkitMaskSize = size
-      d.style.maskSize = size
-      const position = `${x * k}px ${y * k}px`
-      d.style.webkitMaskPosition = position
-      d.style.maskPosition = position
-    })
-  })
-
-  /* Logo marquee: two identical sets, track slides -929px over 20s */
+  /* Logo marquee: two identical sets, as in Figma's desktop row; the track slides one set's width */
   const LOGOS = [
-    ['logo-claude.svg', 'Claude'],
-    ['logo-chatgpt.svg', 'ChatGPT'],
-    ['logo-grok.svg', 'Grok'],
-    ['logo-grokbot.svg', 'Grok bot'],
-    ['vscode', 'VS Code'],
-    ['logo-windsurf.svg', 'Windsurf'],
+    ['chatgpt', 'ChatGPT', true],
+    ['dots', 'Dots'],
+    ['codex', 'Codex'],
+    ['claude', 'Claude', true],
+    ['claude-code', 'Claude code'],
+    ['duet', 'Duet'],
+    ['grok', 'Grok', true],
+    ['grokbot', 'Grokbot'],
+    ['cursor', 'Cursor'],
   ]
-  const track = document.getElementById('marquee-track')
-  const logoHtml = LOGOS.map(([src, name]) =>
-    src === 'vscode'
-      ? `<span class="app-logo"><span class="vscode" data-vscode-hero></span>${name}</span>`
-      : `<span class="app-logo"><img src="assets/mcp-landing/site/images/mcp/${src}" alt="">${name}</span>`,
-  ).join('')
-  track.innerHTML = logoHtml + logoHtml
-  track.querySelectorAll('[data-vscode-hero]').forEach((el) => {
-    el.dataset.vscode = 'hero'
-    const pos = { v1: [0.015, 0], v2: [0.015, -5.737], v3: [-16.5, 0], v4: [0.015, 0] }
-    el.innerHTML = ['v1', 'v2', 'v3', 'v4']
-      .map((c, i) => `<div class="${c}"><img src="assets/mcp-landing/site/images/mcp/vscode-${i + 1}.svg" alt=""></div>`)
-      .join('')
-    el.querySelectorAll(':scope > div').forEach((d) => {
-      const [x, y] = pos[d.className]
-      const v = 'url(assets/mcp-landing/site/images/mcp/vscode-mask.svg)'
-      d.style.webkitMaskImage = v
-      d.style.maskImage = v
-      d.style.webkitMaskSize = d.style.maskSize = '24px 23.876px'
-      d.style.webkitMaskPosition = d.style.maskPosition = `${x}px ${y}px`
-    })
-  })
+  const logoSet = (hidden) =>
+    `<span class="marquee-set"${hidden ? ' aria-hidden="true"' : ''}>${LOGOS.map(([file, name, wordmark]) =>
+      wordmark
+        ? `<span class="agent-logo"><img class="wordmark" src="assets/mcp-landing/site/images/mcp/agents-${file}.svg" alt="${hidden ? '' : name}"></span>`
+        : `<span class="agent-logo"><img src="assets/mcp-landing/site/images/mcp/agents-${file}.svg" alt="">${name}</span>`,
+    ).join('')}</span>`
+  document.getElementById('marquee-track').innerHTML = logoSet(false) + logoSet(true)
 
   /* Copy buttons */
   const checkIcon = `<svg viewBox="${ICONS['outline/check'].viewBox}" fill="none" aria-hidden="true">${ICONS['outline/check'].inner}</svg>`

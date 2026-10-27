@@ -130,15 +130,6 @@
 .mcp-page .agent-stack.is-dark .grok { background: rgba(59,59,59,0.6); }
 .mcp-page .agent-stack .mark { width: 34px; height: 34px; }
 /* VS Code mark: four masked layers, as authored in Figma */
-.mcp-page .vscode { position: relative; overflow: hidden; flex-shrink: 0; }
-.mcp-page .vscode > div { position: absolute; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-mode: alpha; mask-mode: alpha; }
-.mcp-page .vscode img { position: absolute; display: block; width: 100%; height: 100%; }
-.mcp-page .vscode .v1 { inset: 0.26% 0 24.16% -0.06%; }
-.mcp-page .vscode .v2 { inset: 24.16% 0 0.26% -0.06%; }
-.mcp-page .vscode .v2 img { inset: -34.46% -26.03%; width: auto; height: auto; }
-.mcp-page .vscode .v3 { inset: 0.26% 0 0.26% 68.75%; }
-.mcp-page .vscode .v3 img { inset: -26.18% -83.33%; width: auto; height: auto; }
-.mcp-page .vscode .v4 { inset: 0.26% 0.06% 0.26% -0.06%; mix-blend-mode: overlay; }
 /* MCP URL box (Figma 381:4943 hero, 381:4973 closing CTA — the same box in both): on #fcfcfb, a mid gray 1px rim
    with a green comet running round it once every 4s, black offset shadow; a 30% globe, the URL in Medium 16, Copy.
    Wider and roomier than Figma's 275×40 (316×44, 8px around Copy) so the button's wider "Copied" state still clears
@@ -411,11 +402,16 @@
 .mcp-page .hero-copy strong { font-weight: 600; }
 /* Figma 274:2278: lead sentence SemiBold, the rest Regular */
 .mcp-page .available { position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 24px; }
-.mcp-page .marquee { width: min(750px, 100%); overflow: hidden; -webkit-mask: url(../images/mcp/marquee-mask.svg) center / 100% 100% no-repeat; mask: url(../images/mcp/marquee-mask.svg) center / 100% 100% no-repeat; }
-.mcp-page .marquee-track { display: flex; gap: 56px; width: max-content; animation: mcp-marquee 20s linear infinite; }
-@keyframes mcp-marquee { to { transform: translateX(-929px); } }
+/* Figma's desktop row: a 636px strip with 61px fades at each edge, 34px between logos */
+.mcp-page .marquee { --edge-fade: linear-gradient(90deg, transparent, #000 min(61px, 10%), #000 calc(100% - min(61px, 10%)), transparent); width: min(636px, 100%); overflow: hidden; -webkit-mask-image: var(--edge-fade); mask-image: var(--edge-fade); }
+.mcp-page .marquee-track { display: flex; width: max-content; animation: mcp-marquee 21s linear infinite; }
+.mcp-page .marquee-set { display: flex; gap: 34px; padding-right: 34px; }
+@keyframes mcp-marquee { to { transform: translateX(-50%); } }
+.mcp-page .agent-logo { display: flex; align-items: center; gap: 5px; font-family: var(--font-geist); font-weight: 500; font-size: 13.96px; color: #141414; white-space: nowrap; }
+.mcp-page .agent-logo > img { width: 20px; height: 20px; }
+.mcp-page .agent-logo > img.wordmark { width: auto; }
 .mcp-page .app-logo { display: flex; align-items: center; gap: 9px; font-family: var(--font-logo); font-weight: 600; font-size: 18px; color: #1b1533; white-space: nowrap; }
-.mcp-page .app-logo > img, .mcp-page .app-logo > .vscode { width: 24px; height: 24px; }
+.mcp-page .app-logo > img { width: 24px; height: 24px; }
 .mcp-page .powered { position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .mcp-page .powered-mark { display: block; width: 154.0019px; height: 12.9618px; }
 /* Figma 390:5821: the Mothership SI logo, at its own size */
@@ -884,7 +880,7 @@
 }
 .mcp-page a.app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(255,255,255,0.07); }
 .mcp-page .app-tile .app-logo { font-size: 26.94px; color: #fff; gap: 20px; }
-.mcp-page .app-tile .app-logo > img, .mcp-page .app-tile .app-logo > .vscode { width: 35.93px; height: 35.93px; }
+.mcp-page .app-tile .app-logo > img { width: 35.93px; height: 35.93px; }
 /* Claude and Grok show their wordmarks beside the mark, at Figma's sizes */
 .mcp-page .app-tile .app-logo > img.wordmark { width: auto; height: 25px; }
 .mcp-page .app-tile .app-logo.is-grok { gap: 16px; }
