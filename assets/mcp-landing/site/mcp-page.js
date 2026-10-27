@@ -15,7 +15,9 @@ export function initMcpPage(COPY, LANG) {
   current?.stop()
   // Everything that outlives the page's own elements is tracked here, so stop() can undo it: window and document
   // listeners, observers, timers and animation frames. These names shadow the globals for the rest of the script.
+  // Once stopped they do nothing, so work that finishes late (a video load, an image decode) can't start anything new
   const abort = new AbortController()
+  const stopped = () => abort.signal.aborted
   const withSignal = (opts) =>
     typeof opts === 'object' ? { ...opts, signal: abort.signal } : { capture: !!opts, signal: abort.signal }
   const addEventListener = (type, fn, opts) => window.addEventListener(type, fn, withSignal(opts))
@@ -27,6 +29,9 @@ export function initMcpPage(COPY, LANG) {
         super(...args)
         observers.add(this)
       }
+      observe(...args) {
+        if (!stopped()) super.observe(...args)
+      }
     }
   const ResizeObserver = tracked(window.ResizeObserver)
   const IntersectionObserver = tracked(window.IntersectionObserver)
@@ -34,6 +39,7 @@ export function initMcpPage(COPY, LANG) {
   const timers = new Set()
   const frames = new Set()
   const setTimeout = (fn, ms) => {
+    if (stopped()) return 0
     const id = window.setTimeout(() => {
       timers.delete(id)
       fn()
@@ -42,11 +48,13 @@ export function initMcpPage(COPY, LANG) {
     return id
   }
   const setInterval = (fn, ms) => {
+    if (stopped()) return 0
     const id = window.setInterval(fn, ms)
     timers.add(-id)
     return id
   }
   const requestAnimationFrame = (fn) => {
+    if (stopped()) return 0
     const id = window.requestAnimationFrame((t) => {
       frames.delete(id)
       fn(t)
@@ -411,7 +419,7 @@ export function initMcpPage(COPY, LANG) {
   let introSkipped = false
   function heroAnswered() {
     hero.classList.add('is-answered')
-    document.dispatchEvent(new CustomEvent('hero:answered', { detail: { skipped: introSkipped } }))
+    if (!stopped()) document.dispatchEvent(new CustomEvent('hero:answered', { detail: { skipped: introSkipped } }))
   }
   // Scrolling down during the intro jumps it to its end: the input gone, the chat in, the answer fully typed
   function skipIntro() {
@@ -514,7 +522,7 @@ export function initMcpPage(COPY, LANG) {
     ).observe(hero)
   }
   const heroReady = new Promise((r) =>
-    heroVideo.readyState >= 2 ? r() : heroVideo.addEventListener('loadeddata', r, { once: true }),
+    heroVideo.readyState >= 2 ? r() : heroVideo.addEventListener('loadeddata', r, { once: true, signal: abort.signal }),
   )
   Promise.race([heroReady, new Promise((r) => setTimeout(r, 1500))]).then(() =>
     requestAnimationFrame(() =>
