@@ -129,7 +129,7 @@
 		"authOrg": "Organization name",
 		"deny": "Deny",
 		"allow": "Allow access",
-		"ctaTitle": "<c0>Ship freight from your AI chat.</c0>",
+		"ctaTitle": "<c0>Ship and manage freight from your AI chat.</c0>",
 		"signUp": "Sign up in 60 seconds",
 		"ctaNote": "Requires an approved Mothership account"
 	},
@@ -263,7 +263,7 @@
 		"authOrg": "组织名称",
 		"deny": "拒绝",
 		"allow": "允许访问",
-		"ctaTitle": "<c0>在AI对话中发运货物。</c0>",
+		"ctaTitle": "<c0>在AI对话中发运和管理货物。</c0>",
 		"signUp": "60秒内完成注册",
 		"ctaNote": "需要已获批准的Mothership账户"
 	}

@@ -944,7 +944,7 @@
 .mcp-page .auth .actions .btn { display: inline-flex; align-items: center; font-family: var(--font-geist); font-size: 14px; font-weight: 600; line-height: 18px; height: 32px; padding: 0 12px; border-radius: 4px; background: rgba(255,255,255,0.14); color: #fff; }
 /* ── Closing CTA + footer ── */
 .mcp-page .cta { padding: 160px var(--gutter); display: flex; flex-direction: column; align-items: center; gap: 24px; text-align: center; }
-.mcp-page .cta .display { color: #000; --iri-ink: #000; text-wrap: balance; }
+.mcp-page .cta .display { color: #000; --iri-ink: #000; text-wrap: balance; max-width: 790px; } /* Figma 311:853: two lines */
 /* Figma 245:969; the hero's iridescent band, RGB split and glow sweep it once it has typed */
 /* Figma Closing CTA (311:852): headline, "Powered by" 24px under it, then 96px down the square Sign up block and the URL box
    with its note 14px under it, 32px apart */
@@ -1010,6 +1010,8 @@
 @media (max-width: 1000px) {
   .mcp-page .steps { flex-direction: column; }
   .mcp-page .step-arrow { display: none; }
+  /* Figma Built (768) 343:13290 */
+  .mcp-page .cta .display { font-size: 52px; line-height: 58px; letter-spacing: -0.02em; max-width: 676px; }
   /* Figma Built (768) 402:8593: one tile per row, the logo, plus and tools lined up on the left */
   .mcp-page .apps-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; width: 100%; max-width: 602px; margin: 0 auto; }
   .mcp-page .app-tile { height: 218px; align-items: flex-start; padding-left: 46px; }
@@ -1125,7 +1127,7 @@
   .mcp-page .hero-copy { width: min(325px, 100%); font-size: 18px; line-height: 28px; }
   /* Closing CTA (Figma 351:2790): 47px down, the headline at 42/50, the buttons 62px under "Powered by", 129px below them */
   .mcp-page .cta { padding: 47px 16px 129px; }
-  .mcp-page .cta .display { font-size: 42px; line-height: 50px; }
+  .mcp-page .cta .display { font-size: 42px; line-height: 50px; max-width: none; } /* Figma Built (375) 343:14773 */
   .mcp-page .cta .actions { margin-top: 38px; }
   /* The hero URL box is only the frame's inner width here, so the URL drops to 13px (6px after the globe, 12px left pad,
      8px minimum before Copy) and the wider "Copied" still clears the URL and the rim */
