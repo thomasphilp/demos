@@ -21,7 +21,10 @@ svg:where(.footer_logo-image, .gallery_modal-logo) { display: inline-block; vert
 .marketing-lightbox-close { border: 0; background-color: transparent; font-size: 17px; }
 body:has(.marketing-lightbox[open]) { overflow: hidden; }
 @media (min-width: 768px) { .marketing-lightbox iframe { width: min(940px, 96vw, calc(96dvh * 940 / 529)); } .marketing-lightbox-close { top: 2vh; } }
-.shipping-loading-quote { height: 402px; background: #d9e6fd; }
+/* The quote map's placeholder: the map's water color with a light band sweeping across it. MarketingMap's loader in components/map/map.css matches it. */
+.shipping-loading-quote { height: 402px; background: linear-gradient(100deg, rgba(255,255,255,0) 40%, rgba(255,255,255,.55) 50%, rgba(255,255,255,0) 60%) #dbe2eb; background-size: 250% 100%; animation: map-water-sweep 2.4s ease-in-out infinite; }
+@keyframes map-water-sweep { 0% { background-position: 100% 0; } 75%, 100% { background-position: 0 0; } }
+@media (prefers-reduced-motion: reduce) { .shipping-loading-quote { animation: none; } }
 .shipping-loading-coverage { height: 700px; background: #d9e6fd; }
 body:has(#local-tab[aria-selected="true"]) .is-ltl { display: none !important; }
 body:has(#ltl-tab[aria-selected="true"]) .is-local { display: none !important; }
