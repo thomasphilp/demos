@@ -196,6 +196,8 @@
    the colour of the text around them, so they read on the white sections and the black ones */
 .mcp-page .signup-link { color: inherit; font-family: var(--font-pixel); font-weight: 400; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; white-space: nowrap; transition: opacity 0.15s; }
 .mcp-page .signup-link:hover { opacity: 0.7; }
+/* An inline-block keeps the link's underline off the arrow (and the space before it) */
+.mcp-page .signup-arrow { display: inline-block; white-space: pre; text-decoration: none; }
 .mcp-page .signup-link:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
 /* The address in a sentence keeps its tiny copy button on its line */
 .mcp-page .mcp-addr { white-space: nowrap; }
