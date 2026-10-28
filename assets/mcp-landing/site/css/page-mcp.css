@@ -533,7 +533,7 @@
 .mcp-page .examples-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .mcp-page .examples-photo, .mcp-page .examples-alt, .mcp-page .examples-shade, .mcp-page .examples-live { position: absolute; left: 50%; top: -60px; transform: translate(-50%, var(--bg-shift, 0px)); width: 100%; height: calc(100% + 120px); object-fit: cover; }
 /* full-bleed, edge to edge */
-/* Figma 343:7605 / 343:7606: three photos, one per third of the stage. The next one fades in over the last as its third comes up
+/* Figma 343:7605 / 343:7606: three photos, one per topic in turn. The next one fades in over the last as its topic comes up
    (lower ones stay up underneath, so the crossfade never shows the warehouse through) */
 .mcp-page .examples-alt { opacity: 0; transition: opacity 0.7s cubic-bezier(.22,1,.36,1); }
 .mcp-page .examples-alt.is-on { opacity: 1; }
@@ -588,6 +588,28 @@
 .mcp-page .topic-convo.is-in .chat-bubble { animation: mcp-bubble-in 0.6s 0.05s both; }
 .mcp-page .topic-convo.is-in .sent { animation: mcp-chat-fade 0.3s 0.4s both; }
 .mcp-page .topics-composer { display: none; }
+/* Thinking, as the old example cards did: before each reply the star works and a random line runs the "Your AI agent"
+   sweep for a second. On desktop two stars take turns on a 1.6s loop, never visible together: each rises in from below,
+   holds, then drifts up and fades as the next arrives. Tablets and phones keep their "Your AI agent" tag over the line */
+.mcp-page .topic-convo .sparks { position: relative; display: none; width: 20px; height: 20px; }
+.mcp-page .topic-convo .spark { width: 20px; height: 20px; color: rgba(9,10,12,0.35); transition: color 0.3s ease; }
+.mcp-page .topic-convo .spark.is-next { position: absolute; inset: 0; opacity: 0; }
+.mcp-page .topic-convo .agent-msg.is-thinking .spark { color: #141414; animation: mcp-spark-think 1.6s infinite; }
+.mcp-page .topic-convo .agent-msg.is-thinking .spark:not(.is-next) { animation-delay: -0.24s; }
+.mcp-page .topic-convo .agent-msg.is-thinking .spark.is-next { animation-delay: 0.56s; }
+@keyframes mcp-spark-think {
+  0%        { transform: translateY(10px); opacity: 0; animation-timing-function: cubic-bezier(.25,1,.5,1); }
+  15%, 30%  { transform: translateY(0); opacity: 1; animation-timing-function: cubic-bezier(.5,0,.75,0); }
+  45%, 100% { transform: translateY(-10px); opacity: 0; }
+}
+.mcp-page .topic-convo .agent-tag.think { display: none; font-size: 15px; }
+.mcp-page .topic-convo .agent-msg.is-thinking .agent-tag.think { display: flex; animation: mcp-think-in 0.3s ease-out both, mcp-agent-sweep 2.4s linear infinite; }
+.mcp-page .topic-convo .agent-tag.think .tag-label { display: inline; background-position: var(--sweep-x) 0; }
+@keyframes mcp-think-in { from { opacity: 0; transform: translateY(4px); } }
+@media (min-width: 1001px) {
+  .mcp-page .topic-convo .sparks { display: block; }
+  .mcp-page .topic-convo .agent-msg > .agent-tag { display: none; }
+}
 .mcp-page .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 /* The section's gray cursor grid, mirrored on top of the window (and of the phone's screen on smaller screens) */
 .mcp-page .topics-grid { position: absolute; inset: 0; z-index: 3; overflow: hidden; border-radius: inherit; pointer-events: none; }

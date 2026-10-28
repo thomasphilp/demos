@@ -574,15 +574,21 @@ export function initMcpPage(COPY, LANG) {
       body.setAttribute('aria-hidden', 'true')
       body.after(copy)
     })
+    // What the agent says while it thinks: one is picked at random each time, never the same twice running
+    const THINKING = Array.from({ length: 12 }, (_, i) => tr(`thinking${i + 1}`))
+    const THINK_MS = 1000
     let current = 0,
       timers = [],
+      lastThink = '',
       inView = false,
       started = false
     const playConvo = (i) => {
       timers.forEach(clearTimeout)
       timers = []
+      convos.forEach((c) => c.querySelector('.agent-msg').classList.remove('is-thinking'))
       const convo = convos[i],
-        dot = convo.querySelector('.agent-msg > .dot')
+        msg = convo.querySelector('.agent-msg'),
+        dot = msg.querySelector(':scope > .dot')
       convo.classList.remove('is-in')
       void convo.offsetWidth
       convo.classList.add('is-in')
@@ -599,7 +605,16 @@ export function initMcpPage(COPY, LANG) {
       const cursor = document.createElement('span')
       cursor.className = 'dot is-inline'
       dot.style.visibility = 'hidden'
-      const t = typeParts(replies[i], null, cursor, 900, timers)
+      // Think first: once the question lands the star works and a thinking line sweeps for a second, then it types
+      let pick
+      do {
+        pick = THINKING[Math.floor(Math.random() * THINKING.length)]
+      } while (THINKING.length > 1 && pick === lastThink)
+      lastThink = pick
+      msg.querySelector('.think .tag-label').textContent = pick
+      timers.push(setTimeout(() => msg.classList.add('is-thinking'), 200))
+      timers.push(setTimeout(() => msg.classList.remove('is-thinking'), 200 + THINK_MS))
+      const t = typeParts(replies[i], null, cursor, 200 + THINK_MS + 160, timers)
       timers.push(
         setTimeout(() => {
           cursor.remove()
@@ -631,6 +646,8 @@ export function initMcpPage(COPY, LANG) {
       if (list.scrollWidth > list.clientWidth)
         list.scrollTo({ left: tabs[i].offsetLeft, behavior: reducedMotion ? 'auto' : 'smooth' })
       playConvo(i)
+      // …and the photo behind the window changes with it
+      topics.dispatchEvent(new CustomEvent('topics:show', { bubbles: true, detail: i }))
     }
     const setIdle = () => topicsNav.classList.toggle('is-idle', !inView)
     const setPaused = (paused) => {
@@ -1796,8 +1813,8 @@ export function initMcpPage(COPY, LANG) {
       reach: 10,
       clickReach: 10,
     })
-  // As the page scrolls, the photo drifts from 60px up to 60px down while the stage crosses the viewport, and each
-  // third of the stage brings in its own photo once its top comes 30% up from the bottom of the viewport
+  // As the page scrolls, the photo drifts from 60px up to 60px down while the stage crosses the viewport. Each topic
+  // brings in its own photo (the six topics take the three photos in turn), crossfading as the topic changes
   if (exBg) {
     const alts = [...exBg.querySelectorAll('.examples-alt')]
     const shades = [...exBg.querySelectorAll('.examples-shade')]
@@ -1812,20 +1829,20 @@ export function initMcpPage(COPY, LANG) {
       )
     const step = () => {
       raf = 0
-      const thirds = [0, 1, 2].map((k) => (exStage.offsetHeight * k) / 3)
-      const line = innerHeight * 0.7,
-        box = exBg.getBoundingClientRect(),
-        stageTop = exStage.getBoundingClientRect().top
-      let best = 0
-      thirds.forEach((t, i) => {
-        if (stageTop + t < line) best = i
-      })
+      const box = exBg.getBoundingClientRect()
       const through = Math.min(1, Math.max(0, (innerHeight - box.top) / (innerHeight + box.height)))
       exBg.style.setProperty('--bg-shift', `${reducedMotion ? 0 : Math.round((through * 2 - 1) * DRIFT)}px`)
-      photo = Math.min(alts.length, best)
-      alts.forEach((img, i) => img.classList.toggle('is-on', i < photo))
       shade()
     }
+    exStage.addEventListener(
+      'topics:show',
+      (e) => {
+        photo = e.detail % (alts.length + 1)
+        alts.forEach((img, i) => img.classList.toggle('is-on', i < photo))
+        shade()
+      },
+      { signal: abort.signal },
+    )
     const queue = () => {
       if (!raf) raf = requestAnimationFrame(step)
     }
