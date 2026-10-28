@@ -234,6 +234,10 @@
    (--cube-lift is set with the clip placement) */
 .mcp-page .hero-bg { transition: transform 0.9s cubic-bezier(.16,1,.3,1); }
 .mcp-page .hero[data-intro="done"] .hero-bg { transform: translateY(var(--cube-lift, 0px)); transition-delay: 0.12s; }
+/* Tablets and phones zoom the clip in on the cube through the intro (--intro-zoom, script); it starts zoomed and eases
+   back out with the clip's lift as the chat comes in */
+.mcp-page .hero:not([data-intro="done"]) .hero-bg video.is-placed { scale: var(--intro-zoom, 1); }
+.mcp-page .hero[data-intro="done"] .hero-bg video.is-placed { transition: scale 0.9s cubic-bezier(.16,1,.3,1) 0.12s; }
 .mcp-page .hero-bg video.is-placed { position: absolute; object-fit: fill; -webkit-mask: linear-gradient(to bottom, transparent, #000 64px, #000 calc(100% - 120px), transparent); mask: linear-gradient(to bottom, transparent, #000 64px, #000 calc(100% - 120px), transparent); }
 /* White fade over the video: fully white by the chat card's vertical middle, solid white below.
    Placed by script against the chat (which doesn't move), so the lift never shifts it. */

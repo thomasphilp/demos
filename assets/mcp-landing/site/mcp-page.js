@@ -518,6 +518,12 @@ export function initMcpPage(COPY, LANG) {
         height: `${vh}px`,
       })
       heroVideo.classList.add('is-placed')
+      // Tablets and phones: through the intro the clip zooms in on the cube (from its centre) so at least 100px of it shows
+      // above and below the input; it eases back as the chat comes in
+      const cubeClear = parseFloat(getComputedStyle(composer).getPropertyValue('--composer-h')) / 2 + 100,
+        zoom = innerWidth > 1000 ? 1 : Math.max(1, cubeClear / ((CY - CUBE_TOP) * vh))
+      heroVideo.style.transformOrigin = `${CX * vw}px ${CY * vh}px`
+      hero.style.setProperty('--intro-zoom', `${zoom}`)
       bg.style.height = `${top + vh}px`
       bg.style.setProperty('--sky-h', `${Math.max(0, top)}px`)
       // White fade: fully white at the chat card's middle (over 90% of its top half), solid white down to the clip's end
@@ -525,7 +531,8 @@ export function initMcpPage(COPY, LANG) {
         fadeLen = Math.max(200, (mid - chat.offsetTop) * 0.9)
       fade.style.top = `${mid - fadeLen}px`
       fade.style.height = `${Math.max(fadeLen, bg.offsetTop + top + vh - (mid - fadeLen))}px`
-      const drop = fadeLen * 0.35,
+      // During the intro the fade drops a little, and on tablets and phones far enough to clear the cube under the input
+      const drop = Math.max(fadeLen * 0.35, innerWidth > 1000 ? 0 : cubeY + cubeClear - (mid - fadeLen)),
         introLen = fadeLen * 0.75
       fade.style.setProperty('--fade-len-done', `${fadeLen}px`)
       fade.style.setProperty('--fade-len-intro', `${introLen}px`)
