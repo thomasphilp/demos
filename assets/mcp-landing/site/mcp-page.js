@@ -542,9 +542,12 @@ export function initMcpPage(COPY, LANG) {
       const bar = siteNavBar(),
         b = bar?.getBoundingClientRect()
       const navBottom = b && b.top < innerHeight / 2 ? b.bottom + scrollY - heroTop : 0 // hero coords
-      const peek = Math.min(110, Math.max(24, (chat.offsetTop - navBottom) * 0.6))
+      // Tablets and phones raise the card (and all below it) by --hero-video-hold, leaving the clip where it was: the lift is
+      // taken from where the card used to sit
+      const cardTop = chat.offsetTop + (parseFloat(getComputedStyle(hero).getPropertyValue('--hero-video-hold')) || 0)
+      const peek = Math.min(110, Math.max(24, (cardTop - navBottom) * 0.6))
       const cubeTop = cubeY - (CY - CUBE_TOP) * vh
-      hero.style.setProperty('--cube-lift', `${Math.min(0, chat.offsetTop - peek - cubeTop) - 10}px`)
+      hero.style.setProperty('--cube-lift', `${Math.min(0, cardTop - peek - cubeTop) - 10}px`)
     }
     addEventListener('resize', place)
     new ResizeObserver(place).observe(chat)

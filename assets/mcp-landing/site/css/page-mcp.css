@@ -1049,7 +1049,8 @@
   .mcp-page .intro-composer.is-empty .send { opacity: 0.2; }
   /* Hero, Figma Built (768) 351:1608: the card 666px wide 114px down; the thread 42px in from each side of the
      conversation, 24px top padding, 32px apart; a 472px bubble; the headline at 46/52 */
-  .mcp-page .hero { padding-top: 114px; }
+  /* Tablets and phones: the card and everything under it sit 40px higher; the clip stays put (script) */
+  .mcp-page .hero { padding-top: 74px; --hero-video-hold: 40px; }
   .mcp-page .chat-app { width: min(666px, calc(100% - 2 * var(--gutter))); }
   .mcp-page .chat-convo { --thread-w: calc(100% - 84px); }
   .mcp-page .chat-thread { padding-top: 24px; gap: 32px; }
@@ -1101,7 +1102,7 @@
   .mcp-page .app-tile .app-rule { align-self: stretch; width: auto; }
   .mcp-page .apps-many { flex-direction: column; gap: 18px; }
   .mcp-page { --gutter: 16px; --bg-inset: var(--gutter); }
-  .mcp-page .hero { padding: 116px 0 64px; }
+  .mcp-page .hero { padding: 76px 0 64px; }
   .mcp-page .chat-app { min-height: 0; }
   .mcp-page .chat-rail { display: none; }
   /* No rail on phones: the hero thread is the card less 48px, centred */

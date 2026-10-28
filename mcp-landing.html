@@ -111,7 +111,7 @@ document.getElementById('replay-intro').addEventListener('click', () => { scroll
     if (view === 'desktop') return;
     const [w, h] = SIZES[view];
     shell = Object.assign(document.createElement('div'), { className: 'vp-shell' });
-    const frame = Object.assign(document.createElement('iframe'), { title: `This page at ${w} × ${h}`, src: `${location.pathname}?embed=1&build=1793207797`, allow: 'clipboard-write' });
+    const frame = Object.assign(document.createElement('iframe'), { title: `This page at ${w} × ${h}`, src: `${location.pathname}?embed=1&build=1793207971`, allow: 'clipboard-write' });
     frame.style.width = `${w}px`; frame.style.height = `min(${h}px, 100%)`;
     shell.appendChild(frame); document.body.appendChild(shell);
   };
