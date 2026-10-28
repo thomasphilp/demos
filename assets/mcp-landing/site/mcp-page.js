@@ -738,25 +738,49 @@ export function initMcpPage(COPY, LANG) {
       setPaused(reducedMotion)
       show(i)
     }
+    // These listeners go with the rest when the script stops (abandonMcpPage), so a stopped page can't blank a reply
+    const own = { signal: abort.signal }
     dots.forEach((d, i) => {
-      d.addEventListener('click', () => pick(i))
-      d.querySelector('.fill').addEventListener('animationend', () => {
-        if (!topicsNav.classList.contains('is-paused')) show((current + 1) % convos.length)
-      })
+      d.addEventListener('click', () => pick(i), own)
+      d.querySelector('.fill').addEventListener(
+        'animationend',
+        () => {
+          if (!topicsNav.classList.contains('is-paused')) show((current + 1) % convos.length)
+        },
+        own,
+      )
     })
     tabs.forEach((tab, i) => {
-      tab.addEventListener('click', () => pick(i))
+      tab.addEventListener('click', () => pick(i), own)
       // Arrow keys move along the topics, as tabs do
-      tab.addEventListener('keydown', (e) => {
-        const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key]
-        if (!step) return
-        e.preventDefault()
-        const next = (i + step + tabs.length) % tabs.length
-        pick(next)
-        tabs[next].focus()
-      })
+      tab.addEventListener(
+        'keydown',
+        (e) => {
+          const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key]
+          if (!step) return
+          e.preventDefault()
+          const next = (i + step + tabs.length) % tabs.length
+          pick(next)
+          tabs[next].focus()
+        },
+        own,
+      )
     })
-    play.addEventListener('click', () => setPaused(!topicsNav.classList.contains('is-paused')))
+    play.addEventListener('click', () => setPaused(!topicsNav.classList.contains('is-paused')), own)
+    // Keyboard focus in the topics window holds the timer, so the topic being read doesn't change under it. A mouse pick
+    // focuses a tab too but leaves the timer running, as a pick should
+    topics.addEventListener(
+      'focusin',
+      (e) => topicsNav.classList.toggle('is-held', e.target.matches(':focus-visible')),
+      own,
+    )
+    topics.addEventListener(
+      'focusout',
+      (e) => {
+        if (!topics.contains(e.relatedTarget)) topicsNav.classList.remove('is-held')
+      },
+      own,
+    )
     // A held height is for one layout; let it go when the window changes size
     addEventListener('resize', () => {
       convos[current].style.minHeight = ''

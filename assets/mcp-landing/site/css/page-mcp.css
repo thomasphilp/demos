@@ -714,7 +714,7 @@
 .mcp-page .stage-dot.is-active { width: 44px; background: rgba(9,10,12,0.12); cursor: default; }
 .mcp-page .stage-dot .fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: #000; }
 .mcp-page .stage-dot.is-active .fill { animation: mcp-dot-fill var(--slide-dur, 6s) linear forwards; }
-.mcp-page .stage-nav:is(.is-paused, .is-idle) .stage-dot.is-active .fill { animation-play-state: paused; }
+.mcp-page .stage-nav:is(.is-paused, .is-idle, .is-held) .stage-dot.is-active .fill { animation-play-state: paused; }
 @keyframes mcp-dot-fill { from { width: 8px; } to { width: 100%; } }
 .mcp-page .stage-play::before { content: none; }
 /* plain gray rim: the shine plays on the dots box only */
