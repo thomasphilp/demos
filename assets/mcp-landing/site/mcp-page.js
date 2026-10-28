@@ -17,6 +17,8 @@ export function abandonMcpPage() {
   // Headings already split for typing hide each word until it's typed: put them all in
   for (const el of document.querySelectorAll('main.mcp-page .tw')) el.classList.add('is-typed')
   for (const el of document.querySelectorAll('main.mcp-page .tw-w')) el.classList.add('is-on')
+  // Its listener is gone with the rest, so the tiny copy button goes back to hidden
+  for (const el of document.querySelectorAll('main.mcp-page .copy-tiny')) el.hidden = true
 }
 
 /**
@@ -328,6 +330,7 @@ export function initMcpPage(COPY, LANG) {
     const icon = btn.innerHTML,
       name = tr('copyAria')
     btn.setAttribute('aria-label', name)
+    btn.hidden = false
     let timer
     btn.addEventListener('click', async () => {
       const ok = await copyText(btn.dataset.copy)

@@ -200,6 +200,7 @@
 /* The address in a sentence keeps its tiny copy button on its line */
 .mcp-page .mcp-addr { white-space: nowrap; }
 .mcp-page .copy-tiny { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; margin: -4px 0 -4px 2px; padding: 0; border: 0; border-radius: 4px; background: none; color: inherit; vertical-align: -4px; cursor: pointer; opacity: 0.7; transition: opacity 0.15s, background-color 0.15s; }
+.mcp-page .copy-tiny[hidden] { display: none; }
 .mcp-page .copy-tiny:hover { opacity: 1; background: rgba(255,255,255,0.1); }
 .mcp-page .copy-tiny:focus-visible { outline: 2px solid var(--green); outline-offset: 1px; }
 .mcp-page .copy-tiny.is-copied { opacity: 1; color: var(--green); }
