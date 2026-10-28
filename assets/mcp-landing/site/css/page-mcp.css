@@ -278,6 +278,12 @@
   mask: linear-gradient(to bottom, #000 calc(var(--fade-start) + 120px), transparent calc(var(--fade-end) + 120px));
 }
 .mcp-page .chat-shadow::before { content: ""; position: absolute; inset: 120px; border-radius: 16px; box-shadow: 0 0 64px rgba(0,0,0,0.16); }
+.mcp-page .chat-app > .hero-pause { position: absolute; right: 0; bottom: calc(100% + 12px); display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 0; border: 1px solid var(--gray-300); border-radius: 8px; background: rgba(255,255,255,0.6); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); color: #000; cursor: pointer; transition: background-color 0.2s ease; }
+.mcp-page .hero-pause:hover { background: rgba(255,255,255,0.85); }
+.mcp-page .hero-pause:focus-visible { outline: 2px solid #0071e3; outline-offset: 2px; }
+.mcp-page .hero-pause .ic { width: 9px; height: 10px; }
+.mcp-page .hero-pause .ic-play { width: 10px; margin-left: 1px; }
+.mcp-page .hero-pause:not(.is-paused) .ic-play, .mcp-page .hero-pause.is-paused .ic-pause { display: none; }
 .mcp-page .chat-rail { width: 65px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 16px 0; border-radius: 16px 0 0 16px; background: rgba(0,0,0,0.03); border-right: 1px solid rgba(9,10,12,0.2); -webkit-mask: var(--chrome-fade); mask: var(--chrome-fade); }
 .mcp-page .avatar { width: 26px; height: 26px; border-radius: 13px; background: #e7e3da; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: var(--gray-950); }
 .mcp-page .chat-convo { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; }

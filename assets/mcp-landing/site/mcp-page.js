@@ -22,7 +22,7 @@ export function abandonMcpPage() {
   // line, the rest invisible in their places (the autopilot cards' dots and pause button too, which the script added)
   for (const el of document.querySelectorAll('main.mcp-page .copy-tiny')) el.hidden = true
   for (const el of document.querySelectorAll(
-    'main.mcp-page :is([data-copy]:not(.copy-tiny), .stage-nav, .topics-steps, .topics-label, .topics-list, .ap-dots)',
+    'main.mcp-page :is([data-copy]:not(.copy-tiny), .stage-nav, .topics-steps, .topics-label, .topics-list, .ap-dots, .hero-pause)',
   ))
     el.setAttribute('data-wait', '')
 }
@@ -605,11 +605,33 @@ export function initMcpPage(COPY, LANG) {
   // preload, so reduced motion never downloads it and shows the poster
   if (!reducedMotion) {
     heroVideo.muted = true
-    // It plays only while the hero is on screen, and pauses once the page scrolls past it
-    new IntersectionObserver(([e]) =>
-      e.isIntersecting && !reducedMotion ? heroVideo.play().catch(() => {}) : heroVideo.pause(),
-    ).observe(hero)
-    onReducedMotion(() => heroVideo.pause())
+    // It plays only while the hero is on screen and not paused by its button, and pauses once the page scrolls past it
+    const pauseBtn = hero.querySelector('.hero-pause')
+    let heroVisible = false,
+      heroPaused = false
+    const syncVideo = () =>
+      heroVisible && !heroPaused && !reducedMotion ? heroVideo.play().catch(() => {}) : heroVideo.pause()
+    new IntersectionObserver(([e]) => {
+      heroVisible = e.isIntersecting
+      syncVideo()
+    }).observe(hero)
+    if (pauseBtn) {
+      pauseBtn.addEventListener(
+        'click',
+        () => {
+          heroPaused = !heroPaused
+          pauseBtn.classList.toggle('is-paused', heroPaused)
+          pauseBtn.setAttribute('aria-label', tr(heroPaused ? 'playVideo' : 'pauseVideo'))
+          syncVideo()
+        },
+        { signal: abort.signal },
+      )
+      pauseBtn.removeAttribute('data-wait')
+    }
+    onReducedMotion(() => {
+      heroVideo.pause()
+      pauseBtn?.setAttribute('data-wait', '') // nothing moves now, so nothing to pause
+    })
   }
   // Reduced motion never loads the video, so it doesn't wait for it
   const heroReady = reducedMotion
