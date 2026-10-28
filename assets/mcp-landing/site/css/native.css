@@ -84,11 +84,13 @@ button[data-native-link] { border: 0; cursor: pointer; text-align: inherit; }
 .w-nav[data-product="national-ltl"] .trigger-national-ltl:not(.trigger-box-light) { background-color:rgba(255,255,255,.05); }
 .w-nav[data-product="mcp"] .trigger-mcp-light { background-color:rgba(0,0,0,.05); }
 .w-nav[data-product="mcp"] .trigger-mcp:not(.trigger-box-light) { background-color:rgba(255,255,255,.05); }
-/* MCP's panel lays out like Galaxy API's; it has no artwork yet, so a black square (square by its own aspect ratio, its
-   corners rounded by a quarter of its size, as the other icons' artwork is) stands in for its icons */
+/* MCP's panel lays out like Galaxy API's. Its icons' artwork is square: the product icon (the cube) keeps the corners its
+   classes give every product icon at each size, and the feature icons are rounded by a quarter of their size, as the
+   other features' artwork is */
 .panel-reset-light.panel-mcp { grid-column-gap:0; grid-row-gap:0; background-color:var(--transparent--2-black); }
 .panel-reset-dark.panel-mcp { grid-column-gap:0; grid-row-gap:0; }
-.w-nav .mcp-menu-icon { display:block; aspect-ratio:1; height:auto; border-radius:25%; background:#000; }
+.w-nav .mcp-menu-icon { display:block; aspect-ratio:1; height:auto; }
+.w-nav .desktop-menu-icon.mcp-menu-icon { border-radius:25%; }
 .w-nav [class*="trigger-box"] { transition: background-color 50ms linear; }
 @media (max-width:991px) {
  .w-nav-menu.w--nav-menu-open { position:fixed; top:0; bottom:64px; height:calc(100dvh - 64px); animation-name:navigation-mobile-enter; }
