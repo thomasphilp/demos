@@ -1212,22 +1212,23 @@ export function initMcpPage(COPY, LANG) {
         bold = words.filter(([, b]) => b),
         START = 700,
         RATE = 85
+      const place = ([word, isBold, space], i) => {
+        if (i && i === bold.length) compText.appendChild(document.createElement('br'))
+        const span = document.createElement('span')
+        span.className = isBold ? 'word is-bold' : 'word'
+        span.textContent = word
+        if (space && i !== bold.length) compText.appendChild(document.createTextNode(space)) // plain space: wrapped lines don't start with one
+        compText.appendChild(span)
+        comp.classList.remove('is-empty')
+      }
+      // Reduced motion: the whole question at once, no typing and no send press
+      if (reducedMotion) {
+        words.forEach(place)
+        return
+      }
       const at = (fn, ms) => typeTimers.push(setTimeout(fn, ms))
       at(() => comp.classList.add('is-typing'), START)
-      words.forEach(([word, isBold, space], i) =>
-        at(
-          () => {
-            if (i && i === bold.length) compText.appendChild(document.createElement('br'))
-            const span = document.createElement('span')
-            span.className = isBold ? 'word is-bold' : 'word'
-            span.textContent = word
-            if (space && i !== bold.length) compText.appendChild(document.createTextNode(space)) // plain space: wrapped lines don't start with one
-            compText.appendChild(span)
-            comp.classList.remove('is-empty')
-          },
-          START + i * RATE,
-        ),
-      )
+      words.forEach((w, i) => at(() => place(w, i), START + i * RATE))
       const typed = START + words.length * RATE
       at(() => comp.classList.remove('is-typing'), typed)
       at(() => compSend.classList.add('is-pressed'), typed + 450)
