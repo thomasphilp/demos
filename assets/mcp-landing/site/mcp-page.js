@@ -2746,6 +2746,8 @@ export function initMcpPage(COPY, LANG) {
     patternMode: 6,
   }
   async function applyPatternScreen() {
+    // Reduced motion keeps the baked shaded PNGs, so the GPU never starts
+    if (reducedMotion) return
     if (!navigator.gpu) {
       console.info('Pattern Screen shader needs WebGPU; showing the unshaded photos.')
       return
@@ -3007,8 +3009,13 @@ export function initMcpPage(COPY, LANG) {
     }
     addEventListener('scroll', wake, { passive: true })
     exStage.addEventListener('topics:show', wake, { signal: abort.signal })
+    // A rebuild redraws and re-uploads every photo, so it waits until a resize has settled
+    let resizing = 0
     new ResizeObserver(() => {
-      if (build()) wake()
+      clearTimeout(resizing)
+      resizing = setTimeout(() => {
+        if (build()) wake()
+      }, 200)
     }).observe(exPhoto)
     exBg.classList.add('has-live-shade')
   }
