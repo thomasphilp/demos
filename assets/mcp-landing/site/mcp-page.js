@@ -1510,6 +1510,7 @@ export function initMcpPage(COPY, LANG) {
     const canvases = o.mount().map((cv) => {
       cv.classList.add('cursor-grid')
       cv.setAttribute('aria-hidden', 'true')
+      cv.width = cv.height = 0 // no backing until the host is in view
       return cv
     })
     const ctx = canvases[0].getContext('2d'),
@@ -1774,7 +1775,11 @@ export function initMcpPage(COPY, LANG) {
       },
       { threshold: 0.15 },
     ).observe(host)
-    new ResizeObserver(layout).observe(host)
+    // Canvases, cell arrays and dither tiles are only made once the host is in view (the observer above), and a resize
+    // only lays them out again while it is
+    new ResizeObserver(() => {
+      if (inView) layout()
+    }).observe(host)
     if (o.idle)
       setInterval(() => {
         if (!inView || document.hidden || !cols || rings.length) return
