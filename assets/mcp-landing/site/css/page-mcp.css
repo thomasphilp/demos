@@ -148,7 +148,7 @@
 .mcp-page .rim-comet path:nth-of-type(3) { opacity: 0.3; }
 .mcp-page .rim-comet path:nth-of-type(4) { opacity: 0.12; }
 @media (prefers-reduced-motion: reduce) {
-  .mcp-page .rim-comet { display: none; }
+  .mcp-page :is(.rim-comet, .cf-comet) { display: none; }
 }
 @keyframes mcp-beam { to { transform: rotate(360deg); } }
 /* the paginator's shine */
@@ -554,6 +554,8 @@
    little slower than the window */
 /* Same width as the desk/dock slider below: up to 1548px, stopping --bg-inset short of the viewport edges (full width on phones) */
 .mcp-page .examples-bg { position: absolute; top: 0; bottom: 0; left: 0; right: 0; width: min(1548px, 100% - 2 * var(--bg-inset)); margin: 0 auto; overflow: hidden; pointer-events: none; }
+/* Desktop: end the photos 2px short of the stage, under its white fade, so the zooming photo layer's edge can't show as a line */
+@media (min-width: 1001px) { .mcp-page .examples-bg { bottom: 2px; } }
 /* The zoom below scales the drift too, so its origin follows the drift: each photo pushes in toward its own centre */
 .mcp-page .examples-photo, .mcp-page .examples-alt, .mcp-page .examples-shade, .mcp-page .examples-live { position: absolute; left: 0; top: -60px; transform: translateY(var(--bg-shift, 0px)); transform-origin: 50% calc(50% + var(--bg-shift, 0px)); width: 100%; height: calc(100% + 120px); object-fit: cover; }
 /* At rest each photo slowly pushes in toward its centre while its topic is up, from rest each time it comes back (script
@@ -647,7 +649,8 @@
 .mcp-page .topics-chat > .topics-grid { display: none; }
 /* The paginator is the slider's, six dots long, in the white under the window */
 .mcp-page .stage-nav.topics-nav { z-index: 4; margin-top: -98px; }
-.mcp-page :is(.examples, .devices) > .signup-note { position: relative; margin-top: 24px; padding: 0 var(--gutter); }
+/* The topics window's white bottom fade (.examples-stage::before) reaches under its controls; the note sits above it */
+.mcp-page :is(.examples, .devices) > .signup-note { position: relative; z-index: 4; margin-top: 24px; padding: 0 var(--gutter); }
 /* Under the desk/dock slider the note comes first, where the controls were, and the controls follow it */
 .mcp-page .devices > .signup-note { margin-top: 28px; }
 .mcp-page .devices > .signup-note + .stage-nav { margin-top: 24px; }

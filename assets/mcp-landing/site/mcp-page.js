@@ -395,6 +395,10 @@ export function initMcpPage(COPY, LANG) {
     },
     { signal: abort.signal },
   )
+  // Web Animations started through animate() (the connect frame's lines, the URL rims' comets) loop on their own: cancel them
+  onReducedMotion(() => {
+    for (const a of animations) a.cancel()
+  })
   let introTimers = []
   const later = (fn, ms) => introTimers.push(setTimeout(fn, ms))
   function playIntro() {
@@ -990,7 +994,7 @@ export function initMcpPage(COPY, LANG) {
       picker = 0
     const run = () => {
       const L = paths[0].getTotalLength() // both sides are the same length
-      if (!L) return
+      if (!L || reducedMotion) return
       const t = anims[0] ? anims[0].currentTime : null
       anims.forEach((a) => a.cancel())
       anims = paths.map((p, i) => {
@@ -1071,7 +1075,7 @@ export function initMcpPage(COPY, LANG) {
     const trace = () => {
       const W = box.offsetWidth,
         H = box.offsetHeight
-      if (!W) return
+      if (!W || reducedMotion) return
       svg.setAttribute('viewBox', `0 0 ${W} ${H}`)
       paths.forEach((p) => p.setAttribute('d', `M0.5 0.5 H${W - 0.5} V${H - 0.5} H0.5 Z`)) // clockwise from the top-left corner
       const P = paths[0].getTotalLength()
@@ -1568,10 +1572,12 @@ export function initMcpPage(COPY, LANG) {
         if (!held && ready) startTimer()
       }
       onReducedMotion(stopTimer)
-      card.addEventListener('pointerenter', hold)
-      card.addEventListener('pointerleave', () => resume(card.contains(document.activeElement)))
-      card.addEventListener('focusin', hold)
-      card.addEventListener('focusout', (e) => card.contains(e.relatedTarget) || resume(card.matches(':hover')))
+      // These listeners go with the rest when the script stops (abandonMcpPage), so a stopped page can't leave a card faded
+      const own = { signal: abort.signal }
+      card.addEventListener('pointerenter', hold, own)
+      card.addEventListener('pointerleave', () => resume(card.contains(document.activeElement)), own)
+      card.addEventListener('focusin', hold, own)
+      card.addEventListener('focusout', (e) => card.contains(e.relatedTarget) || resume(card.matches(':hover')), own)
       // A reply has finished typing once it carries .is-typed (the reveal queue's first one, a carousel step, or an instant
       // finish on scroll); that starts the timer
       let wasTyped = false
@@ -1619,15 +1625,19 @@ export function initMcpPage(COPY, LANG) {
           twType(reply, { start: 1150 })
         }, 220)
       }
-      card.addEventListener('click', (e) => {
-        const dot = e.target.closest('.ap-dot')
-        if (dot) {
-          show([...dots.children].indexOf(dot))
-          return
-        }
-        if (getSelection().toString()) return // let people select text
-        show((cur + 1) % examples.length)
-      })
+      card.addEventListener(
+        'click',
+        (e) => {
+          const dot = e.target.closest('.ap-dot')
+          if (dot) {
+            show([...dots.children].indexOf(dot))
+            return
+          }
+          if (getSelection().toString()) return // let people select text
+          show((cur + 1) % examples.length)
+        },
+        own,
+      )
     })
   })()
 
