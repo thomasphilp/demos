@@ -1505,7 +1505,16 @@ export function initMcpPage(COPY, LANG) {
       )
       dot.querySelector('.fill').addEventListener('animationend', () => go((cur + 1) % scenes.length), own)
     })
-    play.addEventListener('click', () => setPaused(!nav.classList.contains('is-paused')), own)
+    play.addEventListener(
+      'click',
+      () => {
+        const resume = nav.classList.contains('is-paused')
+        setPaused(!resume)
+        // Play means play, even with keyboard focus on the controls, which otherwise holds the timer
+        if (resume) nav.classList.remove('is-held')
+      },
+      own,
+    )
     nav.removeAttribute('data-wait') // rendered invisible, keeping its space, until its controls work
     // Keyboard focus on the slideshow or its controls holds the timer, as on the topics: a mouse pick leaves it running
     for (const box of [stageWrap, nav]) {
