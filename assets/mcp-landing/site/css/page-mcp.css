@@ -197,6 +197,13 @@
 .mcp-page .signup-link { color: inherit; font-family: var(--font-pixel); font-weight: 400; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; white-space: nowrap; transition: opacity 0.15s; }
 .mcp-page .signup-link:hover { opacity: 0.7; }
 .mcp-page .signup-link:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+/* The address in a sentence keeps its tiny copy button on its line */
+.mcp-page .mcp-addr { white-space: nowrap; }
+.mcp-page .copy-tiny { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; margin: -4px 0 -4px 2px; padding: 0; border: 0; border-radius: 4px; background: none; color: inherit; vertical-align: -4px; cursor: pointer; opacity: 0.7; transition: opacity 0.15s, background-color 0.15s; }
+.mcp-page .copy-tiny:hover { opacity: 1; background: rgba(255,255,255,0.1); }
+.mcp-page .copy-tiny:focus-visible { outline: 2px solid var(--green); outline-offset: 1px; }
+.mcp-page .copy-tiny.is-copied { opacity: 1; color: var(--green); }
+.mcp-page .copy-tiny svg { width: 14px; height: 14px; }
 .mcp-page .signup-note { font-family: var(--font-geist); font-size: 14px; line-height: 20px; text-align: center; color: var(--label-muted); }
 .mcp-page .chat-time .ts-ic { display: none; }
 /* tablet and phone only */
