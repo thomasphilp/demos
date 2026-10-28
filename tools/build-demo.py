@@ -88,7 +88,7 @@ zh_meta = json.loads((APP / 'src/i18n/page-metadata.zh-CN.json').read_text())['m
 
 SHELL_CSS = """
 /* ── Demo bar (the demo only: the real page has none) ── */
-html:not(.is-embed) body { padding-top: 44px; }
+html:not(.demo-framed) body { padding-top: 44px; }
 .demo-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 9999; height: 44px; display: flex; align-items: center; gap: 8px;
   padding: 10px 24px; background: #000; border-bottom: 1px solid rgba(255,255,255,0.08); font-family: Geist, sans-serif; font-size: 12px; color: #fff; }
 .demo-bar-label { font-weight: 500; margin-right: 4px; background: linear-gradient(to right, #00ffff, #ff00cc);
@@ -104,9 +104,9 @@ html:not(.is-embed) body { padding-top: 44px; }
 .vp-shell iframe { flex: none; border: 0; background: #fff; box-shadow: 0 0 0 1px rgba(255,255,255,0.14), 0 24px 64px rgba(0,0,0,0.5); }
 html.is-previewing body { overflow: hidden; }
 html.is-previewing body > :not(.demo-bar):not(.vp-shell) { visibility: hidden; }
-html.is-embed .demo-bar { display: none; }
+html.demo-framed .demo-bar { display: none; }
 /* The site's top bar sits under the demo bar; 991px and down the site uses its bottom bar */
-@media screen and (min-width: 992px) { html:not(.is-embed) .navbar-component { top: 44px; } }
+@media screen and (min-width: 992px) { html:not(.demo-framed) .navbar-component { top: 44px; } }
 @media (max-width: 720px) { .demo-bar { padding: 10px 16px; } .demo-bar-note, .demo-bar .vp-group { display: none; } }
 """
 
@@ -136,7 +136,7 @@ SHELL_JS = r"""
   document.addEventListener('keydown', e => { if (open && e.key === 'Escape') { set(false); buttons[0]?.focus(); } });
 }
 // Demo bar
-const embed = document.documentElement.classList.contains('is-embed');
+const embed = document.documentElement.classList.contains('demo-framed');
 document.getElementById('replay-intro').addEventListener('click', () => { scrollTo(0, 0); location.reload(); });
 // Viewport switcher: Tablet / Mobile show this page in a frame at that width (?view= keeps it on reload)
 (() => {
@@ -181,7 +181,7 @@ def shell(lang, body, title, description):
 <meta property="og:description" content="{description}">
 <meta property="og:url" content="https://thomasphilp.github.io/demos/{PAGES[lang]}">
 <meta property="og:type" content="website">
-<script>if (new URLSearchParams(location.search).has('embed')) document.documentElement.classList.add('is-embed');
+<script>if (new URLSearchParams(location.search).has('embed')) document.documentElement.classList.add('demo-framed');
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
