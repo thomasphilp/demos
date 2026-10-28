@@ -505,119 +505,7 @@ export function initMcpPage(COPY, LANG) {
     ),
   )
 
-  /* ── Chat examples: Rest → Hover, reply types in led by the cursor ── */
-  // Copy from mcp-copy.json (ex1Q, ex1Lead …); w is the resting bubble's width, tuned to the English (Chinese sizes to its text);
-  // the hover bubble takes its own copy where the English breaks a long question in two
-  const EX_LAYOUT = [
-    { w: 420 },
-    { w: 362, hover: true },
-    { w: 350 },
-    { w: 441, hover: true },
-    { w: null },
-    { w: 296, file: 'Contacts.csv' },
-  ]
-  const EXAMPLES = EX_LAYOUT.map(({ w, hover, file }, i) => {
-    const n = i + 1,
-      q = tr(`ex${n}Q`)
-    return {
-      q,
-      w: LANG === 'en' ? w : null,
-      hq: hover ? tr(`ex${n}QHover`) : q,
-      file,
-      lead: tr(`ex${n}Lead`),
-      box: COPY.en[`ex${n}Box`] ? tr(`ex${n}Box`) : '',
-      ask: tr(`ex${n}Ask`),
-    }
-  })
-  const esc = (s) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c])
-  const grid = document.getElementById('examples-grid')
-  grid.innerHTML = EXAMPLES.map(
-    (ex, i) => `
-    <article class="ex-card${ex.file ? ' has-file' : ''}" tabindex="0" data-i="${i}" aria-label="${esc(tr('exampleAria', { question: ex.q }))}">
-      <div class="ex-head">
-        <span class="agent-stack">
-          <img class="mark" src="assets/mcp-landing/site/images/mcp/agent-openai.svg" alt="">
-          <img class="mark" src="assets/mcp-landing/site/images/mcp/agent-claude.svg" alt="">
-          <span class="grok"><img src="assets/mcp-landing/site/images/mcp/agent-grok.svg" alt=""></span>
-        </span>
-        <span class="agent-tag">${tr('anyAgent')}</span>
-      </div>
-      <div class="ex-rest">
-        ${
-          ex.file
-            ? `<div class="rest-q"${ex.w ? ` style="width:${ex.w}px"` : ''}><p class="bubble">${esc(ex.q)}</p><div class="attachment"><span class="chip">${ex.file}</span></div></div>`
-            : `<p class="bubble" style="${ex.w ? `width:${ex.w}px` : LANG === 'en' ? 'white-space:nowrap' : ''}">${esc(ex.q)}</p>`
-        }
-        <span class="caret-down"><img src="assets/mcp-landing/site/images/mcp/caret-down.svg" alt=""></span>
-      </div>
-      <div class="ex-hover" aria-live="polite">
-        <div class="panel"></div>
-        <div class="q"><p class="bubble">${esc(ex.hq)}</p>${ex.file ? `<div class="attachment"><span class="chip">${ex.file}</span></div>` : ''}<span class="sent">${tr('sentBy')}</span></div>
-        <div class="reply">
-          <span class="sparks"><span class="spark ic" data-icon="solid/AI/magic"></span><span class="spark ic is-next" data-icon="solid/AI/magic" aria-hidden="true"></span></span>
-          <div class="body"><span class="agent-tag is-shimmer think" aria-hidden="true"><span class="tag-label"></span></span><p class="lead"></p><p class="box"${ex.box ? '' : ' hidden'}></p><p class="ask"></p></div>
-          <span class="dot is-resting"></span>
-        </div>
-      </div>
-    </article>`,
-  ).join('')
-  grid.querySelectorAll('.spark[data-icon]').forEach((el) => {
-    const icon = ICONS[el.dataset.icon]
-    if (icon)
-      el.innerHTML = `<svg viewBox="${icon.viewBox}" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${icon.inner}</svg>`
-  })
-
   const WORD_MS = 60 // 50% faster than the original 90ms per word
-  // What the agent says while it thinks: one is picked at random each time a card opens (never the same twice running)
-  const THINKING = Array.from({ length: 12 }, (_, i) => tr(`thinking${i + 1}`))
-  function typeReply(card) {
-    const ex = EXAMPLES[card.dataset.i]
-    const hover = card.querySelector('.ex-hover')
-    const [lead, box, ask] = hover.querySelectorAll('.body > p')
-    const dot = hover.querySelector('.reply > .dot')
-    const reply = hover.querySelector('.reply'),
-      think = reply.querySelector('.think .tag-label')
-    const parts = [[lead, ex.lead], ...(ex.box ? [[box, ex.box]] : []), [ask, ex.ask]]
-    cancelTyping(card)
-    // The gray box hugs its finished text: size it once up front (plus room for the caret) so it doesn't grow as it types
-    box.style.width = ''
-    box.textContent = ex.box
-    box.style.width = `${Math.min(box.parentElement.clientWidth, box.offsetWidth + 12)}px`
-    parts.forEach(([el]) => {
-      el.textContent = ''
-    })
-    box.style.opacity = '0'
-    const cursor = document.createElement('span')
-    cursor.className = 'dot is-inline'
-    dot.style.visibility = 'hidden'
-    const timers = (card._timers = [])
-    reply.classList.remove('is-thinking')
-    if (reducedMotion) {
-      parts.forEach(([el, text]) => {
-        el.textContent = text
-      })
-      box.style.opacity = '1'
-      dot.style.visibility = ''
-      return
-    }
-    // Think first: the star works and a random line sweeps, for a random beat, then the reply starts typing
-    let pick
-    do {
-      pick = THINKING[Math.floor(Math.random() * THINKING.length)]
-    } while (THINKING.length > 1 && pick === card._lastThink)
-    card._lastThink = pick
-    think.textContent = pick
-    const thinkMs = 1100 + Math.random() * 400 // half what it was; still long enough for one full star handoff
-    timers.push(setTimeout(() => reply.classList.add('is-thinking'), 200))
-    timers.push(setTimeout(() => reply.classList.remove('is-thinking'), 200 + thinkMs))
-    const t = typeParts(parts, box, cursor, 200 + thinkMs + 160, timers)
-    timers.push(
-      setTimeout(() => {
-        cursor.remove()
-        dot.style.visibility = ''
-      }, t + 100),
-    )
-  }
   // Types each [el, text] in turn from time t, word by word, with the inline square caret right after the newest word.
   // The gray box shows as its turn starts. Returns the time the last word lands.
   function typeParts(parts, box, cursor, t, timers) {
@@ -652,46 +540,142 @@ export function initMcpPage(COPY, LANG) {
     })
     return t
   }
-  function cancelTyping(card) {
-    ;(card._timers || []).forEach(clearTimeout)
-    card._timers = []
-    card.querySelector('.ex-hover .reply')?.classList.remove('is-thinking')
-  }
-  function fillReply(card) {
-    const ex = EXAMPLES[card.dataset.i]
-    const [lead, box, ask] = card.querySelectorAll('.ex-hover .body > p')
-    lead.textContent = ex.lead
-    box.textContent = ex.box
-    ask.textContent = ex.ask
-    box.style.opacity = '1'
-    card.querySelector('.reply > .dot').style.visibility = ''
-  }
-  const openCard = (card) => {
-    if (card.classList.contains('is-open')) return
-    card.classList.add('is-open')
-    typeReply(card)
-  }
-  const closeCard = (card) => {
-    if (document.body.classList.contains('show-all')) return
-    card.classList.remove('is-open')
-    cancelTyping(card)
-  }
-  grid.querySelectorAll('.ex-card').forEach((card) => {
-    card.addEventListener('mouseenter', () => openCard(card))
-    card.addEventListener('mouseleave', () => closeCard(card))
-    card.addEventListener('focus', () => openCard(card))
-    card.addEventListener('blur', () => closeCard(card))
-    card.addEventListener(
-      'touchstart',
-      () => {
-        grid.querySelectorAll('.ex-card.is-open').forEach((c) => {
-          if (c !== card) closeCard(c)
-        })
-        card.classList.contains('is-open') ? closeCard(card) : openCard(card)
+
+  /* ── Topics: each topic's conversation plays in the chat (the question lands, then the reply types in). They autoplay
+     in turn with the active dot's fill as the timer (its animationend advances), hold while the pointer or focus is
+     on the window or it's off screen, and a topic or dot jumps straight to its conversation ── */
+  const topics = document.getElementById('topics'),
+    topicsNav = document.getElementById('topics-nav')
+  if (topics && topicsNav) {
+    const tabs = [...topics.querySelectorAll('.topic')],
+      convos = [...topics.querySelectorAll('.topic-convo')],
+      dots = [...topicsNav.querySelectorAll('.stage-dot')],
+      play = topicsNav.querySelector('.stage-play'),
+      list = topics.querySelector('.topics-list')
+    const TOPIC_MS = 7000
+    topicsNav.style.setProperty('--slide-dur', `${TOPIC_MS / 1000}s`)
+    // Each reply's paragraphs and their words, read once from the server's markup
+    const replies = convos.map((c) => [...c.querySelectorAll('.agent-msg .body > p')].map((el) => [el, el.textContent]))
+    let current = 0,
+      timers = [],
+      held = false,
+      inView = false,
+      started = false
+    const playConvo = (i) => {
+      timers.forEach(clearTimeout)
+      timers = []
+      const convo = convos[i],
+        dot = convo.querySelector('.agent-msg > .dot')
+      convo.classList.remove('is-in')
+      void convo.offsetWidth
+      convo.classList.add('is-in')
+      // Hold the finished reply's height while it types, so the conversation doesn't shift as it grows
+      replies[i].forEach(([el, text]) => {
+        el.textContent = text
+      })
+      convo.style.minHeight = ''
+      convo.style.minHeight = `${convo.offsetHeight}px`
+      if (reducedMotion) return
+      replies[i].forEach(([el]) => {
+        el.textContent = ''
+      })
+      const cursor = document.createElement('span')
+      cursor.className = 'dot is-inline'
+      dot.style.visibility = 'hidden'
+      const t = typeParts(replies[i], null, cursor, 900, timers)
+      timers.push(
+        setTimeout(() => {
+          cursor.remove()
+          dot.style.visibility = ''
+        }, t + 100),
+      )
+    }
+    const show = (i) => {
+      current = i
+      tabs.forEach((tab, k) => {
+        tab.classList.toggle('is-active', k === i)
+        tab.setAttribute('aria-selected', String(k === i))
+        tab.tabIndex = k === i ? 0 : -1
+      })
+      convos.forEach((c, k) => {
+        c.hidden = k !== i
+      })
+      dots.forEach((d, k) => {
+        d.classList.toggle('is-active', k === i)
+        if (k === i) d.setAttribute('aria-current', 'true')
+        else d.removeAttribute('aria-current')
+      })
+      // Start the new dot's fill from empty
+      const fill = dots[i].querySelector('.fill')
+      fill.style.animation = 'none'
+      void fill.offsetWidth
+      fill.style.animation = ''
+      // In the sideways row (tablets and phones), bring the topic into view without moving the page
+      if (list.scrollWidth > list.clientWidth)
+        list.scrollTo({ left: tabs[i].offsetLeft, behavior: reducedMotion ? 'auto' : 'smooth' })
+      playConvo(i)
+    }
+    const setIdle = () => topicsNav.classList.toggle('is-idle', held || !inView)
+    const setPaused = (paused) => {
+      topicsNav.classList.toggle('is-paused', paused)
+      play.setAttribute('aria-label', tr(paused ? 'playSlideshow' : 'pauseSlideshow'))
+    }
+    dots.forEach((d, i) => {
+      d.addEventListener('click', () => show(i))
+      d.querySelector('.fill').addEventListener('animationend', () => {
+        if (!topicsNav.classList.contains('is-paused')) show((current + 1) % convos.length)
+      })
+    })
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => show(i))
+      // Arrow keys move along the topics, as tabs do
+      tab.addEventListener('keydown', (e) => {
+        const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key]
+        if (!step) return
+        e.preventDefault()
+        const next = (i + step + tabs.length) % tabs.length
+        show(next)
+        tabs[next].focus()
+      })
+    })
+    play.addEventListener('click', () => setPaused(!topicsNav.classList.contains('is-paused')))
+    // A held height is for one layout; let it go when the window changes size
+    addEventListener('resize', () => {
+      convos[current].style.minHeight = ''
+    })
+    topics.addEventListener('pointerenter', (e) => {
+      if (e.pointerType !== 'mouse') return
+      held = true
+      setIdle()
+    })
+    topics.addEventListener('pointerleave', () => {
+      held = topics.contains(document.activeElement)
+      setIdle()
+    })
+    topics.addEventListener('focusin', () => {
+      held = true
+      setIdle()
+    })
+    topics.addEventListener('focusout', (e) => {
+      if (topics.contains(e.relatedTarget)) return
+      held = topics.matches(':hover')
+      setIdle()
+    })
+    // The first conversation plays once the window comes into view; off screen the timer holds
+    new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting
+        if (inView && !started) {
+          started = true
+          playConvo(current)
+        }
+        setIdle()
       },
-      { passive: true },
-    )
-  })
+      { threshold: 0.35 },
+    ).observe(topics)
+    setIdle()
+    setPaused(reducedMotion)
+  }
 
   /* ── Typewriter for AI replies: words appear one at a time, a square caret leads each word ── */
   function twPrep(el) {
@@ -997,7 +981,7 @@ export function initMcpPage(COPY, LANG) {
       '.exchange-user .page-bubble, .exchange-user .sent-by, .exchange-agent > :not([data-typewriter]):not(.cursor-block)',
       '.bracket, .bracket-copy',
       '.examples-photo',
-      '.ex-card',
+      '.topics, .topics-nav',
       '.stage-wrap, .stage-nav',
       '.ap-box',
       '.ap-row',
@@ -1052,11 +1036,8 @@ export function initMcpPage(COPY, LANG) {
       typing = null
     // Nothing below the hero plays until the visitor has actually scrolled (a reload mid-page counts)
     let scrolled = scrollY > 0
-    // Chat example cards stagger within each batch that comes into view, so every row plays left then right
-    const CARD_STAGGER = 0.15
     const pump = () => {
       if (!open || !scrolled || busy) return
-      let cardBatch = 0
       while (next < items.length && items[next].ready) {
         const it = items[next++]
         // Scrolled past before its turn (fully above the viewport): show it as it ends up, so scrolling back never finds a gap
@@ -1071,7 +1052,6 @@ export function initMcpPage(COPY, LANG) {
           continue
         }
         if (it.kind === 'reveal') {
-          if (it.el.matches('.ex-card')) it.el.style.setProperty('--reveal-delay', `${cardBatch++ * CARD_STAGGER}s`)
           it.el.classList.add('is-visible')
           continue
         }
@@ -1793,7 +1773,7 @@ export function initMcpPage(COPY, LANG) {
         const cv = document.createElement('canvas')
         exBg.append(cv)
         return [cv]
-      }, // over every row's photo
+      }, // over the photos
       area: exArea,
       // The photo drifts with the scroll, so measure the pointer from where it is now
       point: (e) => {
@@ -1811,18 +1791,12 @@ export function initMcpPage(COPY, LANG) {
       reach: 10,
       clickReach: 10,
     })
-  // As the page scrolls, the photo drifts from 60px up to 60px down while the stage crosses the viewport, and each row
-  // brings in its own photo once its top comes 30% up from the bottom of the viewport (rows split into thirds when the
-  // cards stack in one column). On phones the photo is one screen tall and steps down to that row instead: offset from
-  // it as it is from the first, less 100px so more of it shows behind the row above, and at the last row it hangs
-  // 150px below the cards
+  // As the page scrolls, the photo drifts from 60px up to 60px down while the stage crosses the viewport, and each
+  // third of the stage brings in its own photo once its top comes 30% up from the bottom of the viewport
   if (exBg) {
-    const cards = [...exStage.querySelectorAll('.ex-card')],
-      alts = [...exBg.querySelectorAll('.examples-alt')]
+    const alts = [...exBg.querySelectorAll('.examples-alt')]
     const shades = [...exBg.querySelectorAll('.examples-shade')]
-    const DRIFT = 60,
-      RISE = 100,
-      phone = matchMedia('(max-width: 720px)')
+    const DRIFT = 60
     let raf = 0,
       photo = 0,
       scrolling = false,
@@ -1833,27 +1807,17 @@ export function initMcpPage(COPY, LANG) {
       )
     const step = () => {
       raf = 0
-      const rows = [...new Set(cards.map((c) => c.offsetTop))].sort((a, b) => a - b)
-      if (!rows.length) return
+      const thirds = [0, 1, 2].map((k) => (exStage.offsetHeight * k) / 3)
       const line = innerHeight * 0.7,
         box = exBg.getBoundingClientRect(),
         stageTop = exStage.getBoundingClientRect().top
       let best = 0
-      rows.forEach((t, i) => {
+      thirds.forEach((t, i) => {
         if (stageTop + t < line) best = i
       })
-      if (phone.matches) {
-        const last = Math.max(0, exStage.offsetHeight + 150 - exBg.offsetHeight)
-        const y =
-          best === rows.length - 1 ? last : Math.min(last, Math.max(0, rows[best] - rows[0] - (best ? RISE : 0)))
-        exStage.style.setProperty('--bg-y', `${y}px`)
-        exBg.style.setProperty('--bg-shift', '0px')
-      } else {
-        const through = Math.min(1, Math.max(0, (innerHeight - box.top) / (innerHeight + box.height)))
-        exStage.style.setProperty('--bg-y', '0px')
-        exBg.style.setProperty('--bg-shift', `${reducedMotion ? 0 : Math.round((through * 2 - 1) * DRIFT)}px`)
-      }
-      photo = Math.min(alts.length, Math.floor((best * (alts.length + 1)) / rows.length))
+      const through = Math.min(1, Math.max(0, (innerHeight - box.top) / (innerHeight + box.height)))
+      exBg.style.setProperty('--bg-shift', `${reducedMotion ? 0 : Math.round((through * 2 - 1) * DRIFT)}px`)
+      photo = Math.min(alts.length, best)
       alts.forEach((img, i) => img.classList.toggle('is-on', i < photo))
       shade()
     }
@@ -2479,8 +2443,8 @@ export function initMcpPage(COPY, LANG) {
     reducedMotion ? 0 : 3500,
   )
 
-  /* Examples background while scrolling: the current row's photo runs Figma's screen live (Section 3, 373:4784–4786: wavy
-     lines on a dark gray base) with the slider's ripple rolling out from the row of cards nearest the middle of the screen.
+  /* Examples background while scrolling: the current photo runs Figma's screen live (Section 3, 373:4784–4786: wavy
+     lines on a dark gray base) with the slider's ripple rolling out from the topics window.
      It only draws while the scroll swap is showing (and through its fade-out); reduced motion and no-WebGPU keep the PNGs. */
   async function applyExamplesShade() {
     if (!navigator.gpu || reducedMotion || !exBg) return
@@ -2508,7 +2472,7 @@ export function initMcpPage(COPY, LANG) {
     let w = 0,
       inputs = [],
       frame = null
-    // One input texture per row photo, cover-cropped to the photo's box, rebuilt when the box changes size
+    // One input texture per photo, cover-cropped to the photo's box, rebuilt when the box changes size
     const build = () => {
       const W = Math.round(exPhoto.offsetWidth * dpr),
         H = Math.round(exPhoto.offsetHeight * dpr)
@@ -2544,20 +2508,15 @@ export function initMcpPage(COPY, LANG) {
       return true
     }
     if (!build()) return
-    // The ripple's source: the row of cards whose middle is nearest the middle of the screen, in canvas px
-    const cards = [...exStage.querySelectorAll('.ex-card')]
+    // The ripple's source: the topics window, in canvas px
     const rowBox = () => {
       const r = cv.getBoundingClientRect()
-      if (!r.width) return null
-      const rects = cards.map((c) => c.getBoundingClientRect())
-      const near = rects.reduce((a, q) =>
-        Math.abs(q.top + q.height / 2 - innerHeight / 2) < Math.abs(a.top + a.height / 2 - innerHeight / 2) ? q : a,
-      )
-      const row = rects.filter((q) => Math.abs(q.top - near.top) < 2)
-      const L = Math.min(...row.map((q) => q.left)),
-        R = Math.max(...row.map((q) => q.right)),
-        T = near.top,
-        B = Math.max(...row.map((q) => q.bottom))
+      if (!r.width || !topics) return null
+      const q = topics.getBoundingClientRect()
+      const L = q.left,
+        R = q.right,
+        T = q.top,
+        B = q.bottom
       const k = cv.width / r.width
       return [
         ((L + R) / 2 - r.left) * k,

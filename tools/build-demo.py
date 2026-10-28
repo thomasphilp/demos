@@ -9,7 +9,7 @@ src/i18n/catalogs/mcp.json), and this script turns it into the shareable demo on
 and in Chinese from zh-cn.localhost, with the site's own nav and footer. It writes
 
   mcp-landing.html, mcp-landing.zh-CN.html   the page in each language, under the demo bar (Replay intro, the viewport
-                                             frames, Show all replies, English / 中文)
+                                             frames, English / 中文)
   assets/mcp-landing/site/                   the stylesheets, script, copy, images and clip the page uses, as the
                                              app's public/site has them
 
@@ -138,12 +138,6 @@ SHELL_JS = r"""
 // Demo bar
 const embed = document.documentElement.classList.contains('is-embed');
 document.getElementById('replay-intro').addEventListener('click', () => { scrollTo(0, 0); location.reload(); });
-// Show all replies: every example card opens, as if hovered
-document.getElementById('open-all').addEventListener('click', e => {
-  const on = document.body.classList.toggle('show-all');
-  e.currentTarget.textContent = on ? 'Hide replies' : 'Show all replies';
-  document.querySelectorAll('.ex-card').forEach(card => card.dispatchEvent(new MouseEvent(on ? 'mouseenter' : 'mouseleave')));
-});
 // Viewport switcher: Tablet / Mobile show this page in a frame at that width (?view= keeps it on reload)
 (() => {
   if (embed) return;
@@ -204,9 +198,8 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual';</scrip
     <button type="button" data-view="tablet" aria-pressed="false" title="768 × 1024">Tablet</button>
     <button type="button" data-view="mobile" aria-pressed="false" title="375 × 812">Mobile</button>
   </span>
-  <button type="button" id="open-all">Show all replies</button>
   {switch}
-  <span class="demo-bar-note">Hover a chat example to see the reply</span>
+  <span class="demo-bar-note">Pick a topic to see its conversation</span>
 </div>
 {body}
 <script type="module">
