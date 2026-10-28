@@ -2077,6 +2077,9 @@ export function initMcpPage(COPY, LANG) {
               n = n.offsetParent
             }
             mirror._crop = { x, y, w: wrap.offsetWidth, h: wrap.offsetHeight }
+            // Over the window it shows on the chat only, leaving the topics sidebar clear
+            const chat = box.matches('.topics') && box.querySelector(':scope > .topics-chat')
+            wrap.style.clipPath = chat ? `inset(0 0 0 ${chat.offsetLeft}px)` : ''
             grid?.refresh()
           }
           new ResizeObserver(align).observe(sec)
