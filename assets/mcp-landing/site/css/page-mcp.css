@@ -554,7 +554,9 @@
    sits in the white under it ── */
 .mcp-page .examples-stage::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(to bottom, rgba(255,255,255,0) 324px, #fff 764px); }
 .mcp-page .topics { position: relative; z-index: 2; width: min(1058px, 100% - 2 * var(--gutter)); height: 655px; margin: 133px auto 107px; display: flex; gap: 24px; padding: 12px; background: rgba(255,255,255,0.9); background-clip: padding-box; border: 4px solid rgba(255,255,255,0.36); border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); backdrop-filter: blur(68px); -webkit-backdrop-filter: blur(68px); }
-.mcp-page .topics::after { content: ""; position: absolute; inset: -4px; border-radius: 8px; pointer-events: none; background: linear-gradient(to bottom, rgba(255,255,255,0) calc(100% - 159px), rgba(255,255,255,0.8)); }
+/* Gradient for UI (432:2486): a white fade over the bottom of the window, white by its bottom edge so its border and
+   shadow fade out with it; the paginator sits on top */
+.mcp-page .examples-stage::before { content: ""; position: absolute; left: 0; right: 0; top: 640px; bottom: 0; z-index: 3; pointer-events: none; background: linear-gradient(to bottom, rgba(255,255,255,0), #fff 148px); }
 .mcp-page .topics-side { flex: none; width: 271px; display: flex; flex-direction: column; }
 .mcp-page .topics-agent { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: rgba(9,10,12,0.9); white-space: nowrap; }
 .mcp-page .topics-agent .agent-stack.is-dark { display: none; }
@@ -569,25 +571,25 @@
 .mcp-page .topic-convo { display: flex; flex-direction: column; gap: 10px; }
 .mcp-page .topic-convo[hidden] { display: none; }
 .mcp-page .topic-convo .user-turn { align-self: flex-end; max-width: 454px; display: flex; flex-direction: column; align-items: flex-end; gap: 5.9px; }
-.mcp-page .topic-convo .chat-bubble { padding: 12.14px 18.22px; border-radius: 20.24px 20.24px 7.08px 20.24px; font-size: 25.08px; line-height: 1.3; letter-spacing: normal; }
+.mcp-page .topic-convo .chat-bubble { padding: 12.14px 18.22px; border-radius: 20.24px 20.24px 7.08px 20.24px; font-size: 20px; line-height: 1.3; letter-spacing: normal; }
 .mcp-page .topic-convo .sent { font-size: 14.75px; color: #808080; }
-.mcp-page .topic-convo .agent-msg { gap: 23.57px; max-width: 614px; }
+.mcp-page .topic-convo .agent-msg { gap: 23.57px; max-width: 496px; }
 /* Desktop shows just the star, still and 35% gray; tablets and phones show "Your AI agent" with the page's sweep */
 @media (min-width: 1001px) {
   .mcp-page .topic-convo .agent-tag { animation: none; }
-  .mcp-page .topic-convo .agent-tag .ic { width: 30px; height: 30px; background: rgba(9,10,12,0.35); }
+  .mcp-page .topic-convo .agent-tag .ic { width: 20px; height: 20px; background: rgba(9,10,12,0.35); }
   .mcp-page .topic-convo .agent-tag .tag-label { display: none; }
 }
-.mcp-page .topic-convo .agent-msg .body { gap: 7.86px; font-size: 23.6px; line-height: 1.3; letter-spacing: -0.02em; color: #141414; margin-top: -15.7px; }
+.mcp-page .topic-convo .agent-msg .body { gap: 7.86px; font-size: 18px; line-height: 1.3; letter-spacing: -0.02em; color: #141414; margin-top: -15.57px; }
 .mcp-page .topic-convo .agent-msg .body > p:empty { display: none; }
-.mcp-page .topic-convo .row { align-self: flex-start; padding: 12px 16px; background: #efefef; border: 1.48px solid #eaeaea; border-radius: 11.8px; }
+.mcp-page .topic-convo .row { align-self: flex-start; padding: 8px 11px; background: #efefef; border: 1.48px solid #eaeaea; border-radius: 11.8px; }
 .mcp-page .topic-convo .dot { width: 18px; height: 18px; border-radius: 2.95px; background: #000; }
 .mcp-page .topic-convo .dot.is-inline { display: inline-block; width: 0.6em; height: 0.6em; border-radius: 1.3px; margin-left: 3px; vertical-align: baseline; }
 .mcp-page .topic-convo.is-in .chat-bubble { animation: mcp-bubble-in 0.6s 0.05s both; }
 .mcp-page .topic-convo.is-in .sent { animation: mcp-chat-fade 0.3s 0.4s both; }
 .mcp-page .topics-composer { display: none; }
 /* The paginator is the slider's, six dots long, in the white under the window */
-.mcp-page .stage-nav.topics-nav { z-index: 2; margin-top: -98px; }
+.mcp-page .stage-nav.topics-nav { z-index: 4; margin-top: -98px; }
 .mcp-page .examples > .signup-note { position: relative; margin-top: 24px; padding: 0 var(--gutter); }
 /* ── Devices ── */
 .mcp-page .devices-head { padding: 80px 0; }
@@ -1116,7 +1118,7 @@
   .mcp-page .examples-stage { margin-top: 44px; }
   .mcp-page .examples-stage::after { background: linear-gradient(to bottom, rgba(0,0,0,0) calc(100% - 339px), #000); }
   .mcp-page .topics { width: min(668px, 100% - 2 * var(--bg-inset)); height: auto; margin: 0 auto; padding: 0 0 81px; flex-direction: column; gap: 0; background: none; border: 0; border-radius: 0; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
-  .mcp-page .topics::after { content: none; }
+  .mcp-page .examples-stage::before { content: none; }
   .mcp-page .topics-chat { order: -1; flex: none; width: min(488px, 100% - 26px); margin: 0 auto; display: flex; flex-direction: column; border: 8px solid #0d0a1a; border-top: 0; border-radius: 0 0 54px 54px; box-shadow: 0 41px 82px rgba(26,13,51,0.28); }
   /* centred, as in Figma; a reply taller than the screen starts at the top instead */
   .mcp-page .topics-body { flex: none; height: 618px; display: flex; flex-direction: column; padding: 20px; overflow: hidden; }
