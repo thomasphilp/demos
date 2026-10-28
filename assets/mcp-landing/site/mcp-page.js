@@ -750,13 +750,9 @@ export function initMcpPage(COPY, LANG) {
       fs = parseFloat(cs.fontSize),
       rest = twRest(el),
       fixed = parseFloat(cs.getPropertyValue('--tw-caret'))
-    // No resting square (the Autopilot replies): the caret is the font's x-height (1ex), measured in the reply's own type
-    const exProbe =
-      !rest && Object.assign(document.createElement('span'), { style: 'position:absolute;width:1ex;height:0' })
-    if (exProbe) el.appendChild(exProbe)
-    const size =
-      fixed || Math.round((rest ? rest.getBoundingClientRect().width : exProbe.getBoundingClientRect().width) / k)
-    if (exProbe) exProbe.remove()
+    // No resting square (the Autopilot replies): the caret is the letters' x-height as drawn, taken from a round
+    // letter so it includes their overshoot, in the reply's own type
+    const size = fixed || (rest ? Math.round(rest.getBoundingClientRect().width / k) : xHeight(cs))
     const target = word || tw.words[0]
     const rects = target.getClientRects()
     const r = word ? rects[rects.length - 1] : rects[0]
@@ -785,6 +781,12 @@ export function initMcpPage(COPY, LANG) {
     tw.caret.classList.add('is-on', 'is-resting')
     if (!el._twRo)
       (el._twRo = new ResizeObserver(() => tw.caret.classList.contains('is-resting') && twPlace(el, last))).observe(el)
+  }
+  const xMeasure = document.createElement('canvas').getContext('2d')
+  const xHeight = (cs) => {
+    xMeasure.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`
+    const m = xMeasure.measureText('o')
+    return Math.ceil(m.actualBoundingBoxAscent + m.actualBoundingBoxDescent)
   }
   function twType(el, { start = 0, rate = 120, onDone } = {}) {
     // 120ms a word: 50% faster than the original 180
@@ -1007,7 +1009,7 @@ export function initMcpPage(COPY, LANG) {
       '.stage-wrap, .stage-nav',
       '.ap-box',
       ['.ap-row', 0.4], // the autopilot cards land one after another, 0.4s apart
-      '.apps-grid, .apps-many',
+      ['.apps-grid, .apps-many', 0], // together, so the strip and its bottom row move as one
       '.setup-bg',
       '.steps',
       '.step',

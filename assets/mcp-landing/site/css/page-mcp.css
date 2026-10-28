@@ -113,6 +113,8 @@
 /* Bracket title: label sits in the gap of a thin outline that drops into the content */
 .mcp-page .bracket { position: relative; display: flex; flex-direction: column; align-items: center; }
 .mcp-page .bracket-label { position: relative; z-index: 1; display: flex; align-items: center; gap: 8px; padding: 8px; font-size: 22px; line-height: 32px; font-weight: 500; text-align: center; }
+/* Figma: the white sections' labels ("Here's how people ask", "For example") are SemiBold; the dark ones stay Medium */
+.mcp-page :is(.examples, .devices) .bracket-label { font-weight: 600; }
 .mcp-page .bracket-lines { position: absolute; left: 50%; transform: translateX(-50%); top: 24px; pointer-events: none; }
 .mcp-page .bracket-lines img { width: 100%; height: 100%; }
 /* Agent logo stack: Grok bot, ChatGPT, Claude */
@@ -353,7 +355,7 @@
 .mcp-page .cf-edge.is-bottom .cf-line { margin-bottom: 21px; border-bottom-width: 1px; }
 .mcp-page .cf-edge .cf-line:first-child { border-left-width: 1px; }
 .mcp-page .cf-edge .cf-line:last-child { border-right-width: 1px; }
-.mcp-page .cf-edge .lead { font-size: 20px; font-weight: 500; line-height: 32px; text-align: center; }
+.mcp-page .cf-edge .lead { font-size: 22px; font-weight: 600; line-height: 32px; text-align: center; }
 /* Figma 343:3268: Medium 20 */
 /* Figma 388:5040: the note sits 6px under the lead (2px under its 32px line box), the URL box 20px under the note */
 .mcp-page .cf-body { position: relative; padding: 2px 25px 64px; display: flex; flex-direction: column; align-items: center; gap: 64px; }
@@ -855,8 +857,10 @@
 .mcp-page .ap-dot:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
 .mcp-page .apps { padding: 60px 0 92px; }
 .mcp-page .apps .exchange { gap: 80px; }
-/* Figma 422:15463: the three tiles share their borders in one 1000px strip, with one offset shadow under it */
-.mcp-page .apps-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: min(1000px, 100%); margin: 0 auto; box-shadow: 10px 10px 0 rgba(53,53,53,0.25); }
+/* Figma 422:15463: the three tiles share their borders in one 1000px strip, with "and many more" as its bottom row and
+   one offset shadow under the lot */
+.mcp-page .apps-strip { width: min(1000px, 100%); margin: 0 auto; box-shadow: 10px 10px 0 rgba(53,53,53,0.25); }
+.mcp-page .apps-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .mcp-page .apps .signup-note { color: rgba(255,255,255,0.7); }
 /* Each tile is frosted like the setup steps box: a translucent fill with a background blur over the cursor grid.
    Its wordmark, a rule and the tools built on the app stack 32px apart; the launch mark sits in the top-right corner */
@@ -882,14 +886,14 @@
 .mcp-page .app-tile .app-more > :is(span, a) { display: flex; align-items: center; gap: 12px; font-family: var(--font-geist); font-weight: 500; font-size: 13.96px; line-height: 18px; color: #fff; white-space: nowrap; }
 .mcp-page .app-tile .app-more img { width: auto; height: 20px; }
 .mcp-page .app-tile .launch { position: absolute; right: 16px; top: 16px; width: 20px; height: 20px; color: #fff; }
-/* Figma 417:15344: "and many more" and four more apps' marks, 48px under the strip (the section stacks its parts 80px apart) */
-.mcp-page .apps-many { display: flex; align-items: center; justify-content: center; gap: 42px; margin-top: -32px; font-family: var(--font-geist); font-weight: 500; font-size: 13.96px; line-height: 18px; color: #fff; }
+/* Figma 439:5904: "and many more" and four more apps' marks, centred in the strip's bottom row */
+.mcp-page .apps-many { display: flex; align-items: center; justify-content: center; gap: 42px; padding: 24px; border: 1px solid rgba(209,209,209,0.3); border-top: 0; background: rgba(255,255,255,0.01); backdrop-filter: blur(64px); -webkit-backdrop-filter: blur(64px); font-family: var(--font-geist); font-weight: 500; font-size: 13.96px; line-height: 18px; color: #fff; }
 .mcp-page .apps-many-logos { display: flex; align-items: center; gap: 42px; }
 .mcp-page .apps-many-logos img { width: 30px; height: 30px; }
 .mcp-page .setup { position: relative; padding: 96px 0; overflow: hidden; }
 .mcp-page .setup-bg { position: absolute; left: 0; right: 0; top: -198px; height: 1282px; pointer-events: none; overflow: hidden; }
-/* Slow Ken Burns: a 26.7s drift in toward the cube and back out, on a loop */
-.mcp-page .setup-bg img { width: 100%; height: 100%; object-fit: cover; transform-origin: 50% 40%; animation: mcp-setup-kb 26.7s ease-in-out infinite alternate; }
+/* Ken Burns: a 13.35s drift in toward the cube and back out, on a loop */
+.mcp-page .setup-bg img { width: 100%; height: 100%; object-fit: cover; transform-origin: 50% 40%; animation: mcp-setup-kb 13.35s ease-in-out infinite alternate; }
 @keyframes mcp-setup-kb { from { transform: scale(1); } to { transform: scale(1.1); } }
 .mcp-page .setup-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.1) 7.584%, #000 85.393%); }
 .mcp-page .setup .exchange { position: relative; gap: 80px; }
@@ -986,8 +990,13 @@
   /* Figma Built (768) 351:1998: the tiles stack in one 673px column, still sharing their borders */
   /* wider than the headline column above it: it shares that column's right edge and runs 48px from each side, as in Figma */
   .mcp-page .apps .exchange { --strip: min(673px, 100vw - 96px); }
+  /* the row of more apps comes out of the strip again and sits 48px under it (the section stacks its parts 80px apart),
+     so the strip and the row each lay out on their own and the shadow goes back to the tiles */
+  .mcp-page .apps-strip { display: contents; }
   .mcp-page :is(.apps-grid, .apps-many) { width: var(--strip); margin-left: calc(100% - var(--strip)); }
-  .mcp-page .apps-grid { grid-template-columns: minmax(0, 1fr); }
+  .mcp-page .apps-grid { grid-template-columns: minmax(0, 1fr); box-shadow: 10px 10px 0 rgba(53,53,53,0.25); }
+  .mcp-page .apps-many { margin-top: -32px; padding: 0; border: 0; background: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .mcp-page .app-tile .app-rule { background: rgba(209,209,209,0.15); }
   .mcp-page .app-tile + .app-tile { border-left: 1px solid rgba(209,209,209,0.3); border-top: 0; }
   .mcp-page .app-tile .app-rule { align-self: flex-start; width: 248px; }
   /* stacked steps don't need matching card heights, so the note sits in the flow under its card */
