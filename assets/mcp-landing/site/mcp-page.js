@@ -1006,7 +1006,7 @@ export function initMcpPage(COPY, LANG) {
       '.topics, .topics-nav',
       '.stage-wrap, .stage-nav',
       '.ap-box',
-      '.ap-row',
+      ['.ap-row', 0.4], // the autopilot cards land one after another, 0.4s apart
       '.apps-grid, .apps-many',
       '.setup-bg',
       '.steps',
@@ -1043,7 +1043,8 @@ export function initMcpPage(COPY, LANG) {
 
     // Strict top-to-bottom order: one queue in document order. An item plays once it (or anything
     // below it) has scrolled into view, and never before everything above it has played. A typed
-    // reply holds the queue until its last word lands, so content under it always comes after.
+    // reply holds the queue until its last word lands, so content under it always comes after
+    // (all but the autopilot cards' replies, which type alongside the cards after them).
     const items = [
       ...targets.map((el) => ({ el, kind: 'reveal' })),
       ...writers.map((el) => ({ el, kind: 'type' })),
@@ -1075,6 +1076,14 @@ export function initMcpPage(COPY, LANG) {
         }
         if (it.kind === 'reveal') {
           it.el.classList.add('is-visible')
+          continue
+        }
+        // Autopilot cards don't wait on each other's replies: each types in on its own once its card has landed,
+        // while the next card comes in behind it
+        const row = it.el.closest('.ap-row')
+        if (row) {
+          const landed = parseFloat(row.style.getPropertyValue('--reveal-delay')) || 0
+          twType(it.el, { start: (parseFloat(it.el.dataset.twDelay || '0.5') + landed) * 1000, rate: twRate(it.el) })
           continue
         }
         busy = true
@@ -1834,12 +1843,20 @@ export function initMcpPage(COPY, LANG) {
       exBg.style.setProperty('--bg-shift', `${reducedMotion ? 0 : Math.round((through * 2 - 1) * DRIFT)}px`)
       shade()
     }
+    // A topic change swaps in the new photo's shaded version (and the shader's ripple) for a moment, as a scroll does
+    const SWAP_MS = 600
     exStage.addEventListener(
       'topics:show',
       (e) => {
         photo = e.detail % (alts.length + 1)
         alts.forEach((img, i) => img.classList.toggle('is-on', i < photo))
+        scrolling = true
         shade()
+        clearTimeout(settle)
+        settle = setTimeout(() => {
+          scrolling = false
+          shade()
+        }, SWAP_MS)
       },
       { signal: abort.signal },
     )
@@ -2609,6 +2626,7 @@ export function initMcpPage(COPY, LANG) {
       if (!raf) raf = requestAnimationFrame(tick)
     }
     addEventListener('scroll', wake, { passive: true })
+    exStage.addEventListener('topics:show', wake, { signal: abort.signal })
     new ResizeObserver(() => {
       if (build()) wake()
     }).observe(exPhoto)
