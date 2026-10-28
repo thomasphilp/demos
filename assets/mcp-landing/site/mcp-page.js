@@ -504,9 +504,19 @@ export function initMcpPage(COPY, LANG) {
       e.isIntersecting ? heroVideo.play().catch(() => {}) : heroVideo.pause(),
     ).observe(hero)
   }
-  const heroReady = new Promise((r) =>
-    heroVideo.readyState >= 2 ? r() : heroVideo.addEventListener('loadeddata', r, { once: true, signal: abort.signal }),
-  )
+  // Reduced motion never loads the video, so it doesn't wait for it
+  const heroReady = reducedMotion
+    ? Promise.resolve()
+    : new Promise((r) =>
+        heroVideo.readyState >= 2
+          ? r()
+          : heroVideo.addEventListener('loadeddata', r, { once: true, signal: abort.signal }),
+      )
+  // Opened below the top (a #fragment, or a restored scroll position): skip straight to the intro's end, once the rest
+  // of the script has set up
+  requestAnimationFrame(() => {
+    if (scrollY > 40) skipIntro()
+  })
   Promise.race([heroReady, new Promise((r) => setTimeout(r, 1500))]).then(() =>
     requestAnimationFrame(() =>
       requestAnimationFrame(() => {
