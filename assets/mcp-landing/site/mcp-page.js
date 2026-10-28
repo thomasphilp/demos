@@ -500,7 +500,7 @@ export function initMcpPage(COPY, LANG) {
   )
   const heroTitle = document.getElementById('hero-title')
   const sendBtn = composer.querySelector('.send')
-  sendBtn.addEventListener('animationend', () => sendBtn.classList.remove('is-pressed'))
+  sendBtn.addEventListener('animationend', () => sendBtn.classList.remove('is-pressed'), { signal: abort.signal })
   // Start once the hero photo is ready (fallback after 1.5s) so the first frames aren't stalled by decoding
   const heroVideo = hero.querySelector('.hero-bg video')
   /* Cube dead centre in the viewport: size the clip to the width (at least a 60%-of-screen cube, up to 300px),
@@ -1916,11 +1916,15 @@ export function initMcpPage(COPY, LANG) {
           last = [x, y]
           wake()
         },
-        { passive: true },
+        { passive: true, signal: abort.signal },
       )
-      host.addEventListener('pointerleave', () => {
-        last = null
-      })
+      host.addEventListener(
+        'pointerleave',
+        () => {
+          last = null
+        },
+        { signal: abort.signal },
+      )
     }
     host.addEventListener(
       'click',
@@ -1930,7 +1934,7 @@ export function initMcpPage(COPY, LANG) {
         if (x < 0 || y < 0 || x > box.w || y > box.h) return
         ring(x, y, 1, o.clickReach)
       },
-      { passive: true },
+      { passive: true, signal: abort.signal },
     )
     new IntersectionObserver(
       ([e]) => {
