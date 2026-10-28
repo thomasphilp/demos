@@ -588,6 +588,9 @@
 .mcp-page .topic-convo.is-in .chat-bubble { animation: mcp-bubble-in 0.6s 0.05s both; }
 .mcp-page .topic-convo.is-in .sent { animation: mcp-chat-fade 0.3s 0.4s both; }
 .mcp-page .topics-composer { display: none; }
+/* The section's gray cursor grid, mirrored on top of the window (and of the phone's screen on smaller screens) */
+.mcp-page .topics-grid { position: absolute; inset: 0; z-index: 3; overflow: hidden; border-radius: inherit; pointer-events: none; }
+.mcp-page .topics-chat > .topics-grid { display: none; }
 /* The paginator is the slider's, six dots long, in the white under the window */
 .mcp-page .stage-nav.topics-nav { z-index: 4; margin-top: -98px; }
 .mcp-page .examples > .signup-note { position: relative; margin-top: 24px; padding: 0 var(--gutter); }
@@ -1119,6 +1122,8 @@
   .mcp-page .examples-stage::after { background: linear-gradient(to bottom, rgba(0,0,0,0) calc(100% - 339px), #000); }
   .mcp-page .topics { width: min(668px, 100% - 2 * var(--bg-inset)); height: auto; margin: 0 auto; padding: 0 0 81px; flex-direction: column; gap: 0; background: none; border: 0; border-radius: 0; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
   .mcp-page .examples-stage::before { content: none; }
+  .mcp-page .topics > .topics-grid { display: none; }
+  .mcp-page .topics-chat > .topics-grid { display: block; }
   .mcp-page .topics-chat { order: -1; flex: none; width: min(488px, 100% - 26px); margin: 0 auto; display: flex; flex-direction: column; border: 8px solid #0d0a1a; border-top: 0; border-radius: 0 0 54px 54px; box-shadow: 0 41px 82px rgba(26,13,51,0.28); }
   /* centred, as in Figma; a reply taller than the screen starts at the top instead */
   .mcp-page .topics-body { flex: none; height: 618px; display: flex; flex-direction: column; padding: 20px; overflow: hidden; }

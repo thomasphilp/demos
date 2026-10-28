@@ -1898,7 +1898,29 @@ export function initMcpPage(COPY, LANG) {
       mount: () => {
         const cv = document.createElement('canvas')
         sec.prepend(cv)
-        return [cv]
+        // …mirrored over the topics window on desktop and over the phone's screen below that, shifted back by
+        // their offsets so the cells line up with the section's
+        const mirrors = [...sec.querySelectorAll('.topics, .topics-chat')].map((box) => {
+          const wrap = Object.assign(document.createElement('div'), { className: 'topics-grid' })
+          const mirror = document.createElement('canvas')
+          wrap.append(mirror)
+          box.append(wrap)
+          const align = () => {
+            let x = box.clientLeft,
+              y = box.clientTop,
+              n = box
+            while (n && n !== sec) {
+              x += n.offsetLeft
+              y += n.offsetTop
+              n = n.offsetParent
+            }
+            mirror.style.translate = `${-x}px ${-y}px`
+          }
+          new ResizeObserver(align).observe(sec)
+          align()
+          return mirror
+        })
+        return [cv, ...mirrors]
       },
     })
   })
