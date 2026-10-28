@@ -327,18 +327,22 @@ export function initMcpPage(COPY, LANG) {
     btn.setAttribute('aria-label', name)
     btn.hidden = false
     let timer
-    btn.addEventListener('click', async () => {
-      const ok = await copyText(btn.dataset.copy)
-      btn.textContent = tr(ok ? 'copied' : 'copyFailed')
-      btn.setAttribute('aria-label', tr(ok ? 'copied' : 'copyFailed'))
-      btn.classList.toggle('is-copied', ok)
-      clearTimeout(timer)
-      timer = setTimeout(() => {
-        btn.textContent = tr('copy')
-        btn.classList.remove('is-copied')
-        btn.setAttribute('aria-label', name)
-      }, 1600)
-    })
+    btn.addEventListener(
+      'click',
+      async () => {
+        const ok = await copyText(btn.dataset.copy)
+        btn.textContent = tr(ok ? 'copied' : 'copyFailed')
+        btn.setAttribute('aria-label', tr(ok ? 'copied' : 'copyFailed'))
+        btn.classList.toggle('is-copied', ok)
+        clearTimeout(timer)
+        timer = setTimeout(() => {
+          btn.textContent = tr('copy')
+          btn.classList.remove('is-copied')
+          btn.setAttribute('aria-label', name)
+        }, 1600)
+      },
+      { signal: abort.signal },
+    )
   })
   document.querySelectorAll('[data-copy]:not([data-copy-tiny])').forEach((btn) => {
     // "Copy" sizes the button; "Copied" overlays it and the button widens to fit while it shows
@@ -348,32 +352,40 @@ export function initMcpPage(COPY, LANG) {
       name = tr('copyAria')
     btn.setAttribute('aria-label', name)
     let timer
-    btn.addEventListener('click', async () => {
-      btn.classList.remove('is-tapped')
-      void btn.offsetWidth
-      btn.classList.add('is-tapped')
-      if (await copyText(btn.dataset.copy)) {
-        done.innerHTML = `${checkIcon}${tr('copied')}`
-        btn.setAttribute('aria-label', tr('copied'))
-      } else {
-        done.textContent = tr('copyFailed')
-        btn.setAttribute('aria-label', tr('copyFailed'))
-      }
-      const cs = getComputedStyle(btn)
-      btn.style.setProperty(
-        '--done-w',
-        `${done.offsetWidth + parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight)}px`,
-      )
-      btn.classList.add('is-copied')
-      clearTimeout(timer)
-      timer = setTimeout(() => {
-        btn.classList.remove('is-copied')
-        btn.setAttribute('aria-label', name)
-      }, 1600)
-    })
-    btn.addEventListener('animationend', (e) => {
-      if (e.animationName === 'mcp-copy-tap') btn.classList.remove('is-tapped')
-    })
+    btn.addEventListener(
+      'click',
+      async () => {
+        btn.classList.remove('is-tapped')
+        void btn.offsetWidth
+        btn.classList.add('is-tapped')
+        if (await copyText(btn.dataset.copy)) {
+          done.innerHTML = `${checkIcon}${tr('copied')}`
+          btn.setAttribute('aria-label', tr('copied'))
+        } else {
+          done.textContent = tr('copyFailed')
+          btn.setAttribute('aria-label', tr('copyFailed'))
+        }
+        const cs = getComputedStyle(btn)
+        btn.style.setProperty(
+          '--done-w',
+          `${done.offsetWidth + parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight)}px`,
+        )
+        btn.classList.add('is-copied')
+        clearTimeout(timer)
+        timer = setTimeout(() => {
+          btn.classList.remove('is-copied')
+          btn.setAttribute('aria-label', name)
+        }, 1600)
+      },
+      { signal: abort.signal },
+    )
+    btn.addEventListener(
+      'animationend',
+      (e) => {
+        if (e.animationName === 'mcp-copy-tap') btn.classList.remove('is-tapped')
+      },
+      { signal: abort.signal },
+    )
   })
 
   /* ── Hero intro: composer types the question, then hands off to the chat ── */
