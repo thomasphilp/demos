@@ -207,6 +207,10 @@
 .mcp-page .copy-tiny:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.06); color: #fff; }
 .mcp-page .copy-tiny:focus-visible { outline: 2px solid var(--green); outline-offset: 1px; }
 .mcp-page .copy-tiny.is-copied { color: var(--green); }
+/* On the white devices section: the same box in dark ink, and a dark check (the green doesn't read on white) */
+.mcp-page .devices .copy-tiny { border-color: rgba(9,10,12,0.15); }
+.mcp-page .devices .copy-tiny:hover { border-color: rgba(9,10,12,0.3); background: rgba(9,10,12,0.04); color: #090a0c; }
+.mcp-page .devices .copy-tiny.is-copied { color: #090a0c; }
 /* The icon's wrapper is the icon's size, so the button's centring centres the glyph itself */
 .mcp-page .copy-tiny :is(.ic, svg) { width: 14px; height: 14px; }
 /* The sign-up reminders are all in Geist Pixel, the same as their links */
@@ -640,7 +644,7 @@
 .mcp-page .topics-chat > .topics-grid { display: none; }
 /* The paginator is the slider's, six dots long, in the white under the window */
 .mcp-page .stage-nav.topics-nav { z-index: 4; margin-top: -98px; }
-.mcp-page .examples > .signup-note { position: relative; margin-top: 24px; padding: 0 var(--gutter); }
+.mcp-page :is(.examples, .devices) > .signup-note { position: relative; margin-top: 24px; padding: 0 var(--gutter); }
 /* ── Devices ── */
 .mcp-page .devices-head { padding: 80px 0; }
 .mcp-page .devices { position: relative; padding-bottom: 103px; }
