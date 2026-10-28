@@ -226,11 +226,6 @@ export function initMcpPage(COPY, LANG) {
       inner:
         '<path fill-rule="evenodd" clip-rule="evenodd" d="M1.125 1.875C1.125 1.25368 1.62868 0.75 2.25 0.75H4.5C5.12132 0.75 5.625 1.25368 5.625 1.875V22.125C5.625 22.7463 5.12132 23.25 4.5 23.25H2.25C1.95163 23.25 1.66548 23.1315 1.4545 22.9205C1.24353 22.7095 1.125 22.4234 1.125 22.125L1.125 1.875ZM12.375 1.875C12.375 1.25368 12.8787 0.75 13.5 0.75H15.75C16.0484 0.75 16.3345 0.868526 16.5455 1.0795C16.7565 1.29048 16.875 1.57663 16.875 1.875L16.875 22.125C16.875 22.7463 16.3713 23.25 15.75 23.25H13.5C12.8787 23.25 12.375 22.7463 12.375 22.125V1.875Z" fill="currentColor"/>',
     },
-    'outline/document-duplicate': {
-      viewBox: '0 0 24 24',
-      inner:
-        '<path d="M15.909 17.7273V21.4091C15.909 22.0869 15.3596 22.6364 14.6818 22.6364H4.04539C3.36758 22.6364 2.81812 22.0869 2.81812 21.4091V7.50001C2.81812 6.82221 3.36758 6.27274 4.04539 6.27274H6.09084C6.64837 6.27274 7.19505 6.31921 7.72721 6.40849M15.909 17.7273H19.5908C20.2686 17.7273 20.8181 17.1778 20.8181 16.5V11.1818C20.8181 6.31693 17.2798 2.27843 12.6363 1.4994C12.1041 1.41012 11.5575 1.36365 10.9999 1.36365H8.95448C8.27667 1.36365 7.72721 1.91312 7.72721 2.59092V6.40849M15.909 17.7273H8.95448C8.27667 17.7273 7.72721 17.1778 7.72721 16.5V6.40849M20.8181 13.6364V11.5909C20.8181 9.55751 19.1697 7.9091 17.1363 7.9091H15.4999C14.8221 7.9091 14.2727 7.35963 14.2727 6.68183V5.04547C14.2727 3.01205 12.6243 1.36365 10.5908 1.36365H9.36357" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
-    },
     'outline/check': {
       viewBox: '0 0 27 24',
       inner:
@@ -325,27 +320,27 @@ export function initMcpPage(COPY, LANG) {
     ta.remove()
     return ok
   }
-  // The tiny icon button beside the address in a sentence: its icon turns into a check while "Copied" shows
-  document.querySelectorAll('[data-copy][data-copy-icon]').forEach((btn) => {
-    const icon = btn.innerHTML,
-      name = tr('copyAria')
+  // The tiny text button beside the address in a sentence: "Copy", then "Copied" for a moment
+  document.querySelectorAll('[data-copy][data-copy-tiny]').forEach((btn) => {
+    const name = tr('copyAria')
+    btn.textContent = tr('copy')
     btn.setAttribute('aria-label', name)
     btn.hidden = false
     let timer
     btn.addEventListener('click', async () => {
       const ok = await copyText(btn.dataset.copy)
-      if (ok) btn.innerHTML = checkIcon
+      btn.textContent = tr(ok ? 'copied' : 'copyFailed')
       btn.setAttribute('aria-label', tr(ok ? 'copied' : 'copyFailed'))
       btn.classList.toggle('is-copied', ok)
       clearTimeout(timer)
       timer = setTimeout(() => {
-        btn.innerHTML = icon
+        btn.textContent = tr('copy')
         btn.classList.remove('is-copied')
         btn.setAttribute('aria-label', name)
       }, 1600)
     })
   })
-  document.querySelectorAll('[data-copy]:not([data-copy-icon])').forEach((btn) => {
+  document.querySelectorAll('[data-copy]:not([data-copy-tiny])').forEach((btn) => {
     // "Copy" sizes the button; "Copied" overlays it and the button widens to fit while it shows
     const label = btn.textContent.trim()
     btn.innerHTML = `<span class="copy-stack" aria-hidden="true"><span class="lbl lbl-copy">${label}</span><span class="lbl lbl-done">${checkIcon}${tr('copied')}</span></span>`

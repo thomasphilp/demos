@@ -202,7 +202,7 @@
 /* The address in a sentence keeps its tiny copy button on its line */
 .mcp-page .mcp-addr { white-space: nowrap; }
 /* An outlined box like the MCP address field in the setup steps (1px white at 15%, 4px corners), kept within the line */
-.mcp-page .copy-tiny { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; margin: -6px 0 -6px 6px; padding: 0; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: inherit; vertical-align: middle; cursor: pointer; transition: border-color 0.15s, background-color 0.15s, color 0.15s; }
+.mcp-page .copy-tiny { display: inline-flex; align-items: center; justify-content: center; height: 22px; margin: -4px 0 -4px 8px; padding: 0 7px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: inherit; font: 400 12px/1 var(--font-pixel); vertical-align: middle; cursor: pointer; transition: border-color 0.15s, background-color 0.15s, color 0.15s; }
 .mcp-page .copy-tiny[hidden] { display: none; }
 .mcp-page .copy-tiny:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.06); color: #fff; }
 .mcp-page .copy-tiny:focus-visible { outline: 2px solid var(--green); outline-offset: 1px; }
@@ -211,8 +211,6 @@
 .mcp-page .devices .copy-tiny { border-color: rgba(9,10,12,0.15); }
 .mcp-page .devices .copy-tiny:hover { border-color: rgba(9,10,12,0.3); background: rgba(9,10,12,0.04); color: #090a0c; }
 .mcp-page .devices .copy-tiny.is-copied { color: #090a0c; }
-/* The icon's wrapper is the icon's size, so the button's centring centres the glyph itself */
-.mcp-page .copy-tiny :is(.ic, svg) { width: 14px; height: 14px; }
 /* The sign-up reminders are all in Geist Pixel, the same as their links */
 .mcp-page .signup-note { font-family: var(--font-pixel); font-size: 14px; line-height: 20px; text-align: center; color: var(--label-muted); }
 .mcp-page .chat-time .ts-ic { display: none; }
