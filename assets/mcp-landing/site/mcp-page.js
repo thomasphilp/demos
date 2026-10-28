@@ -5,6 +5,18 @@ let current = null
 let loaded = false
 
 /**
+ * For when initMcpPage throws partway: stops whatever it had started and shows the page as the motion would leave it,
+ * with the hero's chat and connect block in and every reveal shown
+ */
+export function abandonMcpPage() {
+  current?.stop()
+  const hero = document.querySelector('main.mcp-page .hero')
+  hero?.setAttribute('data-intro', 'done')
+  hero?.classList.add('is-answered')
+  for (const el of document.querySelectorAll('main.mcp-page .reveal')) el.classList.add('is-visible')
+}
+
+/**
  * The page's motion: the intro, typing, reveals, sliders, cursor grids and shaders. Runs once per page, and returns a
  * cleanup for the React effect. React may run the effect twice on the same page (Strict Mode), so the cleanup waits a
  * tick and only stops the script once its page has left the document; a later visit starts it again on the new page.
