@@ -237,6 +237,7 @@
 /* Tablets and phones zoom the clip in on the cube through the intro (--intro-zoom, script); it starts zoomed and eases
    back out with the clip's lift as the chat comes in */
 .mcp-page .hero:not([data-intro="done"]) .hero-bg video.is-placed { scale: var(--intro-zoom, 1); }
+.mcp-page .hero:not([data-intro="done"]) .hero-bg { height: var(--intro-bg-h, 986px) !important; }
 .mcp-page .hero[data-intro="done"] .hero-bg video.is-placed { transition: scale 0.9s cubic-bezier(.16,1,.3,1) 0.12s; }
 .mcp-page .hero-bg video.is-placed { position: absolute; object-fit: fill; -webkit-mask: linear-gradient(to bottom, transparent, #000 64px, #000 calc(100% - 120px), transparent); mask: linear-gradient(to bottom, transparent, #000 64px, #000 calc(100% - 120px), transparent); }
 /* White fade over the video: fully white by the chat card's vertical middle, solid white below.
@@ -1119,7 +1120,7 @@
   .mcp-page .chat-time { display: flex; align-items: center; justify-content: space-between; }
   .mcp-page .chat-time .ts-ic { display: block; width: 20px; height: 20px; }
   .mcp-page .hero-user .page-bubble { width: auto; max-width: 279px; font-size: 28px; line-height: 36px; padding: 14px 24px; border-radius: 24px 24px 8px 24px; }
-  .mcp-page .hero-connect { margin: 40px auto 0; }
+  .mcp-page .hero-connect { margin: 0 auto; }
   /* Desk/dock slider, Figma Built (375) 368:1703: edge to edge, 375×669, photos cropped to cover */
   .mcp-page .stage-wrap { width: 100%; aspect-ratio: 375 / 669; }
   .mcp-page .examples-bg { width: 100%; }

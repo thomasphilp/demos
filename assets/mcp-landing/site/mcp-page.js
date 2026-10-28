@@ -524,6 +524,8 @@ export function initMcpPage(COPY, LANG) {
         zoom = innerWidth > 1000 ? 1 : Math.max(1, cubeClear / ((CY - CUBE_TOP) * vh))
       heroVideo.style.transformOrigin = `${CX * vw}px ${CY * vh}px`
       hero.style.setProperty('--intro-zoom', `${zoom}`)
+      // …and the clip's box reaches as far down as the zoomed clip, so it isn't cut off in a hard white line
+      bg.style.setProperty('--intro-bg-h', `${top + CY * vh + (1 - CY) * vh * zoom}px`)
       bg.style.height = `${top + vh}px`
       bg.style.setProperty('--sky-h', `${Math.max(0, top)}px`)
       // White fade: fully white at the chat card's middle (over 90% of its top half), solid white down to the clip's end
