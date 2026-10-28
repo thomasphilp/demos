@@ -471,6 +471,11 @@ export function initMcpPage(COPY, LANG) {
     if (!heroTitle._tw?.finish || heroTitle.classList.contains('is-typed')) twType(heroTitle, { onDone: heroAnswered })
     heroTitle._tw.finish()
   }
+  // Reduced motion turned on mid-way: the intro jumps to its end and every typewriter under way puts all its words in
+  onReducedMotion(() => {
+    skipIntro()
+    for (const el of root.querySelectorAll('.tw')) el._tw?.finish?.()
+  })
   // Only scrolling down counts, so Replay intro's smooth scroll back up doesn't skip the replay
   let introY = scrollY
   addEventListener(
@@ -664,7 +669,10 @@ export function initMcpPage(COPY, LANG) {
       })
       convo.style.minHeight = ''
       convo.style.minHeight = `${convo.offsetHeight}px`
-      if (reducedMotion) return
+      if (reducedMotion) {
+        dot.style.visibility = ''
+        return
+      }
       replies[i].forEach(([el]) => {
         el.textContent = ''
       })
@@ -762,7 +770,11 @@ export function initMcpPage(COPY, LANG) {
     ).observe(topics)
     setIdle()
     setPaused(reducedMotion)
-    onReducedMotion(() => setPaused(true))
+    // …and the conversation on show stops typing and shows whole
+    onReducedMotion(() => {
+      setPaused(true)
+      if (started) playConvo(current)
+    })
   }
 
   /* ── Typewriter for AI replies: words appear one at a time, a square caret leads each word ── */
@@ -1411,7 +1423,12 @@ export function initMcpPage(COPY, LANG) {
       firstLook()
     }).observe(stageWrap, { attributes: true, attributeFilter: ['class'] })
     if (reducedMotion) setPaused(true)
-    onReducedMotion(() => setPaused(true))
+    // …and the slide on show stops typing: its question and the desk's reply show whole (the phone's is a typewriter)
+    onReducedMotion(() => {
+      setPaused(true)
+      if (typedOnce) typeQuestion(scenes[cur])
+      if (desk?.classList.contains('is-replying')) playDesk()
+    })
     startDot()
   })()
 
@@ -1502,6 +1519,7 @@ export function initMcpPage(COPY, LANG) {
         held = stillHeld
         if (!held && ready) startTimer()
       }
+      onReducedMotion(stopTimer)
       card.addEventListener('pointerenter', hold)
       card.addEventListener('pointerleave', () => resume(card.contains(document.activeElement)))
       card.addEventListener('focusin', hold)
