@@ -587,14 +587,14 @@
 .mcp-page .examples-live { opacity: 0; transition: opacity 0.45s ease; }
 .mcp-page .examples-live.is-on { opacity: 1; transition-duration: 0.12s; }
 .mcp-page .examples-bg.has-live-shade .examples-shade { display: none; }
-/* ── Topics (Figma 432:2437): a chat window over the photo, the topics in a sidebar beside the chat. The photo fades to
-   white from 324px down (Gradient for BG) and the window's last 160px fade with it (Gradient for UI); the paginator
-   sits in the white under it ── */
+/* ── Topics (Figma 432:2437): a 1050×569 chat window 108px down the photo, the topics in a sidebar beside the chat.
+   The photo fades to white from 324px down (Gradient for BG) and the window's lower part fades with it (Gradient for
+   UI); the paginator sits 13px under the window ── */
 .mcp-page .examples-stage::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(to bottom, rgba(255,255,255,0) 324px, #fff 764px); }
-.mcp-page .topics { position: relative; z-index: 2; width: min(1058px, 100% - 2 * var(--gutter)); height: 655px; margin: 133px auto 107px; display: flex; gap: 24px; padding: 12px; background: rgba(255,255,255,0.9); background-clip: padding-box; border: 4px solid rgba(255,255,255,0.36); border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); backdrop-filter: blur(68px); -webkit-backdrop-filter: blur(68px); }
-/* Gradient for UI (432:2486): a white fade over the bottom of the window, white by its bottom edge so its border and
-   shadow fade out with it; the paginator sits on top */
-.mcp-page .examples-stage::before { content: ""; position: absolute; left: 0; right: 0; top: 640px; bottom: 0; z-index: 3; pointer-events: none; background: linear-gradient(to bottom, rgba(255,255,255,0), #fff 148px); }
+.mcp-page .topics { position: relative; z-index: 2; width: min(1050px, 100% - 2 * var(--gutter)); height: 569px; margin: 108px auto 107px; display: flex; gap: 16px; padding: 12px; background: rgba(255,255,255,0.9); background-clip: padding-box; border: 4px solid rgba(255,255,255,0.36); border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); backdrop-filter: blur(68px); -webkit-backdrop-filter: blur(68px); }
+/* Gradient for UI (432:2486): a white fade from 493px down the photo, over the window's lower part, white 50px under
+   its bottom edge so its border and shadow fade out with it; the paginator sits on top */
+.mcp-page .examples-stage::before { content: ""; position: absolute; left: 0; right: 0; top: 493px; bottom: 0; z-index: 3; pointer-events: none; background: linear-gradient(to bottom, rgba(255,255,255,0), #fff 234px); }
 .mcp-page .topics-side { flex: none; width: 271px; display: flex; flex-direction: column; }
 .mcp-page .topics-agent { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: rgba(9,10,12,0.9); white-space: nowrap; }
 .mcp-page .topics-agent .agent-stack.is-dark { display: none; }
@@ -604,6 +604,7 @@
 .mcp-page .topic:hover:not(.is-active) { background: rgba(255,255,255,0.55); }
 .mcp-page .topic.is-active { background: #fff; cursor: default; }
 .mcp-page .topic:focus-visible { outline: 2px solid #0071e3; outline-offset: 2px; }
+.mcp-page .topics-steps { display: none; }
 .mcp-page .topics-chat { flex: 1; min-width: 0; position: relative; background: #fff; border-radius: 8px; overflow: hidden; }
 .mcp-page .topics-body { height: 100%; padding: 69px 32px; }
 .mcp-page .topic-convo { display: flex; flex-direction: column; gap: 10px; }
@@ -663,8 +664,8 @@
 /* The section's gray cursor grid, mirrored on top of the window (and of the phone's screen on smaller screens) */
 .mcp-page .topics-grid { position: absolute; inset: 0; z-index: 3; overflow: hidden; border-radius: inherit; pointer-events: none; }
 .mcp-page .topics-chat > .topics-grid { display: none; }
-/* The paginator is the slider's, six dots long, in the white under the window */
-.mcp-page .stage-nav.topics-nav { z-index: 4; margin-top: -98px; }
+/* The paginator is the slider's, six dots long, 13px under the window */
+.mcp-page .stage-nav.topics-nav { z-index: 4; margin-top: -94px; }
 /* The topics window's white bottom fade (.examples-stage::before) reaches under its controls; the note sits above it */
 .mcp-page :is(.examples, .devices) > .signup-note { position: relative; z-index: 4; margin-top: 24px; padding: 0 var(--gutter); }
 /* Under the desk/dock slider the note comes first, where the controls were, and the controls follow it */
@@ -1226,14 +1227,15 @@
   .mcp-page .examples-stage { margin-top: 44px; }
   /* The black fade spans the photo behind the slider, not the white beside it */
   .mcp-page .examples-stage::after { width: min(1548px, 100% - 2 * var(--bg-inset)); margin: 0 auto; background: linear-gradient(to bottom, rgba(0,0,0,0) calc(100% - 339px), #000); }
-  .mcp-page .topics { width: min(668px, 100% - 2 * var(--bg-inset)); height: auto; margin: 0 auto; padding: 0 0 81px; flex-direction: column; gap: 0; background: none; border: 0; border-radius: 0; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .mcp-page .topics { width: min(668px, 100% - 2 * var(--bg-inset)); height: auto; margin: 0 auto; padding: 0 0 34px; flex-direction: column; gap: 0; background: none; border: 0; border-radius: 0; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
   .mcp-page .examples-stage::before { content: none; }
   .mcp-page .topics > .topics-grid { display: none; }
   .mcp-page .topics-chat > .topics-grid { display: block; }
-  .mcp-page .topics-chat { order: -1; flex: none; width: min(488px, 100% - 26px); margin: 0 auto; display: flex; flex-direction: column; border: 8px solid #0d0a1a; border-top: 0; border-radius: 0 0 54px 54px; box-shadow: 0 41px 82px rgba(26,13,51,0.28); }
-  /* centred, as in Figma; a reply taller than the screen starts at the top instead */
-  .mcp-page .topics-body { flex: none; height: 618px; display: flex; flex-direction: column; padding: 20px; overflow: hidden; }
-  .mcp-page .topic-convo { gap: 60px; margin-block: auto; }
+  .mcp-page .topics-chat { order: -1; flex: none; width: min(488px, 100% - 26px); margin: 0 auto; display: flex; flex-direction: column; padding-top: 13px; border: 8px solid #0d0a1a; border-top: 0; border-radius: 0 0 54px 54px; box-shadow: 0 41px 82px rgba(26,13,51,0.28); }
+  /* Figma 432:2514: the chat starts at the top of the screen; a reply taller than the screen keeps its end in view and
+     the question runs up out of the top, as a chat scrolls (the auto margin gives way once there's no room) */
+  .mcp-page .topics-body { flex: none; height: 535px; display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; overflow: hidden; }
+  .mcp-page .topic-convo { gap: 28px; margin-bottom: auto; }
   .mcp-page .topic-convo .user-turn { max-width: 73%; }
   .mcp-page .topic-convo .chat-bubble { padding: 16.4px 24.7px; border-radius: 27.4px 27.4px 9.6px 27.4px; font-size: 23.3px; }
   .mcp-page .topic-convo .sent { display: none; }
@@ -1250,7 +1252,7 @@
   .mcp-page .topic-convo .handoff-btn { gap: 9px; margin-top: 12px; padding: 10px 16px; font-size: 16px; }
   .mcp-page .topic-convo .handoff-btn .ic { width: 16px; height: 16px; }
   .mcp-page .topic-convo .dot { width: 22px; height: 22px; border-radius: 2.7px; }
-  .mcp-page .topics-composer { display: flex; flex-direction: column; justify-content: space-between; height: 147px; margin: 0 12px 12px; padding: 22px 12px 11px; border: 1.37px solid #d8dadf; border-radius: 35px; background: #fff; box-shadow: 0 2.74px 11px rgba(0,0,0,0.05); }
+  .mcp-page .topics-composer { display: flex; flex-direction: column; justify-content: space-between; height: 125px; margin: 0 12px 12px; padding: 22px 12px 11px; border: 1.37px solid #d8dadf; border-radius: 35px; background: #fff; box-shadow: 0 2.74px 11px rgba(0,0,0,0.05); }
   .mcp-page .topics-composer .placeholder { padding-left: 1px; font-size: 20.56px; color: #6a7281; }
   .mcp-page .topics-composer .row { display: flex; align-items: center; justify-content: space-between; }
   .mcp-page .topics-composer .tools { display: flex; align-items: center; gap: 16.4px; }
@@ -1259,26 +1261,34 @@
   .mcp-page .topics-composer .tool-chip img { width: 10px; height: 10px; }
   .mcp-page .topics-composer .send-sm { width: 49px; height: 49px; border-radius: 50%; }
   .mcp-page .topics-composer .send-sm img { width: 22px; height: 22px; }
-  .mcp-page .topics-side { width: min(488px, 100% - 26px); margin: 11px auto 0; }
-  .mcp-page .topics-agent { justify-content: center; color: #fff; }
+  /* Under the phone: the topics as a row of words (the active one bold and white), then "Any AI agent" and arrows that
+     step through them, centred */
+  .mcp-page .topics-side { width: min(488px, 100% - 26px); margin: 0 auto; padding: 0 8px; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center; column-gap: 24px; }
+  .mcp-page .topics-agent { order: 3; margin-top: 47px; color: #fff; }
   .mcp-page .topics-agent .agent-stack { display: none; }
   .mcp-page .topics-agent .agent-stack.is-dark { display: flex; }
-  .mcp-page .topics-label { margin: 19px 0 0; padding: 0; line-height: 39px; color: rgba(255,255,255,0.5); }
+  .mcp-page .topics-label { order: 1; flex: 0 0 100%; margin: 33px 0 0; padding: 0; color: rgba(255,255,255,0.5); }
   /* runs on to the viewport's right edge */
-  .mcp-page .topics-list { position: relative; flex-direction: row; gap: 17px; margin-right: calc((100% - 100vw) / 2); padding-right: var(--gutter); overflow-x: auto; scrollbar-width: none; }
+  .mcp-page .topics-list { order: 2; position: relative; flex: none; flex-direction: row; gap: 17px; width: calc(50% + 50vw); margin: 5px calc(50% - 50vw) 0 0; padding-right: var(--gutter); overflow-x: auto; scrollbar-width: none; }
   .mcp-page .topics-list::-webkit-scrollbar { display: none; }
-  .mcp-page .topic { flex: none; padding: 12px 16px; border: 1px solid #fff; font-weight: 600; color: #efefef; }
-  .mcp-page .topic:hover:not(.is-active) { background: rgba(255,255,255,0.12); }
-  .mcp-page .topic.is-active { color: #111; }
+  .mcp-page .topic { flex: none; padding: 0; border-radius: 0; font-weight: 500; color: rgba(255,255,255,0.8); transition: color 0.2s ease; }
+  .mcp-page .topic:hover:not(.is-active) { background: none; color: #fff; }
+  .mcp-page .topic.is-active { background: none; font-weight: 600; color: #fff; }
+  .mcp-page .topic:focus-visible { outline-color: #fff; }
+  .mcp-page .topics-steps { order: 4; display: flex; gap: 24px; margin-top: 47px; }
+  .mcp-page .topics-step { display: flex; align-items: center; justify-content: center; width: 46px; height: 46px; padding: 0; border: 1px solid #ccc; background: #fff; color: #000; box-shadow: 4px 4px 0 rgba(255,255,255,0.27); cursor: pointer; transition: background-color 0.2s ease; }
+  .mcp-page .topics-step:hover { background: #f2f2f2; }
+  .mcp-page .topics-step:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+  .mcp-page .topics-step .ic { width: 16px; height: 16px; }
   .mcp-page .stage-nav.topics-nav { margin-top: 28px; }
 }
 /* Phones (Figma 432:2611): a smaller phone, its chat at the 375 frame's sizes */
 @media (max-width: 720px) {
   .mcp-page .examples-stage::after { width: 100%; background: linear-gradient(to bottom, rgba(0,0,0,0) calc(100% - 205px), #000); }
-  .mcp-page .topics { padding-bottom: 31px; }
-  .mcp-page .topics-chat { width: min(317px, 100% - 26px); }
-  .mcp-page .topics-body { height: 436px; }
-  .mcp-page .topic-convo { gap: 36px; }
+  .mcp-page .topics { padding-bottom: 20px; }
+  .mcp-page .topics-chat { width: min(317px, 100% - 26px); padding-top: 0; }
+  .mcp-page .topics-body { height: 384px; }
+  .mcp-page .topic-convo { gap: 20px; }
   .mcp-page .topic-convo .user-turn { max-width: 84%; }
   .mcp-page .topic-convo .chat-bubble { font-size: 16px; }
   .mcp-page .topic-convo .agent-msg { gap: 12px; max-width: none; }
@@ -1293,7 +1303,7 @@
   .mcp-page .topic-convo .handoff-btn { gap: 7px; margin-top: 8px; padding: 7px 12px; font-size: 13px; }
   .mcp-page .topic-convo .handoff-btn .ic { width: 13px; height: 13px; }
   .mcp-page .topic-convo .dot { width: 16px; height: 16px; border-radius: 2px; }
-  .mcp-page .topics-composer { height: 92px; padding: 15.6px 8.5px 7.8px; border-width: 0.97px; border-radius: 24.8px; }
+  .mcp-page .topics-composer { height: 87px; padding: 15.6px 10px 10px; border-width: 0.97px; border-radius: 24.8px; }
   .mcp-page .topics-composer .placeholder { font-size: 14.56px; }
   .mcp-page .topics-composer .tools { gap: 11.6px; }
   .mcp-page .topics-composer .plus { width: 17px; height: 17px; }
@@ -1301,9 +1311,13 @@
   .mcp-page .topics-composer .tool-chip img { width: 7px; height: 7px; }
   .mcp-page .topics-composer .send-sm { width: 35px; height: 35px; }
   .mcp-page .topics-composer .send-sm img { width: 16px; height: 16px; }
-  .mcp-page .topics-side { width: min(317px, 100% - 26px); margin-top: 15px; padding-left: 20px; }
-  .mcp-page .topics-agent { justify-content: flex-start; }
-  .mcp-page .topics-label { margin-top: 8px; }
+  /* Figma 432:2611: the words at 16px, 9px under the phone and 33px in from the photo's edge; the agent and arrows
+     64px below, centred on the photo */
+  .mcp-page .topics-side { width: 100%; padding: 0; }
+  .mcp-page :is(.topics-label, .topics-list) { padding-left: 33px; }
+  .mcp-page .topics-label { margin-top: 9px; }
+  .mcp-page .topic { font-size: 16px; line-height: 20px; }
+  .mcp-page :is(.topics-agent, .topics-steps) { margin-top: 64px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .mcp-page *, .mcp-page *::before, .mcp-page *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
