@@ -645,6 +645,9 @@
 /* The paginator is the slider's, six dots long, in the white under the window */
 .mcp-page .stage-nav.topics-nav { z-index: 4; margin-top: -98px; }
 .mcp-page :is(.examples, .devices) > .signup-note { position: relative; margin-top: 24px; padding: 0 var(--gutter); }
+/* Under the desk/dock slider the note comes first, where the controls were, and the controls follow it */
+.mcp-page .devices > .signup-note { margin-top: 28px; }
+.mcp-page .devices > .signup-note + .stage-nav { margin-top: 24px; }
 /* ── Devices ── */
 .mcp-page .devices-head { padding: 80px 0; }
 .mcp-page .devices { position: relative; padding-bottom: 103px; }
