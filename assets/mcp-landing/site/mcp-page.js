@@ -1582,13 +1582,22 @@ export function initMcpPage(COPY, LANG) {
       life = new Float32Array(cols * rows).fill(1)
       variant = new Uint8Array(cols * rows)
       canvases.forEach((cv) => {
-        cv.width = w
-        cv.height = h
         Object.assign(cv.style, { left: `${b.x}px`, top: `${b.y}px`, width: `${w}px`, height: `${h}px` })
       })
+      sizeCanvases()
       buildTiles()
       draw()
     }
+    // o.shows (optional) says which mirrors are on screen: the others get no backing, so they hold no memory and
+    // aren't copied into; the first canvas is the one drawn on and always keeps its size
+    const sizeCanvases = () =>
+      canvases.forEach((cv, i) => {
+        const on = !i || !o.shows || o.shows(cv),
+          w = on ? Math.round(box.w) : 0,
+          h = on ? Math.round(box.h) : 0
+        if (cv.width !== w) cv.width = w
+        if (cv.height !== h) cv.height = h
+      })
     const draw = () => {
       const w = canvases[0].width,
         h = canvases[0].height
@@ -1621,6 +1630,7 @@ export function initMcpPage(COPY, LANG) {
         }
       ctx.globalAlpha = 1
       mirrors.forEach((m) => {
+        if (!m.canvas.width) return
         m.clearRect(0, 0, w, h)
         m.drawImage(canvases[0], 0, 0)
       })
@@ -1761,7 +1771,16 @@ export function initMcpPage(COPY, LANG) {
         if (!inView || document.hidden || !cols || rings.length) return
         ring((Math.floor(Math.random() * cols) + 0.5) * cell, (Math.floor(Math.random() * rows) + 0.5) * cell, 0.45, 6)
       }, o.idle * rand(0.8, 1.2))
-    return { ring, size: () => ({ w: box.w, h: box.h }) }
+    return {
+      ring,
+      size: () => ({ w: box.w, h: box.h }),
+      // after the mirrors on screen change: size them again and fill the new ones
+      refresh: () => {
+        if (!cols) return
+        sizeCanvases()
+        draw()
+      },
+    }
   }
 
   // Hero: white cells over the video, under the input and chat; a ring leaves the cube as the chat comes in
@@ -1878,16 +1897,20 @@ export function initMcpPage(COPY, LANG) {
     addEventListener('resize', queue)
     step()
   }
-  // …and over the desk/dock slider photos: one grid mirrored into each slide, between its photo and its chat UI.
+  // …and over the desk/dock slider photos: the grid is drawn off screen and mirrored into the slides on show (the
+  // current one and the one fading out), between each photo and its chat UI; hidden slides keep no canvas memory.
   // The slides live in the scaled 1548×857 artboard, so the canvases use artboard px.
   const deviceStage = stageWrap.querySelector('.stage')
-  cursorGrid(stageWrap, {
-    mount: () =>
-      [...deviceStage.querySelectorAll('.scene .photo')].map((photo) => {
+  const sliderGrid = cursorGrid(stageWrap, {
+    mount: () => [
+      document.createElement('canvas'),
+      ...[...deviceStage.querySelectorAll('.scene .photo')].map((photo) => {
         const cv = document.createElement('canvas')
         photo.after(cv)
         return cv
       }),
+    ],
+    shows: (cv) => !!cv.closest('.scene')?.matches('.is-active, .is-prev'),
     area: () => ({ x: 0, y: 0, w: 1548, h: 857 }),
     point: (e) => {
       const r = deviceStage.getBoundingClientRect(),
@@ -1904,6 +1927,13 @@ export function initMcpPage(COPY, LANG) {
     reach: 10,
     clickReach: 10,
   })
+  if (sliderGrid) {
+    // only the slides' own classes (is-active / is-prev), not the typing inside them
+    const mo = new MutationObserver(() => sliderGrid.refresh())
+    deviceStage.querySelectorAll('.scene').forEach((scene) => {
+      mo.observe(scene, { attributes: true, attributeFilter: ['class'] })
+    })
+  }
 
   // White areas: soft gray cells everywhere else on the page (under the photos' own white grids), and in the
   // hero where the video has faded to white
@@ -2394,7 +2424,10 @@ export function initMcpPage(COPY, LANG) {
     const W = 1548,
       H = 857
     const build = async (layer) => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5) * Math.min(1, stageWrap.offsetWidth / W)
+      // The artboard is scaled to cover the stage (by its height on narrow screens), so size the backing by that scale
+      const dpr =
+        Math.min(window.devicePixelRatio || 1, 1.5) *
+        Math.min(1, parseFloat(stageWrap.style.getPropertyValue('--stage-scale')) || stageWrap.offsetWidth / W)
       const img = layer.querySelector('img.source')
       await img.decode().catch(() => {})
       if (stopped()) return
