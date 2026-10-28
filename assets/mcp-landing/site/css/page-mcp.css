@@ -532,8 +532,17 @@
 /* The warehouse photo (and its cursor grid) fills the stage behind the topics window. The photos are 120px taller than
    that box and drift down through it as the page scrolls (--bg-shift, set by script from -60px to 60px), so they move a
    little slower than the window */
-.mcp-page .examples-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-.mcp-page .examples-photo, .mcp-page .examples-alt, .mcp-page .examples-shade, .mcp-page .examples-live { position: absolute; left: 50%; top: -60px; transform: translate(-50%, var(--bg-shift, 0px)); width: 100%; height: calc(100% + 120px); object-fit: cover; }
+/* Same width as the desk/dock slider below: up to 1548px, stopping --bg-inset short of the viewport edges (full width on phones) */
+.mcp-page .examples-bg { position: absolute; top: 0; bottom: 0; left: 0; right: 0; width: min(1548px, 100% - 2 * var(--bg-inset)); margin: 0 auto; overflow: hidden; pointer-events: none; }
+/* The zoom below scales the drift too, so its origin follows the drift: each photo pushes in toward its own centre */
+.mcp-page .examples-photo, .mcp-page .examples-alt, .mcp-page .examples-shade, .mcp-page .examples-live { position: absolute; left: 0; top: -60px; transform: translateY(var(--bg-shift, 0px)); transform-origin: 50% calc(50% + var(--bg-shift, 0px)); width: 100%; height: calc(100% + 120px); object-fit: cover; }
+/* At rest each photo slowly pushes in toward its centre while its topic is up, from rest each time it comes back (script
+   restarts it). A photo's scroll-swap copies run the same zoom in step, so they line up with the photo under them */
+.mcp-page :is(.examples-photo, .examples-alt, .examples-shade, .examples-live) { animation: mcp-bg-kb 12s linear forwards; }
+@keyframes mcp-bg-kb { from { scale: 1; } to { scale: 1.1; } }
+@media (prefers-reduced-motion: reduce) {
+  .mcp-page :is(.examples-photo, .examples-alt, .examples-shade, .examples-live) { animation: none; }
+}
 /* full-bleed, edge to edge */
 /* Figma 343:7605 / 343:7606: three photos, one per topic in turn. The next one fades in over the last as its topic comes up
    (lower ones stay up underneath, so the crossfade never shows the warehouse through) */
@@ -1092,6 +1101,7 @@
   .mcp-page .hero-connect { margin: 40px auto 0; }
   /* Desk/dock slider, Figma Built (375) 368:1703: edge to edge, 375×669, photos cropped to cover */
   .mcp-page .stage-wrap { width: 100%; aspect-ratio: 375 / 669; }
+  .mcp-page .examples-bg { width: 100%; }
   /* Slide inputs on phones: exactly the hero's mobile composer on screen (question on top, plus + send below, 24px
      corners, 1px shine), sized by dividing by the artboard's scale, 20px in from the slide's edges, centred */
   .mcp-page .scene-a .composer, .mcp-page .scene-ask .composer {

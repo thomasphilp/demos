@@ -1826,9 +1826,10 @@ export function initMcpPage(COPY, LANG) {
   const exStage = document.querySelector('.examples-stage'),
     exPhoto = exStage?.querySelector('.examples-photo')
   const exBg = exPhoto?.parentElement
-  // The photo is centred with left: 50% and translateX(-50%), so read its box from offsets (within its moving wrapper)
+  const zoomOf = (el) => el.getAnimations().find((a) => a.animationName === 'mcp-bg-kb')
+  // Read the photo's box from offsets (within its moving wrapper), which leave out its drift and zoom
   const exArea = () => ({
-    x: exPhoto.offsetLeft - exPhoto.offsetWidth / 2,
+    x: exPhoto.offsetLeft,
     y: exPhoto.offsetTop,
     w: exPhoto.offsetWidth,
     h: exPhoto.offsetHeight,
@@ -1878,12 +1879,48 @@ export function initMcpPage(COPY, LANG) {
       exBg.style.setProperty('--bg-shift', `${reducedMotion ? 0 : Math.round((through * 2 - 1) * DRIFT)}px`)
       shade()
     }
+    // Each photo (with its shaded copy) zooms in from rest when its topic comes up, the first once the stage is in view.
+    // The live shader canvas shows whichever photo is up, so it restarts with it; the others go back to rest once the
+    // crossfade has hidden them
+    const layers = [exPhoto, ...alts].map((img, i) => [img, shades[i]])
+    const zooms = (els) => els.map((el) => el && zoomOf(el)).filter(Boolean)
+    const rest = (j) =>
+      zooms(layers[j]).forEach((a) => {
+        a.pause()
+        a.currentTime = 0
+      })
+    const zoomIn = (j) => {
+      const list = zooms([...layers[j], exBg.querySelector('.examples-live')])
+      list.forEach((a) => {
+        a.currentTime = 0
+        a.play()
+      })
+      // They can start a frame apart; pin them all to the photo's start
+      list[0]?.ready.then((lead) => list.forEach((a) => (a.startTime = lead.startTime))).catch(() => {})
+    }
+    let resting = 0
+    layers.forEach((_, j) => rest(j))
+    const firstZoom = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return
+        firstZoom.disconnect()
+        zoomIn(photo)
+      },
+      { threshold: 0.35 },
+    )
+    firstZoom.observe(exStage)
     // A topic change swaps in the new photo's shaded version (and the shader's ripple) for a moment, as a scroll does
     const SWAP_MS = 600
     exStage.addEventListener(
       'topics:show',
       (e) => {
-        photo = e.detail % (alts.length + 1)
+        const next = e.detail % (alts.length + 1)
+        if (next !== photo) {
+          zoomIn(next)
+          clearTimeout(resting)
+          resting = setTimeout(() => layers.forEach((_, j) => j !== photo && rest(j)), 800) // the 0.7s crossfade, then some
+        }
+        photo = next
         alts.forEach((img, i) => img.classList.toggle('is-on', i < photo))
         scrolling = true
         shade()
@@ -2594,6 +2631,17 @@ export function initMcpPage(COPY, LANG) {
     const cv = Object.assign(document.createElement('canvas'), { className: 'examples-live' })
     cv.setAttribute('aria-hidden', 'true')
     shades[shades.length - 1].after(cv) // over the photos, under the cursor grid
+    // Keep its slow zoom where the photo on show is, so the live screen stays lined up with it (at rest if none has started)
+    const zoom = zoomOf(cv),
+      lead = photos
+        .map(zoomOf)
+        .filter((a) => a && a.playState !== 'paused')
+        .pop()
+    if (zoom && lead) zoom.startTime = lead.startTime
+    else if (zoom) {
+      zoom.pause()
+      zoom.currentTime = 0
+    }
     const ctx = cv.getContext('webgpu')
     ctx.configure({ device, format, alphaMode: 'premultiplied' })
     const dpr = Math.min(window.devicePixelRatio || 1, 1.5)
