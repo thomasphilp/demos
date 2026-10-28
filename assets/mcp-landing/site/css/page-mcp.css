@@ -790,7 +790,9 @@
 .mcp-page .desk-window .agent-msg .agent-tag { gap: 8px; font-size: 14px; }
 .mcp-page .desk-window .agent-msg .agent-tag .ic { width: 20px; height: 20px; }
 .mcp-page .desk-window .agent-msg .body { gap: 5.3px; font-size: 20px; }
-.mcp-page .desk-window .agent-msg .box { padding: 16px; border-width: 1px; border-radius: 8px; font-size: 20px; }
+.mcp-page .desk-window .agent-msg .box { width: var(--box-w, auto); padding: 16px; border-width: 1px; border-radius: 8px; font-size: 20px; }
+.mcp-page .desk-window .agent-msg .box-row:empty { display: none; }
+.mcp-page .desk-window .user-turn .sent { display: none; }
 .mcp-page .desk-window .dot { width: 15.65px; height: 15.65px; border-radius: 1.3px; background: #000; animation: mcp-blink 1.1s steps(1) infinite; }
 /* Slide 2 plays like the page's other exchanges: the question bounces in, then "Your AI agent", then the reply types
    word by word with an inline square caret (script), and the resting square takes over */
@@ -1106,9 +1108,9 @@
   .mcp-page .cf-body { padding: 6px 0 56px; gap: 56px; }
   .mcp-page .connect-block .pixel-note { max-width: 219px; }
   .mcp-page .hero-copy { width: min(440px, 100%); font-size: 20px; line-height: 30px; }
-  /* Devices slider, Figma Built (768) 368:1055: a taller 668×738 frame (photos crop to cover, the wide overlays shrink to
-     the visible width) with the tablet input on screen — the intro's 39px question, 36px plus, 72px send — 79px in from each side */
-  .mcp-page .stage-wrap { aspect-ratio: 668 / 738; }
+  /* Devices slider, Figma 473:17260: a taller 668×950 frame (photos crop to cover, the wide overlays shrink to the visible
+     width) with the tablet input on screen — the intro's 39px question, 36px plus, 72px send — 79px in from each side */
+  .mcp-page .stage-wrap { aspect-ratio: 668 / 950; }
   .mcp-page .scene-a .composer, .mcp-page .scene-ask .composer {
     --k: calc(1 / var(--stage-scale, 1)); --bw: calc(1.5px * var(--k));
     left: 0; right: 0; margin: 0 auto; width: calc(var(--stage-vis, 1548) * 1px - 158px * var(--k));
@@ -1122,7 +1124,25 @@
   .mcp-page .scene-a .composer .plus, .mcp-page .scene-ask .composer .plus { grid-area: plus; width: calc(36px * var(--k)); height: calc(36px * var(--k)); }
   .mcp-page .scene-a .composer .send, .mcp-page .scene-ask .composer .send { grid-area: send; width: calc(72px * var(--k)); height: calc(72px * var(--k)); }
   .mcp-page .scene-a .composer .send img, .mcp-page .scene-ask .composer .send img { width: calc(32px * var(--k)); height: calc(32px * var(--k)); }
-  .mcp-page .desk-window { scale: min(1, calc((var(--stage-vis, 1548) - 60) / 968)); }
+  /* Slide 2's desk window (Figma 470:16042): 536×634 on screen, 141px down the photo and centred. It's sized in screen
+     pixels and scaled back by the stage's scale, so it doesn't shrink with the photo. A 57px rail; the desktop composer
+     (697px) runs off its right edge; the question 88px down on the right, the reply 30px in from the rail, the
+     shipments as three cards */
+  .mcp-page .desk-window { --k: calc(1 / var(--stage-scale, 1)); width: 536px; height: 634px; top: calc(141.5px * var(--k)); transform-origin: 50% 0; scale: var(--k); }
+  .mcp-page .desk-window .rail { flex: none; background: #f5f5f5; }
+  .mcp-page .desk-window .convo { min-width: 0; } /* the wide composer runs off the edge without widening the thread */
+  .mcp-page .desk-window .thread { justify-content: flex-start; gap: 23px; padding: 87px 23px 0 30px; }
+  .mcp-page .desk-window .user-turn { flex-direction: column; align-items: flex-end; gap: 5.9px; }
+  .mcp-page .desk-window .chat-bubble { padding: 12.1px 18.2px; border-radius: 20.2px 20.2px 7.1px 20.2px; font-size: 20.24px; }
+  .mcp-page .desk-window .user-turn .sent { display: block; font-size: 14.75px; color: #808080; }
+  .mcp-page .desk-window .agent-msg { width: 394px; gap: 7.86px; }
+  .mcp-page .desk-window .agent-msg .agent-tag { gap: 0; font-size: 0; }
+  .mcp-page .desk-window .agent-msg .body { gap: 7.86px; font-size: 18px; line-height: normal; letter-spacing: -0.02em; }
+  .mcp-page .desk-window .agent-msg .box { width: auto; display: flex; flex-direction: column; gap: 7.86px; padding: 0; border: 0; border-radius: 0; background: none; white-space: normal; }
+  .mcp-page .desk-window .agent-msg .box-row { padding: 8px 11px; border: 1.48px solid #eaeaea; border-radius: 11.8px; background: #efefef; font-size: 15px; }
+  .mcp-page .desk-window .agent-msg > .dot { width: 17.7px; height: 17.7px; border-radius: 2.95px; margin-top: 15.7px; }
+  .mcp-page .desk-window .composer-area { justify-content: flex-start; padding: 0 0 21px 53px; }
+  .mcp-page .desk-window .composer-sm { flex: none; width: 697px; }
   /* Closing CTA (Figma 343:13288): the buttons 64px under "Powered by" */
   .mcp-page .cta .actions { margin-top: 40px; }
 }
@@ -1134,6 +1154,11 @@
   .mcp-page .stage-wrap { margin-top: 44px; }
   /* A copy inside its bracket takes the bracket's width, so it starts under the label like the one outside */
   .mcp-page .bracket > .bracket-copy { --w: 100%; }
+  /* Figma Built (768) 351:1941: each autopilot row (title, card, copy) is 600px wide and centred in the box */
+  .mcp-page .ap-row { width: min(600px, 100%); margin-inline: auto; }
+  .mcp-page .ap-row .ap-card { width: 100%; }
+  /* Figma Built (768) 351:2098: step 1's address and Copy button sit on the card's left, 17px in */
+  .mcp-page .step-card.is-center { align-items: flex-start; padding: 14px 17px; }
   /* The exchanges keep 48px each side, so the agent's reply starts where the bubble ends on the right (Figma Built
      (768)); its heading wraps as before. The setup exchange keeps its own column */
   .mcp-page section:not(.setup) > .exchange { width: calc(100% - 96px); margin: 0 auto; }
@@ -1162,6 +1187,30 @@
   .mcp-page .hero-connect { margin: 0 auto; }
   /* Desk/dock slider, Figma Built (375) 368:1703: edge to edge, 375×669, photos cropped to cover */
   .mcp-page .stage-wrap { width: 100%; aspect-ratio: 375 / 669; }
+  /* Slide 2's desk window on phones (Figma 473:17338): 328×558, 36px down. No rail, just its star top left; the
+     question on the right in a 196px bubble, the reply 266px wide, both at 13px; the composer on two lines (Reply over
+     the plus, the tool chip and send) */
+  .mcp-page .desk-window { width: 328px; height: 558px; top: calc(35.6px * var(--k)); }
+  .mcp-page .desk-window .rail { position: absolute; left: 17.5px; top: 15px; z-index: 1; width: auto; padding: 0; background: none; }
+  .mcp-page .desk-window .rail .avatar { display: none; }
+  .mcp-page .desk-window .thread { gap: 0; padding: 46px 15px 0 14px; }
+  .mcp-page .desk-window .user-turn { align-self: flex-end; width: 196px; }
+  .mcp-page .desk-window .chat-bubble { width: 100%; font-size: 13.16px; }
+  .mcp-page .desk-window .user-turn .sent { font-size: 12px; }
+  .mcp-page .desk-window .agent-msg { width: 266px; }
+  .mcp-page .desk-window .agent-msg .body { font-size: 13px; }
+  .mcp-page .desk-window .agent-msg .box-row { font-size: 13px; }
+  .mcp-page .desk-window .agent-msg > .dot { margin-top: 12.1px; }
+  .mcp-page .desk-window .composer-area { padding: 0 16px 15px 14px; }
+  .mcp-page .desk-window .composer-sm { width: 100%; height: 90px; display: grid; grid-template-columns: auto auto 1fr auto; grid-template-areas: "ph ph ph ph" "plus chip . send"; align-content: space-between; align-items: center; column-gap: 12px; padding: 16px 8px 8px 11px; border-radius: 17px; }
+  .mcp-page .desk-window .composer-sm .placeholder { grid-area: ph; }
+  .mcp-page .desk-window .composer-sm .plus { grid-area: plus; }
+  .mcp-page .desk-window .composer-sm .tool-chip { grid-area: chip; }
+  .mcp-page .desk-window .composer-sm .send-sm { grid-area: send; }
+  /* Slide 4's phone (Figma 473:17396): 341px wide on screen, 115px down and centred, running off the bottom of the
+     photo; everything in it at 70% of the tablet phone (16.3px messages), as it's scaled as a whole */
+  .mcp-page .phone { --k: calc(1 / var(--stage-scale, 1)); height: 943px; top: calc(115px * var(--k)); transform-origin: 50% 0; scale: calc(0.6988 * var(--k)); }
+  .mcp-page .phone .screen > .body { height: 683px; } /* 477px on screen, so the composer falls just under the photo */
   .mcp-page .examples-bg { width: 100%; }
   /* Slide inputs on phones: exactly the hero's mobile composer on screen (question on top, plus + send below, 24px
      corners, 1px shine), sized by dividing by the artboard's scale, 20px in from the slide's edges, centred */
@@ -1207,6 +1256,8 @@
   .mcp-page .display { font-size: 38px; line-height: 42px; }
   .mcp-page .bracket-label { font-size: 17px; line-height: 24px; flex-wrap: wrap; justify-content: center; }
   .mcp-page :is(.examples, .devices) .bracket-copy { font-size: 18px; line-height: 27px; }
+  /* Figma 455:15852: the slider's copy centred on 24px lines, 313px wide */
+  .mcp-page .devices .bracket-copy { width: min(313px, 100% - 2 * var(--gutter)); line-height: 24px; }
   .mcp-page .ap-box { padding: 40px 20px; }
   .mcp-page .ap-card .chat-bubble { width: auto; max-width: 300px; }
   .mcp-page .setup .bracket-label { line-height: 24px; }
@@ -1229,10 +1280,11 @@
   .mcp-page .topics > .topics-grid { display: none; }
   .mcp-page .topics-chat > .topics-grid { display: block; }
   .mcp-page .topics-chat { order: -1; flex: none; width: min(488px, 100% - 26px); margin: 0 auto; display: flex; flex-direction: column; padding-top: 13px; border: 8px solid #0d0a1a; border-top: 0; border-radius: 0 0 54px 54px; box-shadow: 0 41px 82px rgba(26,13,51,0.28); }
-  /* Figma 432:2514: the chat starts at the top of the screen; a reply taller than the screen keeps its end in view and
-     the question runs up out of the top, as a chat scrolls (the auto margin gives way once there's no room) */
+  /* The conversation is centred in the screen, so a short one uses its space; a reply taller than the screen keeps its
+     end in view and the question runs up out of the top, as a chat scrolls (the auto margins give way once there's no
+     room) */
   .mcp-page .topics-body { flex: none; height: 535px; display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; overflow: hidden; }
-  .mcp-page .topic-convo { gap: 28px; margin-bottom: auto; }
+  .mcp-page .topic-convo { gap: 28px; margin-block: auto; }
   .mcp-page .topic-convo .user-turn { max-width: 73%; }
   .mcp-page .topic-convo .chat-bubble { padding: 16.4px 24.7px; border-radius: 27.4px 27.4px 9.6px 27.4px; font-size: 23.3px; }
   .mcp-page .topic-convo .sent { display: none; }
@@ -1243,13 +1295,13 @@
   .mcp-page .topic-convo .agent-msg .body { margin-top: -8.2px; gap: 8.2px; font-size: 23.3px; letter-spacing: -0.01em; }
   /* Cards in a reply (quotes, invoices) at 75% of the reply's size, so a list doesn't crowd the screen */
   .mcp-page .topic-convo .row { padding: 7.5px 10.5px; border-radius: 7.5px; font-size: 0.75em; white-space: nowrap; }
-  /* The phone's chat runs larger (23.3px replies), so the handoff card does too */
-  .mcp-page .topic-convo .handoff { width: 100%; gap: 2px; padding: 14px 16px 16px; border-radius: 18px; }
-  .mcp-page .topic-convo .handoff-label { font-size: 15px; }
-  .mcp-page .topic-convo .handoff-title { font-size: 19px; }
-  .mcp-page .topic-convo .handoff-meta { font-size: 16px; }
-  .mcp-page .topic-convo .handoff-btn { gap: 9px; margin-top: 12px; padding: 10px 16px; font-size: 16px; }
-  .mcp-page .topic-convo .handoff-btn .ic { width: 16px; height: 16px; }
+  /* The handoff card at 75%, like the cards in the other replies, so the question above it stays in view */
+  .mcp-page .topic-convo .handoff { width: auto; gap: 1px; padding: 10.5px 12px 12px; border-radius: 13.5px; }
+  .mcp-page .topic-convo .handoff-label { font-size: 11.25px; }
+  .mcp-page .topic-convo .handoff-title { font-size: 14.25px; }
+  .mcp-page .topic-convo .handoff-meta { font-size: 12px; }
+  .mcp-page .topic-convo .handoff-btn { gap: 7px; margin-top: 9px; padding: 7.5px 12px; font-size: 12px; }
+  .mcp-page .topic-convo .handoff-btn .ic { width: 12px; height: 12px; }
   .mcp-page .topic-convo .dot { width: 22px; height: 22px; border-radius: 2.7px; }
   .mcp-page .topics-composer { display: flex; flex-direction: column; justify-content: space-between; height: 125px; margin: 0 12px 12px; padding: 22px 12px 11px; border: 1.37px solid #d8dadf; border-radius: 35px; background: #fff; box-shadow: 0 2.74px 11px rgba(0,0,0,0.05); }
   .mcp-page .topics-composer .placeholder { padding-left: 1px; font-size: 20.56px; color: #6a7281; }
@@ -1296,13 +1348,15 @@
   .mcp-page .topic-convo .agent-tag { gap: 6.5px; font-size: 11.44px; }
   .mcp-page .topic-convo .agent-tag .ic { width: 16.3px; height: 16.3px; }
   .mcp-page .topic-convo .agent-msg .body { margin-top: -6px; gap: 6px; font-size: 17px; }
-  .mcp-page .topic-convo .row { padding: 6px 8px; border-radius: 6px; white-space: normal; }
-  .mcp-page .topic-convo .handoff { gap: 2px; padding: 10px 12px 12px; border-radius: 14px; }
-  .mcp-page .topic-convo .handoff-label { font-size: 12px; }
-  .mcp-page .topic-convo .handoff-title { font-size: 16px; }
-  .mcp-page .topic-convo .handoff-meta { font-size: 13px; }
-  .mcp-page .topic-convo .handoff-btn { gap: 7px; margin-top: 8px; padding: 7px 12px; font-size: 13px; }
-  .mcp-page .topic-convo .handoff-btn .ic { width: 13px; height: 13px; }
+  /* each card on one line in the narrow screen */
+  .mcp-page .topic-convo .row { padding: 6px 8px; border-radius: 6px; font-size: 12px; }
+  .mcp-page .topic-convo .handoff { gap: 1px; padding: 7.5px 9px 9px; border-radius: 10.5px; }
+  /* the reply already says "your dashboard", so the card drops its label to leave the question in view */
+  .mcp-page .topic-convo .handoff-label { display: none; }
+  .mcp-page .topic-convo .handoff-title { font-size: 12px; }
+  .mcp-page .topic-convo .handoff-meta { font-size: 9.75px; }
+  .mcp-page .topic-convo .handoff-btn { gap: 5px; margin-top: 6px; padding: 5px 9px; font-size: 9.75px; }
+  .mcp-page .topic-convo .handoff-btn .ic { width: 10px; height: 10px; }
   .mcp-page .topic-convo .dot { width: 16px; height: 16px; border-radius: 2px; }
   .mcp-page .topics-composer { height: 87px; padding: 15.6px 10px 10px; border-width: 0.97px; border-radius: 24.8px; }
   .mcp-page .topics-composer .placeholder { font-size: 14.56px; }

@@ -639,12 +639,12 @@ export function initMcpPage(COPY, LANG) {
     parts.forEach(([el, text]) => {
       timers.push(
         setTimeout(() => {
-          if (el === box) box.style.opacity = '1'
+          if (box?.contains(el)) box.style.opacity = '1'
           el.textContent = ''
           el.appendChild(cursor)
         }, t),
       )
-      t += el === box ? 80 : 27
+      t += box?.contains(el) ? 80 : 27
       const node = document.createTextNode('')
       timers.push(setTimeout(() => el.insertBefore(node, cursor), t - 1))
       const tokens = words(text)
@@ -1430,7 +1430,10 @@ export function initMcpPage(COPY, LANG) {
     }
     // Slide 2 (the desk window): question bubble, agent tag, then the reply types — replayed each time the slide comes round
     const desk = stageWrap.querySelector('.scene-b .desk-window')
-    const deskParts = desk ? [...desk.querySelectorAll('.agent-msg .body > p')].map((p) => [p, p.textContent]) : []
+    // The reply's lines in order: the lead, each shipment row in the gray box, then the question
+    const deskParts = desk
+      ? [...desk.querySelectorAll('.agent-msg .body > p, .agent-msg .box-row')].map((p) => [p, p.textContent])
+      : []
     const deskBox = desk?.querySelector('.agent-msg .box'),
       deskDot = desk?.querySelector('.agent-msg > .dot')
     let deskTimers = []
@@ -1448,10 +1451,12 @@ export function initMcpPage(COPY, LANG) {
         deskDot.style.visibility = ''
         return
       }
-      // The gray box keeps its finished size while it types (plus room for the caret)
-      deskBox.style.width = ''
-      deskBox.textContent = deskParts.find(([el]) => el === deskBox)[1]
-      deskBox.style.width = `${Math.min(deskBox.parentElement.clientWidth, deskBox.offsetWidth + 12)}px`
+      // The gray box keeps its finished width while it types (plus room for the caret)
+      deskBox.style.removeProperty('--box-w')
+      deskParts.forEach(([el, text]) => {
+        el.textContent = text
+      })
+      deskBox.style.setProperty('--box-w', `${Math.min(deskBox.parentElement.clientWidth, deskBox.offsetWidth + 12)}px`)
       deskParts.forEach(([el]) => {
         el.textContent = ''
       })
