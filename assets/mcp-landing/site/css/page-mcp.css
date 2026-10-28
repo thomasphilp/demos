@@ -207,7 +207,8 @@
 .mcp-page .copy-tiny:focus-visible { outline: 2px solid var(--green); outline-offset: 1px; }
 .mcp-page .copy-tiny.is-copied { opacity: 1; color: var(--green); }
 .mcp-page .copy-tiny svg { width: 14px; height: 14px; }
-.mcp-page .signup-note { font-family: var(--font-geist); font-size: 14px; line-height: 20px; text-align: center; color: var(--label-muted); }
+/* The sign-up reminders are all in Geist Pixel, the same as their links */
+.mcp-page .signup-note { font-family: var(--font-pixel); font-size: 14px; line-height: 20px; text-align: center; color: var(--label-muted); }
 .mcp-page .chat-time .ts-ic { display: none; }
 /* tablet and phone only */
 /* ── Hero ── */
