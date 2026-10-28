@@ -566,8 +566,9 @@ export function initMcpPage(COPY, LANG) {
         fadeLen = Math.max(200, (mid - chat.offsetTop) * 0.9)
       fade.style.top = `${mid - fadeLen}px`
       fade.style.height = `${Math.max(fadeLen, bg.offsetTop + top + vh - (mid - fadeLen))}px`
-      // During the intro the fade drops a little, and on tablets and phones far enough to clear the cube under the input
-      const drop = Math.max(fadeLen * 0.35, innerWidth > 1000 ? 0 : cubeY + cubeClear - (mid - fadeLen)),
+      // During the intro the fade drops a little, and on tablets and phones far enough to clear the cube under the input,
+      // and 30px more so no white shows between the clip and the bottom bar
+      const drop = Math.max(fadeLen * 0.35, innerWidth > 1000 ? 0 : cubeY + cubeClear - (mid - fadeLen) + 30),
         introLen = fadeLen * 0.75
       fade.style.setProperty('--fade-len-done', `${fadeLen}px`)
       fade.style.setProperty('--fade-len-intro', `${introLen}px`)

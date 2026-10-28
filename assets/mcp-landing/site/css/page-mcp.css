@@ -248,11 +248,12 @@
 /* White fade over the video: fully white by the chat card's vertical middle, solid white below.
    Placed by script against the chat (which doesn't move), so the lift never shifts it. */
 @property --fade-len { syntax: '<length>'; inherits: false; initial-value: 536px; }
-.mcp-page .hero-fade { --fade-len: var(--fade-len-done, 536px); position: absolute; left: 0; right: 0; top: 286px; height: 536px; background: linear-gradient(to bottom, rgba(255,255,255,0), #fff var(--fade-len), #fff);
-  transition: translate 0.9s cubic-bezier(.16,1,.3,1) 0.12s, --fade-len 0.9s cubic-bezier(.16,1,.3,1) 0.12s; }
+.mcp-page .hero-fade { --fade-len: var(--fade-len-done, 536px); position: absolute; left: 0; right: 0; top: 286px; height: 536px; background: linear-gradient(to bottom, rgba(255,255,255,0), #fff var(--fade-len), #fff); }
 /* During the intro (only the input over the clip) the fade starts 35% of its length lower and runs 25% shorter, so more
-   of the cube shows; it glides into its chat position, with the clip's lift, once the reply comes in */
+   of the cube shows; it glides into its chat position, with the clip's lift, once the reply comes in. Only then: as the
+   script first places it on load it goes straight there, rather than sliding down from too high */
 .mcp-page .hero:not([data-intro="done"]) .hero-fade { translate: 0 var(--fade-drop, 0px); --fade-len: var(--fade-len-intro, 536px); }
+.mcp-page .hero[data-intro="done"] .hero-fade { transition: translate 0.9s cubic-bezier(.16,1,.3,1) 0.12s, --fade-len 0.9s cubic-bezier(.16,1,.3,1) 0.12s; }
 /* The card's chrome (glass, border, shadow, rail) fades to white behind the connect block;
    --fade-start/--fade-end are measured from the card top in JS. Content stays fully opaque. */
 .mcp-page .chat-app {
