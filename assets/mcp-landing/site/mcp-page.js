@@ -1545,6 +1545,14 @@ export function initMcpPage(COPY, LANG) {
             `<button type="button" class="ap-dot${i ? '' : ' is-active'}" aria-label="${tr('apExampleOf', { n: i + 1, total: examples.length })}"${i ? '' : ' aria-current="true"'}></button>`,
         )
         .join('')
+      // …and after them a pause button, which keeps the card on its example until it's pressed again
+      const svg = (name) =>
+        `<svg viewBox="${ICONS[name].viewBox}" fill="none" aria-hidden="true">${ICONS[name].inner}</svg>`
+      const pauseBtn = document.createElement('button')
+      pauseBtn.type = 'button'
+      pauseBtn.className = 'ap-pause'
+      pauseBtn.innerHTML = `<span class="ic-pause">${svg('solid/pause')}</span><span class="ic-play">${svg('solid/play')}</span>`
+      dots.appendChild(pauseBtn)
       card.appendChild(dots)
       // Reserve the tallest example's height so the row never jumps
       const reserve = () => {
@@ -1573,11 +1581,17 @@ export function initMcpPage(COPY, LANG) {
       reserve()
       // Autoplay: once a reply has typed, the current dot's bar fills over 4.5s and the next example plays (looping);
       // it waits while the card is off screen, and holds while the pointer is over the card or focus is inside it.
-      // Picking an example (a tap on the card or a dot) stops it for good, so a touch or screen reader user who
-      // steps through the examples can read each one
+      // The pause button stops it until it's pressed again, and so does picking an example (a tap on the card or a dot),
+      // so a touch or screen reader user who steps through the examples can read each one
       const AUTO_MS = 4500
       let held = false,
-        picked = false
+        paused = false
+      const setPaused = (p) => {
+        paused = p
+        dots.classList.toggle('is-paused', p)
+        pauseBtn.setAttribute('aria-label', tr(p ? 'apPlay' : 'apPause'))
+      }
+      setPaused(false)
       const stopTimer = () => {
         clearTimeout(auto)
         auto = 0
@@ -1585,7 +1599,7 @@ export function initMcpPage(COPY, LANG) {
       }
       const startTimer = () => {
         stopTimer()
-        if (reducedMotion || held || picked || !visible || !reply.classList.contains('is-typed')) return
+        if (reducedMotion || held || paused || !visible || !reply.classList.contains('is-typed')) return
         void dots.offsetWidth // restart the fill
         dots.classList.add('is-timing')
         auto = setTimeout(() => show((cur + 1) % examples.length), AUTO_MS)
@@ -1663,9 +1677,18 @@ export function initMcpPage(COPY, LANG) {
       card.addEventListener(
         'click',
         (e) => {
+          if (e.target.closest('.ap-pause')) {
+            setPaused(!paused)
+            if (paused) stopTimer()
+            else {
+              held = false // play means play, even with the pointer or focus on the card
+              startTimer()
+            }
+            return
+          }
           const dot = e.target.closest('.ap-dot')
           if (!dot && getSelection().toString()) return // let people select text
-          picked = true
+          setPaused(true)
           stopTimer()
           show(dot ? [...dots.children].indexOf(dot) : (cur + 1) % examples.length)
         },
