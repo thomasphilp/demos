@@ -386,7 +386,20 @@ export function initMcpPage(COPY, LANG) {
   const typedEl = hero.querySelector('.typed-text')
   const composer = hero.querySelector('.intro-composer')
   const QUESTION = typedWords(tr('heroQuestion')) // the <b> run types bold: the ask itself (as "ship freight" was in Figma 299:692)
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  // Reduced motion can be turned on while the page is open: it's read live, and whatever runs on its own (the slideshows,
+  // the hero video, the cursor grids and shaders) stops then, through the callbacks given to onReducedMotion
+  const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+  let reducedMotion = motionQuery.matches
+  const reduceCallbacks = []
+  const onReducedMotion = (fn) => reduceCallbacks.push(fn)
+  motionQuery.addEventListener(
+    'change',
+    (e) => {
+      reducedMotion = e.matches
+      if (reducedMotion) reduceCallbacks.forEach((fn) => fn())
+    },
+    { signal: abort.signal },
+  )
   let introTimers = []
   const later = (fn, ms) => introTimers.push(setTimeout(fn, ms))
   function playIntro() {
@@ -543,8 +556,9 @@ export function initMcpPage(COPY, LANG) {
     heroVideo.muted = true
     // It plays only while the hero is on screen, and pauses once the page scrolls past it
     new IntersectionObserver(([e]) =>
-      e.isIntersecting ? heroVideo.play().catch(() => {}) : heroVideo.pause(),
+      e.isIntersecting && !reducedMotion ? heroVideo.play().catch(() => {}) : heroVideo.pause(),
     ).observe(hero)
+    onReducedMotion(() => heroVideo.pause())
   }
   // Reduced motion never loads the video, so it doesn't wait for it
   const heroReady = reducedMotion
@@ -748,6 +762,7 @@ export function initMcpPage(COPY, LANG) {
     ).observe(topics)
     setIdle()
     setPaused(reducedMotion)
+    onReducedMotion(() => setPaused(true))
   }
 
   /* ── Typewriter for AI replies: words appear one at a time, a square caret leads each word ── */
@@ -1395,7 +1410,8 @@ export function initMcpPage(COPY, LANG) {
       nav.classList.toggle('is-idle', !inView || !stageWrap.classList.contains('is-visible'))
       firstLook()
     }).observe(stageWrap, { attributes: true, attributeFilter: ['class'] })
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) setPaused(true)
+    if (reducedMotion) setPaused(true)
+    onReducedMotion(() => setPaused(true))
     startDot()
   })()
 
@@ -1742,11 +1758,11 @@ export function initMcpPage(COPY, LANG) {
         return true
       })
       draw()
-      if (live) raf = requestAnimationFrame(frame)
+      if (live && !reducedMotion) raf = requestAnimationFrame(frame)
       else prevT = 0
     }
     const wake = () => {
-      if (!raf && inView) raf = requestAnimationFrame(frame)
+      if (!raf && inView && !reducedMotion) raf = requestAnimationFrame(frame)
     }
     const stamp = (x, y, v) => {
       const i = Math.floor(x / cell),
@@ -2607,7 +2623,7 @@ export function initMcpPage(COPY, LANG) {
       raf = 0
     const tick = (ts) => {
       raf = 0
-      if (!inView || document.hidden) return
+      if (!inView || document.hidden || reducedMotion) return
       shaded.forEach((s) => {
         if (!s.scene || !s.scene.matches('.is-active, .is-prev') || ts - s.last < 33) return
         s.last = ts
@@ -2770,7 +2786,7 @@ export function initMcpPage(COPY, LANG) {
         frame.input = inputs[i]
         liveUntil = ts + 600
       }
-      if (ts > liveUntil) return // faded out: stop drawing until the next scroll
+      if (ts > liveUntil || reducedMotion) return // faded out: stop drawing until the next scroll
       frame.time = ts / 1000
       frame.box = rowBox()
       frame.output = ctx.getCurrentTexture()

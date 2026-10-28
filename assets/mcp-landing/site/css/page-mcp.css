@@ -565,7 +565,7 @@
 .mcp-page .examples-shade { opacity: 0; transition: opacity 0.45s ease; }
 .mcp-page .examples-shade.is-on { opacity: 1; transition-duration: 0.12s; }
 @media (prefers-reduced-motion: reduce) {
-  .mcp-page .examples-shade { display: none; }
+  .mcp-page :is(.examples-shade, .examples-live) { display: none; }
 }
 /* With WebGPU the scroll swap is drawn live instead: the same screen, plus the slider's ripple rolling out from the
    topics window (script); the baked PNGs above stay as the fallback */
@@ -1243,4 +1243,6 @@
   /* The dot fill is the slideshow's timer, so it keeps its real duration */
   .mcp-page .stage-dot.is-active .fill { animation-duration: var(--slide-dur, 6s) !important; }
   .mcp-page .scene .photo { animation: none !important; }
+  /* Turned on while the page is open, the cursor grids stop where they are, so they go */
+  .mcp-page .cursor-grid { display: none; }
 }
