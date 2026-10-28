@@ -630,15 +630,12 @@
 .mcp-page .topic-convo .agent-msg .body > p:empty { display: none; }
 .mcp-page .topic-convo .row { align-self: flex-start; padding: 8px 11px; background: #efefef; border: 1.48px solid #eaeaea; border-radius: 11.8px; }
 /* Book a shipment hands off to the dashboard: a card with the quote and a button, in after the reply has typed */
-.mcp-page .topic-convo .handoff { align-self: flex-start; width: min(100%, 340px); display: flex; flex-direction: column; gap: 3px; padding: 14px 16px 16px; background: #fff; border: 1.48px solid #eaeaea; border-radius: 16px; box-shadow: 0 4px 14px rgba(0,0,0,0.05); color: #141414; text-decoration: none; letter-spacing: -0.01em; transition: opacity 0.4s ease, translate 0.5s cubic-bezier(.2,.7,.2,1), visibility 0.4s, border-color 0.15s; }
+.mcp-page .topic-convo .handoff { cursor: default; align-self: flex-start; width: min(100%, 340px); display: flex; flex-direction: column; gap: 3px; padding: 14px 16px 16px; background: #fff; border: 1.48px solid #eaeaea; border-radius: 16px; box-shadow: 0 4px 14px rgba(0,0,0,0.05); color: #141414; text-decoration: none; letter-spacing: -0.01em; transition: opacity 0.4s ease, translate 0.5s cubic-bezier(.2,.7,.2,1), visibility 0.4s; }
 .mcp-page .topic-convo .handoff-label { font-size: 13px; color: #808080; }
 .mcp-page .topic-convo .handoff-title { font-size: 17px; font-weight: 600; line-height: 1.3; }
 .mcp-page .topic-convo .handoff-meta { font-size: 14px; line-height: 1.35; color: #5c5c5c; }
-.mcp-page .topic-convo .handoff-btn { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; margin-top: 12px; padding: 9px 14px; border-radius: 9999px; background: #141414; color: #fff; font-size: 14px; font-weight: 600; transition: background-color 0.15s; }
+.mcp-page .topic-convo .handoff-btn { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; margin-top: 12px; padding: 9px 14px; border-radius: 9999px; background: #141414; color: #fff; font-size: 14px; font-weight: 600; }
 .mcp-page .topic-convo .handoff-btn .ic { width: 14px; height: 14px; }
-.mcp-page .topic-convo .handoff:hover { border-color: #d6d6d6; }
-.mcp-page .topic-convo .handoff:hover .handoff-btn { background: #000; }
-.mcp-page .topic-convo .handoff:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
 .mcp-page .topic-convo .agent-msg.is-typing .handoff { opacity: 0; translate: 0 8px; visibility: hidden; transition-duration: 0s; }
 .mcp-page .topic-convo .dot { width: 18px; height: 18px; border-radius: 2.95px; background: #000; }
 .mcp-page .topic-convo .dot.is-inline { display: inline-block; width: 0.6em; height: 0.6em; border-radius: 1.3px; margin-left: 3px; vertical-align: baseline; }

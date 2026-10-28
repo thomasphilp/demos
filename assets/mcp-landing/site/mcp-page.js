@@ -839,7 +839,16 @@ export function initMcpPage(COPY, LANG) {
         own,
       )
     })
-    play.addEventListener('click', () => setPaused(!topicsNav.classList.contains('is-paused')), own)
+    play.addEventListener(
+      'click',
+      () => {
+        const resume = topicsNav.classList.contains('is-paused')
+        setPaused(!resume)
+        // Play means play, even with keyboard focus still in the topics, which otherwise holds the timer
+        if (resume) topicsNav.classList.remove('is-held')
+      },
+      own,
+    )
     // The tabs, dots, pause and arrows render invisible (keeping their space) and show now they work
     topicsNav.removeAttribute('data-wait')
     for (const el of topics.querySelectorAll('.topics-steps, .topics-label, .topics-list'))
