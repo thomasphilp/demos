@@ -14,7 +14,7 @@ export function initMcpPage(COPY, LANG) {
   if (current?.root === root) return current.release
   current?.stop()
   // Everything that outlives the page's own elements is tracked here, so stop() can undo it: window and document
-  // listeners, observers, timers and animation frames. These names shadow the globals for the rest of the script.
+  // listeners, observers, timers, animation frames and Web Animations. These names shadow the globals for the rest of the script.
   // Once stopped they do nothing, so work that finishes late (a video load, an image decode) can't start anything new
   const abort = new AbortController()
   const stopped = () => abort.signal.aborted
@@ -62,6 +62,15 @@ export function initMcpPage(COPY, LANG) {
     frames.add(id)
     return id
   }
+  // Web Animations stay on the document timeline after their elements leave, so each one is cancelled on stop
+  const animations = new Set()
+  const animate = (el, keyframes, opts) => {
+    if (stopped()) return null
+    const a = el.animate(keyframes, opts)
+    animations.add(a)
+    a.addEventListener('cancel', () => animations.delete(a))
+    return a
+  }
   // WebGPU devices for the shaders: destroying one frees every canvas texture made on it
   const devices = new Set()
   const openDevice = async () => {
@@ -81,6 +90,7 @@ export function initMcpPage(COPY, LANG) {
     for (const o of observers) o.disconnect()
     for (const id of timers) id < 0 ? window.clearInterval(-id) : window.clearTimeout(id)
     for (const id of frames) window.cancelAnimationFrame(id)
+    for (const a of animations) a.cancel()
     if (current?.root === root) current = null
   }
   const release = () => window.setTimeout(() => root?.isConnected || stop())
@@ -849,7 +859,8 @@ export function initMcpPage(COPY, LANG) {
       anims = paths.map((p, i) => {
         const len = LENS[i % 4] * L
         p.style.strokeDasharray = `${len}px ${L * 3}px`
-        return p.animate(
+        return animate(
+          p,
           [
             { strokeDashoffset: `${len}px`, easing: 'cubic-bezier(.45,0,.35,1)' },
             { strokeDashoffset: `${len - RUN * L}px`, offset: 0.7 },
@@ -932,7 +943,7 @@ export function initMcpPage(COPY, LANG) {
       anims = paths.map((p, i) => {
         const len = LENS[i] * P
         p.style.strokeDasharray = `${len}px ${P - len}px`
-        return p.animate([{ strokeDashoffset: `${len}px` }, { strokeDashoffset: `${len - P}px` }], {
+        return animate(p, [{ strokeDashoffset: `${len}px` }, { strokeDashoffset: `${len - P}px` }], {
           duration: LOOP,
           iterations: Infinity,
         })
@@ -2366,6 +2377,12 @@ export function initMcpPage(COPY, LANG) {
       const canvas = document.createElement('canvas')
       canvas.width = w
       canvas.height = h
+      // The canvas hides the layer's images, so it takes over the photo's description
+      const alt = layer.querySelector('img[alt]:not([alt=""])')?.alt
+      if (alt) {
+        canvas.setAttribute('role', 'img')
+        canvas.setAttribute('aria-label', alt)
+      } else canvas.setAttribute('aria-hidden', 'true')
       layer.appendChild(canvas)
       const ctx = canvas.getContext('webgpu')
       ctx.configure({ device, format, alphaMode: 'premultiplied' })

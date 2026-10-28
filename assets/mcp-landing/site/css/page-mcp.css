@@ -562,7 +562,7 @@
 .mcp-page .topics-agent .agent-stack.is-dark { display: none; }
 .mcp-page .topics-label { margin: 40px 0 9px; padding: 0 12px; font-size: 14px; font-weight: 500; color: rgba(9,10,12,0.45); }
 .mcp-page .topics-list { display: flex; flex-direction: column; gap: 9px; }
-.mcp-page .topic { padding: 8px 12px; border: 0; border-radius: 8px; background: none; text-align: left; font-family: var(--font-geist); font-size: 18px; line-height: 23px; font-weight: 500; letter-spacing: -0.02em; color: #141414; white-space: nowrap; cursor: pointer; transition: background-color 0.2s ease; }
+.mcp-page .topic { padding: 8px 12px; border: 0; border-radius: 8px; background: none; text-align: left; font-family: var(--font-geist); font-size: 18px; line-height: 23px; font-weight: 600; letter-spacing: -0.02em; color: #141414; white-space: nowrap; cursor: pointer; transition: background-color 0.2s ease; }
 .mcp-page .topic:hover:not(.is-active) { background: rgba(255,255,255,0.55); }
 .mcp-page .topic.is-active { background: #fff; cursor: default; }
 .mcp-page .topic:focus-visible { outline: 2px solid #0071e3; outline-offset: 2px; }
