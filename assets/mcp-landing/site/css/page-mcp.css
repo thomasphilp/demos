@@ -1107,6 +1107,12 @@
   .mcp-page :is(.examples, .devices) .bracket-label { margin-left: -8px; }
   .mcp-page :is(.examples, .devices) .bracket-copy { --w: min(668px, 100% - 2 * var(--bg-inset)); width: var(--w); margin-top: 16px; padding-right: max(0px, calc(var(--w) - 529px)); text-align: left; }
   .mcp-page .stage-wrap { margin-top: 44px; }
+  /* A copy inside its bracket takes the bracket's width, so it starts under the label like the one outside */
+  .mcp-page .bracket > .bracket-copy { --w: 100%; }
+  /* The exchanges keep 48px each side, so the agent's reply starts where the bubble ends on the right (Figma Built
+     (768)); its heading wraps as before. The setup exchange keeps its own column */
+  .mcp-page section:not(.setup) > .exchange { width: calc(100% - 96px); margin: 0 auto; }
+  .mcp-page section:not(.setup) > .exchange .exchange-agent .display { max-width: calc(100% - 65px); }
 }
 @media (max-width: 720px) {
   /* Figma Built (375) 351:2638: narrower tiles, closer together, and the marks under their label */
