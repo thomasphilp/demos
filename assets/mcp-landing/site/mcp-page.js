@@ -566,6 +566,14 @@ export function initMcpPage(COPY, LANG) {
     topicsNav.style.setProperty('--slide-dur', `${TOPIC_MS / 1000}s`)
     // Each reply's paragraphs and their words, read once from the server's markup
     const replies = convos.map((c) => [...c.querySelectorAll('.agent-msg .body > p')].map((el) => [el, el.textContent]))
+    // Screen readers get each whole reply from a hidden copy, never the half-typed one on screen
+    convos.forEach((c, i) => {
+      const body = c.querySelector('.agent-msg .body')
+      const copy = Object.assign(document.createElement('span'), { className: 'sr-only' })
+      copy.textContent = replies[i].map(([, text]) => text).join(' ')
+      body.setAttribute('aria-hidden', 'true')
+      body.after(copy)
+    })
     let current = 0,
       timers = [],
       inView = false,
@@ -2462,11 +2470,20 @@ export function initMcpPage(COPY, LANG) {
       0,
     ]
   }
-  // Heavy GPU/canvas work: run after the hero intro has played
-  setTimeout(
-    () => applyPatternScreen().catch((err) => console.warn('Pattern Screen shader failed:', err)),
-    reducedMotion ? 0 : 3500,
-  )
+  // Heavy GPU/canvas work (a device, decoded photos, textures) starts only once its section is within half a screen of view
+  const whenNear = (el, fn) => {
+    if (!el) return
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return
+        io.disconnect()
+        fn()
+      },
+      { rootMargin: '50% 0px' },
+    )
+    io.observe(el)
+  }
+  whenNear(stageWrap, () => applyPatternScreen().catch((err) => console.warn('Pattern Screen shader failed:', err)))
 
   /* Examples background while scrolling: the current photo runs Figma's screen live (Section 3, 373:4784–4786: wavy
      lines on a dark gray base) with the slider's ripple rolling out from the topics window.
@@ -2580,9 +2597,6 @@ export function initMcpPage(COPY, LANG) {
     }).observe(exPhoto)
     exBg.classList.add('has-live-shade')
   }
-  setTimeout(
-    () => applyExamplesShade().catch((err) => console.warn('Examples shader failed:', err)),
-    reducedMotion ? 0 : 3600,
-  )
+  whenNear(exStage, () => applyExamplesShade().catch((err) => console.warn('Examples shader failed:', err)))
   return release
 }
