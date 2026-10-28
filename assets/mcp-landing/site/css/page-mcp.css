@@ -212,7 +212,7 @@
 .mcp-page .devices .copy-tiny:hover { border-color: rgba(9,10,12,0.3); background: rgba(9,10,12,0.04); color: #090a0c; }
 .mcp-page .devices .copy-tiny.is-copied { color: #090a0c; }
 /* The sign-up reminders are all in Geist Pixel, the same as their links */
-.mcp-page .signup-note { font-family: var(--font-pixel); font-size: 14px; line-height: 20px; text-align: center; color: var(--label-muted); }
+.mcp-page .signup-note { font-family: var(--font-pixel); font-size: 14px; line-height: 26px; /* room between its two lines, and for the Copy box */ text-align: center; color: var(--label-muted); }
 .mcp-page .chat-time .ts-ic { display: none; }
 /* tablet and phone only */
 /* ── Hero ── */
