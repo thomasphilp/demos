@@ -6,7 +6,7 @@
 		"anyAgent": "Any AI agent",
 		"heroTitle": "Yes. <c0>Connect Mothership</c0> and just ask.",
 		"connectLead": "Add our MCP server to<br/> your AI agent in seconds",
-		"connectNote": "Just ask your AI how. Requires an approved Mothership account. <c0>Sign up →</c0>",
+		"connectNote": "Just ask your AI how. MCP server access requires an approved Mothership account. <c0>Sign up →</c0>",
 		"copy": "Copy",
 		"copied": "Copied",
 		"copyFailed": "Copy failed",
@@ -134,7 +134,7 @@
 		"allow": "Allow access",
 		"ctaTitle": "<c0>Ship and manage freight from your AI chat.</c0>",
 		"signUp": "Sign up in 60 seconds",
-		"ctaNote": "Requires an approved Mothership account"
+		"ctaNote": "MCP server access requires an approved Mothership account."
 	},
 	"zh-CN": {
 		"heroQuestion": "我能在AI对话中<b>报价、预订和追踪货运</b>吗？",
@@ -143,7 +143,7 @@
 		"anyAgent": "任意AI代理",
 		"heroTitle": "可以。<c0>连接Mothership</c0>，直接提问即可。",
 		"connectLead": "几秒钟内将我们的MCP服务器<br/>添加到您的AI代理",
-		"connectNote": "直接问您的AI怎么做。需要已获批准的Mothership账户。<c0>立即注册 →</c0>",
+		"connectNote": "直接问您的AI怎么做。访问MCP服务器需要已获批准的Mothership账户。<c0>立即注册 →</c0>",
 		"copy": "复制",
 		"copied": "已复制",
 		"copyFailed": "复制失败",
@@ -271,6 +271,6 @@
 		"allow": "允许访问",
 		"ctaTitle": "<c0>在AI对话中发运和管理货物。</c0>",
 		"signUp": "60秒内完成注册",
-		"ctaNote": "需要已获批准的Mothership账户"
+		"ctaNote": "访问MCP服务器需要已获批准的Mothership账户。"
 	}
 }

@@ -19,7 +19,7 @@
   --surface-glass: rgba(255,255,255,0.7);
   --shadow-float: 0 4px 92px 0 rgba(0,0,0,0.1);
   /* Everything is Geist, at the weights the original faces used (Bricolage / Instrument Sans / Inter / Outfit), except
-     Figma's Geist Pixel notes: "Requires an approved Mothership account", "Now available in", "Powered by" */
+     Figma's Geist Pixel notes: "MCP server access requires an approved Mothership account.", "Now available in", "Powered by" */
   /* Geist has no Chinese glyphs: Chinese falls back to the platform's CJK face at the same size and weight */
   --font-cjk: 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
   --font-display: 'Geist', var(--font-cjk);
