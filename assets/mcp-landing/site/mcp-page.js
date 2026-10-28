@@ -18,8 +18,13 @@ export function abandonMcpPage() {
   for (const el of document.querySelectorAll('main.mcp-page .tw')) el.classList.add('is-typed')
   for (const el of document.querySelectorAll('main.mcp-page .tw-w')) el.classList.add('is-on')
   for (const el of document.querySelectorAll('main.mcp-page .is-typing')) el.classList.remove('is-typing')
-  // Their listeners are gone with the rest, so the copy buttons go back to hidden
-  for (const el of document.querySelectorAll('main.mcp-page [data-copy]')) el.hidden = true
+  // Their listeners are gone with the rest, so the controls go back to how they render: the tiny copy button out of the
+  // line, the rest invisible in their places
+  for (const el of document.querySelectorAll('main.mcp-page .copy-tiny')) el.hidden = true
+  for (const el of document.querySelectorAll(
+    'main.mcp-page :is([data-copy]:not(.copy-tiny), .stage-nav, .topics-steps)',
+  ))
+    el.setAttribute('data-wait', '')
 }
 
 /**
@@ -363,7 +368,7 @@ export function initMcpPage(COPY, LANG) {
   document.querySelectorAll('[data-copy]:not([data-copy-tiny])').forEach((btn) => {
     // "Copy" sizes the button; "Copied" overlays it and the button widens to fit while it shows
     const label = btn.textContent.trim()
-    btn.hidden = false
+    btn.removeAttribute('data-wait')
     btn.innerHTML = `<span class="copy-stack" aria-hidden="true"><span class="lbl lbl-copy">${label}</span><span class="lbl lbl-done">${checkIcon}${tr('copied')}</span></span>`
     const done = btn.querySelector('.lbl-done'),
       name = tr('copyAria')
@@ -762,7 +767,10 @@ export function initMcpPage(COPY, LANG) {
       fill.style.animation = ''
       // In the sideways row (tablets and phones), bring the topic into view without moving the page
       if (list.scrollWidth > list.clientWidth)
-        list.scrollTo({ left: tabs[i].offsetLeft, behavior: reducedMotion ? 'auto' : 'smooth' })
+        list.scrollTo({
+          left: tabs[i].offsetLeft - parseFloat(getComputedStyle(list).paddingLeft), // in line with the label
+          behavior: reducedMotion ? 'auto' : 'smooth',
+        })
       playConvo(i)
       // …and the photo behind the window changes with it
       topics.dispatchEvent(new CustomEvent('topics:show', { bubbles: true, detail: i }))
@@ -810,6 +818,9 @@ export function initMcpPage(COPY, LANG) {
       )
     })
     play.addEventListener('click', () => setPaused(!topicsNav.classList.contains('is-paused')), own)
+    // The dots, pause and arrows render hidden (keeping their space) and show now they work
+    topicsNav.removeAttribute('data-wait')
+    for (const el of topics.querySelectorAll('.topics-steps')) el.removeAttribute('data-wait')
     // Keyboard focus in the topics window holds the timer, so the topic being read doesn't change under it. A mouse pick
     // focuses a tab too but leaves the timer running, as a pick should
     topics.addEventListener(
@@ -1489,6 +1500,7 @@ export function initMcpPage(COPY, LANG) {
       dot.querySelector('.fill').addEventListener('animationend', () => go((cur + 1) % scenes.length), own)
     })
     play.addEventListener('click', () => setPaused(!nav.classList.contains('is-paused')), own)
+    nav.removeAttribute('data-wait') // rendered invisible, keeping its space, until its controls work
     // Keyboard focus on the slideshow or its controls holds the timer, as on the topics: a mouse pick leaves it running
     for (const box of [stageWrap, nav]) {
       box.addEventListener('focusin', (e) => nav.classList.toggle('is-held', e.target.matches(':focus-visible')), own)

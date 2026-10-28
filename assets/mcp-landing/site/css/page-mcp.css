@@ -207,8 +207,10 @@
 /* An outlined box like the MCP address field in the setup steps (1px white at 15%, 4px corners), kept within the line */
 .mcp-page .copy-tiny { display: inline-flex; align-items: center; justify-content: center; height: 22px; margin: -4px 0 -4px 8px; padding: 0 7px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: inherit; font: 400 12px/1 var(--font-pixel); vertical-align: middle; cursor: pointer; transition: border-color 0.15s, background-color 0.15s, color 0.15s; }
 .mcp-page .copy-tiny[hidden] { display: none; }
-/* The other copy buttons keep their space while hidden, so nothing moves when the script shows them */
-.mcp-page [data-copy]:not(.copy-tiny)[hidden] { display: inline-block; visibility: hidden; }
+/* The other copy buttons, the slideshows' dots and pause buttons, and the topic arrows render invisible in their places
+   (data-wait), so nothing moves when the script wires them up and shows them. Not [hidden], which the site's CSS takes
+   out of the layout */
+.mcp-page [data-wait] { visibility: hidden; }
 .mcp-page .copy-tiny:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.06); color: #fff; }
 .mcp-page .copy-tiny:focus-visible { outline: 2px solid var(--green); outline-offset: 1px; }
 .mcp-page .copy-tiny.is-copied { color: var(--green); }
@@ -1241,10 +1243,12 @@
   .mcp-page .topic-convo .chat-bubble { padding: 16.4px 24.7px; border-radius: 27.4px 27.4px 9.6px 27.4px; font-size: 23.3px; }
   .mcp-page .topic-convo .sent { display: none; }
   .mcp-page .topic-convo .agent-msg { gap: 16.4px; max-width: 359px; }
-  .mcp-page .topic-convo .agent-tag { gap: 11px; font-size: 19.19px; }
-  .mcp-page .topic-convo .agent-tag .ic { width: 27px; height: 27px; }
+  /* Figma 432:2553: a 21px star and 14.9px label */
+  .mcp-page .topic-convo .agent-tag { gap: 8.5px; font-size: 14.88px; }
+  .mcp-page .topic-convo .agent-tag .ic { width: 21.3px; height: 21.3px; }
   .mcp-page .topic-convo .agent-msg .body { margin-top: -8.2px; gap: 8.2px; font-size: 23.3px; letter-spacing: -0.01em; }
-  .mcp-page .topic-convo .row { padding: 10px 14px; border-radius: 10px; }
+  /* Cards in a reply (quotes, invoices) at 75% of the reply's size, so a list doesn't crowd the screen */
+  .mcp-page .topic-convo .row { padding: 7.5px 10.5px; border-radius: 7.5px; font-size: 0.75em; white-space: nowrap; }
   /* The phone's chat runs larger (23.3px replies), so the handoff card does too */
   .mcp-page .topic-convo .handoff { width: 100%; gap: 2px; padding: 14px 16px 16px; border-radius: 18px; }
   .mcp-page .topic-convo .handoff-label { font-size: 15px; }
@@ -1269,8 +1273,10 @@
   .mcp-page .topics-agent .agent-stack { display: none; }
   .mcp-page .topics-agent .agent-stack.is-dark { display: flex; }
   .mcp-page .topics-label { order: 1; flex: 0 0 100%; margin: 33px 0 0; padding: 0; color: rgba(255,255,255,0.5); }
-  /* runs on to the viewport's right edge */
-  .mcp-page .topics-list { order: 2; position: relative; flex: none; flex-direction: row; gap: 17px; width: calc(50% + 50vw); margin: 5px calc(50% - 50vw) 0 0; padding-right: var(--gutter); overflow-x: auto; scrollbar-width: none; }
+  /* scrolls across the whole photo (100cqw, the window's width), starting in line with the label, so every topic can
+     move into view from edge to edge */
+  .mcp-page .topics { container-type: inline-size; }
+  .mcp-page .topics-list { order: 2; position: relative; flex: none; flex-direction: row; gap: 17px; width: 100cqw; margin: 5px calc((100% - 100cqw) / 2) 0; padding: 0 calc((100cqw - 100%) / 2); overflow-x: auto; scrollbar-width: none; }
   .mcp-page .topics-list::-webkit-scrollbar { display: none; }
   .mcp-page .topic { flex: none; padding: 0; border-radius: 0; font-weight: 500; color: rgba(255,255,255,0.8); transition: color 0.2s ease; }
   .mcp-page .topic:hover:not(.is-active) { background: none; color: #fff; }
@@ -1293,10 +1299,10 @@
   .mcp-page .topic-convo .user-turn { max-width: 84%; }
   .mcp-page .topic-convo .chat-bubble { font-size: 16px; }
   .mcp-page .topic-convo .agent-msg { gap: 12px; max-width: none; }
-  .mcp-page .topic-convo .agent-tag { gap: 8px; font-size: 14px; }
-  .mcp-page .topic-convo .agent-tag .ic { width: 20px; height: 20px; }
+  .mcp-page .topic-convo .agent-tag { gap: 6.5px; font-size: 11.44px; }
+  .mcp-page .topic-convo .agent-tag .ic { width: 16.3px; height: 16.3px; }
   .mcp-page .topic-convo .agent-msg .body { margin-top: -6px; gap: 6px; font-size: 17px; }
-  .mcp-page .topic-convo .row { padding: 8px 10px; border-radius: 8px; }
+  .mcp-page .topic-convo .row { padding: 6px 8px; border-radius: 6px; white-space: normal; }
   .mcp-page .topic-convo .handoff { gap: 2px; padding: 10px 12px 12px; border-radius: 14px; }
   .mcp-page .topic-convo .handoff-label { font-size: 12px; }
   .mcp-page .topic-convo .handoff-title { font-size: 16px; }
@@ -1315,7 +1321,9 @@
   /* Figma 432:2611: the words at 16px, 9px under the phone and 33px in from the photo's edge; the agent and arrows
      64px below, centred on the photo */
   .mcp-page .topics-side { width: 100%; padding: 0; }
-  .mcp-page :is(.topics-label, .topics-list) { padding-left: 33px; }
+  .mcp-page .topics-label { padding-left: 33px; }
+  /* the photo runs the full width of the screen here, so the row does too */
+  .mcp-page .topics-list { width: 100vw; margin-inline: calc((100% - 100vw) / 2); padding-inline: calc((100vw - 100%) / 2 + 33px); }
   .mcp-page .topics-label { margin-top: 9px; }
   .mcp-page .topic { font-size: 16px; line-height: 20px; }
   .mcp-page :is(.topics-agent, .topics-steps) { margin-top: 64px; }
