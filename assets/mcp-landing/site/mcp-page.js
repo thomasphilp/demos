@@ -828,7 +828,18 @@ export function initMcpPage(COPY, LANG) {
   /* ── Typewriter for AI replies: words appear one at a time, a square caret leads each word ── */
   function twPrep(el) {
     if (el._tw) return el._tw
-    el.setAttribute('aria-label', el.textContent.trim())
+    const text = el.textContent.trim()
+    // A heading reads its label; a paragraph can't have one, so screen readers get a hidden whole copy instead of the
+    // half-typed words (kept when a reply is re-split for new words)
+    if (/^H\d$/.test(el.tagName)) el.setAttribute('aria-label', text)
+    else {
+      if (!el._sr) {
+        el._sr = Object.assign(document.createElement('span'), { className: 'sr-only' })
+        el.setAttribute('aria-hidden', 'true')
+        el.after(el._sr)
+      }
+      el._sr.textContent = text
+    }
     const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
     const nodes = []
     while (walker.nextNode()) nodes.push(walker.currentNode)
