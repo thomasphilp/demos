@@ -1583,7 +1583,7 @@ export function initMcpPage(COPY, LANG) {
       life = new Float32Array(cols * rows).fill(1)
       variant = new Uint8Array(cols * rows)
       canvases.forEach((cv) => {
-        Object.assign(cv.style, { left: `${b.x}px`, top: `${b.y}px`, width: `${w}px`, height: `${h}px` })
+        if (!cv._crop) Object.assign(cv.style, { left: `${b.x}px`, top: `${b.y}px`, width: `${w}px`, height: `${h}px` })
       })
       sizeCanvases()
       buildTiles()
@@ -1591,13 +1591,17 @@ export function initMcpPage(COPY, LANG) {
     }
     // o.shows (optional) says which mirrors are on screen: the others get no backing, so they hold no memory and
     // aren't copied into; the first canvas is the one drawn on and always keeps its size
+    // A mirror with a _crop ({ x, y, w, h } in the host's px) shows only that part of the grid: its canvas is just that
+    // size and only that part is copied into it
     const sizeCanvases = () =>
       canvases.forEach((cv, i) => {
         const on = !i || !o.shows || o.shows(cv),
-          w = on ? Math.round(box.w) : 0,
-          h = on ? Math.round(box.h) : 0
+          c = i ? cv._crop : null,
+          w = !on ? 0 : c ? Math.round(c.w) : Math.round(box.w),
+          h = !on ? 0 : c ? Math.round(c.h) : Math.round(box.h)
         if (cv.width !== w) cv.width = w
         if (cv.height !== h) cv.height = h
+        if (c) Object.assign(cv.style, { left: '0px', top: '0px', width: `${w}px`, height: `${h}px` })
       })
     const draw = () => {
       const w = canvases[0].width,
@@ -1631,9 +1635,13 @@ export function initMcpPage(COPY, LANG) {
         }
       ctx.globalAlpha = 1
       mirrors.forEach((m) => {
-        if (!m.canvas.width) return
-        m.clearRect(0, 0, w, h)
-        m.drawImage(canvases[0], 0, 0)
+        const mw = m.canvas.width,
+          mh = m.canvas.height
+        if (!mw || !mh) return
+        m.clearRect(0, 0, mw, mh)
+        const c = m.canvas._crop
+        if (c) m.drawImage(canvases[0], Math.round(c.x - box.x), Math.round(c.y - box.y), mw, mh, 0, 0, mw, mh)
+        else m.drawImage(canvases[0], 0, 0)
       })
     }
     // Ring profile: a bright one-cell band at the wavefront with a soft tail behind it
@@ -1979,13 +1987,14 @@ export function initMcpPage(COPY, LANG) {
   })
   document.querySelectorAll('.features, .examples, .devices-head, .devices, .cta').forEach((sec) => {
     sec.classList.add('has-soft-grid')
-    cursorGrid(sec, {
+    let grid = null
+    grid = cursorGrid(sec, {
       ...SOFT,
       mount: () => {
         const cv = document.createElement('canvas')
         sec.prepend(cv)
-        // …mirrored over the topics window on desktop and over the phone's screen below that, shifted back by
-        // their offsets so the cells line up with the section's
+        // …mirrored over the topics window on desktop and over the phone's screen below that: each copy is cropped to
+        // its own box (where that box sits in the section), so its cells line up with the section's
         const mirrors = [...sec.querySelectorAll('.topics, .topics-chat')].map((box) => {
           const wrap = Object.assign(document.createElement('div'), { className: 'topics-grid' })
           const mirror = document.createElement('canvas')
@@ -2000,7 +2009,8 @@ export function initMcpPage(COPY, LANG) {
               y += n.offsetTop
               n = n.offsetParent
             }
-            mirror.style.translate = `${-x}px ${-y}px`
+            mirror._crop = { x, y, w: wrap.offsetWidth, h: wrap.offsetHeight }
+            grid?.refresh()
           }
           new ResizeObserver(align).observe(sec)
           align()
@@ -2009,6 +2019,7 @@ export function initMcpPage(COPY, LANG) {
         return [cv, ...mirrors]
       },
     })
+    grid?.refresh()
   })
 
   // Dark sections: accent green cells (no resting grid: cells only show around the cursor), a ring from the headline when first seen,
