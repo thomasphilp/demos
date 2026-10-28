@@ -6,7 +6,7 @@ let loaded = false
 
 /**
  * For when initMcpPage throws partway: stops whatever it had started and shows the page as the motion would leave it,
- * with the hero's chat and connect block in and every reveal shown
+ * with the hero's chat and connect block in, every reveal shown and every typed heading whole
  */
 export function abandonMcpPage() {
   current?.stop()
@@ -14,6 +14,9 @@ export function abandonMcpPage() {
   hero?.setAttribute('data-intro', 'done')
   hero?.classList.add('is-answered')
   for (const el of document.querySelectorAll('main.mcp-page .reveal')) el.classList.add('is-visible')
+  // Headings already split for typing hide each word until it's typed: put them all in
+  for (const el of document.querySelectorAll('main.mcp-page .tw')) el.classList.add('is-typed')
+  for (const el of document.querySelectorAll('main.mcp-page .tw-w')) el.classList.add('is-on')
 }
 
 /**
