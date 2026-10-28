@@ -207,7 +207,8 @@
 .mcp-page .copy-tiny:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.06); color: #fff; }
 .mcp-page .copy-tiny:focus-visible { outline: 2px solid var(--green); outline-offset: 1px; }
 .mcp-page .copy-tiny.is-copied { color: var(--green); }
-.mcp-page .copy-tiny svg { width: 14px; height: 14px; }
+/* The icon's wrapper is the icon's size, so the button's centring centres the glyph itself */
+.mcp-page .copy-tiny :is(.ic, svg) { width: 14px; height: 14px; }
 /* The sign-up reminders are all in Geist Pixel, the same as their links */
 .mcp-page .signup-note { font-family: var(--font-pixel); font-size: 14px; line-height: 20px; text-align: center; color: var(--label-muted); }
 .mcp-page .chat-time .ts-ic { display: none; }
