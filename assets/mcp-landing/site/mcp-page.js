@@ -1420,15 +1420,32 @@ export function initMcpPage(COPY, LANG) {
       nav.classList.toggle('is-paused', paused)
       play.setAttribute('aria-label', tr(paused ? 'playSlideshow' : 'pauseSlideshow'))
     }
+    // These listeners go with the rest when the script stops (abandonMcpPage), so a stopped page can't blank a question
+    const own = { signal: abort.signal }
     dots.forEach((dot, i) => {
       // Picking a slide plays on from it, except with reduced motion, where only the play button starts the slideshow
-      dot.addEventListener('click', () => {
-        if (i !== cur) go(i)
-        setPaused(reducedMotion)
-      })
-      dot.querySelector('.fill').addEventListener('animationend', () => go((cur + 1) % scenes.length))
+      dot.addEventListener(
+        'click',
+        () => {
+          if (i !== cur) go(i)
+          setPaused(reducedMotion)
+        },
+        own,
+      )
+      dot.querySelector('.fill').addEventListener('animationend', () => go((cur + 1) % scenes.length), own)
     })
-    play.addEventListener('click', () => setPaused(!nav.classList.contains('is-paused')))
+    play.addEventListener('click', () => setPaused(!nav.classList.contains('is-paused')), own)
+    // Keyboard focus on the slideshow or its controls holds the timer, as on the topics: a mouse pick leaves it running
+    for (const box of [stageWrap, nav]) {
+      box.addEventListener('focusin', (e) => nav.classList.toggle('is-held', e.target.matches(':focus-visible')), own)
+      box.addEventListener(
+        'focusout',
+        (e) => {
+          if (!stageWrap.contains(e.relatedTarget) && !nav.contains(e.relatedTarget)) nav.classList.remove('is-held')
+        },
+        own,
+      )
+    }
     // Hold the timer while the slideshow is off screen
     nav.classList.add('is-idle')
     // First time it's in view and revealed: type slide 1's question and restart its timer so the slide gets its full time

@@ -670,7 +670,7 @@
    (--kb = slide duration + the crossfade), carrying on through the crossfade so it never snaps */
 .mcp-page .scene .photo { transform-origin: 50% 50%; }
 .mcp-page .scene:is(.is-active, .is-prev) .photo { animation: mcp-ken-burns var(--kb, 6s) linear forwards; }
-.mcp-page .devices:has(.stage-nav:is(.is-paused, .is-idle)) .scene .photo { animation-play-state: paused; }
+.mcp-page .devices:has(.stage-nav:is(.is-paused, .is-idle, .is-held)) .scene .photo { animation-play-state: paused; }
 @keyframes mcp-ken-burns { from { transform: scale(1); } to { transform: scale(1.08); } }
 .mcp-page .scene .photo img, .mcp-page .scene .photo canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 /* Dock photo sits where Figma placed it (Rectangle 38, 362:14814: 127.55% × 127.71%, offset up and left); the shader host draws it at this box */
