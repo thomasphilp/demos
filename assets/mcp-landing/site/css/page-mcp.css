@@ -3,6 +3,9 @@
 /* The site's Webflow CSS styles bare elements page-wide (p, a, headings, images…). Inside the page they go back to the
    browser defaults the demo is built on, and the page's own rules (all more specific) take it from there */
 .mcp-page { line-height: normal; letter-spacing: normal; }
+/* The page stacks on its own, so nothing in it (the intro's input sits at z-index 20) ever covers the site's nav and its
+   open menu (z-index 10 on tablets and phones) */
+.mcp-page { isolation: isolate; }
 .mcp-page :where(p, a, h1, h2, h3, h4, strong, b, em, small, ul, ol, li, button, img, video, figure, blockquote, label, input) { all: revert; }
 .mcp-page * { margin: 0; padding: 0; box-sizing: border-box; }
 .mcp-page {
@@ -1188,7 +1191,8 @@
    buttons under it that scrolls sideways off the right edge, and the photo darkens to black at the bottom */
 @media (max-width: 1000px) {
   .mcp-page .examples-stage { margin-top: 44px; }
-  .mcp-page .examples-stage::after { background: linear-gradient(to bottom, rgba(0,0,0,0) calc(100% - 339px), #000); }
+  /* The black fade spans the photo behind the slider, not the white beside it */
+  .mcp-page .examples-stage::after { width: min(1548px, 100% - 2 * var(--bg-inset)); margin: 0 auto; background: linear-gradient(to bottom, rgba(0,0,0,0) calc(100% - 339px), #000); }
   .mcp-page .topics { width: min(668px, 100% - 2 * var(--bg-inset)); height: auto; margin: 0 auto; padding: 0 0 81px; flex-direction: column; gap: 0; background: none; border: 0; border-radius: 0; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
   .mcp-page .examples-stage::before { content: none; }
   .mcp-page .topics > .topics-grid { display: none; }
@@ -1230,7 +1234,7 @@
 }
 /* Phones (Figma 432:2611): a smaller phone, its chat at the 375 frame's sizes */
 @media (max-width: 720px) {
-  .mcp-page .examples-stage::after { background: linear-gradient(to bottom, rgba(0,0,0,0) calc(100% - 205px), #000); }
+  .mcp-page .examples-stage::after { width: 100%; background: linear-gradient(to bottom, rgba(0,0,0,0) calc(100% - 205px), #000); }
   .mcp-page .topics { padding-bottom: 31px; }
   .mcp-page .topics-chat { width: min(317px, 100% - 26px); }
   .mcp-page .topics-body { height: 436px; }
