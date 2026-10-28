@@ -595,9 +595,9 @@
    UI); the paginator sits 13px under the window ── */
 .mcp-page .examples-stage::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(to bottom, rgba(255,255,255,0) 324px, #fff 764px); }
 .mcp-page .topics { position: relative; z-index: 2; width: min(1050px, 100% - 2 * var(--gutter)); height: 569px; margin: 108px auto 107px; display: flex; gap: 16px; padding: 12px; background: rgba(255,255,255,0.9); background-clip: padding-box; border: 4px solid rgba(255,255,255,0.36); border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); backdrop-filter: blur(68px); -webkit-backdrop-filter: blur(68px); }
-/* Gradient for UI (432:2486): a white fade from 493px down the photo, over the window's lower part, white 50px under
-   its bottom edge so its border and shadow fade out with it; the paginator sits on top */
-.mcp-page .examples-stage::before { content: ""; position: absolute; left: 0; right: 0; top: 493px; bottom: 0; z-index: 3; pointer-events: none; background: linear-gradient(to bottom, rgba(255,255,255,0), #fff 234px); }
+/* Gradient for UI (432:2486): a white fade over the window's lower part, from 433px down the photo and white just above
+   the window's bottom edge, so the edge, its border and shadow are hidden in it; the paginator sits on top */
+.mcp-page .examples-stage::before { content: ""; position: absolute; left: 0; right: 0; top: 433px; bottom: 0; z-index: 3; pointer-events: none; background: linear-gradient(to bottom, rgba(255,255,255,0), #fff 234px); }
 .mcp-page .topics-side { flex: none; width: 271px; display: flex; flex-direction: column; }
 .mcp-page .topics-agent { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: rgba(9,10,12,0.9); white-space: nowrap; }
 .mcp-page .topics-agent .agent-stack.is-dark { display: none; }

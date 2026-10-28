@@ -19,10 +19,10 @@ export function abandonMcpPage() {
   for (const el of document.querySelectorAll('main.mcp-page .tw-w')) el.classList.add('is-on')
   for (const el of document.querySelectorAll('main.mcp-page .is-typing')) el.classList.remove('is-typing')
   // Their listeners are gone with the rest, so the controls go back to how they render: the tiny copy button out of the
-  // line, the rest invisible in their places
+  // line, the rest invisible in their places (the autopilot cards' dots and pause button too, which the script added)
   for (const el of document.querySelectorAll('main.mcp-page .copy-tiny')) el.hidden = true
   for (const el of document.querySelectorAll(
-    'main.mcp-page :is([data-copy]:not(.copy-tiny), .stage-nav, .topics-steps)',
+    'main.mcp-page :is([data-copy]:not(.copy-tiny), .stage-nav, .topics-steps, .ap-dots)',
   ))
     el.setAttribute('data-wait', '')
 }
