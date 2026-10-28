@@ -1038,7 +1038,7 @@ export function initMcpPage(COPY, LANG) {
       '.setup-bg',
       '.steps',
       '.step',
-      '.examples > .signup-note, .apps .signup-note',
+      '.examples > .signup-note, .apps .signup-note, .setup .signup-note',
       ['.cta > .powered, .cta .actions > *', 0.35, true], // after the typed headline: Powered by, then Sign up and the URL box
     ]
     const STAGGER = 0.06

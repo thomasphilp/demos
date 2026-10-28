@@ -826,9 +826,12 @@
 .mcp-page .chat-grid > .cursor-grid { -webkit-mask: linear-gradient(to bottom, transparent var(--fade-a, 50%), #000 var(--fade-b, 60%)); mask: linear-gradient(to bottom, transparent var(--fade-a, 50%), #000 var(--fade-b, 60%)); }
 .mcp-page .hero:not([data-intro="done"]) .chat-grid > .cursor-grid { -webkit-mask: linear-gradient(to bottom, transparent var(--fade-a-intro, 50%), #000 var(--fade-b-intro, 60%)); mask: linear-gradient(to bottom, transparent var(--fade-a-intro, 50%), #000 var(--fade-b-intro, 60%)); }
 .mcp-page .autopilot { padding: 120px 0; display: flex; flex-direction: column; align-items: center; gap: 80px; }
-.mcp-page .autopilot .bracket-lines { width: min(1053px, calc(100% - 2 * var(--gutter))); height: 39px; }
-/* ends exactly on the box's top border, not across it */
-.mcp-page .autopilot .bracket-label { color: rgba(255,255,255,0.9); }
+/* As in the setup section: the logos stacked over a centred note broken into balanced lines; the bracket starts at the
+   first line's middle and ends exactly on the box's top border, not across it */
+.mcp-page .autopilot .bracket { height: 129px; justify-content: center; }
+.mcp-page .autopilot .bracket-lines { width: min(1053px, calc(100% - 2 * var(--gutter))); top: 65.5px; height: 76.5px; }
+.mcp-page .autopilot .bracket-label { flex-direction: column; line-height: 30px; color: rgba(255,255,255,0.9); }
+.mcp-page .autopilot .bracket-label .note { max-width: 640px; text-wrap: balance; }
 .mcp-page .ap-box { position: relative; width: min(var(--content), calc(100% - 2 * var(--gutter))); margin: 13px auto 0; border: 1px solid rgba(209,209,209,0.3); padding: 80px 51px 80px 92px; display: flex; flex-direction: column; gap: 36px; }
 .mcp-page .ap-row { display: flex; gap: 24px; align-items: flex-start; }
 .mcp-page .ap-title { width: 220px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; font-size: 22px; line-height: 32px; font-weight: 500; color: rgba(255,255,255,0.9); }
@@ -870,7 +873,7 @@
    one offset shadow under the lot */
 .mcp-page .apps-strip { width: min(1000px, 100%); margin: 0 auto; box-shadow: 10px 10px 0 rgba(53,53,53,0.25); }
 .mcp-page .apps-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.mcp-page .apps .signup-note { color: rgba(255,255,255,0.7); }
+.mcp-page :is(.apps, .setup) .signup-note { color: rgba(255,255,255,0.7); }
 /* Each tile is frosted like the setup steps box: a translucent fill with a background blur over the cursor grid.
    Its wordmark, a rule and the tools built on the app stack 32px apart; the launch mark sits in the top-right corner */
 .mcp-page .app-tile {
@@ -921,8 +924,6 @@
 .mcp-page .step:not(:first-child) .what { max-width: none; }
 .mcp-page .step-card { flex: 1; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); padding: 12px 16px; display: flex; flex-direction: column; justify-content: center; gap: 13px; font-family: var(--font-geist); color: #fff; }
 .mcp-page .step-card.is-center { align-items: center; }
-/* Under the third card, in the steps box's bottom padding, so the three cards stay the same height */
-.mcp-page .step .signup-note { position: absolute; left: 0; right: 0; top: calc(100% + 16px); text-align: left; color: rgba(255,255,255,0.7); }
 /* Figma 288:5067: the URL in its own outlined field */
 .mcp-page .step-card .url-row { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; font-family: var(--font-geist); font-size: 16px; font-weight: 400; line-height: 20px; }
 .mcp-page .step-card .url-row .ic { width: 16px; height: 16px; }
@@ -1008,12 +1009,9 @@
   .mcp-page .app-tile .app-rule { background: rgba(209,209,209,0.15); }
   .mcp-page .app-tile + .app-tile { border-left: 1px solid rgba(209,209,209,0.3); border-top: 0; }
   .mcp-page .app-tile .app-rule { align-self: flex-start; width: 248px; }
-  /* stacked steps don't need matching card heights, so the note sits in the flow under its card */
-  .mcp-page .step .signup-note { position: static; }
   .mcp-page .examples > .signup-note { bottom: 8px; }
   .mcp-page .bracket-lines { display: none; }
-  .mcp-page .setup .bracket { height: auto; }
-  .mcp-page .autopilot .bracket-label { flex-direction: column; }
+  .mcp-page :is(.setup, .autopilot) .bracket { height: auto; }
   /* logos over the note, as in the setup bracket */
   .mcp-page .ap-title { width: 100%; }
   .mcp-page .ap-note { margin-left: 0; }
