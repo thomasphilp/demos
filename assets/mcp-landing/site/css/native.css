@@ -45,6 +45,7 @@ body:has(#local-tab[aria-selected="true"]) .is-local { display: block; }
 .w-nav[data-product="dashboard-api"] .panel-dashboard-api { display: flex; }
 .w-nav[data-product="intelligence"] .panel-intelligence { display: flex; }
 .w-nav[data-product="national-ltl"] .panel-national-ltl { display: flex; }
+.w-nav[data-product="mcp"] .panel-mcp { display: flex; }
 /* React renders the menu without Webflow's positioning and clipping wrapper. */
 .w-nav-menu.w--nav-menu-open { position: absolute; height: auto; top: 100%; left: 0; right: 0; bottom: auto; animation-name: navigation-enter; animation-fill-mode: both; }
 .w-nav-menu.w--nav-menu-open[data-menu-phase="closing"] { animation-name: navigation-exit; }
@@ -81,6 +82,14 @@ button[data-native-link] { border: 0; cursor: pointer; text-align: inherit; }
 .w-nav[data-product="coverage"] .trigger-coverage:not(.trigger-box-light) { background-color:rgba(255,255,255,.05); }
 .w-nav[data-product="national-ltl"] .trigger-national-ltl-light { background-color:rgba(0,0,0,.05); }
 .w-nav[data-product="national-ltl"] .trigger-national-ltl:not(.trigger-box-light) { background-color:rgba(255,255,255,.05); }
+.w-nav[data-product="mcp"] .trigger-mcp-light { background-color:rgba(0,0,0,.05); }
+.w-nav[data-product="mcp"] .trigger-mcp:not(.trigger-box-light) { background-color:rgba(255,255,255,.05); }
+/* MCP's panel lays out like Galaxy API's; it has no artwork yet, so a black square stands in for its icons */
+.panel-reset-light.panel-mcp { grid-column-gap:0; grid-row-gap:0; background-color:var(--transparent--2-black); }
+.panel-reset-dark.panel-mcp { grid-column-gap:0; grid-row-gap:0; }
+.w-nav .mcp-menu-icon { display:block; height:auto; background:#000; }
+.w-nav .desktop-menu-icon.mcp-menu-icon { border-radius:4px; }
+.w-nav .mobille-menu-icon.mcp-menu-icon { border-radius:8px; }
 .w-nav [class*="trigger-box"] { transition: background-color 50ms linear; }
 @media (max-width:991px) {
  .w-nav-menu.w--nav-menu-open { position:fixed; top:0; bottom:64px; height:calc(100dvh - 64px); animation-name:navigation-mobile-enter; }
