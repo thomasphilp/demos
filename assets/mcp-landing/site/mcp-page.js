@@ -22,7 +22,7 @@ export function abandonMcpPage() {
   // line, the rest invisible in their places (the autopilot cards' dots and pause button too, which the script added)
   for (const el of document.querySelectorAll('main.mcp-page .copy-tiny')) el.hidden = true
   for (const el of document.querySelectorAll(
-    'main.mcp-page :is([data-copy]:not(.copy-tiny), .stage-nav, .topics-steps, .ap-dots)',
+    'main.mcp-page :is([data-copy]:not(.copy-tiny), .stage-nav, .topics-steps, .topics-label, .topics-list, .ap-dots)',
   ))
     el.setAttribute('data-wait', '')
 }
@@ -818,9 +818,10 @@ export function initMcpPage(COPY, LANG) {
       )
     })
     play.addEventListener('click', () => setPaused(!topicsNav.classList.contains('is-paused')), own)
-    // The dots, pause and arrows render hidden (keeping their space) and show now they work
+    // The tabs, dots, pause and arrows render invisible (keeping their space) and show now they work
     topicsNav.removeAttribute('data-wait')
-    for (const el of topics.querySelectorAll('.topics-steps')) el.removeAttribute('data-wait')
+    for (const el of topics.querySelectorAll('.topics-steps, .topics-label, .topics-list'))
+      el.removeAttribute('data-wait')
     // Keyboard focus in the topics window holds the timer, so the topic being read doesn't change under it. A mouse pick
     // focuses a tab too but leaves the timer running, as a pick should
     topics.addEventListener(

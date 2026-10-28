@@ -204,22 +204,20 @@
 .mcp-page .signup-link:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
 /* The address in a sentence keeps its tiny copy button on its line */
 .mcp-page .mcp-addr { white-space: nowrap; }
-/* An outlined box like the MCP address field in the setup steps (1px white at 15%, 4px corners), kept within the line */
-.mcp-page .copy-tiny { display: inline-flex; align-items: center; justify-content: center; height: 22px; margin: -4px 0 -4px 8px; padding: 0 7px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: inherit; font: 400 12px/1 var(--font-pixel); vertical-align: middle; cursor: pointer; transition: border-color 0.15s, background-color 0.15s, color 0.15s; }
+/* "Copy" after the address: an underlined word like Sign up */
+.mcp-page .copy-tiny { margin: 0 0 0 1ch; padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; transition: color 0.15s; }
 .mcp-page .copy-tiny[hidden] { display: none; }
 /* The other copy buttons, the slideshows' dots and pause buttons, and the topic arrows render invisible in their places
    (data-wait), so nothing moves when the script wires them up and shows them. Not [hidden], which the site's CSS takes
    out of the layout */
 .mcp-page [data-wait] { visibility: hidden; }
-.mcp-page .copy-tiny:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.06); color: #fff; }
-.mcp-page .copy-tiny:focus-visible { outline: 2px solid var(--green); outline-offset: 1px; }
-.mcp-page .copy-tiny.is-copied { color: var(--green); }
-/* On the white examples and devices sections: the same box in dark ink, and a dark check (the green doesn't read on white) */
-.mcp-page :is(.examples, .devices) .copy-tiny { border-color: rgba(9,10,12,0.15); }
-.mcp-page :is(.examples, .devices) .copy-tiny:hover { border-color: rgba(9,10,12,0.3); background: rgba(9,10,12,0.04); color: #090a0c; }
-.mcp-page :is(.examples, .devices) .copy-tiny.is-copied { color: #090a0c; }
-/* The sign-up reminders are all in Geist Pixel, the same as their links */
-.mcp-page .signup-note { font-family: var(--font-pixel); font-size: 14px; line-height: 26px; /* room between its two lines, and for the Copy box */ text-align: center; color: var(--label-muted); }
+.mcp-page .copy-tiny:hover { color: rgba(9,10,12,0.9); }
+.mcp-page .copy-tiny:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+/* The sign-up reminders under the topics, the desk/dock slider, the app tiles and setup step 3 (Figma 455:15815): two
+   tight lines of 12px pixel type in secondary ink, the middle words fainter, Sign up and Copy underlined words */
+.mcp-page .signup-note { font-family: var(--font-pixel); font-size: 12px; line-height: normal; text-align: center; color: rgba(9,10,12,0.6); }
+.mcp-page .signup-faint { color: rgba(9,10,12,0.4); }
+.mcp-page .signup-note :is(.signup-link, .copy-tiny) { text-decoration: underline; text-decoration-thickness: from-font; text-underline-position: from-font; text-underline-offset: auto; }
 .mcp-page .chat-time .ts-ic { display: none; }
 /* tablet and phone only */
 /* ── Hero ── */
@@ -673,13 +671,6 @@
 .mcp-page :is(.examples, .devices) > .signup-note { position: relative; z-index: 4; margin-top: 24px; padding: 0 var(--gutter); }
 /* Under the desk/dock slider the note comes first, where the controls were, and the controls follow it */
 .mcp-page .devices > .signup-note { margin-top: 28px; }
-/* The topics note (Figma 455:15815): two tight lines of 12px pixel type in secondary ink, "in 60 seconds then add"
-   fainter, and Copy an underlined word like Sign up rather than a box */
-.mcp-page .examples > .signup-note { font-size: 12px; line-height: normal; color: rgba(9,10,12,0.6); }
-.mcp-page .examples .signup-faint { color: rgba(9,10,12,0.4); }
-.mcp-page .examples :is(.signup-link, .copy-tiny) { text-decoration: underline; text-decoration-thickness: from-font; text-underline-position: from-font; text-underline-offset: auto; }
-.mcp-page .examples .copy-tiny { height: auto; margin: 0 0 0 1ch; padding: 0; border: 0; border-radius: 0; font: inherit; color: inherit; vertical-align: baseline; }
-.mcp-page .examples .copy-tiny:hover { border: 0; background: none; color: rgba(9,10,12,0.9); }
 .mcp-page .devices > .signup-note + .stage-nav { margin-top: 24px; }
 /* ── Devices ── */
 .mcp-page .devices-head { padding: 80px 0; }
@@ -935,7 +926,10 @@
    one offset shadow under the lot */
 .mcp-page .apps-strip { width: min(1000px, 100%); margin: 0 auto; box-shadow: 10px 10px 0 rgba(53,53,53,0.25); }
 .mcp-page .apps-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.mcp-page :is(.apps, .setup) .signup-note { color: rgba(255,255,255,0.7); }
+/* …and on the black sections the same in white */
+.mcp-page :is(.apps, .setup) .signup-note { color: rgba(255,255,255,0.6); }
+.mcp-page :is(.apps, .setup) .signup-faint { color: rgba(255,255,255,0.4); }
+.mcp-page :is(.apps, .setup) .copy-tiny:hover { color: #fff; }
 /* Each tile is frosted like the setup steps box: a translucent fill with a background blur over the cursor grid.
    Its wordmark, a rule and the tools built on the app stack 32px apart; the launch mark sits in the top-right corner */
 .mcp-page .app-tile {
