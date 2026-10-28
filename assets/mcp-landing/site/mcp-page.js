@@ -1572,10 +1572,12 @@ export function initMcpPage(COPY, LANG) {
       new ResizeObserver(reserve).observe(row)
       reserve()
       // Autoplay: once a reply has typed, the current dot's bar fills over 4.5s and the next example plays (looping);
-      // it waits while the card is off screen, and holds while the pointer is over the card or focus is inside it, so
-      // anyone reading can stop it
+      // it waits while the card is off screen, and holds while the pointer is over the card or focus is inside it.
+      // Picking an example (a tap on the card or a dot) stops it for good, so a touch or screen reader user who
+      // steps through the examples can read each one
       const AUTO_MS = 4500
-      let held = false
+      let held = false,
+        picked = false
       const stopTimer = () => {
         clearTimeout(auto)
         auto = 0
@@ -1583,7 +1585,7 @@ export function initMcpPage(COPY, LANG) {
       }
       const startTimer = () => {
         stopTimer()
-        if (reducedMotion || held || !visible || !reply.classList.contains('is-typed')) return
+        if (reducedMotion || held || picked || !visible || !reply.classList.contains('is-typed')) return
         void dots.offsetWidth // restart the fill
         dots.classList.add('is-timing')
         auto = setTimeout(() => show((cur + 1) % examples.length), AUTO_MS)
@@ -1662,12 +1664,10 @@ export function initMcpPage(COPY, LANG) {
         'click',
         (e) => {
           const dot = e.target.closest('.ap-dot')
-          if (dot) {
-            show([...dots.children].indexOf(dot))
-            return
-          }
-          if (getSelection().toString()) return // let people select text
-          show((cur + 1) % examples.length)
+          if (!dot && getSelection().toString()) return // let people select text
+          picked = true
+          stopTimer()
+          show(dot ? [...dots.children].indexOf(dot) : (cur + 1) % examples.length)
         },
         own,
       )
