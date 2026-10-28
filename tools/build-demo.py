@@ -16,7 +16,7 @@ and in Chinese from zh-cn.localhost, with the site's own nav and footer. It writ
 The site's server-side scripts don't come along: the page script runs on its own, and the nav menu opens with a small
 script that does what the site's Navigation component does. Python's standard library only.
 """
-import json, re, shutil, sys, urllib.request
+import json, re, shutil, sys, time, urllib.request
 from pathlib import Path
 
 DEMO = Path(__file__).resolve().parent.parent
@@ -156,7 +156,7 @@ document.getElementById('replay-intro').addEventListener('click', () => { scroll
     if (view === 'desktop') return;
     const [w, h] = SIZES[view];
     shell = Object.assign(document.createElement('div'), { className: 'vp-shell' });
-    const frame = Object.assign(document.createElement('iframe'), { title: `This page at ${w} × ${h}`, src: `${location.pathname}?embed=1`, allow: 'clipboard-write' });
+    const frame = Object.assign(document.createElement('iframe'), { title: `This page at ${w} × ${h}`, src: `${location.pathname}?embed=1&build=__BUILD__`, allow: 'clipboard-write' });
     frame.style.width = `${w}px`; frame.style.height = `min(${h}px, 100%)`;
     shell.appendChild(frame); document.body.appendChild(shell);
   };
@@ -164,6 +164,9 @@ document.getElementById('replay-intro').addEventListener('click', () => { scroll
   set(new URLSearchParams(location.search).get('view'));
 })();
 """
+
+# Each build stamps the framed page's address, so a browser never shows a framed copy cached from an older build
+SHELL_JS = SHELL_JS.replace('__BUILD__', str(int(time.time())))
 
 def shell(lang, body, title, description):
     other = 'zh-CN' if lang == 'en' else 'en'
