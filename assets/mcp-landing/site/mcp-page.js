@@ -542,8 +542,8 @@ export function initMcpPage(COPY, LANG) {
   }
 
   /* ── Topics: each topic's conversation plays in the chat (the question lands, then the reply types in). They autoplay
-     in turn with the active dot's fill as the timer (its animationend advances), hold while the pointer or focus is
-     on the window or it's off screen, and a topic or dot jumps straight to its conversation ── */
+     in turn with the active dot's fill as the timer (its animationend advances) and hold while off screen. Picking a
+     topic or a dot jumps to its conversation and the timer carries on from there; the pause button stops it ── */
   const topics = document.getElementById('topics'),
     topicsNav = document.getElementById('topics-nav')
   if (topics && topicsNav) {
@@ -558,7 +558,6 @@ export function initMcpPage(COPY, LANG) {
     const replies = convos.map((c) => [...c.querySelectorAll('.agent-msg .body > p')].map((el) => [el, el.textContent]))
     let current = 0,
       timers = [],
-      held = false,
       inView = false,
       started = false
     const playConvo = (i) => {
@@ -615,26 +614,31 @@ export function initMcpPage(COPY, LANG) {
         list.scrollTo({ left: tabs[i].offsetLeft, behavior: reducedMotion ? 'auto' : 'smooth' })
       playConvo(i)
     }
-    const setIdle = () => topicsNav.classList.toggle('is-idle', held || !inView)
+    const setIdle = () => topicsNav.classList.toggle('is-idle', !inView)
     const setPaused = (paused) => {
       topicsNav.classList.toggle('is-paused', paused)
       play.setAttribute('aria-label', tr(paused ? 'playSlideshow' : 'pauseSlideshow'))
     }
+    // A manual pick starts the timer again if it was paused, as the slider's dots do
+    const pick = (i) => {
+      setPaused(reducedMotion)
+      show(i)
+    }
     dots.forEach((d, i) => {
-      d.addEventListener('click', () => show(i))
+      d.addEventListener('click', () => pick(i))
       d.querySelector('.fill').addEventListener('animationend', () => {
         if (!topicsNav.classList.contains('is-paused')) show((current + 1) % convos.length)
       })
     })
     tabs.forEach((tab, i) => {
-      tab.addEventListener('click', () => show(i))
+      tab.addEventListener('click', () => pick(i))
       // Arrow keys move along the topics, as tabs do
       tab.addEventListener('keydown', (e) => {
         const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key]
         if (!step) return
         e.preventDefault()
         const next = (i + step + tabs.length) % tabs.length
-        show(next)
+        pick(next)
         tabs[next].focus()
       })
     })
@@ -642,24 +646,6 @@ export function initMcpPage(COPY, LANG) {
     // A held height is for one layout; let it go when the window changes size
     addEventListener('resize', () => {
       convos[current].style.minHeight = ''
-    })
-    topics.addEventListener('pointerenter', (e) => {
-      if (e.pointerType !== 'mouse') return
-      held = true
-      setIdle()
-    })
-    topics.addEventListener('pointerleave', () => {
-      held = topics.contains(document.activeElement)
-      setIdle()
-    })
-    topics.addEventListener('focusin', () => {
-      held = true
-      setIdle()
-    })
-    topics.addEventListener('focusout', (e) => {
-      if (topics.contains(e.relatedTarget)) return
-      held = topics.matches(':hover')
-      setIdle()
     })
     // The first conversation plays once the window comes into view; off screen the timer holds
     new IntersectionObserver(
