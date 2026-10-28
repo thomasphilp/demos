@@ -17,6 +17,7 @@ export function abandonMcpPage() {
   // Headings already split for typing hide each word until it's typed: put them all in
   for (const el of document.querySelectorAll('main.mcp-page .tw')) el.classList.add('is-typed')
   for (const el of document.querySelectorAll('main.mcp-page .tw-w')) el.classList.add('is-on')
+  for (const el of document.querySelectorAll('main.mcp-page .is-typing')) el.classList.remove('is-typing')
   // Their listeners are gone with the rest, so the copy buttons go back to hidden
   for (const el of document.querySelectorAll('main.mcp-page [data-copy]')) el.hidden = true
 }
@@ -225,6 +226,11 @@ export function initMcpPage(COPY, LANG) {
       viewBox: '0 0 18 24',
       inner:
         '<path fill-rule="evenodd" clip-rule="evenodd" d="M1.125 1.875C1.125 1.25368 1.62868 0.75 2.25 0.75H4.5C5.12132 0.75 5.625 1.25368 5.625 1.875V22.125C5.625 22.7463 5.12132 23.25 4.5 23.25H2.25C1.95163 23.25 1.66548 23.1315 1.4545 22.9205C1.24353 22.7095 1.125 22.4234 1.125 22.125L1.125 1.875ZM12.375 1.875C12.375 1.25368 12.8787 0.75 13.5 0.75H15.75C16.0484 0.75 16.3345 0.868526 16.5455 1.0795C16.7565 1.29048 16.875 1.57663 16.875 1.875L16.875 22.125C16.875 22.7463 16.3713 23.25 15.75 23.25H13.5C12.8787 23.25 12.375 22.7463 12.375 22.125V1.875Z" fill="currentColor"/>',
+    },
+    'outline/arrow-top-right-on-square': {
+      viewBox: '0 0 24 24',
+      inner:
+        '<path d="M13.5 6H5.25C4.00736 6 3 7.00736 3 8.25V18.75C3 19.9926 4.00736 21 5.25 21H15.75C16.9926 21 18 19.9926 18 18.75V10.5M7.5 16.5L21 3M21 8.25V3L15.75 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
     },
     'outline/check': {
       viewBox: '0 0 27 24',
@@ -680,7 +686,7 @@ export function initMcpPage(COPY, LANG) {
     const playConvo = (i) => {
       timers.forEach(clearTimeout)
       timers = []
-      convos.forEach((c) => c.querySelector('.agent-msg').classList.remove('is-thinking'))
+      convos.forEach((c) => c.querySelector('.agent-msg').classList.remove('is-thinking', 'is-typing'))
       const convo = convos[i],
         msg = convo.querySelector('.agent-msg'),
         dot = msg.querySelector(':scope > .dot')
@@ -700,6 +706,8 @@ export function initMcpPage(COPY, LANG) {
       replies[i].forEach(([el]) => {
         el.textContent = ''
       })
+      // A card under the reply (Book a shipment's dashboard handoff) waits until the reply has typed
+      msg.classList.add('is-typing')
       const cursor = document.createElement('span')
       cursor.className = 'dot is-inline'
       dot.style.visibility = 'hidden'
@@ -717,6 +725,7 @@ export function initMcpPage(COPY, LANG) {
         setTimeout(() => {
           cursor.remove()
           dot.style.visibility = ''
+          msg.classList.remove('is-typing')
         }, t + 100),
       )
     }
