@@ -971,7 +971,7 @@ export function initMcpPage(COPY, LANG) {
       '.stage-wrap, .stage-nav',
       '.ap-box',
       '.ap-row',
-      '.app-tile',
+      '.apps-grid, .apps-many',
       '.setup-bg',
       '.steps',
       '.step',

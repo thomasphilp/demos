@@ -410,8 +410,6 @@
 .mcp-page .agent-logo { display: flex; align-items: center; gap: 5px; font-family: var(--font-geist); font-weight: 500; font-size: 13.96px; color: #141414; white-space: nowrap; }
 .mcp-page .agent-logo > img { width: 20px; height: 20px; }
 .mcp-page .agent-logo > img.wordmark { width: auto; }
-.mcp-page .app-logo { display: flex; align-items: center; gap: 9px; font-family: var(--font-logo); font-weight: 600; font-size: 18px; color: #1b1533; white-space: nowrap; }
-.mcp-page .app-logo > img { width: 24px; height: 24px; }
 .mcp-page .powered { position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .mcp-page .powered-mark { display: block; width: 154.0019px; height: 12.9618px; }
 /* Figma 390:5821: the Mothership SI logo, at its own size */
@@ -829,40 +827,37 @@
 .mcp-page .ap-dot:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
 .mcp-page .apps { padding: 60px 0 92px; }
 .mcp-page .apps .exchange { gap: 80px; }
-.mcp-page .apps-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 48px 32px; }
+/* Figma 422:15463: the three tiles share their borders in one 1000px strip, with one offset shadow under it */
+.mcp-page .apps-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: min(1000px, 100%); margin: 0 auto; box-shadow: 10px 10px 0 rgba(53,53,53,0.25); }
 .mcp-page .apps .signup-note { color: rgba(255,255,255,0.7); }
-/* Each tile is frosted like the setup steps box: translucent dark fill with a background blur over the cursor grid.
-   --tile-solid is roughly that fill over the black page: the Launch label's top half, so it masks the border
-   without leaving a black patch inside the tile (its bottom half is the page black). */
+/* Each tile is frosted like the setup steps box: a translucent fill with a background blur over the cursor grid.
+   Its wordmark, a rule and the tools built on the app stack 32px apart; the launch mark sits in the top-right corner */
 .mcp-page .app-tile {
-  position: relative; height: 244px; border: 1px solid rgba(209,209,209,0.3);
-  display: flex; flex-direction: column; align-items: center; padding-top: 47px; background: rgba(255,255,255,0.01);
-  box-shadow: 10px 10px 0 rgba(53,53,53,0.25);
-  backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); transition: border-color 0.2s, background-color 0.2s;
+  position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 32px; padding: 40px 24px;
+  border: 1px solid rgba(209,209,209,0.3); background: rgba(255,255,255,0.01);
+  backdrop-filter: blur(64px); -webkit-backdrop-filter: blur(64px); transition: border-color 0.2s, background-color 0.2s;
 }
-.mcp-page .app-tile:hover { border-color: rgba(255,255,255,0.7); background-color: rgba(255,255,255,0.07); }
+.mcp-page .app-tile + .app-tile { border-left: 0; }
+.mcp-page .app-tile:hover { background-color: rgba(255,255,255,0.07); }
 /* The app's link covers the whole tile; a tool from another company (Cursor) sits above it with its own link */
 .mcp-page .app-tile a { color: inherit; text-decoration: none; }
+.mcp-page .app-tile .app-link { display: flex; }
+.mcp-page .app-tile .app-link img { width: auto; height: 40px; }
 .mcp-page .app-tile .app-link::after { content: ""; position: absolute; inset: 0; z-index: 1; }
 .mcp-page .app-tile .app-link:focus-visible { outline: none; }
-.mcp-page .app-tile:has(.app-link:focus-visible) { outline: 2px solid #fff; outline-offset: 3px; }
+.mcp-page .app-tile:has(.app-link:focus-visible) { outline: 2px solid #fff; outline-offset: -3px; }
 .mcp-page .app-tile .app-more > a { position: relative; z-index: 2; }
 .mcp-page .app-tile .app-more > a:hover { text-decoration: underline; text-underline-offset: 4px; }
 .mcp-page .app-tile .app-more > a:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
-.mcp-page .app-tile .app-logo { font-size: 26.94px; color: #fff; gap: 20px; }
-.mcp-page .app-tile .app-logo > img { width: 35.93px; height: 35.93px; }
-/* Claude and Grok show their wordmarks beside the mark, at Figma's sizes */
-.mcp-page .app-tile .app-logo > img.wordmark { width: auto; height: 25px; }
-.mcp-page .app-tile .app-logo.is-grok { gap: 16px; }
-.mcp-page .app-tile .app-logo.is-grok > img.wordmark { height: 21px; }
-/* Figma 402:8495 / 402:8597: a faint plus, then the tools built on the app */
-.mcp-page .app-tile .app-plus { margin-top: 10px; font-family: var(--font-geist); font-weight: 600; font-size: 26.89px; line-height: 32px; color: #fff; opacity: 0.3; }
-.mcp-page .app-tile .app-more { display: flex; align-items: center; gap: 37px; margin-top: 16px; }
-.mcp-page .app-tile .app-more.is-tight { gap: 21px; }
-.mcp-page .app-tile .app-more > :is(span, a) { display: flex; align-items: center; gap: 11.39px; font-family: var(--font-geist); font-weight: 600; font-size: 15.85px; color: #fff; white-space: nowrap; }
-.mcp-page .app-tile .app-more img { width: auto; height: 21px; }
-/* Figma 343:7727: an export mark in the bottom-right corner of the tiles that open an app */
-.mcp-page .app-tile .launch { position: absolute; right: 15px; bottom: 15px; width: 20px; height: 20px; color: #fff; }
+.mcp-page .app-tile .app-rule { align-self: stretch; height: 1px; background: rgba(209,209,209,0.3); }
+.mcp-page .app-tile .app-more { display: flex; align-items: center; gap: 32px; }
+.mcp-page .app-tile .app-more > :is(span, a) { display: flex; align-items: center; gap: 12px; font-family: var(--font-geist); font-weight: 500; font-size: 13.96px; line-height: 18px; color: #fff; white-space: nowrap; }
+.mcp-page .app-tile .app-more img { width: auto; height: 20px; }
+.mcp-page .app-tile .launch { position: absolute; right: 16px; top: 16px; width: 20px; height: 20px; color: #fff; }
+/* Figma 417:15344: "and many more" and four more apps' marks, 48px under the strip (the section stacks its parts 80px apart) */
+.mcp-page .apps-many { display: flex; align-items: center; justify-content: center; gap: 42px; margin-top: -32px; font-family: var(--font-geist); font-weight: 500; font-size: 13.96px; line-height: 18px; color: #fff; }
+.mcp-page .apps-many-logos { display: flex; align-items: center; gap: 42px; }
+.mcp-page .apps-many-logos img { width: 30px; height: 30px; }
 .mcp-page .setup { position: relative; padding: 96px 0; overflow: hidden; }
 .mcp-page .setup-bg { position: absolute; left: 0; right: 0; top: -198px; height: 1282px; pointer-events: none; overflow: hidden; }
 /* Slow Ken Burns: a 26.7s drift in toward the cube and back out, on a loop */
@@ -954,16 +949,19 @@
   .mcp-page .ap-box { padding: 80px 56px; }
   /* the desktop's 92px title column no longer applies once the rows wrap */
   .mcp-page .ap-note { width: 100%; max-width: 536px; margin-left: 244px; }
-  .mcp-page .apps-grid { gap: 24px; }
 }
 @media (max-width: 1000px) {
   .mcp-page .steps { flex-direction: column; }
   .mcp-page .step-arrow { display: none; }
   /* Figma Built (768) 343:13290 */
   .mcp-page .cta .display { font-size: 52px; line-height: 58px; letter-spacing: -0.02em; max-width: 676px; }
-  /* Figma Built (768) 402:8593: one tile per row, the logo, plus and tools lined up on the left */
-  .mcp-page .apps-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; width: 100%; max-width: 602px; margin: 0 auto; }
-  .mcp-page .app-tile { height: 218px; align-items: flex-start; padding-left: 46px; }
+  /* Figma Built (768) 351:1998: the tiles stack in one 673px column, still sharing their borders */
+  /* wider than the headline column above it: it shares that column's right edge and runs 48px from each side, as in Figma */
+  .mcp-page .apps .exchange { --strip: min(673px, 100vw - 96px); }
+  .mcp-page :is(.apps-grid, .apps-many) { width: var(--strip); margin-left: calc(100% - var(--strip)); }
+  .mcp-page .apps-grid { grid-template-columns: minmax(0, 1fr); }
+  .mcp-page .app-tile + .app-tile { border-left: 1px solid rgba(209,209,209,0.3); border-top: 0; }
+  .mcp-page .app-tile .app-rule { align-self: flex-start; width: 248px; }
   /* stacked steps don't need matching card heights, so the note sits in the flow under its card */
   .mcp-page .step .signup-note { position: static; }
   .mcp-page .examples > .signup-note { bottom: 8px; }
@@ -1035,7 +1033,11 @@
   .mcp-page .stage-wrap { margin-top: 44px; }
 }
 @media (max-width: 720px) {
-  .mcp-page .app-tile { padding-left: 24px; }
+  /* Figma Built (375) 351:2638: narrower tiles, closer together, and the marks under their label */
+  .mcp-page :is(.apps-grid, .apps-many) { width: 100%; margin-left: 0; }
+  .mcp-page .app-tile { gap: 20px; padding: 24px 16px; }
+  .mcp-page .app-tile .app-rule { align-self: stretch; width: auto; }
+  .mcp-page .apps-many { flex-direction: column; gap: 18px; }
   .mcp-page { --gutter: 16px; --bg-inset: var(--gutter); }
   .mcp-page .hero { padding: 116px 0 64px; }
   .mcp-page .chat-app { min-height: 0; }
