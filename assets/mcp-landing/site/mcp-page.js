@@ -605,7 +605,8 @@ export function initMcpPage(COPY, LANG) {
   // preload, so reduced motion never downloads it and shows the poster
   if (!reducedMotion) {
     heroVideo.muted = true
-    // It plays only while the hero is on screen and not paused by its button, and pauses once the page scrolls past it
+    // It plays only while the hero is on screen and not paused by its button, and pauses once the page scrolls past it.
+    // The button pauses the logo row too (the hero's class)
     const pauseBtn = hero.querySelector('.hero-pause')
     let heroVisible = false,
       heroPaused = false
@@ -621,7 +622,8 @@ export function initMcpPage(COPY, LANG) {
         () => {
           heroPaused = !heroPaused
           pauseBtn.classList.toggle('is-paused', heroPaused)
-          pauseBtn.setAttribute('aria-label', tr(heroPaused ? 'playVideo' : 'pauseVideo'))
+          hero.classList.toggle('is-paused', heroPaused)
+          pauseBtn.setAttribute('aria-label', tr(heroPaused ? 'playMotion' : 'pauseMotion'))
           syncVideo()
         },
         { signal: abort.signal },
