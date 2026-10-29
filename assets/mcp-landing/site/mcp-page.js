@@ -416,7 +416,9 @@ export function initMcpPage(COPY, LANG) {
   const composer = hero.querySelector('.intro-composer')
   const QUESTION = typedWords(tr('heroQuestion')) // the <b> run types bold: the ask itself (as "ship freight" was in Figma 299:692)
   // Reduced motion can be turned on while the page is open: it's read live, and whatever runs on its own (the slideshows,
-  // the hero video, the cursor grids and shaders) stops then, through the callbacks given to onReducedMotion
+  // the hero video, the cursor grids and shaders) stops then, through the callbacks given to onReducedMotion.
+  // Turned off again, the page reloads: much of the motion (the video, cursor grids, shaders, comets) is never set up
+  // under reduced motion, and a fresh start sets all of it up. The router puts the scroll position back
   const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
   let reducedMotion = motionQuery.matches
   const reduceCallbacks = []
@@ -426,6 +428,7 @@ export function initMcpPage(COPY, LANG) {
     (e) => {
       reducedMotion = e.matches
       if (reducedMotion) reduceCallbacks.forEach((fn) => fn())
+      else window.location.reload()
     },
     { signal: abort.signal },
   )
