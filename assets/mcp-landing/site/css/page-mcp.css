@@ -299,11 +299,11 @@
 /* two lines of the question: "…book, and" / "track freight from AI chat?" */
 .mcp-page .hero-user .page-bubble { width: var(--hero-bubble-w); text-wrap: balance; }
 /* where it needs three lines, no word left alone on the last */
-.mcp-page .hero-reply { display: flex; flex-direction: column; gap: 20px; max-width: 840px; }
+.mcp-page .hero-reply { display: flex; flex-direction: column; gap: 20px; max-width: 1000px; }
 .mcp-page .hero-reply > .agent-tag, .mcp-page .setup .exchange-agent > .agent-tag { font-size: 13px; font-weight: 600; }
 /* Figma 245:969: SemiBold 13 */
 .mcp-page .hero-reply > .agent-tag { color: rgba(9,10,12,0.9); }
-/* Two lines in Geist: 72px fits "Yes. Connect Mothership" in 822px; narrower threads scale the type down to keep it there */
+/* Two lines in Geist: 72px fits "Yes. Connect Mothership MCP" in 957px; narrower threads scale the type down to keep it there */
 /* "Connect Mothership" (and the closing CTA headline): once the headline has typed, a single iridescent band sweeps across it, left to right
    (an upright band).
    Its colours are the hero clip's: the cube's teal and steel blue catching the sunset's peach and sand.
@@ -351,7 +351,7 @@
 @media (prefers-reduced-motion: reduce) {
   .mcp-page .iri-fill, .mcp-page .iri::before, .mcp-page .iri::after, .mcp-page .iri-glow::before { animation: none !important; }
 }
-.mcp-page .hero-reply h1 { font-family: var(--font-display); font-weight: 600; font-size: min(72px, 8.5cqi); line-height: 1.04; letter-spacing: -0.04em; color: var(--ink); }
+.mcp-page .hero-reply h1 { font-family: var(--font-display); font-weight: 600; font-size: min(72px, 7.2cqi); line-height: 1.04; letter-spacing: -0.04em; color: var(--ink); }
 /* Connect frame: thin outline whose top/bottom edges open around the label and "Powered by" */
 /* Spans the chat column: headline's left edge to the bubble's right edge */
 .mcp-page .hero-connect { width: var(--thread-w); margin: 110px auto 56px; display: flex; flex-direction: column; }
