@@ -222,7 +222,7 @@
 /* tablet and phone only */
 /* ── Hero ── */
 .mcp-page .hero { position: relative; padding: 143px 0 120px; overflow: hidden; }
-/* The clip is placed by script so the cube sits dead centre in the viewport. The cube is high in the frame,
+/* The clip is placed so the cube sits dead centre in the viewport. The cube is high in the frame,
    so the space above the clip is a sky fill built from the clip's top edge (sampled across 0–8s),
    lightening upward so the nav's black logo and labels stand out, and the clip's top edge fades into it */
 .mcp-page .hero-bg {
@@ -234,7 +234,24 @@
     linear-gradient(to right, #7dabb5, #97afb9 16.7%, #90a9b4 33.3%, #799ead 50%, #7a9fad 66.7%, #829fab 83.3%, #598c9c) top / 100% calc(var(--sky-h) + 64px) no-repeat,
     #fff;
 }
-.mcp-page .hero-bg video { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* The cube, 53.5% across and 33% down the clip, lands on the viewport's centre. The clip is the hero's width plus 7.5%
+   so the cube can be centred, and wide enough that the cube fills 60% of the screen (up to 300px); past 1000px it's 50%
+   bigger. It's placed here rather than by script so placing it never moves it, and without JavaScript it still shows
+   framed; the script keeps the same numbers (VW, VH, CX and CY in mcp-page.js) for the fade and the intro. .hero-bg
+   starts 164px above the hero, and --cube-y, the cube's centre in the hero, comes from the script's viewport height
+   once it runs */
+.mcp-page .hero-bg video {
+  position: absolute; left: 50%; top: calc(var(--cube-y, 50svh) + 164px);
+  width: max(100% / 0.93, min(300vw, 1500px)); aspect-ratio: 1536 / 672;
+  translate: -53.5% -33%; transform-origin: 53.5% 33%; object-fit: fill;
+  -webkit-mask: linear-gradient(to bottom, transparent, #000 64px, #000 calc(100% - 120px), transparent);
+  mask: linear-gradient(to bottom, transparent, #000 64px, #000 calc(100% - 120px), transparent);
+}
+@media (min-width: 1001px) { .mcp-page .hero-bg video { width: calc(max(100% / 0.93, min(300vw, 1500px)) * 1.5); } }
+/* Hidden until the script has placed it (is-placed): it sets the sky above the clip, and on tablets and phones the
+   intro's zoom on the cube, so the first frame shown is the intro's own rather than the clip at rest, then a jump.
+   A start that fails sets the intro to done (abandonMcpPage), which shows it where the CSS puts it */
+@media (scripting: enabled) { .mcp-page .hero:not([data-intro="done"]) .hero-bg video:not(.is-placed) { visibility: hidden; } }
 /* After the intro the clip, its sky and the fade glide up together so the cube's top shows above the chat
    (--cube-lift is set with the clip placement) */
 .mcp-page .hero-bg { transition: transform 0.9s cubic-bezier(.16,1,.3,1); }
@@ -244,7 +261,6 @@
 .mcp-page .hero:not([data-intro="done"]) .hero-bg video.is-placed { scale: var(--intro-zoom, 1); }
 .mcp-page .hero:not([data-intro="done"]) .hero-bg { height: var(--intro-bg-h, 986px) !important; }
 .mcp-page .hero[data-intro="done"] .hero-bg video.is-placed { transition: scale 0.9s cubic-bezier(.16,1,.3,1) 0.12s; }
-.mcp-page .hero-bg video.is-placed { position: absolute; object-fit: fill; -webkit-mask: linear-gradient(to bottom, transparent, #000 64px, #000 calc(100% - 120px), transparent); mask: linear-gradient(to bottom, transparent, #000 64px, #000 calc(100% - 120px), transparent); }
 /* White fade over the video: fully white by the chat card's vertical middle, solid white below.
    Placed by script against the chat (which doesn't move), so the lift never shifts it. */
 @property --fade-len { syntax: '<length>'; inherits: false; initial-value: 536px; }
@@ -1381,6 +1397,15 @@
   .mcp-page .topic { font-size: 16px; line-height: 20px; }
   .mcp-page :is(.topics-agent, .topics-steps) { margin-top: 64px; }
 }
+/* ── Endless loops hold while nobody can see them: any one of them makes the browser draw a frame on every vsync.
+   mcp-page.js marks a loop's element is-offscreen while it's off screen. !important, because several loops set the
+   animation shorthand, which resets the play state and can outrank a plain pause ── */
+.mcp-page .is-offscreen, .mcp-page .is-offscreen::before, .mcp-page .is-offscreen::after { animation-play-state: paused !important; }
+/* …and these are on screen but can't be seen: the intro's input once it has faded out, the slides not on show
+   (visibility: hidden doesn't stop an animation), and the dots' beam while their slideshow is paused or off screen */
+.mcp-page .hero[data-intro="done"] .intro-composer::before, .mcp-page .hero[data-intro="done"] .intro-composer .caret { animation-play-state: paused; }
+.mcp-page .scene:not(.is-active, .is-prev) .composer::before, .mcp-page .scene:not(.is-active, .is-prev) .composer .caret, .mcp-page .scene:not(.is-active, .is-prev) .agent-tag { animation-play-state: paused !important; }
+.mcp-page .stage-nav:is(.is-paused, .is-idle) .stage-dots::before { animation-play-state: paused; }
 @media (prefers-reduced-motion: reduce) {
   .mcp-page *, .mcp-page *::before, .mcp-page *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
   /* The dot fill is the slideshow's timer, so it keeps its real duration */

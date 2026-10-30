@@ -101,3 +101,22 @@ button[data-native-link] { border: 0; cursor: pointer; text-align: inherit; }
 @keyframes navigation-mobile-exit { from { clip-path:inset(0); } to { clip-path:inset(100% 0 0); } }
 
 .w-dyn-item { margin-bottom: 0; }
+
+/* Same-day starting prices: every region shares one grid cell, so the block keeps its size while they rotate. The
+   pause button sits in its own column, left of the prices and level with the region name. */
+.starting-price-rotator { display: grid; grid-template-columns: auto auto; justify-items: end; text-align: right; }
+.starting-price-rotator-item { grid-area: 1 / 2; display: flex; flex-direction: column; align-items: flex-end; opacity: 0; transform: translateY(.5em); }
+.starting-price-rotator-item[data-state="active"] { opacity: 1; transform: none; transition: opacity .4s ease, transform .4s ease; }
+.starting-price-rotator-item[data-state="previous"] { transform: translateY(-.5em); transition: opacity .4s ease, transform .4s ease; }
+.starting-price-rotator-region { margin-top: .5rem; color: var(--gray--500); font-size: .8rem; letter-spacing: -.25px; line-height: 1.2; white-space: nowrap; }
+.starting-price-rotator-toggle { grid-area: 1 / 1; align-self: end; display: grid; place-items: center; width: 1.5rem; height: 1.5rem; margin: 0 .125rem -.3rem 0; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--gray--500); cursor: pointer; }
+.starting-price-rotator-toggle svg { width: .6rem; height: .6rem; fill: currentColor; }
+.starting-price-rotator-toggle:hover { color: var(--gray--600); }
+
+/* Phones: region names wrap instead of running past the card, and the local same-day page stacks its feature cards in
+   one column. The webflow styles hide the same-day delivery card's content there, so its empty box goes too. */
+@media screen and (max-width: 767px) {
+  .starting-price-rotator-region { white-space: normal; }
+  .grid-9 { grid-template-columns: 1fr; }
+  .grid-9 > .local-features:has(> .same-day-delivery) { display: none; }
+}

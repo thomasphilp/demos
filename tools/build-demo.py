@@ -16,7 +16,7 @@ and in Chinese from zh-cn.localhost, with the site's own nav and footer. It writ
 The site's server-side scripts don't come along: the page script runs on its own, and the nav menu opens with a small
 script that does what the site's Navigation component does. Python's standard library only.
 """
-import json, re, shutil, sys, time, urllib.request
+import json, re, shutil, subprocess, sys, time, urllib.request
 from pathlib import Path
 
 DEMO = Path(__file__).resolve().parent.parent
@@ -81,7 +81,13 @@ for name in STYLES:
     for ref in re.findall(r'url\(["\']?(?!data:|https?:|#)([^)"\']+)["\']?\)', css):
         take('/site/' + str((Path('css') / ref).as_posix()).replace('css/../', ''))
 script = site_paths((APP / 'src/components/marketing/mcp-page.js').read_text())
+# The page script imports its loop registry from a TypeScript file next to it; the browser gets it with the types
+# stripped (Node's own stripTypeScriptTypes: the file holds only erasable types), as mcp-loops.js
+script = script.replace("from './mcp-loops'", "from './mcp-loops.js'")
 (OUT / 'mcp-page.js').write_text(script)
+(OUT / 'mcp-loops.js').write_text(subprocess.run(
+    ['node', '-e', "process.stdout.write(require('node:module').stripTypeScriptTypes(require('node:fs').readFileSync(process.argv[1], 'utf8')))",
+     str(APP / 'src/components/marketing/mcp-loops.ts')], check=True, capture_output=True, text=True).stdout)
 shutil.copy2(APP / 'src/i18n/catalogs/mcp.json', OUT / 'mcp-copy.json')
 page = next(p for p in json.loads((APP / 'src/content/marketing/pages.json').read_text()) if p['slug'] == 'mcp')
 zh_meta = json.loads((APP / 'src/i18n/page-metadata.zh-CN.json').read_text())['mcp']

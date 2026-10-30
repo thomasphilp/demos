@@ -1,4 +1,6 @@
 /* biome-ignore-all lint: plain DOM script written as one file; Biome formats it but its lint rules aren't applied */
+import { cssLoop, Loops } from './mcp-loops.js'
+
 /** The page this script is running on: its <main>, and how to stop it */
 let current = null
 /** Whether the script has run since the document loaded: only that first run can be a refresh */
@@ -94,6 +96,10 @@ export function initMcpPage(COPY, LANG) {
     a.addEventListener('cancel', () => animations.delete(a))
     return a
   }
+  // Every endless loop registers here with the element that shows it, and runs only while that's on screen. Any one of
+  // them makes the browser draw a frame on every vsync, scrolled away or hidden by a media query alike
+  const loops = new Loops(abort.signal)
+  const loop = (el, a) => (a ? loops.add(el, a) : a)
   // WebGPU devices for the shaders: destroying one frees every canvas texture made on it
   const devices = new Set()
   const openDevice = async () => {
@@ -341,6 +347,8 @@ export function initMcpPage(COPY, LANG) {
     ta.remove()
     return ok
   }
+  // A copy that worked bubbles 'mcp:copied' from its button; the page (mcp.tsx) sends it to analytics
+  const announceCopy = (btn) => btn.dispatchEvent(new CustomEvent('mcp:copied', { bubbles: true }))
   // The tiny text button beside the address in a sentence: "Copy", then "Copied" for a moment
   document.querySelectorAll('[data-copy][data-copy-tiny]').forEach((btn) => {
     const name = tr('copyAria')
@@ -352,6 +360,7 @@ export function initMcpPage(COPY, LANG) {
       'click',
       async () => {
         const ok = await copyText(btn.dataset.copy)
+        if (ok) announceCopy(btn)
         btn.textContent = tr(ok ? 'copied' : 'copyFailed')
         btn.setAttribute('aria-label', tr(ok ? 'copied' : 'copyFailed'))
         btn.classList.toggle('is-copied', ok)
@@ -381,6 +390,7 @@ export function initMcpPage(COPY, LANG) {
         void btn.offsetWidth
         btn.classList.add('is-tapped')
         if (await copyText(btn.dataset.copy)) {
+          announceCopy(btn)
           done.innerHTML = `${checkIcon}${tr('copied')}`
           btn.setAttribute('aria-label', tr('copied'))
         } else {
@@ -432,9 +442,14 @@ export function initMcpPage(COPY, LANG) {
     },
     { signal: abort.signal },
   )
-  // Web Animations started through animate() (the connect frame's lines, the URL rims' comets) loop on their own: cancel them
+  // Web Animations started through animate() (the connect frame's lines, the URL rims' comets) loop on their own: cancel them.
+  // The registry lets them go first, or the next time one scrolls into view it would play it again
   onReducedMotion(() => {
-    for (const a of animations) a.cancel()
+    loops.pause()
+    for (const a of animations) {
+      loops.remove(a)
+      a.cancel()
+    }
   })
   let introTimers = []
   const later = (fn, ms) => introTimers.push(setTimeout(fn, ms))
@@ -527,9 +542,10 @@ export function initMcpPage(COPY, LANG) {
   sendBtn.addEventListener('animationend', () => sendBtn.classList.remove('is-pressed'), { signal: abort.signal })
   // Start once the hero photo is ready (fallback after 1.5s) so the first frames aren't stalled by decoding
   const heroVideo = hero.querySelector('.hero-bg video')
-  /* Cube dead centre in the viewport: size the clip to the width (at least a 60%-of-screen cube, up to 300px),
-     then place it so the cube's centre lands on the viewport's centre. The input and the chat's grow-in
-     origin follow the cube. */
+  /* Cube dead centre in the viewport: the clip is sized to the width (at least a 60%-of-screen cube, up to 300px) and
+     placed so the cube's centre lands on the viewport's centre. The CSS places it (.hero-bg video in page-mcp.css) and
+     keeps it hidden until place() marks it is-placed; these numbers match it, and the input, the fade and the chat's
+     grow-in origin follow the cube. */
   ;(() => {
     const VW = 1536,
       VH = 672 // clip size
@@ -549,22 +565,14 @@ export function initMcpPage(COPY, LANG) {
       const s =
         Math.max(w / VW, w / 2 / ((1 - CX) * VW), w / 2 / (CX * VW), Math.min(innerWidth * 0.6, 300) / (CUBE_W * VW)) *
         (innerWidth > 1000 ? 1.5 : 1)
-      const vw = VW * s,
-        vh = VH * s,
+      const vh = VH * s,
         top = y - CY * vh
-      Object.assign(heroVideo.style, {
-        left: `${w / 2 - CX * vw}px`,
-        top: `${top}px`,
-        width: `${vw}px`,
-        height: `${vh}px`,
-      })
-      heroVideo.classList.add('is-placed')
       // Tablets and phones: through the intro the clip zooms in on the cube (from its centre) so at least 100px of it shows
       // above and below the input; it eases back as the chat comes in
       const cubeClear = parseFloat(getComputedStyle(composer).getPropertyValue('--composer-h')) / 2 + 100,
         zoom = innerWidth > 1000 ? 1 : Math.max(1, cubeClear / ((CY - CUBE_TOP) * vh))
-      heroVideo.style.transformOrigin = `${CX * vw}px ${CY * vh}px`
       hero.style.setProperty('--intro-zoom', `${zoom}`)
+      heroVideo.classList.add('is-placed')
       // …and the clip's box reaches as far down as the zoomed clip, so it isn't cut off in a hard white line
       bg.style.setProperty('--intro-bg-h', `${top + CY * vh + (1 - CY) * vh * zoom}px`)
       bg.style.height = `${top + vh}px`
@@ -572,7 +580,8 @@ export function initMcpPage(COPY, LANG) {
       // White fade: fully white at the chat card's middle (over 90% of its top half), solid white down to the clip's end
       const mid = chat.offsetTop + chat.offsetHeight / 2,
         fadeLen = Math.max(200, (mid - chat.offsetTop) * 0.9)
-      fade.style.top = `${mid - fadeLen}px`
+      // Moved from its CSS top with a transform, which never counts as a layout shift
+      fade.style.transform = `translateY(${mid - fadeLen - fade.offsetTop}px)`
       fade.style.height = `${Math.max(fadeLen, bg.offsetTop + top + vh - (mid - fadeLen))}px`
       // During the intro the fade drops a little, and on tablets and phones far enough to clear the cube under the input,
       // and 30px more so no white shows between the clip and the bottom bar
@@ -1092,23 +1101,30 @@ export function initMcpPage(COPY, LANG) {
       const L = paths[0].getTotalLength() // both sides are the same length
       if (!L || reducedMotion) return
       const t = anims[0] ? anims[0].currentTime : null
-      anims.forEach((a) => a.cancel())
+      anims.forEach((a) => {
+        loops.remove(a)
+        a.cancel()
+      })
       anims = paths.map((p, i) => {
         const len = LENS[i % 4] * L
         p.style.strokeDasharray = `${len}px ${L * 3}px`
-        return animate(
-          p,
-          [
-            { strokeDashoffset: `${len}px`, easing: 'cubic-bezier(.45,0,.35,1)' },
-            { strokeDashoffset: `${len - RUN * L}px`, offset: 0.7 },
-            { strokeDashoffset: `${len - RUN * L}px` },
-          ],
-          {
-            duration: LOOP,
-            iterations: Infinity,
-            delay: (t === null ? 1200 : 0) + (i >= 8 ? FOLLOW : 0),
-            fill: i >= 8 ? 'backwards' : 'auto',
-          },
+        // On the comets' own svg, which page-mcp.css hides below 1080px
+        return loop(
+          svg,
+          animate(
+            p,
+            [
+              { strokeDashoffset: `${len}px`, easing: 'cubic-bezier(.45,0,.35,1)' },
+              { strokeDashoffset: `${len - RUN * L}px`, offset: 0.7 },
+              { strokeDashoffset: `${len - RUN * L}px` },
+            ],
+            {
+              duration: LOOP,
+              iterations: Infinity,
+              delay: (t === null ? 1200 : 0) + (i >= 8 ? FOLLOW : 0),
+              fill: i >= 8 ? 'backwards' : 'auto',
+            },
+          ),
         )
       })
       if (t !== null)
@@ -1122,6 +1138,11 @@ export function initMcpPage(COPY, LANG) {
       clearTimeout(picker)
       const a = anims[0],
         at = 0.85 * LOOP
+      // Held off screen: look again in a loop
+      if (a.playState === 'paused') {
+        picker = setTimeout(pick, LOOP)
+        return
+      }
       const local = a.currentTime - a.effect.getTiming().delay // ms into the lead's loops, negative before it starts
       const phase = local < 0 ? null : local % LOOP
       if (phase === null || phase >= at - 30) svg.classList.toggle('is-double', Math.random() < 0.5)
@@ -1176,14 +1197,20 @@ export function initMcpPage(COPY, LANG) {
       paths.forEach((p) => p.setAttribute('d', `M0.5 0.5 H${W - 0.5} V${H - 0.5} H0.5 Z`)) // clockwise from the top-left corner
       const P = paths[0].getTotalLength()
       const t = anims[0] ? anims[0].currentTime : 0
-      anims.forEach((a) => a.cancel())
+      anims.forEach((a) => {
+        loops.remove(a)
+        a.cancel()
+      })
       anims = paths.map((p, i) => {
         const len = LENS[i] * P
         p.style.strokeDasharray = `${len}px ${P - len}px`
-        return animate(p, [{ strokeDashoffset: `${len}px` }, { strokeDashoffset: `${len - P}px` }], {
-          duration: LOOP,
-          iterations: Infinity,
-        })
+        return loop(
+          svg,
+          animate(p, [{ strokeDashoffset: `${len}px` }, { strokeDashoffset: `${len - P}px` }], {
+            duration: LOOP,
+            iterations: Infinity,
+          }),
+        )
       })
       anims.forEach((a) => {
         a.currentTime = t
@@ -1192,6 +1219,14 @@ export function initMcpPage(COPY, LANG) {
     new ResizeObserver(trace).observe(box)
     trace()
   })
+
+  /* ── CSS loops: the frame's glitch, the logo marquee, the setup photo's Ken Burns, the agent tags' sweep and the
+     composers' shine run only while on screen (page-mcp.css holds an element marked is-offscreen) ── */
+  document
+    .querySelectorAll(
+      '.cf-line, .cf-tab, .cf-body, .marquee-track, .setup-bg img, .agent-tag, .intro-composer, .scene .composer',
+    )
+    .forEach((el) => loops.add(el, cssLoop(el)))
 
   /* ── Hero chat card: fade its chrome to white from the top of the connect block ── */
   ;(() => {
@@ -1743,7 +1778,9 @@ export function initMcpPage(COPY, LANG) {
             (el) =>
               el &&
               el.getAnimations().forEach((a) => {
-                if (a.animationName) {
+                // The agent tag's sweep is an endless loop the registry holds off screen: a play() here would take it
+                // out of CSS's hands for good
+                if (a.animationName && a.animationName !== 'mcp-agent-sweep') {
                   a.cancel()
                   a.play()
                 }
@@ -1855,8 +1892,8 @@ export function initMcpPage(COPY, LANG) {
       if (w === Math.round(box.w) && h === Math.round(box.h) && b.x === box.x && b.y === box.y) return
       box = b
       cols = o.cols(w) * DENSITY
-      cell = w / cols
-      rows = Math.ceil(h / cell)
+      const size = w / cols
+      rows = Math.ceil(h / size)
       heat = new Float32Array(cols * rows)
       out = new Float32Array(cols * rows)
       life = new Float32Array(cols * rows).fill(1)
@@ -1865,7 +1902,11 @@ export function initMcpPage(COPY, LANG) {
         if (!cv._crop) Object.assign(cv.style, { left: `${b.x}px`, top: `${b.y}px`, width: `${w}px`, height: `${h}px` })
       })
       sizeCanvases()
-      buildTiles()
+      // The tiles depend only on the cell size, so a change in height alone (a topic's reply resizing the examples) keeps them
+      if (size !== cell) {
+        cell = size
+        buildTiles()
+      }
       draw()
     }
     // o.shows (optional) says which mirrors are on screen: the others get no backing, so they hold no memory and
@@ -2149,11 +2190,21 @@ export function initMcpPage(COPY, LANG) {
     let raf = 0,
       photo = 0,
       scrolling = false,
-      settle = 0
+      settle = 0,
+      onScreen = false
     const shade = () =>
       shades.forEach((img, i) =>
-        img.classList.toggle('is-on', scrolling && i === photo && exPhoto.matches(':not(.reveal), .is-visible')),
+        img.classList.toggle(
+          'is-on',
+          onScreen && scrolling && i === photo && exPhoto.matches(':not(.reveal), .is-visible'),
+        ),
       )
+    // Scrolling anywhere on the page swaps in the shaded photo, and with it the live shader's full-size frames, so it
+    // waits for the photos to be on screen
+    new IntersectionObserver(([e]) => {
+      onScreen = e.isIntersecting
+      if (!onScreen) shade()
+    }).observe(exBg)
     const step = () => {
       raf = 0
       const box = exBg.getBoundingClientRect()
@@ -2759,6 +2810,16 @@ export function initMcpPage(COPY, LANG) {
     }
     const device = await openDevice()
     if (!device) return
+    // A lost device can't draw again: the slides go back to their baked PNGs, as without WebGPU
+    let lost = false
+    device.lost.then(() => {
+      lost = true
+      for (const s of shaded) {
+        s.canvas.remove()
+        s.layer.classList.remove('is-shaded')
+      }
+      shaded.length = 0
+    })
     const format = navigator.gpu.getPreferredCanvasFormat()
     // Each slide's shader is built the first time its slide comes up, at the slider's size on screen (at most 1.5x),
     // so the hidden slides hold no GPU memory until they are shown; until then a slide shows its baked PNG
@@ -2771,7 +2832,7 @@ export function initMcpPage(COPY, LANG) {
         Math.min(1, parseFloat(stageWrap.style.getPropertyValue('--stage-scale')) || stageWrap.offsetWidth / W)
       const img = layer.querySelector('img.source')
       await img.decode().catch(() => {})
-      if (stopped()) return
+      if (stopped() || lost) return
       const w = Math.round(W * dpr),
         h = Math.round(H * dpr)
       // Cover-crop the photo into its CSS box (the whole layer, or the Figma crop on slide 3) on an input canvas the size of the layer
@@ -2818,7 +2879,7 @@ export function initMcpPage(COPY, LANG) {
       frame.output = ctx.getCurrentTexture()
       PatternScreen.render(device, frame)
       layer.classList.add('is-shaded')
-      shaded.push({ frame, ctx, layer, w, scene: layer.closest('.scene'), last: 0 })
+      shaded.push({ frame, ctx, canvas, layer, w, scene: layer.closest('.scene'), last: 0 })
     }
     const pending = new Map(
       [...document.querySelectorAll('[data-shader]')].map((layer) => [layer, layer.closest('.scene')]),
@@ -2839,7 +2900,7 @@ export function initMcpPage(COPY, LANG) {
       raf = 0
     const tick = (ts) => {
       raf = 0
-      if (!inView || document.hidden || reducedMotion) return
+      if (!inView || document.hidden || reducedMotion || lost) return
       shaded.forEach((s) => {
         if (!s.scene || !s.scene.matches('.is-active, .is-prev') || ts - s.last < 33) return
         s.last = ts
@@ -2932,14 +2993,33 @@ export function initMcpPage(COPY, LANG) {
     const ctx = cv.getContext('webgpu')
     ctx.configure({ device, format, alphaMode: 'premultiplied' })
     const dpr = Math.min(window.devicePixelRatio || 1, 1.5)
+    // The shader's own buffers, sampler and pipeline don't depend on the photo's size, so they're made once
+    const frame = {
+      state: {},
+      params: { ...PARAMS, patternScale: PARAMS.patternScale * dpr },
+      input: null,
+      output: null,
+      time: 0,
+      ripple: 1,
+      box: null,
+    }
+    PatternScreen.setup(device, frame)
+    // A lost device (a driver reset, the GPU process going down, memory pressure) can't draw again, so the shaded PNGs
+    // take over, as they do without WebGPU
+    let lost = false
+    device.lost.then(() => {
+      lost = true
+      cv.remove()
+      exBg.classList.remove('has-live-shade')
+    })
     let w = 0,
-      inputs = [],
-      frame = null
-    // One input texture per photo, cover-cropped to the photo's box, rebuilt when the box changes size
+      inputs = []
+    // One input texture per photo, cover-cropped to the photo's box, rebuilt when the box changes width
     const build = () => {
+      if (lost) return false
       const W = Math.round(exPhoto.offsetWidth * dpr),
         H = Math.round(exPhoto.offsetHeight * dpr)
-      if (!W || !H || W === w) return !!frame
+      if (!W || !H || W === w) return w > 0
       w = W
       cv.width = W
       cv.height = H
@@ -2958,16 +3038,7 @@ export function initMcpPage(COPY, LANG) {
         device.queue.copyExternalImageToTexture({ source: src }, { texture: tex, premultipliedAlpha: true }, [W, H])
         return tex
       })
-      frame = {
-        state: {},
-        params: { ...PARAMS, patternScale: PARAMS.patternScale * dpr },
-        input: inputs[0],
-        output: null,
-        time: 0,
-        ripple: 1,
-        box: null,
-      }
-      PatternScreen.setup(device, frame)
+      frame.input = inputs[0]
       return true
     }
     if (!build()) return
@@ -2996,6 +3067,7 @@ export function initMcpPage(COPY, LANG) {
       liveUntil = 0
     const tick = (ts) => {
       raf = 0
+      if (lost) return
       const i = shades.findIndex((sh) => sh.classList.contains('is-on'))
       cv.classList.toggle('is-on', i >= 0)
       if (i >= 0) {
