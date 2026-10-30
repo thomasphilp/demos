@@ -618,7 +618,8 @@ export function initMcpPage(COPY, LANG) {
   if (!reducedMotion) {
     heroVideo.muted = true
     // It plays only while the hero is on screen and not paused by its button, and pauses once the page scrolls past it.
-    // The button pauses the logo row too (the hero's class)
+    // The button holds every endless loop on the page too (the frame's glitch and comets, the logos, the agent tags'
+    // sweep, the composers' shine): its name says it pauses the animation
     const pauseBtn = hero.querySelector('.hero-pause')
     let heroVisible = false,
       heroPaused = false
@@ -634,7 +635,8 @@ export function initMcpPage(COPY, LANG) {
         () => {
           heroPaused = !heroPaused
           pauseBtn.classList.toggle('is-paused', heroPaused)
-          hero.classList.toggle('is-paused', heroPaused)
+          if (heroPaused) loops.pause()
+          else loops.resume()
           pauseBtn.setAttribute('aria-label', tr(heroPaused ? 'playMotion' : 'pauseMotion'))
           syncVideo()
         },
@@ -1220,11 +1222,12 @@ export function initMcpPage(COPY, LANG) {
     trace()
   })
 
-  /* ── CSS loops: the frame's glitch, the logo marquee, the setup photo's Ken Burns, the agent tags' sweep and the
-     composers' shine run only while on screen (page-mcp.css holds an element marked is-offscreen) ── */
+  /* ── CSS loops: the frame's glitch, the logo marquee, the setup photo's Ken Burns, the agent tags' sweep, the
+     composers' shine and the answers' blinking cursors run only while on screen (page-mcp.css holds an element marked
+     is-offscreen) ── */
   document
     .querySelectorAll(
-      '.cf-line, .cf-tab, .cf-body, .marquee-track, .setup-bg img, .agent-tag, .intro-composer, .scene .composer',
+      '.cf-line, .cf-tab, .cf-body, .marquee-track, .setup-bg img, .agent-tag, .intro-composer, .scene .composer, .cursor-block',
     )
     .forEach((el) => loops.add(el, cssLoop(el)))
 

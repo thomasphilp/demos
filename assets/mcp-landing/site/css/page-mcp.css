@@ -457,8 +457,8 @@
 .mcp-page .marquee-track { display: flex; width: max-content; animation: mcp-marquee 25s linear infinite; }
 .mcp-page .marquee-set { display: flex; gap: 54px; padding-right: 54px; }
 @keyframes mcp-marquee { to { transform: translateX(-50%); } }
-/* Stops under the pointer, and with the hero's pause button */
-.mcp-page .marquee:hover .marquee-track, .mcp-page .hero.is-paused .marquee-track { animation-play-state: paused; }
+/* Stops under the pointer (the hero's pause button holds it with the page's other loops) */
+.mcp-page .marquee:hover .marquee-track { animation-play-state: paused; }
 .mcp-page .agent-logo { display: flex; align-items: center; gap: 5px; font-family: var(--font-geist); font-weight: 500; font-size: 13.96px; color: #141414; white-space: nowrap; }
 .mcp-page .agent-logo > img { width: 20px; height: 20px; }
 .mcp-page .agent-logo > img.wordmark { width: auto; }
