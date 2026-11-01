@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="264" viewBox="0 0 680 264" font-family="Helvetica, Arial, sans-serif">
+<defs>
+<pattern id="streets" width="13" height="13" patternUnits="userSpaceOnUse" patternTransform="rotate(-3)">
+<path d="M0 0.5H13M0.5 0V13" stroke="#fff" stroke-width="1"/>
+</pattern>
+<filter id="relief" x="0" y="0" width="100%" height="100%">
+<feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="4" seed="7"/>
+<feColorMatrix values="0 0 0 0 0.42  0 0 0 0 0.56  0 0 0 0 0.38  0 0 0 0.9 -0.25"/>
+<feComposite in2="SourceGraphic" operator="in"/>
+</filter>
+<filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+<feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000" flood-opacity="0.3"/>
+</filter>
+<g id="shield">
+<path d="M-9 -9.5Q0 -12 9 -9.5V0Q9 7 0 10.5Q-9 7 -9 0Z" fill="#2a5db0" stroke="#fff" stroke-width="1.5"/>
+<path d="M-8.2 -8.8Q0 -11 8.2 -8.8V-5.5H-8.2Z" fill="#d23b33"/>
+</g>
+<g id="state">
+<rect x="-10" y="-8" width="20" height="16" rx="3" fill="#fff" stroke="#6b6b6b" stroke-width="1.2"/>
+</g>
+</defs>
+
+<rect width="680" height="264" fill="#ece9e2"/>
+<rect width="680" height="264" fill="url(#streets)" opacity="0.75"/>
+
+<!-- Arterial grid -->
+<g stroke="#fff" stroke-width="2.4" fill="none">
+<path d="M0 22L680 0M0 76L680 56M0 133L680 112M0 188L680 168M0 244L680 224"/>
+<path d="M36 0L48 264M98 0L110 264M160 0L172 264M222 0L234 264M314 0L326 264M380 0L392 264M466 0L478 264M530 0L542 264M600 0L612 264"/>
+</g>
+
+<!-- Parks, foothills, and the San Gabriel Mountains -->
+<g fill="#d3e6c6">
+<path d="M0 0H680V44C640 52 600 58 560 54S500 40 450 44 380 30 330 26 260 20 220 14 140 22 100 12 40 8 0 14Z"/>
+<path d="M318 168C352 160 392 164 428 172S488 190 500 206 474 236 440 234 380 222 350 214 302 196 304 182 310 170 318 168Z"/>
+<path d="M226 136C244 130 266 134 270 146S256 164 240 162 220 152 222 144Z"/>
+<path d="M150 62C166 58 182 64 180 74S164 86 152 82 140 66 150 62Z"/>
+<path d="M412 82C424 78 440 82 440 92S426 104 414 100 402 86 412 82Z"/>
+</g>
+<g filter="url(#relief)">
+<path d="M0 0H680V44C640 52 600 58 560 54S500 40 450 44 380 30 330 26 260 20 220 14 140 22 100 12 40 8 0 14Z" fill="#000"/>
+<path d="M318 168C352 160 392 164 428 172S488 190 500 206 474 236 440 234 380 222 350 214 302 196 304 182 310 170 318 168Z" fill="#000"/>
+</g>
+
+<!-- Water -->
+<g fill="#b9d7ee">
+<path d="M296 56C306 52 318 56 316 64S302 72 296 68 290 60 296 56Z"/>
+<path d="M420 88C428 86 434 90 432 95S422 100 418 97 414 90 420 88Z"/>
+</g>
+<g stroke="#b9d7ee" stroke-width="2.2" fill="none" stroke-linecap="round">
+<path d="M70 0C84 30 104 70 118 104S138 170 132 210 122 250 120 264"/>
+<path d="M300 66C296 100 286 140 280 180S270 230 268 264"/>
+</g>
+
+<!-- Freeways -->
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<g stroke="#e3b23c" stroke-width="7.5">
+<path id="i210" d="M140 0C150 26 176 44 220 46S300 52 340 56 410 70 450 76 520 82 560 84 640 80 680 78"/>
+<path id="r60" d="M112 112C160 126 210 144 250 152S330 172 370 180 450 192 500 196 600 200 680 202"/>
+<path id="i5" d="M30 24C60 50 90 80 112 102S170 170 200 204 240 250 254 264"/>
+<path id="i605" d="M288 40C286 90 284 140 282 180S280 240 279 264"/>
+<path id="i57" d="M444 74C448 100 452 130 452 150S440 220 420 264"/>
+<path id="i15" d="M652 0C648 60 644 120 642 170S640 240 640 264"/>
+<path id="r71" d="M486 138C494 170 502 200 508 230S514 254 516 264"/>
+<path id="i110" d="M112 106C108 150 104 200 100 264"/>
+<path id="us101" d="M112 102C90 84 60 70 30 60S8 52 0 50"/>
+<path id="i10" d="M0 98C40 102 80 104 112 106S190 114 230 118 310 122 350 125 410 130 450 134 530 142 568 147 640 154 680 158"/>
+</g>
+<g stroke="#f9d66f" stroke-width="5">
+<use href="#i210"/><use href="#r60"/><use href="#i5"/><use href="#i605"/><use href="#i57"/><use href="#i15"/><use href="#r71"/><use href="#i110"/><use href="#us101"/><use href="#i10"/>
+</g>
+</g>
+
+<!-- Place names -->
+<g font-size="12" fill="#77746c" text-anchor="middle" stroke="#ece9e2" stroke-width="3" paint-order="stroke">
+<text x="176" y="36">Pasadena</text>
+<text x="352" y="44">Azusa</text>
+<text x="496" y="68">Claremont</text>
+<text x="604" y="70">Upland</text>
+<text x="226" y="96">El Monte</text>
+<text x="380" y="106">West Covina</text>
+<text x="470" y="164">Pomona</text>
+<text x="196" y="172">Montebello</text>
+<text x="254" y="206">Whittier</text>
+<text x="588" y="232">Chino</text>
+</g>
+<g font-size="11" font-style="italic" fill="#5e8a52" text-anchor="middle" stroke="#d3e6c6" stroke-width="2.5" paint-order="stroke">
+<text x="430" y="20" letter-spacing="1.5">SAN GABRIEL MOUNTAINS</text>
+<text x="400" y="204">Puente Hills</text>
+</g>
+
+<!-- Route shields -->
+<g font-size="8.5" font-weight="700" text-anchor="middle">
+<g transform="translate(262 120)"><use href="#shield"/><text y="4" fill="#fff">10</text></g>
+<g transform="translate(616 152)"><use href="#shield"/><text y="4" fill="#fff">10</text></g>
+<g transform="translate(260 49)"><use href="#shield"/><text y="4" fill="#fff">210</text></g>
+<g transform="translate(284 238)"><use href="#shield"/><text y="4" fill="#fff">605</text></g>
+<g transform="translate(450 112)"><use href="#shield"/><text y="4" fill="#fff">57</text></g>
+<g transform="translate(644 112)"><use href="#shield"/><text y="4" fill="#fff">15</text></g>
+<g transform="translate(184 194)"><use href="#shield"/><text y="4" fill="#fff">5</text></g>
+<g transform="translate(330 175)"><use href="#state"/><text y="3" fill="#333">60</text></g>
+<g transform="translate(502 216)"><use href="#state"/><text y="3" fill="#333">71</text></g>
+</g>
+
+<!-- Route: driven from Ontario to the truck, dotted on to Los Angeles -->
+<path d="M568 147C530 142 490 138 450 134S390 128 350 125" stroke="#fff" stroke-width="9" fill="none" stroke-linecap="round"/>
+<path d="M568 147C530 142 490 138 450 134S390 128 350 125" stroke="#141414" stroke-width="5" fill="none" stroke-linecap="round"/>
+<path d="M350 125C310 122 270 120 230 118S150 108 112 106" stroke="#141414" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-dasharray="0.1 9"/>
+
+<!-- Origin, destination, truck -->
+<circle cx="568" cy="147" r="7.5" fill="#fff" stroke="#141414" stroke-width="4" filter="url(#shadow)"/>
+<g filter="url(#shadow)">
+<path d="M112 108C104 98 98 91 98 84A14 14 0 0 1 126 84C126 91 120 98 112 108Z" fill="#141414"/>
+<circle cx="112" cy="84" r="5" fill="#fff"/>
+</g>
+<circle cx="350" cy="125" r="19" fill="#54e04d" opacity="0.22"/>
+<circle cx="350" cy="125" r="11" fill="#54e04d" stroke="#fff" stroke-width="3" filter="url(#shadow)"/>
+
+<g font-size="16" font-weight="700" fill="#141414" text-anchor="middle" stroke="#fff" stroke-width="4" paint-order="stroke" stroke-linejoin="round">
+<text x="112" y="62">Los Angeles</text>
+<text x="568" y="178">Ontario</text>
+</g>
+</svg>

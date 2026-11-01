@@ -253,6 +253,26 @@ export function initMcpPage(COPY, LANG) {
       inner:
         '<path d="M13.5 6H5.25C4.00736 6 3 7.00736 3 8.25V18.75C3 19.9926 4.00736 21 5.25 21H15.75C16.9926 21 18 19.9926 18 18.75V10.5M7.5 16.5L21 3M21 8.25V3L15.75 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
     },
+    'outline/arrow-down-tray': {
+      viewBox: '0 0 24 24',
+      inner:
+        '<path d="M3 16.5V18.75C3 19.9926 4.00736 21 5.25 21H18.75C19.9926 21 21 19.9926 21 18.75V16.5M16.5 12L12 16.5M12 16.5L7.5 12M12 16.5V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+    },
+    'solid/devices': {
+      viewBox: '0 0 24 24',
+      inner:
+        '<path fill-rule="evenodd" clip-rule="evenodd" d="M2.5 4h12A1.5 1.5 0 0 1 16 5.5v9H1v-9A1.5 1.5 0 0 1 2.5 4ZM3 6v6.5h11V6H3ZM0 16h17v1a1.5 1.5 0 0 1-1.5 1.5h-14A1.5 1.5 0 0 1 0 17v-1ZM19.5 7h3A1.5 1.5 0 0 1 24 8.5v11a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 18 19.5v-11A1.5 1.5 0 0 1 19.5 7ZM20 18v1h2v-1h-2Z" fill="currentColor"/>',
+    },
+    'solid/clock': {
+      viewBox: '0 0 24 24',
+      inner:
+        '<path fill-rule="evenodd" clip-rule="evenodd" d="M12 1.5C6.201 1.5 1.5 6.201 1.5 12S6.201 22.5 12 22.5 22.5 17.799 22.5 12 17.799 1.5 12 1.5ZM13 6a1 1 0 1 0-2 0v6a1 1 0 0 0 1 1h4.5a1 1 0 1 0 0-2H13V6Z" fill="currentColor"/>',
+    },
+    'outline/clock': {
+      viewBox: '0 0 24 24',
+      inner:
+        '<path d="M12 6V12H16.5M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+    },
     'outline/check': {
       viewBox: '0 0 27 24',
       inner:
@@ -275,10 +295,10 @@ export function initMcpPage(COPY, LANG) {
       el.innerHTML = `<svg viewBox="${icon.viewBox}" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${icon.inner}</svg>`
   })
 
-  /* "Your AI agent" tags: turn the icon into a mask (so the sweep can fill it) and wrap the label.
+  /* "Your AI agent" tags, in any language: turn the icon into a mask (so the sweep can fill it) and wrap the label.
      The phone app's title bar stays still. */
   document.querySelectorAll('.agent-tag').forEach((tag) => {
-    if (!/your ai agent/i.test(tag.textContent) || tag.closest('.phone .app-head')) return
+    if (tag.closest('.phone .app-head')) return
     tag.classList.add('is-shimmer')
     const svg = tag.querySelector('.ic svg')
     if (svg) {
@@ -729,12 +749,9 @@ export function initMcpPage(COPY, LANG) {
       body.setAttribute('aria-hidden', 'true')
       body.after(copy)
     })
-    // What the agent says while it thinks: one is picked at random each time, never the same twice running
-    const THINKING = Array.from({ length: 12 }, (_, i) => tr(`thinking${i + 1}`))
     const THINK_MS = 1000
     let current = 0,
       timers = [],
-      lastThink = '',
       inView = false,
       started = false
     const playConvo = (i) => {
@@ -760,18 +777,12 @@ export function initMcpPage(COPY, LANG) {
       replies[i].forEach(([el]) => {
         el.textContent = ''
       })
-      // A card under the reply (Book a shipment's dashboard handoff) waits until the reply has typed
+      // A card under the reply (Book a shipment's dashboard handoff, the receipt's and invoice's PDFs) waits until the reply has typed
       msg.classList.add('is-typing')
       const cursor = document.createElement('span')
       cursor.className = 'dot is-inline'
       dot.style.visibility = 'hidden'
-      // Think first: once the question lands the star works and a thinking line sweeps for a second, then it types
-      let pick
-      do {
-        pick = THINKING[Math.floor(Math.random() * THINKING.length)]
-      } while (THINKING.length > 1 && pick === lastThink)
-      lastThink = pick
-      msg.querySelector('.think .tag-label').textContent = pick
+      // Think first: once the question lands the star works and the topic's thinking line sweeps for a second, then it types
       timers.push(setTimeout(() => msg.classList.add('is-thinking'), 200))
       timers.push(setTimeout(() => msg.classList.remove('is-thinking'), 200 + THINK_MS))
       const t = typeParts(replies[i], null, cursor, 200 + THINK_MS + 160, timers)
@@ -1421,7 +1432,7 @@ export function initMcpPage(COPY, LANG) {
   new ResizeObserver(fitStage).observe(stageWrap)
   fitStage()
 
-  // "For example" bracket: its side lines run down to the top of the slider photo, however the copy wraps
+  // "Available on your computer and your phone" bracket: its side lines run down to the top of the slider photo, however the copy wraps
   // (offsets, so the reveal's translate doesn't skew it)
   {
     const devices = stageWrap.closest('.devices'),
@@ -1637,14 +1648,18 @@ export function initMcpPage(COPY, LANG) {
      The first example is the one in the markup. A card only switches once its first reply has typed,
      so the page's top-to-bottom reveal queue (which waits on that typing) is never cut short. */
   ;(() => {
-    // Each row's two extra examples come from the copy (ap1More1Q / ap1More1A …)
-    const MORE = [1, 2, 3].map((r) => [1, 2].map((m) => ({ q: tr(`ap${r}More${m}Q`), a: tr(`ap${r}More${m}A`) })))
+    // Each row's two extra examples come from the copy (ap1More1Q / ap1More1A …). In a card where the agent writes first,
+    // Q is the routine that sent the message rather than a question. A card whose reply attaches a file also names it (File)
+    const MORE = [1, 2, 3].map((r) =>
+      [1, 2].map((m) => ({ q: tr(`ap${r}More${m}Q`), a: tr(`ap${r}More${m}A`), f: tr(`ap${r}More${m}File`) })),
+    )
     document.querySelectorAll('.ap-row').forEach((row, r) => {
       const card = row.querySelector('.ap-card'),
-        bubble = card.querySelector('.chat-bubble'),
-        reply = card.querySelector('.agent-msg p')
+        bubble = card.querySelector('.chat-bubble, .ap-routine-name'),
+        reply = card.querySelector('.agent-msg p'),
+        file = card.querySelector('.file-name')
       if (!MORE[r]) return
-      const examples = [{ q: bubble.textContent, a: reply.textContent }, ...MORE[r]]
+      const examples = [{ q: bubble.textContent, a: reply.textContent, f: file?.textContent }, ...MORE[r]]
       let cur = 0,
         ready = false,
         timer,
@@ -1681,12 +1696,14 @@ export function initMcpPage(COPY, LANG) {
           width: `${card.offsetWidth}px`,
         })
         card.after(probe)
-        const pb = probe.querySelector('.chat-bubble'),
-          pa = probe.querySelector('.agent-msg p')
+        const pb = probe.querySelector('.chat-bubble, .ap-routine-name'),
+          pa = probe.querySelector('.agent-msg p'),
+          pf = probe.querySelector('.file-name')
         const tallest = Math.max(
           ...examples.map((ex) => {
             pb.textContent = ex.q
             pa.textContent = ex.a
+            if (pf) pf.textContent = ex.f
             return probe.offsetHeight
           }),
         )
@@ -1767,6 +1784,7 @@ export function initMcpPage(COPY, LANG) {
         timer = setTimeout(() => {
           const ex = examples[i]
           bubble.textContent = ex.q
+          if (file) file.textContent = ex.f
           // Re-split the reply into words for the typewriter
           if (reply._tw) {
             reply._tw.timers.forEach(clearTimeout)

@@ -116,7 +116,7 @@
 /* Bracket title: label sits in the gap of a thin outline that drops into the content */
 .mcp-page .bracket { position: relative; display: flex; flex-direction: column; align-items: center; }
 .mcp-page .bracket-label { position: relative; z-index: 1; display: flex; align-items: center; gap: 8px; padding: 8px; font-size: 22px; line-height: 32px; font-weight: 500; text-align: center; }
-/* Figma: the white sections' labels ("Here's how people ask", "For example") are SemiBold; the dark ones stay Medium */
+/* Figma: the white sections' labels ("Here's an example of what customers ask", "Available on your computer and your phone") are SemiBold; the dark ones stay Medium */
 .mcp-page :is(.examples, .devices) .bracket-label { font-weight: 600; }
 .mcp-page .bracket-lines { position: absolute; left: 50%; transform: translateX(-50%); top: 24px; pointer-events: none; }
 .mcp-page .bracket-lines img { width: 100%; height: 100%; }
@@ -311,15 +311,15 @@
 /* Figma 245:969: SemiBold 13 */
 .mcp-page .hero:not([data-intro="done"]) .hero-user .sent-by { opacity: 0; }
 .mcp-page .hero[data-intro="done"] .hero-user .sent-by { transition-delay: 0.85s; }
-.mcp-page .hero { --hero-bubble-w: 560px; }
-/* two lines of the question: "…book, and" / "track freight from AI chat?" */
+.mcp-page .hero { --hero-bubble-w: 576px; }
+/* two lines of the question: "…book, and" / "track freight using AI chat?" */
 .mcp-page .hero-user .page-bubble { width: var(--hero-bubble-w); text-wrap: balance; }
 /* where it needs three lines, no word left alone on the last */
 .mcp-page .hero-reply { display: flex; flex-direction: column; gap: 20px; max-width: 1000px; }
 .mcp-page .hero-reply > .agent-tag, .mcp-page .setup .exchange-agent > .agent-tag { font-size: 13px; font-weight: 600; }
 /* Figma 245:969: SemiBold 13 */
 .mcp-page .hero-reply > .agent-tag { color: rgba(9,10,12,0.9); }
-/* Two lines in Geist: 72px fits "Yes. Connect Mothership MCP" in 957px; narrower threads scale the type down to keep it there */
+/* Two lines in Geist at 72px: "Yes. Connect Mothership to" fits the first in the 1000px column; narrower threads scale the type down to keep it there */
 /* "Connect Mothership" (and the closing CTA headline): once the headline has typed, a single iridescent band sweeps across it, left to right
    (an upright band).
    Its colours are the hero clip's: the cube's teal and steel blue catching the sunset's peach and sand.
@@ -448,8 +448,6 @@
 .mcp-page .hero.is-answered .cf-tab:nth-child(3) { animation-duration: 5.1s; animation-delay: 2.6s; }
 .mcp-page .connect-block { position: relative; display: flex; flex-direction: column; align-items: center; gap: 20px; max-width: 100%; }
 /* so the URL box caps at the frame's inner width on phones */
-.mcp-page .hero-copy { position: relative; width: min(696px, 100%); text-align: center; font-size: 22px; line-height: 30px; font-weight: 400; }
-.mcp-page .hero-copy strong { font-weight: 600; }
 /* Figma 274:2278: lead sentence SemiBold, the rest Regular */
 .mcp-page .available { position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 24px; }
 /* Figma's desktop row: a 636px strip with 61px fades at each edge, logos spaced 54px apart */
@@ -655,6 +653,23 @@
 .mcp-page .topic-convo .handoff-btn { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; margin-top: 12px; padding: 9px 14px; border-radius: 9999px; background: #141414; color: #fff; font-size: 14px; font-weight: 600; }
 .mcp-page .topic-convo .handoff-btn .ic { width: 14px; height: 14px; }
 .mcp-page .topic-convo .agent-msg.is-typing .handoff { opacity: 0; translate: 0 8px; visibility: hidden; transition-duration: 0s; }
+/* Get delivery receipts and See invoices (and the autopilot receipts card) attach a PDF: the top of its first page, then its name with a download mark, in after the reply has typed */
+.mcp-page :is(.topic-convo, .ap-card) .file-card { align-self: flex-start; width: min(100%, 340px); display: flex; flex-direction: column; background: #fff; border: 1.48px solid #eaeaea; border-radius: 16px; box-shadow: 0 4px 14px rgba(0,0,0,0.05); overflow: hidden; transition: opacity 0.4s ease, translate 0.5s cubic-bezier(.2,.7,.2,1), visibility 0.4s; }
+.mcp-page :is(.topic-convo, .ap-card) .file-preview { display: block; width: 100%; height: 132px; object-fit: cover; object-position: top; border-bottom: 1.48px solid #eaeaea; }
+.mcp-page :is(.topic-convo, .ap-card) .file-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; }
+.mcp-page :is(.topic-convo, .ap-card) .file-badge { flex: none; padding: 3px 5px; border-radius: 4px; background: #e5322d; color: #fff; font-size: 11px; font-weight: 700; line-height: 1; letter-spacing: 0.02em; }
+.mcp-page :is(.topic-convo, .ap-card) .file-name { flex: 1; min-width: 0; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mcp-page :is(.topic-convo, .ap-card) .file-dl { flex: none; width: 18px; height: 18px; color: #5c5c5c; }
+/* A bundle (See invoices' three PDFs) is a stack: two sheets peek out above the first one, each a white edge over a gray rim */
+.mcp-page :is(.topic-convo, .ap-card) .file-card.is-bundle { margin-top: 14px; overflow: visible; box-shadow: 0 -7px 0 -4px #fff, 0 -7px 0 -2.5px #e2e2e2, 0 -14px 0 -8px #fff, 0 -14px 0 -6.5px #e2e2e2, 0 4px 14px rgba(0,0,0,0.05); }
+.mcp-page :is(.topic-convo, .ap-card) .file-card.is-bundle .file-preview { border-radius: 14.5px 14.5px 0 0; }
+.mcp-page :is(.topic-convo, .ap-card) .file-card.is-bundle .file-badge { background: #141414; }
+/* Track a shipment's map card: the route map, then the trip with a green in-transit dot and its status under it */
+.mcp-page .topic-convo .file-card.is-map .file-preview { object-position: center; }
+.mcp-page .topic-convo .track-dot { flex: none; width: 10px; height: 10px; border-radius: 50%; background: #54e04d; box-shadow: 0 0 0 4px rgba(84,224,77,0.25); }
+.mcp-page .topic-convo .track-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.mcp-page .topic-convo .track-meta { font-size: 13px; color: #5c5c5c; }
+.mcp-page .topic-convo .agent-msg.is-typing .file-card { opacity: 0; translate: 0 8px; visibility: hidden; transition-duration: 0s; }
 .mcp-page .topic-convo .dot { width: 18px; height: 18px; border-radius: 2.95px; background: #000; }
 .mcp-page .topic-convo .dot.is-inline { display: inline-block; width: 0.6em; height: 0.6em; border-radius: 1.3px; margin-left: 3px; vertical-align: baseline; }
 .mcp-page .topic-convo.is-in .chat-bubble { animation: mcp-bubble-in 0.6s 0.05s both; }
@@ -698,7 +713,7 @@
 .mcp-page .devices { position: relative; padding-bottom: 103px; }
 .mcp-page .devices .bracket-lines { width: min(908px, 100% - 2 * var(--bg-inset)); height: 150px; }
 /* Figma 343:3448: light gray (#d0d0d0) lines that draw in top to bottom once the bracket has faded in
-   (the "Here's how people ask" bracket over the examples does the same) */
+   (the "Here's an example of what customers ask" bracket over the examples does the same) */
 .mcp-page :is(.examples, .devices) .bracket-lines { clip-path: inset(0 0 100% 0); transition: clip-path 1.1s cubic-bezier(.65,0,.35,1) 0.25s; }
 .mcp-page :is(.examples, .devices) .bracket:is(.is-visible, :not(.reveal)) .bracket-lines { clip-path: inset(0 0 -2px 0); }
 @media (prefers-reduced-motion: reduce) {
@@ -893,12 +908,11 @@
 .mcp-page .chat-grid > .cursor-grid { -webkit-mask: linear-gradient(to bottom, transparent var(--fade-a, 50%), #000 var(--fade-b, 60%)); mask: linear-gradient(to bottom, transparent var(--fade-a, 50%), #000 var(--fade-b, 60%)); }
 .mcp-page .hero:not([data-intro="done"]) .chat-grid > .cursor-grid { -webkit-mask: linear-gradient(to bottom, transparent var(--fade-a-intro, 50%), #000 var(--fade-b-intro, 60%)); mask: linear-gradient(to bottom, transparent var(--fade-a-intro, 50%), #000 var(--fade-b-intro, 60%)); }
 .mcp-page .autopilot { padding: 120px 0; display: flex; flex-direction: column; align-items: center; gap: 80px; }
-/* As in the setup section: the logos stacked over a centred note broken into balanced lines; the bracket starts at the
-   first line's middle and ends exactly on the box's top border, not across it */
+/* A one-line label in the bracket's gap; the bracket starts at the label's middle and ends exactly on the box's top
+   border, not across it */
 .mcp-page .autopilot .bracket { height: 129px; justify-content: center; }
 .mcp-page .autopilot .bracket-lines { width: min(1053px, calc(100% - 2 * var(--gutter))); top: 65.5px; height: 76.5px; }
-.mcp-page .autopilot .bracket-label { flex-direction: column; line-height: 30px; color: rgba(255,255,255,0.9); }
-.mcp-page .autopilot .bracket-label .note { max-width: 640px; text-wrap: balance; }
+.mcp-page .autopilot .bracket-label { line-height: 30px; color: rgba(255,255,255,0.9); }
 .mcp-page .ap-box { position: relative; width: min(var(--content), calc(100% - 2 * var(--gutter))); margin: 13px auto 0; border: 1px solid rgba(209,209,209,0.3); padding: 80px 51px 80px 92px; display: flex; flex-direction: column; gap: 36px; }
 .mcp-page .ap-row { display: flex; gap: 24px; align-items: flex-start; }
 .mcp-page .ap-title { width: 220px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; font-size: 22px; line-height: 32px; font-weight: 500; color: rgba(255,255,255,0.9); }
@@ -907,6 +921,11 @@
 .mcp-page .ap-card .user-turn { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
 .mcp-page .ap-card .chat-bubble { width: 300px; background: var(--green); color: #000; font-size: 17px; border-radius: 12px 12px 7px 12px; }
 .mcp-page .ap-card .sent { font-family: var(--font-ui); font-weight: 500; font-size: 12px; color: #b0b0b0; }
+.mcp-page .ap-card .ap-routine { display: flex; align-items: center; gap: 6px; font-family: var(--font-ui); font-weight: 500; font-size: 13px; color: #b0b0b0; }
+.mcp-page .ap-card .ap-routine .ic { width: 16px; height: 16px; }
+/* The receipts card's PDF stack keeps the chat's dark-on-white type, and waits out each reply's typing */
+.mcp-page .ap-card .file-card { font-family: var(--font-geist); color: #141414; transition: opacity 0.4s ease, translate 0.5s cubic-bezier(.2,.7,.2,1), visibility 0.4s; }
+.mcp-page .ap-card .agent-msg p.tw:not(.is-typed) + .file-card { opacity: 0; translate: 0 8px; visibility: hidden; transition-duration: 0s; }
 /* same type as "Your AI agent" */
 .mcp-page .ap-card .agent-msg { gap: 13px; }
 .mcp-page .ap-card .agent-msg .agent-tag { opacity: 0.5; }
@@ -919,8 +938,8 @@
 @media (hover: hover) {
   .mcp-page .ap-card.is-carousel:hover { transform: translate(-2px, -2px); box-shadow: 12px 12px 0 0 #141414; }
 }
-.mcp-page .ap-card .user-turn, .mcp-page .ap-card .agent-msg { transition: opacity 0.2s ease, transform 0.25s ease; }
-.mcp-page .ap-card.is-switching .user-turn, .mcp-page .ap-card.is-switching .agent-msg { opacity: 0; transform: translateY(-6px); }
+.mcp-page .ap-card :is(.user-turn, .ap-routine), .mcp-page .ap-card .agent-msg { transition: opacity 0.2s ease, transform 0.25s ease; }
+.mcp-page .ap-card.is-switching :is(.user-turn, .ap-routine), .mcp-page .ap-card.is-switching .agent-msg { opacity: 0; transform: translateY(-6px); }
 /* Example dots: the slider paginator's square dots at a tiny size, no box, pinned to the card's bottom-right corner;
    light on the dark card, the current one a white bar */
 .mcp-page .ap-card.is-carousel { position: relative; }
@@ -988,10 +1007,10 @@
 @keyframes mcp-setup-kb { from { transform: scale(1); } to { transform: scale(1.1); } }
 .mcp-page .setup-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.1) 7.584%, #000 85.393%); }
 .mcp-page .setup .exchange { position: relative; gap: 80px; }
-/* Figma 343:6095: logos stacked over a two-line centred note; the bracket starts at the first line's middle and drops onto the steps box */
+/* Logos in front of a one-line note; the bracket starts at the note's middle and drops onto the steps box */
 .mcp-page .setup .bracket { height: 129px; justify-content: center; }
-.mcp-page .setup .bracket-label { flex-direction: column; line-height: 30px; }
-.mcp-page .setup .bracket-label .note { max-width: 517px; }
+.mcp-page .setup .bracket-label { line-height: 30px; }
+.mcp-page .setup .bracket-label .note { white-space: nowrap; }
 .mcp-page .setup .bracket-lines { width: 783px; height: 63.5px; top: 65.5px; }
 .mcp-page .steps { position: relative; border: 1px solid rgba(209,209,209,0.3); background: rgba(255,255,255,0.01); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); padding: 64px 56px; display: flex; align-items: stretch; gap: 20px; }
 .mcp-page .step { flex: 1; min-width: 0; }
@@ -1056,7 +1075,8 @@
 .mcp-page .page-bubble.reveal.is-visible { animation: mcp-bubble-in 0.75s var(--reveal-delay, 0s) both; }
 .mcp-page .ap-row.reveal .ap-card .chat-bubble { opacity: 0; }
 /* In order: bubble bounces in, then "Sent by you", then "Your AI agent", then the reply types (tw-delay 1.15s) */
-.mcp-page .ap-row.reveal:not(.is-visible) .ap-card .sent, .mcp-page .ap-row.reveal:not(.is-visible) .ap-card .agent-msg .agent-tag { opacity: 0; }
+.mcp-page .ap-row.reveal:not(.is-visible) .ap-card :is(.sent, .ap-routine), .mcp-page .ap-row.reveal:not(.is-visible) .ap-card .agent-msg .agent-tag { opacity: 0; }
+.mcp-page .ap-row.reveal.is-visible .ap-card .ap-routine { animation: mcp-ap-label-in 0.3s ease-out calc(var(--reveal-delay, 0s) + 0.35s) both; }
 .mcp-page .ap-row.reveal.is-visible .ap-card .sent { animation: mcp-ap-label-in 0.3s ease-out calc(var(--reveal-delay, 0s) + 0.75s) both; }
 .mcp-page .ap-row.reveal.is-visible .ap-card .agent-msg .agent-tag { animation: mcp-ap-label-in 0.3s ease-out calc(var(--reveal-delay, 0s) + 0.95s) both; }
 @keyframes mcp-ap-label-in { from { opacity: 0; transform: translateY(4px); } }
@@ -1091,7 +1111,6 @@
   .mcp-page .examples > .signup-note { bottom: 8px; }
   .mcp-page .bracket-lines { display: none; }
   .mcp-page :is(.setup, .autopilot) .bracket { height: auto; }
-  /* logos over the note, as in the setup bracket */
   .mcp-page .ap-title { width: 100%; }
   .mcp-page .ap-note { margin-left: 0; }
   /* Intro input on tablets and phones: Figma Mobile/Chat/Composer (370:3355 / 368:734) at its own size — the question on
@@ -1128,7 +1147,6 @@
   .mcp-page .cf-edge .lead { font-size: 18px; line-height: 23px; }
   .mcp-page .cf-body { padding: 6px 0 56px; gap: 56px; }
   .mcp-page .connect-block .pixel-note { max-width: 219px; }
-  .mcp-page .hero-copy { width: min(440px, 100%); font-size: 20px; line-height: 30px; }
   /* Devices slider, Figma 473:17260: a taller 668×950 frame (photos crop to cover, the wide overlays shrink to the visible
      width) with the tablet input on screen — the intro's 39px question, 36px plus, 72px send — 79px in from each side */
   .mcp-page .stage-wrap { aspect-ratio: 668 / 950; }
@@ -1248,7 +1266,6 @@
   .mcp-page .scene-a .composer .plus, .mcp-page .scene-ask .composer .plus { grid-area: plus; width: calc(22px * var(--k)); height: calc(22px * var(--k)); }
   .mcp-page .scene-a .composer .send, .mcp-page .scene-ask .composer .send { grid-area: send; width: calc(48px * var(--k)); height: calc(48px * var(--k)); }
   .mcp-page .scene-a .composer .send img, .mcp-page .scene-ask .composer .send img { width: calc(22px * var(--k)); height: calc(22px * var(--k)); }
-  .mcp-page .hero-copy { width: min(325px, 100%); font-size: 18px; line-height: 28px; }
   /* Closing CTA (Figma 351:2790): 47px down, the headline at 42/50, the buttons 62px under "Powered by", 129px below them */
   .mcp-page .cta { padding: 47px 16px 129px; }
   .mcp-page .cta .display { font-size: 42px; line-height: 50px; max-width: none; } /* Figma Built (375) 343:14773 */
@@ -1282,6 +1299,7 @@
   .mcp-page .ap-box { padding: 40px 20px; }
   .mcp-page .ap-card .chat-bubble { width: auto; max-width: 300px; }
   .mcp-page .setup .bracket-label { line-height: 24px; }
+  .mcp-page .setup .bracket-label .note { white-space: normal; }
   .mcp-page .steps { padding: 32px 20px; }
 }
 /* Simplified Chinese (?lang=zh-CN here, the zh-CN locale on the marketplace page) */
@@ -1290,6 +1308,8 @@
 /* Boxes sized to fit the English copy size to the Chinese text instead (the hero bubble keeps its width as a cap) */
 .mcp-page:lang(zh-CN) .hero-user .page-bubble { width: auto; max-width: var(--hero-bubble-w); }
 .mcp-page:lang(zh-CN) .ap-card .agent-msg { width: auto !important; }
+/* The Chinese dock photo frames its shipper higher, so its crop starts lower to keep his head in the slide */
+.mcp-page:lang(zh-CN) :is(.scene-ask, .scene-c) .photo img.source { top: -10%; }
 /* Tablets and phones (Figma 432:2514): the chat is a phone rising out of the top of the photo, the topics a row of
    buttons under it that scrolls sideways off the right edge, and the photo darkens to black at the bottom */
 @media (max-width: 1000px) {
